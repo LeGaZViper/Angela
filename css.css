@@ -1,0 +1,16 @@
+#canvas {
+  background:url('./resources/sprites/bg.png');
+  background-size:100% 100%;
+  top:0;
+  cursor:auto;
+  margin-top:1%;
+  position:absolute;
+  display:block;
+  left:50%;
+  border: solid black 5px;
+}
+
+body {
+  background-color:black;
+  overflow:hidden;
+}
