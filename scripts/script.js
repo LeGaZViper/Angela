@@ -4,7 +4,6 @@ Post level screen
 Shop
 LASER - new weapon (problém s x,y pozicí)
 ================================================================================
-##GitHUbTest 2
 
 ######POZNÁMKY######
 NEPŘÁTELÉ:
