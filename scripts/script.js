@@ -101,8 +101,25 @@ function chooseWeapon(name){
   let precursor = JSON.parse(localStorage.localWeaponDatabase);
   for(var index in precursor){
     if(precursor[index].name == name){
-      localStorage.activeWeapon = JSON.stringify(precursor[index]);
-      activeWeapon = precursor[index];
+      if(precursor[index].status != "LOCKED"){
+        localStorage.activeWeapon = JSON.stringify(precursor[index]);
+        activeWeapon = precursor[index];
+        return true;
+      }
+      else if (precursor[index].cost<=parseInt(localStorage.XCOINS)){
+        console.log("Bought " + precursor[index].name + " for: " + precursor[index].cost + " XCOINS.");
+        console.log("Current XCOINS balance: " + localStorage.XCOINS);
+        localStorage.XCOINS = parseInt(localStorage.XCOINS) - precursor[index].cost;
+        precursor[index].status = "UNLOCKED";
+        localStorage.activeWeapon = JSON.stringify(precursor[index]);
+        localStorage.localWeaponDatabase = JSON.stringify(precursor);
+        activeWeapon = precursor[index];
+        return true;
+      }
+      else {
+        console.log("Insufficient funds.");
+        return false;
+      }
     }
   }
 }
@@ -399,11 +416,12 @@ var UI = {
       this.weaponsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
           if(index.button != "BACK"){
-            for(var i=1;i<this.weaponsUpgradesMenu.length;i++){
-              this.weaponsUpgradesMenu[i].selected = false;
-            }
-              chooseWeapon(index.button);
-              index.selected = true;
+              if(chooseWeapon(index.button)){
+                for(var i=1;i<this.weaponsUpgradesMenu.length;i++){
+                  this.weaponsUpgradesMenu[i].selected = false;
+                }
+                index.selected = true;
+              }
           }
           else {
             this.currentMenu = 1;
