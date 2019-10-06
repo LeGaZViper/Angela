@@ -1,6 +1,6 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-Post level screen
+levels
 Shop
 LASER - new weapon (problém s x,y pozicí)
 ================================================================================
@@ -9,7 +9,7 @@ LASER - new weapon (problém s x,y pozicí)
 NEPŘÁTELÉ:
 Každý objekt má momentálně svoji individuální sprite mapu.
 Mezi každým spritem je 1px mezera.
-Pokud se jedná o sprite bez trysek, dává se 2px mezera.
+~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
 
 */
 //Sleep function | used in: cooldowns
@@ -20,15 +20,30 @@ function sleep(ms) {
 //Start the game function | used in: main menu
 function startTheGame(){
   //Reset Progress
-  localStorage.level = 1;
-  localStorage.XCOINS = 0;
-  canvas.style.cursor = "none";
-  // xMousePos = canvas.width/2;
-  // yMousePos = canvas.height/2;
-  player.HP = [player.maxHP[0],player.maxHP[1]];
-  XCOINS = 0;
-  UI.inMenu = false;
-  spawn(levels_database.levelCreator());
+  if(parseInt(localStorage.level)>1){
+    if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
+      localStorage.level = 1;
+      localStorage.XCOINS = 0;
+      canvas.style.cursor = "none";
+      // xMousePos = canvas.width/2;
+      // yMousePos = canvas.height/2;
+      player.HP = [player.maxHP[0],player.maxHP[1]];
+      XCOINS = 0;
+      UI.inMenu = false;
+      spawn(levels_handler.levelCreator());
+    }
+  }
+  else {
+    localStorage.level = 1;
+    localStorage.XCOINS = 0;
+    canvas.style.cursor = "none";
+    // xMousePos = canvas.width/2;
+    // yMousePos = canvas.height/2;
+    player.HP = [player.maxHP[0],player.maxHP[1]];
+    XCOINS = 0;
+    UI.inMenu = false;
+    spawn(levels_handler.levelCreator());
+  }
 }
 //Continue the game function | used in: continue
 function continueTheGame(){
@@ -38,7 +53,7 @@ function continueTheGame(){
   // yMousePos = canvas.height/2;
   player.HP = [player.maxHP[0],player.maxHP[1]];
   XCOINS = 0;
-  spawn(levels_database.levelCreator());
+  spawn(levels_handler.levelCreator());
 }
 
 //Lose the game function | used in: gameover
@@ -91,7 +106,7 @@ var defaultWeaponDatabase = {
 if(localStorage.localWeaponDatabase == undefined){
   localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
   localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
-  localStorage.level = 2;
+  localStorage.level = 1;
   localStorage.XCOINS = 0;
 }
 
@@ -228,7 +243,7 @@ function gameLoop(){
         UI.menu_render(UI.youWinMenu);
       }
     }
-    else if(levels_database.level.total == 0){
+    else if(levels_handler.level.total == 0){
       localStorage.level = parseInt(localStorage.level) + 1;
       winTheGame();
     }
@@ -331,29 +346,34 @@ var UI = {
     this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
+    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black"]};
+
     this.upgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black"]};
     this.upgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:250*screenratio,y:350*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black"]};
     this.upgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:600*screenratio,y:350*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black"]};
-    this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2];
+    this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:200*screenratio,text:"BASIC",button:"BASIC",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:300*screenratio,text:"DOUBLE",button:"DOUBLE",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b3 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:400*screenratio,text:"SPRAY",button:"SPRAY",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b4 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:500*screenratio,text:"ROCKET",button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4];
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
-    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0];
+    this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black"]}
+    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.upgradesMenu_XCOINS];
 
     this.gameOverMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"GAMEOVER",opacity:1,color:["grey","black"]};
     this.gameOverMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black"]};
     this.gameOverMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
     this.gameOverMenu = [this.gameOverMenuWindow,this.gameOverMenu_b0,this.gameOverMenu_b1];
+
     this.youWinMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"YOU WIN!",opacity:1,color:["grey","black"]};
     this.youWinMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black"]};
     this.youWinMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black"]};
     this.youWinMenu = [this.youWinMenuWindow,this.youWinMenu_b0,this.youWinMenu_b1];
+
     this.weaponsUpgradesMenu.forEach((index)=>{
       if(activeWeapon.name == index.button){
         index.selected = true;
@@ -366,6 +386,7 @@ var UI = {
       this.mainMenu_b1.opacity = 1;
     }
     menu.forEach((index)=>{
+      this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
       ctx.fillStyle = index.color[0];
       ctx.strokeStyle = "black";
       ctx.lineWidth = 3;
@@ -382,7 +403,7 @@ var UI = {
   click : function(){
     if(this.currentMenu == 0&&this.inMenu){
       this.mainMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "NEW GAME"){
             startTheGame();
           }
@@ -399,7 +420,7 @@ var UI = {
     }
     else if (this.currentMenu == 1&&this.inMenu){
       this.upgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           if(index.button == "CONTINUE"){
             continueTheGame();
           }
@@ -414,14 +435,14 @@ var UI = {
     }
     else if (this.currentMenu == 2&&this.inMenu){
       this.weaponsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           if(index.button != "BACK"){
-              if(chooseWeapon(index.button)){
-                for(var i=1;i<this.weaponsUpgradesMenu.length;i++){
-                  this.weaponsUpgradesMenu[i].selected = false;
-                }
-                index.selected = true;
+            if(chooseWeapon(index.button)){
+              for(var i=1;i<this.weaponsUpgradesMenu.length;i++){
+                this.weaponsUpgradesMenu[i].selected = false;
               }
+              index.selected = true;
+            }
           }
           else {
             this.currentMenu = 1;
@@ -431,22 +452,22 @@ var UI = {
     }
     else if (this.currentMenu == 3&&this.inMenu){
       this.shipsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button != "BACK"){
             for(var i=1;i<this.shipsUpgradesMenu.length;i++){
               this.shipsUpgradesMenu[i].selected = false;
             }
-              index.selected = true;
+            index.selected = true;
+          }
+          else {
+            this.currentMenu = 1;
+          }
         }
-        else {
-          this.currentMenu = 1;
-        }
-      }
-    });
+      });
     }
     else if (this.currentMenu == 4&&this.inMenu){
       this.gameOverMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "BACK"){
             this.currentMenu = 0;
           }
@@ -458,7 +479,7 @@ var UI = {
     }
     else if (this.currentMenu == 5&&this.inMenu){
       this.youWinMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "UPGRADES"){
             this.currentMenu = 1;
           }
@@ -472,7 +493,7 @@ var UI = {
   hover : function(){
     if(this.currentMenu == 0){
       this.mainMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "CONTINUE"&&parseInt(localStorage.level)>1){
             index.color[0] = "blue";
             index.color[1] = "white";
@@ -490,7 +511,7 @@ var UI = {
     }
     else if (this.currentMenu == 1){
       this.upgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
           index.color[1] = "white";
         }
@@ -502,7 +523,7 @@ var UI = {
     }
     else if (this.currentMenu == 2){
       this.weaponsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
           index.color[1] = "white";
         }
@@ -520,7 +541,7 @@ var UI = {
     }
     else if (this.currentMenu == 3){
       this.shipsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
           index.color[1] = "white";
         }
@@ -831,10 +852,16 @@ var player = {
 
 //Check for total of enemies on the map | used in: win condition
 var XCOINS = 0;
-function checkTotal(enemy){
+async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    levels_database.level.total -= 1;
+    if(levels_handler.level.total == 1){
+      await sleep(2000);
+      levels_handler.level.total -= 1;
+    }
+    else {
+      levels_handler.level.total -= 1;
+    }
     XCOINS += enemy.XCOINS;
   }
 }
@@ -915,10 +942,9 @@ function enemyCharacter(E,type){
   E.update = function(){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
     if(ratio > 0.05){
-      E.HP = 0;
-      enemyList = enemyList.filter(check => (!check.HP == 0));
+      E.deathAnimation = true;
       player.HP[0] -= 1;
-      levels_database.level.total -= 1;
+      levels_handler.level.total -= 1;
     }
     else {
       E.xspeed = ratio*(canvas.width/2-E.x);
@@ -1019,6 +1045,6 @@ async function spawn(level_layout){
     else if(det_x == 2){det_x = canvas.width+50;det_y = Math.random()*canvas.height}
     else {det_x = Math.random()*canvas.width;det_y = canvas.height+50;}
     enemyList.push(enemyCharacter({x:det_x,y:det_y},level_layout[i]));
-    await sleep(levels_database.level[level_layout[i]][1]);
+    await sleep(levels_handler.level[level_layout[i]][1]);
   }
 }
