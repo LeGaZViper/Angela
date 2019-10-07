@@ -877,8 +877,8 @@ function enemyCharacter(E,type){
     E.width = 45*screenratio;
     E.height = 50*screenratio;
     E.speed = 2*screenratio;
-    E.HP = 5;
-    E.maxHP = 5;
+    E.HP = 6;
+    E.maxHP = 6;
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
@@ -893,8 +893,8 @@ function enemyCharacter(E,type){
     E.width = 75*screenratio;
     E.height = 75*screenratio;
     E.speed = 1*screenratio;
-    E.HP = 5;
-    E.maxHP = 5;
+    E.HP = 10;
+    E.maxHP = 10;
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas

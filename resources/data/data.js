@@ -19,15 +19,17 @@ var levels_handler = {
     return enemyArray.sort(function(a, b){return 0.5 - Math.random()});
   },
   levelPlanner : function(L){
-    L.buzz = [2,30];
+    if(parseInt(localStorage.level)<5){
+      L.buzz = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    }
     if(parseInt(localStorage.level)>= 3){
-      L.tooth = [2,30];
+      L.tooth = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     }
     if(parseInt(localStorage.level)>= 5){
-      L.sharkfin = [2,30];
+      L.sharkfin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     }
     if (parseInt(localStorage.level)>= 7){
-      L.goblin = [2,30];
+      L.goblin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     }
     return L;
   }
