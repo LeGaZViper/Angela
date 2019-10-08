@@ -3,9 +3,7 @@ var levels_handler = {
   levelCreator : function(){
     this.level = this.levelPlanner({});
     let enemyArray = [];
-    let totalEn = 0;
     for(index in this.level){
-      totalEn += this.level[index][0];
       for(var i=0;i<this.level[index][0];i++){
         if(index != "total"){
           enemyArray.push("" + index);
@@ -15,7 +13,7 @@ var levels_handler = {
         }
       }
     }
-    this.level.total = totalEn;
+    this.level.total = enemyArray.length;
     return enemyArray.sort(function(a, b){return 0.5 - Math.random()});
   },
   levelPlanner : function(L){

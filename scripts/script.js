@@ -2,6 +2,7 @@
 ============================ WHAT TO DO LIST ===================================
 levels
 Shop
+Text font
 LASER - new weapon (problém s x,y pozicí)
 ================================================================================
 
@@ -91,11 +92,12 @@ var object = {
   earth_icon : new Image(),
   rocket : new Image(),
   explosion : new Image(),
+  BASIC : new Image()
 };
 
 //Default database for ingame weapons | used in: first inicialization
 var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"AVAILABLE",cost:0},
+  BASIC:{name:"BASIC",bullets:1,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:0},
   DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
@@ -164,6 +166,7 @@ window.onload = ()=>{
   object.earth_icon.src = "./resources/sprites/UI/earth_icon.png";
   object.explosion.src = "./resources/sprites/explosion.png";
   object.rocket.src = "./resources/sprites/player_ships/rocket.png";
+  object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png"
   scale();
   player.inicialize();
   UI.inicialize();
@@ -354,11 +357,12 @@ var UI = {
     this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:200*screenratio,text:"BASIC",button:"BASIC",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:300*screenratio,text:"DOUBLE",button:"DOUBLE",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:400*screenratio,text:"SPRAY",button:"SPRAY",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:250*screenratio,height:75*screenratio,x:425*screenratio,y:500*screenratio,text:"ROCKET",button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.upgradesMenu_XCOINS];
+    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black"],sprite:object.BASIC,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
     this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black"]}
@@ -392,12 +396,22 @@ var UI = {
       ctx.lineWidth = 3;
       ctx.strokeRect(index.x,index.y,index.width,index.height);
       ctx.font = 30*screenratio + "px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
       ctx.globalAlpha = index.opacity;
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[1];
-      ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2); //text on screen
+      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2);
+      }
+      if(index.text != undefined){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2); //text on screen
+      }
+      if(index.sprite != undefined){
+        ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
+      }
     });
   },
   click : function(){
