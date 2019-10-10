@@ -403,11 +403,6 @@ var UI = {
       ctx.globalAlpha = index.opacity;
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[2];
-      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2);
-      }
       if(index.text != undefined){
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -415,6 +410,11 @@ var UI = {
       }
       if(index.sprite != undefined){
         ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
+      }
+      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2+25*screenratio);
       }
     });
   },
