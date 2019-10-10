@@ -721,7 +721,7 @@ function bullet(B,name,numberOfBullets){
       ctx.save();
       ctx.translate(B.x,B.y);
       ctx.rotate(B.explosion_angle);
-      ctx.drawImage(object.explosion,0,B.explosion_radius*B.explosion_index,B.explosion_radius,B.explosion_radius,-75,-75,B.explosion_radius,B.explosion_radius);
+      ctx.drawImage(object.explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
