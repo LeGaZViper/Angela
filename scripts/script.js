@@ -348,38 +348,38 @@ var UI = {
   inMenu : true,
   currentMenu : 0,
   inicialize : function(){
-    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",button:"NEW GAME",opacity:1,color:["grey","black"]};
-    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:0.5,color:["grey","black"]};
-    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black"]};
+    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",button:"NEW GAME",opacity:1,color:["grey","black","black"]};
+    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:0.5,color:["grey","black","black"]};
+    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","black"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
     this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black"]};
 
-    this.upgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black"]};
-    this.upgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:250*screenratio,y:350*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black"]};
-    this.upgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:600*screenratio,y:350*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black"]};
+    this.upgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:250*screenratio,y:350*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:600*screenratio,y:350*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","black"]};
     this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black"],sprite:object.DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black","black"],sprite:object.BASIC,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black","black"],sprite:object.DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","black"],sprite:object.SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","black"],selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","black"],selected:false};
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.upgradesMenu_XCOINS];
 
-    this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
-    this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black"]}
+    this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
+    this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
     this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.upgradesMenu_XCOINS];
 
-    this.gameOverMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"GAMEOVER",opacity:1,color:["grey","black"]};
-    this.gameOverMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black"]};
-    this.gameOverMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
+    this.gameOverMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"GAMEOVER",opacity:1,color:["grey","black","black"]};
+    this.gameOverMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black","black"]};
+    this.gameOverMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
     this.gameOverMenu = [this.gameOverMenuWindow,this.gameOverMenu_b0,this.gameOverMenu_b1];
 
-    this.youWinMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"YOU WIN!",opacity:1,color:["grey","black"]};
-    this.youWinMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black"]};
-    this.youWinMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black"]};
+    this.youWinMenuWindow = {width:550*screenratio,height:400*screenratio,x:275*screenratio,y:250*screenratio,text:"YOU WIN!",opacity:1,color:["grey","black","black"]};
+    this.youWinMenu_b0 = {width:200*screenratio,height:50*screenratio,x:300*screenratio,y:570*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","black"]};
+    this.youWinMenu_b1 = {width:200*screenratio,height:50*screenratio,x:600*screenratio,y:570*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","black"]};
     this.youWinMenu = [this.youWinMenuWindow,this.youWinMenu_b0,this.youWinMenu_b1];
 
     this.weaponsUpgradesMenu.forEach((index)=>{
@@ -396,13 +396,13 @@ var UI = {
     menu.forEach((index)=>{
       this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
       ctx.fillStyle = index.color[0];
-      ctx.strokeStyle = "black";
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = index.color[1];
+      ctx.lineWidth = 5;
       ctx.strokeRect(index.x,index.y,index.width,index.height);
       ctx.font = 30*screenratio + "px Arial";
       ctx.globalAlpha = index.opacity;
       ctx.fillRect(index.x,index.y,index.width,index.height);
-      ctx.fillStyle = index.color[1];
+      ctx.fillStyle = index.color[2];
       if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
@@ -514,16 +514,19 @@ var UI = {
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "CONTINUE"&&parseInt(localStorage.level)>1){
             index.color[0] = "blue";
-            index.color[1] = "white";
+            index.color[1] = "blue";
+            index.color[2] = "white";
           }
           else if (index.button != "CONTINUE") {
             index.color[0] = "blue";
-            index.color[1] = "white";
+            index.color[1] = "blue";
+            index.color[2] = "white";
           }
         }
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
+          index.color[2] = "black";
         }
       });
     }
@@ -531,11 +534,13 @@ var UI = {
       this.upgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
-          index.color[1] = "white";
+          index.color[1] = "blue";
+          index.color[2] = "white";
         }
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
+          index.color[2] = "black";
         }
       });
     }
@@ -543,16 +548,19 @@ var UI = {
       this.weaponsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
-          index.color[1] = "white";
+          index.color[1] = "blue";
+          index.color[2] = "white";
         }
         else {
           if(!index.selected){
             index.color[0] = "grey";
             index.color[1] = "black";
+            index.color[2] = "black";
           }
           else {
-            index.color[0] = "green";
-            index.color[1] = "black";
+            index.color[0] = "grey";
+            index.color[1] = "white";
+            index.color[2] = "black";
           }
         }
       });
@@ -561,16 +569,19 @@ var UI = {
       this.shipsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = "blue";
-          index.color[1] = "white";
+          index.color[1] = "blue";
+          index.color[2] = "white";
         }
         else {
           if(!index.selected){
             index.color[0] = "grey";
             index.color[1] = "black";
+            index.color[2] = "black";
           }
           else {
-            index.color[0] = "green";
-            index.color[1] = "black";
+            index.color[0] = "grey";
+            index.color[1] = "white";
+            index.color[2] = "black";
           }
         }
       });
@@ -579,11 +590,13 @@ var UI = {
       this.gameOverMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           index.color[0] = "blue";
-          index.color[1] = "white";
+          index.color[1] = "blue";
+          index.color[2] = "white";
         }
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
+          index.color[2] = "black";
         }
       });
     }
@@ -591,11 +604,13 @@ var UI = {
       this.youWinMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           index.color[0] = "blue";
-          index.color[1] = "white";
+          index.color[1] = "blue";
+          index.color[2] = "white";
         }
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
+          index.color[2] = "black";
         }
       });
     }
