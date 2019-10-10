@@ -92,7 +92,9 @@ var object = {
   earth_icon : new Image(),
   rocket : new Image(),
   explosion : new Image(),
-  BASIC : new Image()
+  BASIC : new Image(),
+  DOUBLE : new Image(),
+  SPRAY : new Image()
 };
 
 //Default database for ingame weapons | used in: first inicialization
@@ -166,7 +168,9 @@ window.onload = ()=>{
   object.earth_icon.src = "./resources/sprites/UI/earth_icon.png";
   object.explosion.src = "./resources/sprites/explosion.png";
   object.rocket.src = "./resources/sprites/player_ships/rocket.png";
-  object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png"
+  object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png";
+  object.DOUBLE.src = "./resources/sprites/player_weapons/DOUBLE.png";
+  object.SPRAY.src = "./resources/sprites/player_weapons/SPRAY.png";
   scale();
   player.inicialize();
   UI.inicialize();
@@ -358,10 +362,10 @@ var UI = {
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black"],sprite:object.DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black"],sprite:object.SPRAY,selected:false};
     this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"]};
