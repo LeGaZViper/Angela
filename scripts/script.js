@@ -403,11 +403,6 @@ var UI = {
       ctx.globalAlpha = index.opacity;
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[2];
-      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2);
-      }
       if(index.text != undefined){
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -415,6 +410,11 @@ var UI = {
       }
       if(index.sprite != undefined){
         ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
+      }
+      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2+25*screenratio);
       }
     });
   },
@@ -634,45 +634,54 @@ function bullet(B,name,numberOfBullets){
     B.diry = yMousePos-player.y;
   }
   else if(name == "DOUBLE") {
-    if(numberOfBullets == 2)B.bulletNumber = 1;
-    else B.bulletNumber = -1;
-    if(numberOfBullets>=1&&numberOfBullets<3){
-      B.dirx = (xMousePos-player.x)+10*B.bulletNumber;
-      B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      if((Math.sign(B.dirx)==-1&&Math.sign(B.diry)==-1)){
-        B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-        B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      }
-      else if((Math.sign(B.dirx)==1&&Math.sign(B.diry)==1)){
-        B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-        B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      }
-      if(numberOfBullets !=1){
-        bulletList.push(bullet({},name,numberOfBullets-1));
-      }
+    if (numberOfBullets == 2){
+      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+    }
+    else if (numberOfBullets == 1){
+      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+    }
+    if(numberOfBullets>1){
+      bulletList.push(bullet({},name,numberOfBullets-1))
     }
   }
   else if(name == "SPRAY") {
-    if(numberOfBullets == 2)B.bulletNumber = 1;
-    else B.bulletNumber = -1;
-    if(numberOfBullets>=1&&numberOfBullets<3){
-      B.dirx = (xMousePos-player.x)+10*B.bulletNumber;
-      B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      if((Math.sign(B.dirx)==-1&&Math.sign(B.diry)==-1)){
-        B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-        B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      }
-      else if((Math.sign(B.dirx)==1&&Math.sign(B.diry)==1)){
-        B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-        B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-      }
-      if(numberOfBullets !=1){
-        bulletList.push(bullet({},name,numberOfBullets-1));
-      }
-    }
-    else if(numberOfBullets == 3) {
+    // if(numberOfBullets == 2)B.bulletNumber = 1;
+    // else B.bulletNumber = -1;
+    // if(numberOfBullets>=1&&numberOfBullets<3){
+    //   B.dirx = (xMousePos-player.x)+10*B.bulletNumber;
+    //   B.diry = (yMousePos-player.y)+10*B.bulletNumber;
+    //   if((Math.sign(B.dirx)==-1&&Math.sign(B.diry)==-1)){
+    //     B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
+    //     B.diry = (yMousePos-player.y)+10*B.bulletNumber;
+    //   }
+    //   else if((Math.sign(B.dirx)==1&&Math.sign(B.diry)==1)){
+    //     B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
+    //     B.diry = (yMousePos-player.y)+10*B.bulletNumber;
+    //   }
+    //   if(numberOfBullets !=1){
+    //     bulletList.push(bullet({},name,numberOfBullets-1));
+    //   }
+    // }
+    // else if(numberOfBullets == 3) {
+    //   B.dirx = xMousePos-player.x;
+    //   B.diry = yMousePos-player.y;
+    //   bulletList.push(bullet({},name,numberOfBullets-1));
+    // }
+    if(numberOfBullets == 3){
       B.dirx = xMousePos-player.x;
       B.diry = yMousePos-player.y;
+    }
+    else if (numberOfBullets == 2){
+      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+    }
+    else if (numberOfBullets == 1){
+      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+    }
+    if(numberOfBullets>1){
       bulletList.push(bullet({},name,numberOfBullets-1));
     }
   }
