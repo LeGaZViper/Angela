@@ -29,6 +29,7 @@ var levels_handler = {
     if (parseInt(localStorage.level)>= 7){
       L.goblin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     }
+    L.void_chaser = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))]
     return L;
   }
 };

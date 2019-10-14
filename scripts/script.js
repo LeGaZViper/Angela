@@ -80,11 +80,12 @@ function winTheGame(){
 }
 //List of spritemaps (might use only one in the final version) | used in: rendering
 var object = {
-  scout : new Image(),
   goblin : new Image(),
   tooth : new Image(),
   buzz : new Image(),
   sharkfin : new Image(),
+  void_chaser : new Image(),
+  scout : new Image(),
   earth : new Image(),
   cursor : new Image(),
   HP_panel : new Image(),
@@ -143,8 +144,6 @@ function chooseWeapon(name){
   }
 }
 
-
-
 //Inicialization
 var canvas;
 var ctx;
@@ -161,6 +160,7 @@ window.onload = ()=>{
   object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
   object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
+  object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
   object.cursor.src = "./resources/sprites/cursor-pixelated.png";
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
@@ -398,9 +398,9 @@ var UI = {
       ctx.fillStyle = index.color[0];
       ctx.strokeStyle = index.color[1];
       ctx.lineWidth = 5;
+      ctx.globalAlpha = index.opacity;
       ctx.strokeRect(index.x,index.y,index.width,index.height);
       ctx.font = 30*screenratio + "px Arial";
-      ctx.globalAlpha = index.opacity;
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[2];
       if(index.text != undefined){
@@ -414,7 +414,7 @@ var UI = {
       if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2+25*screenratio);
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2.2+25*screenratio);
       }
     });
   },
@@ -972,6 +972,21 @@ function enemyCharacter(E,type){
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [22,10*screenratio,2*screenratio,20*screenratio];
+  }
+  else if (type == "void_chaser"){
+    E.sprite = object.void_chaser;
+    E.widthOnPic = 48;
+    E.heightOnPic = 62;
+    //Ingame stats
+    E.width = 48*screenratio;
+    E.height = 62*screenratio;
+    E.speed = 1*screenratio;
+    E.HP = 20;
+    E.maxHP = 20;
+    E.XCOINS = 15;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
+    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
   }
   E.deathAnimation = false;
   E.deathAnimation_angle = Math.random()*2*Math.PI;
