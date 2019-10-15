@@ -25,6 +25,9 @@ function startTheGame(){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
       localStorage.level = 1;
       localStorage.XCOINS = 0;
+      localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
+      localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
+      activeWeapon = JSON.parse(localStorage.activeWeapon);
       canvas.style.cursor = "none";
       // xMousePos = canvas.width/2;
       // yMousePos = canvas.height/2;
@@ -85,6 +88,7 @@ var object = {
   buzz : new Image(),
   sharkfin : new Image(),
   void_chaser : new Image(),
+  void_chakram : new Image(),
   scout : new Image(),
   earth : new Image(),
   cursor : new Image(),
@@ -161,6 +165,7 @@ window.onload = ()=>{
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
   object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
   object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
+  object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
   object.cursor.src = "./resources/sprites/cursor-pixelated.png";
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
@@ -910,6 +915,7 @@ async function checkTotal(enemy){
 //enemy objects
 var enemyList = [];
 function enemyCharacter(E,type){
+  E.animation = false;
   if (type == "buzz"){
     E.sprite = object.buzz;
     E.widthOnPic = 56;
@@ -988,6 +994,24 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
   }
+  else if (type == "void_chakram"){
+    E.sprite = object.void_chakram;
+    E.widthOnPic = 60;
+    E.heightOnPic = 60;
+    //Ingame stats
+    E.width = 180*screenratio;
+    E.height = 180*screenratio;
+    E.speed = 0.5*screenratio;
+    E.HP = 50;
+    E.maxHP = 50;
+    E.XCOINS = 50;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
+    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.animation = true;
+    E.animationFrames = 4;
+    E.animationFPS = 12;
+  }
   E.deathAnimation = false;
   E.deathAnimation_angle = Math.random()*2*Math.PI;
   E.deathAnimation_index = 0;
@@ -995,13 +1019,25 @@ function enemyCharacter(E,type){
   E.killed = false;
   E.animationX = 0;
   E.animationY = 0;
+  E.animationIndex = 0;
   E.counter = 0;
+  E.arrival = false;
   E.update = function(){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
-    if(ratio > 0.05){
-      E.deathAnimation = true;
-      player.HP[0] -= 1;
-      levels_handler.level.total -= 1;
+    let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
+    if(distance < 100){
+      // E.deathAnimation = true;
+      // player.HP[0] -= 1;
+      // levels_handler.level.total -= 1;
+      E.speed = 0;
+      if(!E.arrival){
+        E.arrival = true;
+        E.attackCDstart();
+      }
+      else if(!E.attackCD){
+        player.HP[0] -= 1;
+        E.attackCDstart();
+      }
     }
     else {
       E.xspeed = ratio*(canvas.width/2-E.x);
@@ -1012,17 +1048,26 @@ function enemyCharacter(E,type){
     }
   };
   E.render = function(){
+    if(E.animation){
+      E.animationIndex += 1;
+      if(E.animationIndex == 60/E.animationFPS){
+        E.animationIndex = 0;
+        if(E.animationX < E.widthOnPic*(E.animationFrames-1))
+        E.animationX += E.widthOnPic;
+        else E.animationX = 0;
+      }
+    }
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x,E.y);
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
-    //damage enemy ship
-    ctx.drawImage(E.sprite,0,2*E.heightOnPic+E.thrusterFire[0]+3,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
-    ctx.drawImage(E.sprite,0,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    //damaged enemy ship
+    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.globalAlpha = E.opacity;
     //normal enemy ship
-    ctx.drawImage(E.sprite,0,E.heightOnPic+1,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
-    ctx.drawImage(E.sprite,0,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
+    ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.globalAlpha = 1;
     ctx.restore();
     ctx.fillStyle = "#FF0000";
@@ -1056,7 +1101,7 @@ function enemyCharacter(E,type){
   E.opacity = 1;
   E.attackCDstart = async function() {
     E.attackCD = true;
-    await sleep(150);
+    await sleep(2000);
     E.attackCD = false;
   };
   E.hitCDstart = async function() {
