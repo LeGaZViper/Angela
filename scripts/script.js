@@ -261,7 +261,10 @@ function gameLoop(){
     }
     else { //Game part
       ctx.beginPath();
-      ctx.drawImage(object.earth,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.drawImage(object.earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
+      ctx.globalAlpha = player.opacity[0];
+      ctx.drawImage(object.earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.globalAlpha = 1;
       bulletList.forEach((b)=>{//bullets - if render check
         if(b.explosive&&b.explosion_triggered)
         b.explosion_render();
@@ -293,8 +296,8 @@ function gameLoop(){
                   if(!b.piercing)
                   b.killed = true;
                 }
-                if(!e.attackCD)
-                e.attackCDstart();
+                // if(!e.attackCD)
+                // e.attackCDstart();
               }
             }
             bulletList = bulletList.filter(check => !(check.killed));
@@ -302,7 +305,7 @@ function gameLoop(){
           if(!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
             player.HP[1] -= 1;
             if(player.HP[1] > 0){
-              player.hitCDstart();
+              player.hitCDstart(1);
             }
           }
         }
@@ -316,8 +319,21 @@ function gameLoop(){
       ctx.fillStyle = "#0A0A0A";
       ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
       //HP bars
-      ctx.fillStyle = "#00FF00";
+      let x1_player = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
+      let x2_player = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+      if (x1_player.length == 1) x1_player = "0" + x1_player;
+      if (x2_player.length == 1) x2_player = "0" + x2_player;
+      let x_player = "#" + x1_player + x2_player + "00";
+
+      let x1_earth = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
+      let x2_earth = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
+      if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
+      if (x2_earth.length == 1) x2_earth = "0" + x2_earth;
+      let x_earth = "#" + x1_earth + x2_earth + "00";
+
+      ctx.fillStyle = x_earth;
       ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*120*screenratio,15*screenratio);
+      ctx.fillStyle = x_player;
       ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
       //Blikačky
       if(player.HP[0]<player.maxHP[0]/3){
@@ -652,28 +668,6 @@ function bullet(B,name,numberOfBullets){
     }
   }
   else if(name == "SPRAY") {
-    // if(numberOfBullets == 2)B.bulletNumber = 1;
-    // else B.bulletNumber = -1;
-    // if(numberOfBullets>=1&&numberOfBullets<3){
-    //   B.dirx = (xMousePos-player.x)+10*B.bulletNumber;
-    //   B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-    //   if((Math.sign(B.dirx)==-1&&Math.sign(B.diry)==-1)){
-    //     B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-    //     B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-    //   }
-    //   else if((Math.sign(B.dirx)==1&&Math.sign(B.diry)==1)){
-    //     B.dirx = (xMousePos-player.x)-10*B.bulletNumber;
-    //     B.diry = (yMousePos-player.y)+10*B.bulletNumber;
-    //   }
-    //   if(numberOfBullets !=1){
-    //     bulletList.push(bullet({},name,numberOfBullets-1));
-    //   }
-    // }
-    // else if(numberOfBullets == 3) {
-    //   B.dirx = xMousePos-player.x;
-    //   B.diry = yMousePos-player.y;
-    //   bulletList.push(bullet({},name,numberOfBullets-1));
-    // }
     if(numberOfBullets == 3){
       B.dirx = xMousePos-player.x;
       B.diry = yMousePos-player.y;
@@ -793,10 +787,10 @@ var player = {
     if(player.HP[0] <= 0){
       loseTheGame();
     }
+    if(player.HP[1] <= 0&&!player.killedCD){
+      player.killedCDstart();
+    }
     else if(!isNaN(ratio)&&!rightMouseDown){
-      if(player.HP[1] <= 0&&!player.killedCD){
-        player.killedCDstart();
-      }
       if(Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2))>50*screenratio){
         player.xspeed = ratio*(xMousePos-player.x);
         player.yspeed = ratio*(yMousePos-player.y);
@@ -859,7 +853,7 @@ var player = {
       ctx.drawImage(object.scout,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
       ctx.drawImage(object.scout,0,2*player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
     }
-    ctx.globalAlpha = player.opacity;
+    ctx.globalAlpha = player.opacity[1];
     //Normal Scout
     ctx.drawImage(object.scout,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     ctx.drawImage(object.scout,0,player.heightOnPic,player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
@@ -871,28 +865,34 @@ var player = {
   attackCD : false,
   hitCD : false,
   killedCD : false,
-  opacity : 1,
+  opacity : [1,1],
   blikacky : false,
   attackCDstart : async function() {
     player.attackCD = true;
     await sleep(activeWeapon.cooldown);
     player.attackCD = false;
   },
-  hitCDstart : async function() {
-    player.hitCD = true;
+  hitCDstart : async function(which) {
+    player.opacity[which] = 29/100;
+    if(which == 1)player.hitCD = true;
     for(var i=30;i<130;i++){
-      player.opacity = (i)/100;
-      await sleep(10);
+      if(player.opacity[which] == (i-1)/100){
+        player.opacity[which] = i/100;
+        await sleep(10);
+      }
+      else break;
     }
-    player.hitCD = false;
+    if(which == 1)player.hitCD = false;
   },
   killedCDstart : async function() {
     //EXPLOSION
-    player.opacity = 0.5;
+    player.opacity[0] = 0.5;
+    player.opacity[1] = 0.5;
     player.killedCD = true;
     await sleep(5000);
     player.HP[1] = player.maxHP[1];
-    player.opacity = 1;
+    player.opacity[0] = 1;
+    player.opacity[1] = 1;
     player.killedCD = false;
   }
 };
@@ -1026,9 +1026,6 @@ function enemyCharacter(E,type){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
     if(distance < 100){
-      // E.deathAnimation = true;
-      // player.HP[0] -= 1;
-      // levels_handler.level.total -= 1;
       E.speed = 0;
       if(!E.arrival){
         E.arrival = true;
@@ -1037,6 +1034,7 @@ function enemyCharacter(E,type){
       else if(!E.attackCD){
         player.HP[0] -= 1;
         E.attackCDstart();
+        player.hitCDstart(0);
       }
     }
     else {
@@ -1048,6 +1046,11 @@ function enemyCharacter(E,type){
     }
   };
   E.render = function(){
+    let x1 = parseInt(-(E.HP/E.maxHP-1)*255).toString(16);
+    let x2 = parseInt(E.HP/E.maxHP*255).toString(16);
+    if (x1.length == 1) x1 = "0" + x1;
+    if (x2.length == 1) x2 = "0" + x2;
+    let x = "#" + x1 + x2 + "00";
     if(E.animation){
       E.animationIndex += 1;
       if(E.animationIndex == 60/E.animationFPS){
@@ -1068,14 +1071,15 @@ function enemyCharacter(E,type){
     //normal enemy ship
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
-    ctx.globalAlpha = 1;
     ctx.restore();
-    ctx.fillStyle = "#FF0000";
+    ctx.globalAlpha = 0.4;
+    ctx.fillStyle = x;
     ctx.fillRect(E.x-E.width/4,E.y-25,E.HP/E.maxHP*30,5);
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1;
     ctx.strokeRect(E.x-E.width/4,E.y-25,E.HP/E.maxHP*30,5);
     ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.closePath();
   };
   E.deathAnimation_render = function(){
