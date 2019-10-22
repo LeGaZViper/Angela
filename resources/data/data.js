@@ -17,20 +17,21 @@ var levels_handler = {
     return enemyArray.sort(function(a, b){return 0.5 - Math.random()});
   },
   levelPlanner : function(L){
-    if(parseInt(localStorage.level)<5){
-      L.buzz = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
-    }
-    if(parseInt(localStorage.level)>= 3){
-      L.tooth = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
-    }
-    if(parseInt(localStorage.level)>= 5){
-      L.sharkfin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
-    }
-    if (parseInt(localStorage.level)>= 7){
-      L.goblin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
-    }
-    L.void_chaser = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    // if(parseInt(localStorage.level)<5){
+    //   L.buzz = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    // }
+    // if(parseInt(localStorage.level)>= 3){
+    //   L.tooth = [10+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    // }
+    // if(parseInt(localStorage.level)>= 5){
+    //   L.sharkfin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    // }
+    // if (parseInt(localStorage.level)>= 7){
+    //   L.goblin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
+    // }
+    // L.void_chaser = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     L.void_chakram = [1,30];
+    L.void_drone = [1,30];
     return L;
   }
 };

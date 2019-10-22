@@ -12,6 +12,16 @@ Každý objekt má momentálně svoji individuální sprite mapu.
 Mezi každým spritem je 1px mezera.
 ~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
 
+context.drawImage(scout,sx,sy,swidth,sheight,x,y,width,height);
+scout	Specifies the image, canvas, or video element to use
+sx	Optional. - Kde začít clipovat
+sy	Optional. -||-
+swidth	Optional. - Šířka výřezu na obrázku
+sheight	Optional. - Výška výřezu na obrázku
+x - Kam ho dát v canvasu
+y	-||-
+width - roztažení/zmenšení obrázku v canvasu
+height	-||-
 */
 //Sleep function | used in: cooldowns
 function sleep(ms) {
@@ -29,8 +39,6 @@ function startTheGame(){
       localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
       activeWeapon = JSON.parse(localStorage.activeWeapon);
       canvas.style.cursor = "none";
-      // xMousePos = canvas.width/2;
-      // yMousePos = canvas.height/2;
       player.HP = [player.maxHP[0],player.maxHP[1]];
       XCOINS = 0;
       UI.inMenu = false;
@@ -41,8 +49,6 @@ function startTheGame(){
     localStorage.level = 1;
     localStorage.XCOINS = 0;
     canvas.style.cursor = "none";
-    // xMousePos = canvas.width/2;
-    // yMousePos = canvas.height/2;
     player.HP = [player.maxHP[0],player.maxHP[1]];
     XCOINS = 0;
     UI.inMenu = false;
@@ -53,8 +59,6 @@ function startTheGame(){
 function continueTheGame(){
   UI.inMenu = false;
   canvas.style.cursor = "none";
-  // xMousePos = canvas.width/2;
-  // yMousePos = canvas.height/2;
   player.HP = [player.maxHP[0],player.maxHP[1]];
   XCOINS = 0;
   spawn(levels_handler.levelCreator());
@@ -87,6 +91,7 @@ var object = {
   tooth : new Image(),
   buzz : new Image(),
   sharkfin : new Image(),
+  void_drone : new Image(),
   void_chaser : new Image(),
   void_chakram : new Image(),
   scout : new Image(),
@@ -164,6 +169,7 @@ window.onload = ()=>{
   object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
   object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
+  object.void_drone.src = "./resources/sprites/enemy_ships/void_drone/void_drone.png";
   object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
   object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
   object.cursor.src = "./resources/sprites/cursor-pixelated.png";
@@ -837,17 +843,6 @@ var player = {
     ctx.save();
     ctx.translate(player.x,player.y);
     ctx.rotate(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2);
-    //context.drawImage(scout,sx,sy,swidth,sheight,x,y,width,height);
-    // scout	Specifies the image, canvas, or video element to use
-    // sx	Optional. - Kde začít clipovat
-    // sy	Optional. -||-
-    // swidth	Optional. - Šířka výřezu na obrázku
-    // sheight	Optional. - Výška výřezu na obrázku
-    // x - Kam ho dát v canvasu
-    // y	-||-
-    // width - roztažení/zmenšení obrázku v canvasu
-    // height	-||-
-
     //Damaged Scout #RED
     if(player.HP[1] > 0){
       ctx.drawImage(object.scout,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
@@ -979,6 +974,21 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [22,10*screenratio,2*screenratio,20*screenratio];
   }
+  else if (type == "void_drone"){
+    E.sprite = object.void_drone;
+    E.widthOnPic = 60;
+    E.heightOnPic = 60;
+    //Ingame stats
+    E.width = 45*screenratio;
+    E.height = 45*screenratio;
+    E.speed = 1*screenratio;
+    E.HP = 5;
+    E.maxHP = 5;
+    E.XCOINS = 15;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
+    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+  }
   else if (type == "void_chaser"){
     E.sprite = object.void_chaser;
     E.widthOnPic = 48;
@@ -996,8 +1006,8 @@ function enemyCharacter(E,type){
   }
   else if (type == "void_chakram"){
     E.sprite = object.void_chakram;
-    E.widthOnPic = 60;
-    E.heightOnPic = 60;
+    E.widthOnPic = 180;
+    E.heightOnPic = 180;
     //Ingame stats
     E.width = 180*screenratio;
     E.height = 180*screenratio;
@@ -1073,13 +1083,15 @@ function enemyCharacter(E,type){
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.restore();
     ctx.globalAlpha = 0.4;
+    ctx.fillStyle = "#606060";
+    ctx.fillRect(E.x-15,E.y-25,30,5);
     ctx.fillStyle = x;
-    ctx.fillRect(E.x-E.width/4,E.y-25,E.HP/E.maxHP*30,5);
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(E.x-E.width/4,E.y-25,E.HP/E.maxHP*30,5);
-    ctx.stroke();
+    ctx.fillRect(E.x-15,E.y-25,E.HP/E.maxHP*30,5);
+    ctx.strokeStyle = "#0s00000";
     ctx.globalAlpha = 1;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(E.x-15,E.y-25,30,5);
+    ctx.stroke();
     ctx.closePath();
   };
   E.deathAnimation_render = function(){
