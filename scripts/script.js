@@ -93,6 +93,7 @@ var object = {
   sharkfin : new Image(),
   void_drone : new Image(),
   void_chaser : new Image(),
+  void_spherefighter : new Image(),
   void_chakram : new Image(),
   scout : new Image(),
   earth : new Image(),
@@ -172,6 +173,7 @@ window.onload = ()=>{
   object.void_drone.src = "./resources/sprites/enemy_ships/void_drone/void_drone.png";
   object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
   object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
+  object.void_spherefighter.src = "./resources/sprites/enemy_ships/void_spherefighter/void_spherefighter.png";
   object.cursor.src = "./resources/sprites/cursor-pixelated.png";
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
@@ -1003,6 +1005,24 @@ function enemyCharacter(E,type){
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+  }
+  else if (type == "void_spherefighter"){
+    E.sprite = object.void_spherefighter;
+    E.widthOnPic = 64;
+    E.heightOnPic = 64;
+    //Ingame stats
+    E.width = 64*screenratio;
+    E.height = 64*screenratio;
+    E.speed = 1*screenratio;
+    E.HP = 20;
+    E.maxHP = 20;
+    E.XCOINS = 15;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
+    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.animation = true;
+    E.animationFrames = 8;
+    E.animationFPS = 5;
   }
   else if (type == "void_chakram"){
     E.sprite = object.void_chakram;
