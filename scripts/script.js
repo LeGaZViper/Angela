@@ -91,6 +91,7 @@ var object = {
   tooth : new Image(),
   buzz : new Image(),
   sharkfin : new Image(),
+  SG_40 : new Image(),
   void_drone : new Image(),
   void_chaser : new Image(),
   void_spherefighter : new Image(),
@@ -171,6 +172,7 @@ window.onload = ()=>{
   object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
   object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
+  object.SG_40.src = "./resources/sprites/enemy_ships/SG-40/SG-40.png";
   object.void_drone.src = "./resources/sprites/enemy_ships/void_drone/void_drone.png";
   object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
   object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
