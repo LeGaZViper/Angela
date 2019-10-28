@@ -74,6 +74,7 @@ function loseTheGame(){
   XCOINS = 0;
   UI.currentMenu = 4;
   UI.inMenu = true;
+  laserDuration = 300;
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame(){
@@ -84,6 +85,7 @@ function winTheGame(){
   XCOINS = 0;
   UI.currentMenu = 5;
   UI.inMenu = true;
+  laserDuration = 300;
 }
 //List of spritemaps (might use only one in the final version) | used in: rendering
 var object = {
