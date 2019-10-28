@@ -189,7 +189,7 @@ window.onload = ()=>{
   player.inicialize();
   UI.inicialize();
   //Disabling rightclick popup
-  $("#canvas").bind('contextmenu', function(e) {
+  $("#canvas").bind('contextmenu', function() {
     return false;
   });
   //  setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
@@ -291,7 +291,7 @@ function gameLoop(){
         }
       }
       else if (activeWeapon.name == "LASER"){
-        if(laserDuration<300)
+        if(laserDuration<300&&laserDuration > 0)
         laserDuration++;
         bulletList = [];
       }

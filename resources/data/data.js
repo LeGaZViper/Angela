@@ -14,7 +14,7 @@ var levels_handler = {
       }
     }
     this.level.total = enemyArray.length;
-    return enemyArray.sort(function(a, b){return 0.5 - Math.random()});
+    return enemyArray.sort(function(){return 0.5 - Math.random()});
   },
   levelPlanner : function(L){
     // if(parseInt(localStorage.level)<5){
