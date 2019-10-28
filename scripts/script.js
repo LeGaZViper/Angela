@@ -114,7 +114,8 @@ var defaultWeaponDatabase = {
   DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
-  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,color:"#FFFFFF",status:"LOCKED",cost:0}
+  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#FFFFFF",status:"LOCKED",cost:0},
+  LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:0},
 };
 
 //First inicialization
@@ -281,10 +282,18 @@ function gameLoop(){
       player.update();//player pos update
       player.render();
       if(leftMouseDown){ //shooting
-        if(!player.attackCD&&player.HP[1] > 0){
+        if(!player.attackCD&&player.HP[1] > 0&&activeWeapon.name != "LASER"){
           bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
           player.attackCDstart();
         }
+        else if (activeWeapon.name == "LASER"&&bulletList.length != 1){
+          bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
+        }
+      }
+      else if (activeWeapon.name == "LASER"){
+        if(laserDuration<300)
+        laserDuration++;
+        bulletList = [];
       }
       enemyList.forEach((e)=>{//enemies
         if(!e.deathAnimation){
@@ -297,15 +306,15 @@ function gameLoop(){
               if(e.HP>0){
                 if(b.explosive&&!b.explosion_triggered)
                 b.explode();
-                else if((!b.piercing||!e.attackCD)&&!b.explosive) {
+                else if((!b.piercing||!e.piercingCD)&&!b.explosive) {
                   e.HP -= b.damage;
                   e.hitCDstart();
                   checkTotal(e);
                   if(!b.piercing)
                   b.killed = true;
                 }
-                // if(!e.attackCD)
-                // e.attackCDstart();
+                if(!e.piercingCD)
+                  e.piercingDamageCDstart();
               }
             }
             bulletList = bulletList.filter(check => !(check.killed));
@@ -395,7 +404,8 @@ var UI = {
     this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","black"],sprite:object.SPRAY,selected:false};
     this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","black"],selected:false};
     this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","black"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.upgradesMenu_XCOINS];
+    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","black"],selected:false};
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
     this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
@@ -648,12 +658,14 @@ var UI = {
 
 //bullets
 var bulletList = [];
+var laserDuration = 300;
 function bullet(B,name,numberOfBullets){
   B.killed = false;
   B.damage = activeWeapon.damage;
   B.speed = activeWeapon.speed*screenratio;
   B.width = activeWeapon.width*screenratio;
   B.height = activeWeapon.height*screenratio;
+  B.piercing = activeWeapon.piercing
   B.color = activeWeapon.color;
   B.opacity = 1;
   B.x = player.x;
@@ -706,10 +718,44 @@ function bullet(B,name,numberOfBullets){
   else if (name == "GIANT"){
     B.dirx = xMousePos-player.x;
     B.diry = yMousePos-player.y;
-    B.piercing = true;
   }
+  B.hitBoxWidth = B.width/3*2;
+  B.hitBoxHeight = B.height/3*2;
+  B.hitBoxX = B.x-B.hitBoxWidth/2;
+  B.hitBoxY = B.y-B.hitBoxHeight/2;
   B.update = function(){
-    if(!B.explosion_triggered){
+    if(name == "LASER"&&B.laserDurationCheck()){
+      let hitDetectionX = player.x;
+      let hitDetectionY = player.y;
+      B.dirx = xMousePos-player.x;
+      B.diry = yMousePos-player.y;
+      let ratio = 6/(Math.abs(B.dirx)+Math.abs(B.diry));
+      for(let i=0;i<200;i++){
+        hitDetectionX += B.dirx*ratio;
+        hitDetectionY += B.diry*ratio;
+        enemyList.forEach((e)=>{
+          if(!e.piercingCD&collides(e,{hitBoxX:hitDetectionX-3,hitBoxY:hitDetectionY-3,hitBoxWidth:6,hitBoxHeight:6})){
+            e.piercingDamageCDstart();
+            e.HP -= B.damage;
+            e.hitCDstart();
+            checkTotal(e);
+          }
+        });
+      }
+      B.x = hitDetectionX;
+      B.y = hitDetectionY;
+
+      ctx.beginPath();
+      ctx.save();
+      ctx.strokeStyle = B.color;
+      ctx.lineWidth = 6*screenratio;
+      ctx.moveTo(player.x,player.y);
+      ctx.lineTo(B.x,B.y);
+      ctx.stroke();
+      ctx.restore();
+      ctx.closePath();
+    }
+    else if(!B.explosion_triggered){
       bulletList = bulletList.filter(check => !(check.x < 0||check.x > canvas.width||check.y < 0||check.y > canvas.height));
 
       let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
@@ -718,6 +764,8 @@ function bullet(B,name,numberOfBullets){
 
       B.x += B.xspeed;
       B.y += B.yspeed;
+      B.hitBoxX = B.x-B.hitBoxWidth/2;
+      B.hitBoxY = B.y-B.hitBoxHeight/2;
       ctx.beginPath();
       ctx.save();
       ctx.translate(B.x,B.y);
@@ -735,17 +783,17 @@ function bullet(B,name,numberOfBullets){
       ctx.closePath();
     }
   }
-  B.explode = async function(){
+  B.explode = function(){
     B.explosion_triggered = true;
     enemyList.forEach((e)=>{
-      if(collides(e,{x:B.x,y:B.y,width:B.explosion_radius,height:B.explosion_radius})){
+      if(collides(e,{hitBoxX:B.x,hitBoxY:B.y,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
         e.HP -= B.damage;
         e.hitCDstart();
         checkTotal(e);
       }
     });
   }
-  B.explosion_render = async function(){
+  B.explosion_render = function(){
     if(!B.killed){
       B.explosion_countdown += 1;
       if(B.explosion_countdown%6 == 0){
@@ -762,6 +810,24 @@ function bullet(B,name,numberOfBullets){
       ctx.closePath();
       if(B.explosion_index==6)B.killed = true;
     }
+  }
+  B.laserDurationCheck = function(){
+    if(laserDuration > 0){
+      laserDuration--;
+      return true;
+    }
+    else if(laserDuration == 0){
+      B.laserCDstart();
+      return false;
+    }
+    else {
+      return false;
+    }
+  }
+  B.laserCDstart = async function(){
+    laserDuration = -1;
+    await sleep(activeWeapon.cooldown);
+    laserDuration = 300;
   }
   return B;
 }
@@ -789,6 +855,10 @@ var player = {
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas
     player.thrusterFire = [22,2*screenratio,30*screenratio];
+    player.hitBoxWidth = player.width/3*2;
+    player.hitBoxHeight = player.height/3*2;
+    player.hitBoxX = player.x-player.hitBoxWidth/2;
+    player.hitBoxY = player.y-player.hitBoxHeight/2;
   },
   update : ()=>{
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
@@ -814,6 +884,8 @@ var player = {
         else {
           player.x += player.xspeed;
           player.y += player.yspeed;
+          player.hitBoxX = player.x-player.hitBoxWidth/2;
+          player.hitBoxY = player.y-player.hitBoxHeight/2;
         }
       }
       else {
@@ -1052,6 +1124,12 @@ function enemyCharacter(E,type){
   E.animationIndex = 0;
   E.counter = 0;
   E.arrival = false;
+  if(E.hitBoxWidth == undefined){
+    E.hitBoxWidth = E.width/3*2;
+    E.hitBoxHeight = E.height/3*2;
+    E.hitBoxX = E.x-E.hitBoxWidth/2;
+    E.hitBoxY = E.y-E.hitBoxHeight/2;
+  }
   E.update = function(){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
@@ -1073,6 +1151,8 @@ function enemyCharacter(E,type){
 
       E.x += E.xspeed;
       E.y += E.yspeed;
+      E.hitBoxX = E.x-E.hitBoxWidth/2;
+      E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
   };
   E.render = function(){
@@ -1113,6 +1193,13 @@ function enemyCharacter(E,type){
     ctx.strokeRect(E.x-15,E.y-25,30,5);
     ctx.stroke();
     ctx.closePath();
+
+    // ctx.beginPath();
+    // ctx.globalAlpha = 0.5;
+    // ctx.fillRect(E.hitBoxX,E.hitBoxY,E.hitBoxWidth,E.hitBoxHeight);
+    // ctx.stroke();
+    // ctx.globalAlpha = 1;
+    // ctx.closePath();
   };
   E.deathAnimation_render = function(){
     if(!E.killed){
@@ -1134,6 +1221,7 @@ function enemyCharacter(E,type){
   }
   //Cooldowns
   E.attackCD = false;
+  E.piercingCD = false;
   E.opacity = 1;
   E.attackCDstart = async function() {
     E.attackCD = true;
@@ -1152,6 +1240,11 @@ function enemyCharacter(E,type){
       }
     }
   };
+  E.piercingDamageCDstart = async function(){
+    E.piercingCD = true;
+    await sleep(activeWeapon.hitCD);
+    E.piercingCD = false;
+  }
   return E;
 }
 
@@ -1165,10 +1258,10 @@ function collides_UI(a, b) {
 
 //collision; adjusted for translated objects
 function collides(a, b) {
-  return a.x-a.width/2 < b.x + b.width/2&&
-  a.x + a.width/2 > b.x - b.width/2 &&
-  a.y-a.height/2 < b.y + b.height/2 &&
-  a.y + a.height/2 > b.y - b.height/2;
+  return a.hitBoxX< b.hitBoxX + b.hitBoxWidth &&
+  a.hitBoxX + a.hitBoxWidth > b.hitBoxX &&
+  a.hitBoxY < b.hitBoxY + b.hitBoxHeight &&
+  a.hitBoxY + a.hitBoxHeight > b.hitBoxY;
 }
 
 //spawner of enemies
