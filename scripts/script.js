@@ -115,9 +115,9 @@ var object = {
 
 //Default database for ingame weapons | used in: first inicialization
 var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:0},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
+  BASIC:{name:"BASIC",bullets:1,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"UNLOCKED",cost:0},
+  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"LOCKED",cost:0},
+  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"LOCKED",cost:0},
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#FFFFFF",status:"LOCKED",cost:0},
   LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#FF0000",status:"LOCKED",cost:0},
@@ -1161,7 +1161,7 @@ function enemyCharacter(E,type){
   E.update = function(){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
-    if(distance < 100){
+    if(distance < 140*screenratio){
       E.speed = 0;
       if(!E.arrival){
         E.arrival = true;
