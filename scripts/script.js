@@ -108,7 +108,9 @@ var object = {
   explosion : new Image(),
   BASIC : new Image(),
   DOUBLE : new Image(),
-  SPRAY : new Image()
+  SPRAY : new Image(),
+  ROCKET : new Image(),
+  LASER : new Image()
 };
 
 //Default database for ingame weapons | used in: first inicialization
@@ -118,7 +120,7 @@ var defaultWeaponDatabase = {
   SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#FFFFFF",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:0},
+  LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#FF0000",status:"LOCKED",cost:0},
 };
 
 //First inicialization
@@ -189,6 +191,8 @@ window.onload = ()=>{
   object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png";
   object.DOUBLE.src = "./resources/sprites/player_weapons/DOUBLE.png";
   object.SPRAY.src = "./resources/sprites/player_weapons/SPRAY.png";
+  object.ROCKET.src = "./resources/sprites/player_weapons/ROCKET.png";
+  object.LASER.src = "./resources/sprites/player_weapons/LASER.png";
   scale();
   player.inicialize();
   UI.inicialize();
@@ -403,12 +407,12 @@ var UI = {
     this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black","black"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black","black"],sprite:object.DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","black"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","black"],selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","black"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","black"],selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
@@ -457,7 +461,7 @@ var UI = {
       if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
         ctx.textAlign = "center";
         ctx.textBaseline = "top";
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height/2.2+25*screenratio);
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height+10*screenratio);
       }
     });
   },
@@ -594,17 +598,22 @@ var UI = {
           index.color[1] = "blue";
           index.color[2] = "white";
         }
-        else {
+        else if(index.text == undefined){
           if(!index.selected){
             index.color[0] = "grey";
             index.color[1] = "black";
-            index.color[2] = "black";
+            index.color[2] = "white";
           }
           else {
             index.color[0] = "grey";
             index.color[1] = "white";
-            index.color[2] = "black";
+            index.color[2] = "white";
           }
+        }
+        else {
+          index.color[0] = "grey";
+          index.color[1] = "black";
+          index.color[2] = "black";
         }
       });
     }
@@ -1051,6 +1060,21 @@ function enemyCharacter(E,type){
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [22,10*screenratio,2*screenratio,20*screenratio];
+  }
+  else if(type == "SG_40"){// 2 - goblin
+    E.sprite = object.SG_40;
+    E.widthOnPic = 48;
+    E.heightOnPic = 50;
+    //Ingame stats
+    E.width = 48*screenratio;
+    E.height = 50*screenratio;
+    E.speed = 1*screenratio;
+    E.HP = 10;
+    E.maxHP = 10;
+    E.XCOINS = 10;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
+    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
   }
   else if (type == "void_drone"){
     E.sprite = object.void_drone;
