@@ -30,7 +30,8 @@ var levels_handler = {
     //   L.goblin = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     // }
     // L.void_chaser = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
-    L.SG_40 = [5,30];
+    //L.SG_40 = [5,30];
+    L.pirate_minedropper = [2,30];
     // L.void_chaser = [5,30];
     // L.void_chakram = [2,30];
     // L.void_drone = [10,30];

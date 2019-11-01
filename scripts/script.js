@@ -94,6 +94,12 @@ var object = {
   buzz : new Image(),
   sharkfin : new Image(),
   SG_40 : new Image(),
+  pirate_raider : new Image(),
+  pirate_minedropper : new Image(),
+  pirate_mine : new Image(),
+  pirate_vessel_front : new Image(),
+  pirate_vessel_back : new Image(),
+  pirate_vessel_turret : new Image(),
   void_drone : new Image(),
   void_chaser : new Image(),
   void_spherefighter : new Image(),
@@ -181,6 +187,12 @@ window.onload = ()=>{
   object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
   object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
   object.void_spherefighter.src = "./resources/sprites/enemy_ships/void_spherefighter/void_spherefighter.png";
+  object.pirate_raider.src = "./resources/sprites/enemy_ships/pirate_raider/pirate_raider.png";
+  object.pirate_minedropper.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_minedropper.png";
+  object.pirate_mine.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_mine.png";
+  object.pirate_vessel_front.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_front.png";
+  object.pirate_vessel_back.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_back.png";
+  object.pirate_vessel_turret.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_turret.png";
   object.cursor.src = "./resources/sprites/cursor-pixelated.png";
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
@@ -317,7 +329,6 @@ function gameLoop(){
                 else if((!b.piercing||!e.piercingCD)&&!b.explosive) {
                   e.HP -= b.damage;
                   e.hitCDstart();
-                  checkTotal(e);
                   if(!b.piercing)
                   b.killed = true;
                 }
@@ -338,6 +349,7 @@ function gameLoop(){
           e.deathAnimation_render();
           enemyList = enemyList.filter(check => !(check.killed));
         }
+        checkTotal(e);
       });
 
       //UI
@@ -984,11 +996,11 @@ var XCOINS = 0;
 async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    if(levels_handler.level.total == 1){
+    if(levels_handler.level.total == 1&&enemy.sprite != object.pirate_mine){
       await sleep(2000);
       levels_handler.level.total -= 1;
     }
-    else {
+    else if (enemy.sprite != object.pirate_mine) {
       levels_handler.level.total -= 1;
     }
     XCOINS += enemy.XCOINS;
@@ -1010,9 +1022,7 @@ function enemyCharacter(E,type){
     E.HP = 6;
     E.maxHP = 6;
     E.XCOINS = 15;
-    //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.thrusterFire = [10,10*screenratio,-1*screenratio];
   }
   else if (type == "tooth"){
     E.sprite = object.tooth;
@@ -1026,9 +1036,7 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 15;
-    //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [8,0*screenratio,30*screenratio,8*screenratio];
+    E.thrusterFire = [10,10*screenratio,-1*screenratio];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
     E.sprite = object.sharkfin;
@@ -1043,23 +1051,23 @@ function enemyCharacter(E,type){
     E.maxHP = 3;
     E.XCOINS = 15;
     //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [10,-5*screenratio,9*screenratio,10*screenratio];
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.thrusterFire = [10,10*screenratio,-12*screenratio];
   }
   else if(type == "goblin"){// 2 - goblin
     E.sprite = object.goblin;
     E.widthOnPic = 76;
     E.heightOnPic = 100;
     //Ingame stats
-    E.width = 51*screenratio;
-    E.height = 67*screenratio;
+    E.width = 76*screenratio;
+    E.height = 100*screenratio;
     E.speed = 1*screenratio;
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 10;
     //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [22,10*screenratio,2*screenratio,20*screenratio];
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.thrusterFire = [22,22*screenratio,-1*screenratio];
   }
   else if(type == "SG_40"){// 2 - goblin
     E.sprite = object.SG_40;
@@ -1072,9 +1080,52 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 10;
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
+  }
+  else if (type == "pirate_raider"){
+    E.sprite = object.pirate_raider;
+    E.widthOnPic = 60;
+    E.heightOnPic = 32;
+    //Ingame stats
+    E.width = 60*screenratio;
+    E.height = 32*screenratio;
+    E.speed = 2*screenratio;
+    E.HP = 5;
+    E.maxHP = 5;
+    E.XCOINS = 10;
     //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+  }
+  else if (type == "pirate_minedropper"){
+    E.sprite = object.pirate_minedropper;
+    E.widthOnPic = 56;
+    E.heightOnPic = 74;
+    //Ingame stats
+    E.width = 56*screenratio;
+    E.height = 74*screenratio;
+    E.speed = 1*screenratio;
+    E.HP = 15;
+    E.maxHP = 15;
+    E.XCOINS = 10;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.thrusterFire = [10,10*screenratio,-6*screenratio];
+  }
+  else if (type == "pirate_mine"){
+    E.sprite = object.pirate_mine;
+    E.widthOnPic = 44;
+    E.heightOnPic = 44;
+    //Ingame stats
+    E.width = 44*screenratio;
+    E.height = 44*screenratio;
+    E.speed = 0.5*screenratio;
+    E.HP = 5;
+    E.maxHP = 5;
+    E.XCOINS = 0;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
   else if (type == "void_drone"){
     E.sprite = object.void_drone;
@@ -1089,7 +1140,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
   else if (type == "void_chaser"){
     E.sprite = object.void_chaser;
@@ -1104,7 +1155,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
   else if (type == "void_spherefighter"){
     E.sprite = object.void_spherefighter;
@@ -1119,7 +1170,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
     E.animation = true;
     E.animationFrames = 8;
     E.animationFPS = 5;
@@ -1137,7 +1188,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 50;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio,0*screenratio];
+    E.thrusterFire = [0,0*screenratio,0*screenratio];
     E.animation = true;
     E.animationFrames = 4;
     E.animationFPS = 12;
@@ -1161,7 +1212,7 @@ function enemyCharacter(E,type){
   E.update = function(){
     let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
-    if(distance < 140*screenratio){
+    if(distance < 140*screenratio&&(E.sprite != object.pirate_mine&&E.sprite != object.pirate_minedropper)){
       E.speed = 0;
       if(!E.arrival){
         E.arrival = true;
@@ -1172,6 +1223,10 @@ function enemyCharacter(E,type){
         E.attackCDstart();
         player.hitCDstart(0);
       }
+    }
+    else if ((E.sprite == object.pirate_mine||E.sprite == object.pirate_minedropper)&&distance<40){
+      E.HP = 0;
+      player.HP[0] -= 2;
     }
     else {
       E.xspeed = ratio*(canvas.width/2-E.x);
@@ -1203,11 +1258,11 @@ function enemyCharacter(E,type){
     ctx.translate(E.x,E.y);
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
     //damaged enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
+    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.globalAlpha = E.opacity;
     //normal enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.heightOnPic,E.thrusterFire[0],-E.width/2+E.thrusterFire[1],E.height/2-E.thrusterFire[2],E.width-E.thrusterFire[1],E.thrusterFire[3]);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.restore();
     ctx.globalAlpha = 0.4;
@@ -1233,8 +1288,11 @@ function enemyCharacter(E,type){
     if(!E.killed){
       E.deathAnimation_countdown += 1;
       if(E.deathAnimation_countdown%6 == 0){
+        let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
         E.deathAnimation_angle = Math.random()*2*Math.PI;
         E.deathAnimation_index = E.deathAnimation_countdown/6;
+        if(E.deathAnimation_index==1&&E.sprite == object.pirate_minedropper&&distance>=40)
+          enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirate_mine"));
       }
       ctx.beginPath();
       ctx.save();
@@ -1244,7 +1302,8 @@ function enemyCharacter(E,type){
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if(E.deathAnimation_index==6)E.killed = true;
+      if(E.deathAnimation_index==6)
+        E.killed = true;
     }
   }
   //Cooldowns
