@@ -7,6 +7,7 @@ var levels_handler = {
       for(var i=0;i<this.level[index][0];i++){
         if(index != "total"){
           enemyArray.push("" + index);
+          this.level.total += 1;
         }
         else {
           continue;
@@ -31,7 +32,7 @@ var levels_handler = {
     // }
     // L.void_chaser = [3+parseInt(localStorage.level),Math.round((Math.random()*5000))];
     //L.SG_40 = [5,30];
-    L.pirate_minedropper = [2,30];
+    L.pirate_vessel = [2,30];
     // L.void_chaser = [5,30];
     // L.void_chakram = [2,30];
     // L.void_drone = [10,30];
