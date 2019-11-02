@@ -1293,6 +1293,10 @@ function enemyCharacter(E,type){
     //normal enemy ship
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    if(type == "pirate_vessel"){
+      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,-58,24,36);
+      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,10,24,36);
+    }
     ctx.restore();
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = "#606060";
@@ -1305,31 +1309,6 @@ function enemyCharacter(E,type){
     ctx.strokeRect(E.x-15,E.y-25,30,5);
     ctx.stroke();
     ctx.closePath();
-
-    // ctx.beginPath();
-    // ctx.globalAlpha = 0.5;
-    // ctx.fillRect(E.hitBoxX,E.hitBoxY,E.hitBoxWidth,E.hitBoxHeight);
-    // ctx.stroke();
-    // ctx.globalAlpha = 1;
-    // ctx.closePath();
-    if(type == "pirate_vessel"){
-      let vectorX = canvas.width/2+E.x;
-      let vectorY = canvas.height/2+E.x;
-      let ratio = 80/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
-      ctx.beginPath();
-      ctx.save();
-      ctx.translate(E.x + Math.abs(canvas.width/2-E.x)*ratio,E.y + Math.abs(canvas.height/2-E.y)*ratio);
-      ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
-      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,-36/2,24,36);
-      ctx.restore();
-      ctx.save();
-      ctx.translate(E.x + Math.abs(canvas.height/2-E.y)*ratio,E.y + Math.abs(canvas.width/2-E.x)*ratio);
-      ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
-      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,-36/2,24,36);
-      ctx.restore();
-      ctx.stroke();
-      ctx.closePath();
-    }
   };
   E.deathAnimation_render = function(){
     if(!E.killed){
