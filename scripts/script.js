@@ -349,6 +349,21 @@ function gameLoop(){
         }
         checkTotal(e);
       });
+      enemyBulletList.forEach((eb)=>{
+        let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
+        if(collides(eb,player)){
+          player.HP[1] -= eb.damage;
+          eb.killed = true;
+          player.hitCDstart(1);
+        }
+        else if(distance <10){
+          player.HP[0] -= eb.damage;
+          eb.killed = true;
+          player.hitCDstart(0);
+        }
+        eb.update();
+        enemyBulletList = enemyBulletList.filter(check => !(check.killed));
+      });
 
       //UI
       ctx.fillStyle = "#0A0A0A";
@@ -1004,6 +1019,50 @@ async function checkTotal(enemy){
     XCOINS += enemy.XCOINS;
   }
 }
+var enemyBulletList = [];
+function enemyBullet(B,type){
+    B.killed = false;
+    B.damage = 1;
+    B.speed = 1*screenratio;
+    B.color = "#FF0000";
+  if(type == "BASIC"){
+    B.dirx = canvas.width/2-B.x;
+    B.diry = canvas.height/2-B.y;
+    B.radius = 8*screenratio;
+    B.width = B.radius/2*screenratio;
+    B.height = B.radius/2*screenratio;
+  }
+  B.update = function(){
+    let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
+    B.xspeed = ratio*B.dirx;
+    B.yspeed = ratio*B.diry;
+
+    B.x += B.xspeed;
+    B.y += B.yspeed;
+    B.hitBoxWidth = B.width/3*2;
+    B.hitBoxHeight = B.height/3*2;
+    B.hitBoxX = B.x-B.hitBoxWidth/2;
+    B.hitBoxY = B.y-B.hitBoxHeight/2;
+    ctx.beginPath();
+    ctx.save();
+    ctx.translate(B.x,B.y);
+    ctx.rotate(Math.atan2(B.diry,B.dirx)+Math.PI/2);
+    ctx.globalAlpha = B.opacity;
+    if(B.color == undefined){
+      ctx.drawImage(B.sprite,0,0,activeWeapon.width,activeWeapon.height,-B.width/2,-B.height/2,B.width,B.height);
+    }
+    else {
+      ctx.fillStyle = B.color;
+      //ctx.fillRect(-B.width/2,-B.height/2,B.width,B.height);
+      ctx.arc(-B.width/2,-B.height/2,B.radius,0,2*Math.PI);
+      ctx.fill();
+    }
+    ctx.restore();
+    ctx.stroke();
+    ctx.closePath();
+  }
+  return B;
+}
 //enemy objects
 var enemyList = [];
 function enemyCharacter(E,type){
@@ -1230,6 +1289,14 @@ function enemyCharacter(E,type){
     if(E.orbit&&distance<500&&!E.inOrbit){
       E.inOrbit = true;
     }
+    else if (E.inOrbit&&!E.arrival){
+      E.arrival = true;
+      E.attackCDstart();
+    }
+    else if (E.inOrbit&&E.arrival&&!E.attackCD){
+      enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
+      E.attackCDstart();
+    }
     else if(distance < 140*screenratio&&(E.sprite != object.pirate_mine&&E.sprite != object.pirate_minedropper)&&!E.orbit){
       E.speed = 0;
       if(!E.arrival){
@@ -1237,9 +1304,8 @@ function enemyCharacter(E,type){
         E.attackCDstart();
       }
       else if(!E.attackCD){
-        player.HP[0] -= 1;
+        enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
         E.attackCDstart();
-        player.hitCDstart(0);
       }
     }
     else if ((E.sprite == object.pirate_mine||E.sprite == object.pirate_minedropper)&&distance<40){
@@ -1294,8 +1360,14 @@ function enemyCharacter(E,type){
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     if(type == "pirate_vessel"){
-      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,-58,24,36);
-      ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2,10,24,36);
+      if(!E.inOrbit){
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,-58*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,10*screenratio,24*screenratio,36*screenratio);
+      }
+      else {
+        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,-45*screenratio,36*screenratio,24*screenratio);
+        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,20*screenratio,36*screenratio,24*screenratio);
+      }
     }
     ctx.restore();
     ctx.globalAlpha = 0.4;
@@ -1338,7 +1410,7 @@ function enemyCharacter(E,type){
   E.opacity = 1;
   E.attackCDstart = async function() {
     E.attackCD = true;
-    await sleep(2000);
+    await sleep(4000);
     E.attackCD = false;
   };
   E.hitCDstart = async function() {
