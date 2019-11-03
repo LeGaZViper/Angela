@@ -31,9 +31,10 @@ function sleep(ms) {
 //Start the game function | used in: main menu
 function startTheGame(){
   //Reset Progress
-  if(parseInt(localStorage.level)>1){
+  UI.levelDisplayCheck = true;
+  if(localStorage.level[1]>1||localStorage.level[3]>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
-      localStorage.level = 1;
+      localStorage.level = "[1,1]";
       localStorage.XCOINS = 0;
       localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
       localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
@@ -46,17 +47,14 @@ function startTheGame(){
     }
   }
   else {
-    localStorage.level = 1;
-    localStorage.XCOINS = 0;
     canvas.style.cursor = "none";
-    player.HP = [player.maxHP[0],player.maxHP[1]];
-    XCOINS = 0;
     UI.inMenu = false;
     spawn(levels_handler.levelCreator());
   }
 }
 //Continue the game function | used in: continue
 function continueTheGame(){
+  UI.levelDisplayCheck = true;
   UI.inMenu = false;
   canvas.style.cursor = "none";
   player.HP = [player.maxHP[0],player.maxHP[1]];
@@ -66,7 +64,7 @@ function continueTheGame(){
 
 //Lose the game function | used in: gameover
 function loseTheGame(){
-  localStorage.level = 1;
+  localStorage.level = "[1,1]";
   localStorage.XCOINS = 0;
   canvas.style.cursor = "auto";
   bulletList = [];
@@ -120,19 +118,19 @@ var object = {
 
 //Default database for ingame weapons | used in: first inicialization
 var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"UNLOCKED",cost:0},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"LOCKED",cost:0},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:10,width:4,height:25,cooldown:150,color:"#FF0000",status:"LOCKED",cost:0},
+  BASIC:{name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:0},
+  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
+  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
-  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#FFFFFF",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#FF0000",status:"LOCKED",cost:0},
+  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
+  LASER:{name:"LASER",bullets:1,damage:1,speed:0,width:1,height:1,cooldown:2500,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:0},
 };
 
 //First inicialization
 if(localStorage.localWeaponDatabase == undefined){
   localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
   localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
-  localStorage.level = 1;
+  localStorage.level = "[1,1]";
   localStorage.XCOINS = 0;
 }
 
@@ -263,39 +261,71 @@ function gameLoop(){
     timeThen = timeNow - (dif%fpsInterval);
     ctx.clearRect(0,0,canvas.width,canvas.height); //Clearing scene
     if(UI.inMenu){ //Menu part of cycle
-      if(UI.currentMenu == 0){
-        UI.menu_render(UI.mainMenu);
-      }
-      else if (UI.currentMenu == 1){
-        UI.menu_render(UI.upgradesMenu);
-      }
-      else if (UI.currentMenu == 2){
-        UI.menu_render(UI.weaponsUpgradesMenu);
-      }
-      else if (UI.currentMenu == 3){
-        UI.menu_render(UI.shipsUpgradesMenu);
-      }
-      else if (UI.currentMenu == 4){
-        UI.menu_render(UI.gameOverMenu);
-      }
-      else if (UI.currentMenu == 5){
-        UI.menu_render(UI.youWinMenu);
+      switch(UI.currentMenu){
+        case 0:
+          UI.menu_render(UI.mainMenu);
+          break;
+        case 1:
+          UI.menu_render(UI.upgradesMenu);
+          break;
+        case 2:
+          UI.menu_render(UI.weaponsUpgradesMenu);
+          break;
+        case 3:
+          UI.menu_render(UI.shipsUpgradesMenu);
+          break;
+        case 4:
+          UI.menu_render(UI.gameOverMenu);
+          break;
+        case 5:
+          UI.menu_render(UI.youWinMenu);
+          break;
       }
     }
     else if(levels_handler.level.total == 0){
-      localStorage.level = parseInt(localStorage.level) + 1;
+      if(localStorage.level[3]<5){
+        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0],JSON.parse(localStorage.level)[1] + 1]);
+      }
+      else {
+        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0] + 1,JSON.parse(localStorage.level)[1] - 4]);
+      }
       winTheGame();
     }
     else { //Game part
       ctx.beginPath();
+      if(UI.levelDisplayCheck){
+        ctx.globalAlpha = UI.levelDisplay.opacity;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = 100*screenratio + "px Arial";
+        ctx.fillStyle = UI.levelDisplay.color;
+        ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
+        ctx.globalAlpha = 1;
+      }
       ctx.drawImage(object.earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = player.opacity[0];
       ctx.drawImage(object.earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
       ctx.globalAlpha = 1;
+      ctx.closePath();
       bulletList.forEach((b)=>{//bullets - if render check
         if(b.explosive&&b.explosion_triggered)
         b.explosion_render();
-        if(!b.killed)b.update();
+        b.update();
+      });
+      enemyBulletList.forEach((eb)=>{//enemy bullets - render
+        let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
+        if(collides(eb,player)&&player.HP[1]>0){
+          player.HP[1] -= eb.damage;
+          eb.killed = true;
+          player.hitCDstart(1);
+        }
+        else if(distance <10){
+          player.HP[0] -= eb.damage;
+          eb.killed = true;
+          player.hitCDstart(0);
+        }
+        eb.update();
+        enemyBulletList = enemyBulletList.filter(check => !(check.killed));
       });
       player.update();//player pos update
       player.render();
@@ -349,23 +379,9 @@ function gameLoop(){
         }
         checkTotal(e);
       });
-      enemyBulletList.forEach((eb)=>{
-        let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
-        if(collides(eb,player)){
-          player.HP[1] -= eb.damage;
-          eb.killed = true;
-          player.hitCDstart(1);
-        }
-        else if(distance <10){
-          player.HP[0] -= eb.damage;
-          eb.killed = true;
-          player.hitCDstart(0);
-        }
-        eb.update();
-        enemyBulletList = enemyBulletList.filter(check => !(check.killed));
-      });
 
       //UI
+      ctx.beginPath();
       ctx.fillStyle = "#0A0A0A";
       ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
       //HP bars
@@ -459,10 +475,12 @@ var UI = {
         index.selected = true;
       }
     })
+    this.levelDisplay = {x:canvas.width/2*screenratio,y:250*screenratio,opacity:0,color:"white"};
+    this.levelDisplayCheck = false;
   },
   menu_render : function(menu){
     this.hover();
-    if(parseInt(localStorage.level)>1){
+    if(localStorage.level[1]>1||localStorage.level[3]>1){
       this.mainMenu_b1.opacity = 1;
     }
     menu.forEach((index)=>{
@@ -498,7 +516,7 @@ var UI = {
             startTheGame();
           }
           else if (index.button == "CONTINUE"){
-            if(parseInt(localStorage.level)>1){
+            if(localStorage.level[1]>1||localStorage.level[3]>1){
               continueTheGame();
             }
           }
@@ -584,7 +602,7 @@ var UI = {
     if(this.currentMenu == 0){
       this.mainMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          if(index.button == "CONTINUE"&&parseInt(localStorage.level)>1){
+          if(index.button == "CONTINUE"&&(localStorage.level[1]>1||localStorage.level[3]>1)){
             index.color[0] = "blue";
             index.color[1] = "blue";
             index.color[2] = "white";
@@ -1023,14 +1041,13 @@ var enemyBulletList = [];
 function enemyBullet(B,type){
     B.killed = false;
     B.damage = 1;
-    B.speed = 1*screenratio;
+    B.speed = 15*screenratio;
     B.color = "#FF0000";
   if(type == "BASIC"){
     B.dirx = canvas.width/2-B.x;
     B.diry = canvas.height/2-B.y;
-    B.radius = 8*screenratio;
-    B.width = B.radius/2*screenratio;
-    B.height = B.radius/2*screenratio;
+    B.width = 4*screenratio;
+    B.height = 25*screenratio;
   }
   B.update = function(){
     let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
@@ -1053,8 +1070,7 @@ function enemyBullet(B,type){
     }
     else {
       ctx.fillStyle = B.color;
-      //ctx.fillRect(-B.width/2,-B.height/2,B.width,B.height);
-      ctx.arc(-B.width/2,-B.height/2,B.radius,0,2*Math.PI);
+      ctx.fillRect(-B.width/2,-B.height/2,B.width,B.height);
       ctx.fill();
     }
     ctx.restore();
@@ -1451,7 +1467,17 @@ function collides(a, b) {
 
 //spawner of enemies
 async function spawn(level_layout){
-  await sleep(2000);
+  UI.levelDisplay.text = localStorage.level[1] + "-" + localStorage.level[3];
+  for(let i=1;i<=500;i++){
+    if(i<=100){
+      UI.levelDisplay.opacity = i/100;
+    }
+    else if (i>300&&i<=400){
+      UI.levelDisplay.opacity = (400-i)/100;
+    }
+    await sleep(10);
+  }
+  UI.levelDisplayCheck = false;
   for(var i=0;i<level_layout.length;i++){
     let det_x = Math.floor(Math.random()*4);
     let det_y;
