@@ -297,7 +297,7 @@ function gameLoop(){
         ctx.globalAlpha = UI.levelDisplay.opacity;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = 100*screenratio + "px Arial";
+        ctx.font = 100*screenratio + "px FFFFORWA";
         ctx.fillStyle = UI.levelDisplay.color;
         ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
         ctx.globalAlpha = 1;
@@ -475,7 +475,7 @@ var UI = {
         index.selected = true;
       }
     })
-    this.levelDisplay = {x:canvas.width/2*screenratio,y:250*screenratio,opacity:0,color:"white"};
+    this.levelDisplay = {x:canvas.width/2,y:250*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
   },
   menu_render : function(menu){
@@ -490,13 +490,13 @@ var UI = {
       ctx.lineWidth = 5;
       ctx.globalAlpha = index.opacity;
       ctx.strokeRect(index.x,index.y,index.width,index.height);
-      ctx.font = 30*screenratio + "px Arial";
+      ctx.font = 30*screenratio + "px FFFFORWA";
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[2];
       if(index.text != undefined){
         ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2); //text on screen
+        ctx.textBaseline = "bottom";
+        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height); //text on screen
       }
       if(index.sprite != undefined){
         ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
