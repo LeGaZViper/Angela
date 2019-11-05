@@ -297,7 +297,7 @@ function gameLoop(){
         ctx.globalAlpha = UI.levelDisplay.opacity;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.font = 100*screenratio + "px FFFFORWA";
+        ctx.font = 80*screenratio + "px FFFFORWA";
         ctx.fillStyle = UI.levelDisplay.color;
         ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
         ctx.globalAlpha = 1;
@@ -479,12 +479,12 @@ var UI = {
     this.levelDisplayCheck = false;
   },
   menu_render : function(menu){
+    this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
     this.hover();
     if(localStorage.level[1]>1||localStorage.level[3]>1){
       this.mainMenu_b1.opacity = 1;
     }
     menu.forEach((index)=>{
-      this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
       ctx.fillStyle = index.color[0];
       ctx.strokeStyle = index.color[1];
       ctx.lineWidth = 5;
@@ -495,16 +495,14 @@ var UI = {
       ctx.fillStyle = index.color[2];
       if(index.text != undefined){
         ctx.textAlign = "center";
-        ctx.textBaseline = "bottom";
-        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height); //text on screen
+        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+15); //text on screen
       }
       if(index.sprite != undefined){
         ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
       }
       if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
         ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height+10*screenratio);
+        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
       }
     });
   },
