@@ -435,16 +435,16 @@ var UI = {
   inMenu : true,
   currentMenu : 0,
   inicialize : function(){
-    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",button:"NEW GAME",opacity:1,color:["grey","black","black"]};
-    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:0.5,color:["grey","black","black"]};
-    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","black"]};
+    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",button:"NEW GAME",opacity:1,color:["grey","black","white"]};
+    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:0.5,color:["grey","black","white"]};
+    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","white"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
     this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]};
 
-    this.upgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","black"]};
-    this.upgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:250*screenratio,y:350*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","black"]};
-    this.upgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:600*screenratio,y:350*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b1 = {width:250*screenratio,height:75*screenratio,x:250*screenratio,y:350*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b2 = {width:250*screenratio,height:75*screenratio,x:600*screenratio,y:350*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:850*screenratio,y:800*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
@@ -490,18 +490,21 @@ var UI = {
       ctx.lineWidth = 5;
       ctx.globalAlpha = index.opacity;
       ctx.strokeRect(index.x,index.y,index.width,index.height);
-      ctx.font = 30*screenratio + "px FFFFORWA";
       ctx.fillRect(index.x,index.y,index.width,index.height);
       ctx.fillStyle = index.color[2];
       if(index.text != undefined){
+        ctx.font = 30*screenratio + "px FFFFORWA";
         ctx.textAlign = "center";
+        ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+15);
         ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+15); //text on screen
       }
       if(index.sprite != undefined){
         ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
       }
       if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+        ctx.font = 20*screenratio + "px FFFFORWA";
         ctx.textAlign = "center";
+        ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
         ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
       }
     });
@@ -614,7 +617,7 @@ var UI = {
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
-          index.color[2] = "black";
+          index.color[2] = "white";
         }
       });
     }
@@ -628,7 +631,7 @@ var UI = {
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
-          index.color[2] = "black";
+          index.color[2] = "white";
         }
       });
     }
@@ -654,7 +657,7 @@ var UI = {
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
-          index.color[2] = "black";
+          index.color[2] = "white";
         }
       });
     }
@@ -689,7 +692,7 @@ var UI = {
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
-          index.color[2] = "black";
+          index.color[2] = "white";
         }
       });
     }
@@ -703,7 +706,7 @@ var UI = {
         else {
           index.color[0] = "grey";
           index.color[1] = "black";
-          index.color[2] = "black";
+          index.color[2] = "white";
         }
       });
     }
