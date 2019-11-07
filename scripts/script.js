@@ -118,11 +118,11 @@ var object = {
 //Default database for ingame weapons | used in: first inicialization
 var defaultWeaponDatabase = {
   BASIC:{name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:0},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
-  ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
+  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:200},
+  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:1000},
+  ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:3000},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:3,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:0},
+  LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
 };
 
 //First inicialization
@@ -480,6 +480,8 @@ var UI = {
 
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
+
+    this.UIColors = {fill:"grey",stroke:"black",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
   },
   menu_render : function(menu){
     this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
@@ -610,80 +612,80 @@ var UI = {
       this.mainMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "CONTINUE"&&(localStorage.level[1]>1||localStorage.level[3]>1)){
-            index.color[0] = "blue";
-            index.color[1] = "blue";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.hoverFill;
+            index.color[1] = this.UIColors.hoverStroke;
+            index.color[2] = this.UIColors.hoverFontFill;
           }
           else if (index.button != "CONTINUE") {
-            index.color[0] = "blue";
-            index.color[1] = "blue";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.hoverFill;
+            index.color[1] = this.UIColors.hoverStroke;
+            index.color[2] = this.UIColors.hoverFontFill;
           }
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 1){
       this.upgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 2){
       this.weaponsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else if(index.text == undefined){
           if(!index.selected){
-            index.color[0] = "grey";
-            index.color[1] = "black";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.fill;
+            index.color[1] = this.UIColors.stroke;
+            index.color[2] = this.UIColors.fontFill;
           }
           else {
-            index.color[0] = "grey";
-            index.color[1] = "white";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.selectedFill;
+            index.color[1] = this.UIColors.selectedStroke;
+            index.color[2] = this.UIColors.selectedFontFill;
           }
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 3){
       this.shipsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
           if(!index.selected){
-            index.color[0] = "grey";
-            index.color[1] = "black";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.fill;
+            index.color[1] = this.UIColors.stroke;
+            index.color[2] = this.UIColors.fontFill;
           }
           else {
-            index.color[0] = "grey";
-            index.color[1] = "white";
-            index.color[2] = "black";
+            index.color[0] = this.UIColors.selectedFill;
+            index.color[1] = this.UIColors.selectedStroke;
+            index.color[2] = this.UIColors.selectedFontFill;
           }
         }
       });
@@ -691,30 +693,30 @@ var UI = {
     else if (this.currentMenu == 4){
       this.gameOverMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
           if(index.text != "GAME OVER")
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 5){
       this.youWinMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
           if(index.text != "YOU WIN!")
-          index.color[0] = "#4C4C4C";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
