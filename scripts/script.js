@@ -123,6 +123,7 @@ var defaultWeaponDatabase = {
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:3000},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
   LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
+  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:15,width:4,height:25,cooldown:150,piercing:false,color:"#FF0000",status:"LOCKED",cost:0},
 };
 
 //First inicialization
@@ -456,7 +457,8 @@ var UI = {
     this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
     this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","white"],selected:false};
     this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.upgradesMenu_XCOINS];
+    this.weaponsUpgradesMenu_b7 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7,this.upgradesMenu_XCOINS];
 
     this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
     this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
@@ -787,6 +789,10 @@ function bullet(B,name,numberOfBullets){
     B.dirx = xMousePos-player.x;
     B.diry = yMousePos-player.y;
   }
+  else if (name == "SPREADER"){
+    B.dirx = xMousePos-player.x;
+    B.diry = yMousePos-player.y;
+  }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
   B.hitBoxX = B.x-B.hitBoxWidth/2;
@@ -1098,6 +1104,7 @@ function enemyBullet(B,type){
 var enemyList = [];
 function enemyCharacter(E,type){
   E.animation = false;
+  E.attackCDvalue = 2000;
   if (type == "buzz"){
     E.sprite = object.buzz;
     E.widthOnPic = 56;
@@ -1325,8 +1332,17 @@ function enemyCharacter(E,type){
       E.attackCDstart();
     }
     else if (E.inOrbit&&E.arrival&&!E.attackCD){
-      enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
-      E.attackCDstart();
+      if(type == "pirate_vessel"){
+        E.attackCDstart();
+        if(Math.random()<0.5)
+        enemyBulletList.push(enemyBullet({x:E.cannon1X,y:E.cannon1Y},"BASIC"));
+        else
+        enemyBulletList.push(enemyBullet({x:E.cannon2X,y:E.cannon2Y},"BASIC"));
+      }
+      else {
+        enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
+        E.attackCDstart();
+      }
     }
     else if(distance < 140*screenratio&&(E.sprite != object.pirate_mine&&E.sprite != object.pirate_minedropper)&&!E.orbit){
       E.speed = 0;
@@ -1390,17 +1406,39 @@ function enemyCharacter(E,type){
     //normal enemy ship
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
-    if(type == "pirate_vessel"){
-      if(!E.inOrbit){
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,-58*screenratio,24*screenratio,36*screenratio);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,10*screenratio,24*screenratio,36*screenratio);
-      }
-      else {
-        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,-45*screenratio,36*screenratio,24*screenratio);
-        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,20*screenratio,36*screenratio,24*screenratio);
-      }
-    }
     ctx.restore();
+    if(type == "pirate_vessel"){
+      ctx.save();
+       if(!E.inOrbit){
+         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+         E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+         E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+         ctx.translate(E.cannon1X,E.cannon1Y);
+         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+         ctx.restore();
+         ctx.save();
+         ctx.translate(E.cannon2X,E.cannon2Y);
+         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
+         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+       }
+       else {
+         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+         E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+         E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+         ctx.translate(E.cannon1X,E.cannon1Y);
+         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+         ctx.restore();
+         ctx.save();
+         ctx.translate(E.cannon2X,E.cannon2Y);
+         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
+         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+       }
+       ctx.restore();
+    }
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = "#606060";
     ctx.fillRect(E.x-15,E.y-25,30,5);
@@ -1441,7 +1479,7 @@ function enemyCharacter(E,type){
   E.opacity = 1;
   E.attackCDstart = async function() {
     E.attackCD = true;
-    await sleep(2000);
+    await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
   E.hitCDstart = async function() {

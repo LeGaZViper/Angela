@@ -22,7 +22,7 @@ function levelLayout(L){
     L.pirate_minedropper = [3+JSON.parse(localStorage.level)[1],1000];
   }
   if(JSON.parse(localStorage.level)[0]==1&&JSON.parse(localStorage.level)[1]>3){
-    L.pirate_minedropper = [1+(JSON.parse(localStorage.level)[1]-1)*2,5000];
+    L.pirate_vessel = [1+(JSON.parse(localStorage.level)[1]-1)*2,5000];
   }
   // L.void_drone = [10,30];
   // L.void_spherefighter = [5,30];
