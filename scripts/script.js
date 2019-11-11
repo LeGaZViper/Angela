@@ -166,7 +166,7 @@ function chooseWeapon(name){
 //Inicialization
 var canvas;
 var ctx;
-var screenratio = 1;
+var screenratio;
 window.onload = ()=>{
   canvas = document.getElementById("canvas");
   canvas.addEventListener("click",function(){UI.click()});
@@ -215,6 +215,7 @@ window.onload = ()=>{
 
 //Dynamic resolution scaling function  | used in: rendering
 function scale(){
+  screenratio = 1;
   canvas.width = 1100*screenratio;
   canvas.height = 900*screenratio;
   while($(window).height()<canvas.height||$(window).width()<canvas.width){
@@ -321,11 +322,11 @@ function gameLoop(){
       player.render();
       if(leftMouseDown){ //shooting
         if(!player.attackCD&&player.HP[1] > 0&&activeWeapon.name != "LASER"){
-          bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
+          bulletList.push(bullet({x:player.x,y:player.y,dirx:xMousePos-player.x,diry:yMousePos-player.y},activeWeapon.name,activeWeapon.bullets));
           player.attackCDstart();
         }
         else if (activeWeapon.name == "LASER"&&bulletList.length != 1){
-          bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
+          bulletList.push(bullet({x:player.x,y:player.y},activeWeapon.name,activeWeapon.bullets));
         }
       }
       else if (activeWeapon.name == "LASER"){
@@ -738,11 +739,7 @@ function bullet(B,name,numberOfBullets){
   B.piercing = activeWeapon.piercing
   B.color = activeWeapon.color;
   B.opacity = 1;
-  B.x = player.x;
-  B.y = player.y;
   if(name == "BASIC"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
   }
   else if(name == "DOUBLE") {
     if (numberOfBullets == 2){
@@ -775,8 +772,6 @@ function bullet(B,name,numberOfBullets){
     }
   }
   else if (name == "ROCKET"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
     B.sprite = object.rocket;
     B.explosive = true;
     B.explosion_radius = 150*screenratio;
@@ -786,12 +781,10 @@ function bullet(B,name,numberOfBullets){
     B.explosion_angle = Math.random()*2*Math.PI;
   }
   else if (name == "GIANT"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
+
   }
   else if (name == "SPREADER"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
+
   }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
@@ -1048,6 +1041,11 @@ var XCOINS = 0;
 async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
+    if(activeWeapon.name = "SPREADER"){
+      for(let i=0;i<16;i++){
+        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER",1));
+      }
+    }
     if(levels_handler.level.total == 1&&enemy.sprite != object.pirate_mine){
       await sleep(2000);
       levels_handler.level.total -= 1;
