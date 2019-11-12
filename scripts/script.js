@@ -1,16 +1,18 @@
 /*
 ============================ WHAT TO DO LIST ===================================
 levels
-Shop
-Text font
-LASER - new weapon (problém s x,y pozicí)
 ================================================================================
 
 ######POZNÁMKY######
 NEPŘÁTELÉ:
-Každý objekt má momentálně svoji individuální sprite mapu.
-Mezi každým spritem je 1px mezera.
-~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
+  Každý objekt má momentálně svoji individuální sprite mapu.
+  Mezi každým spritem je 1px mezera.
+  ~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
+
+NÁPAD NA SYSTÉM LEVELU:
+  Neomezený počet levelů v sekci, přičemž level scalují
+  Každá sekce končí, jakmile hráč koupí novou loď
+  Nová loď ==> nová sekce ==> nová planeta na obranu
 
 context.drawImage(scout,sx,sy,swidth,sheight,x,y,width,height);
 scout	Specifies the image, canvas, or video element to use
@@ -125,8 +127,8 @@ var defaultWeaponDatabase = {
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:3000},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
   LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
-  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:15,width:14,height:30,cooldown:150,piercing:false,status:"LOCKED",cost:0},
-  SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:10,height:25,piercing:false},
+  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:8,width:14,height:30,cooldown:300,piercing:false,status:"LOCKED",cost:0},
+  SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
 };
 function saveLocalStorage(){
   localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
