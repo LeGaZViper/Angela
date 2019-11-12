@@ -107,6 +107,8 @@ var object = {
   HP_panel : new Image(),
   LASER_panel : new Image(),
   rocket : new Image(),
+  spread : new Image(),
+  spread_projectile : new Image(),
   explosion : new Image(),
   BASIC : new Image(),
   DOUBLE : new Image(),
@@ -123,8 +125,12 @@ var defaultWeaponDatabase = {
   ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:3000},
   GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
   LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
-  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:15,width:4,height:25,cooldown:150,piercing:false,color:"#FF0000",status:"LOCKED",cost:0},
+  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:15,width:14,height:30,cooldown:150,piercing:false,status:"LOCKED",cost:0},
+  SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:10,height:25,piercing:false},
 };
+function saveLocalStorage(){
+  localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
+}
 
 //First inicialization
 if(localStorage.localWeaponDatabase == undefined){
@@ -136,23 +142,25 @@ if(localStorage.localWeaponDatabase == undefined){
 
 //Weapon choosing function | used in: upgrades
 var activeWeapon = JSON.parse(localStorage.activeWeapon);
+var localWeaponDatabase = JSON.parse(localStorage.localWeaponDatabase);
 function chooseWeapon(name){
-  let precursor = JSON.parse(localStorage.localWeaponDatabase);
-  for(var index in precursor){
-    if(precursor[index].name == name){
-      if(precursor[index].status != "LOCKED"){
-        localStorage.activeWeapon = JSON.stringify(precursor[index]);
-        activeWeapon = precursor[index];
+  for(var index in localWeaponDatabase){
+    if(localWeaponDatabase[index].name == name){
+      if(localWeaponDatabase[index].status != "LOCKED"){
+        localStorage.activeWeapon = JSON.stringify(localWeaponDatabase[index]);
+        activeWeapon = localWeaponDatabase[index];
+        saveLocalStorage();
         return true;
       }
-      else if (precursor[index].cost<=parseInt(localStorage.XCOINS)){
-        console.log("Bought " + precursor[index].name + " for: " + precursor[index].cost + " XCOINS.");
+      else if (localWeaponDatabase[index].cost<=parseInt(localStorage.XCOINS)){
+        console.log("Bought " + localWeaponDatabase[index].name + " for: " + localWeaponDatabase[index].cost + " XCOINS.");
         console.log("Current XCOINS balance: " + localStorage.XCOINS);
-        localStorage.XCOINS = parseInt(localStorage.XCOINS) - precursor[index].cost;
-        precursor[index].status = "UNLOCKED";
-        localStorage.activeWeapon = JSON.stringify(precursor[index]);
-        localStorage.localWeaponDatabase = JSON.stringify(precursor);
-        activeWeapon = precursor[index];
+        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localWeaponDatabase[index].cost;
+        localWeaponDatabase[index].status = "UNLOCKED";
+        localStorage.activeWeapon = JSON.stringify(localWeaponDatabase[index]);
+        localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
+        activeWeapon = localWeaponDatabase[index];
+        saveLocalStorage();
         return true;
       }
       else {
@@ -189,17 +197,19 @@ window.onload = ()=>{
   object.pirate_mine.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_mine.png";
   object.pirate_vessel.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel.png";
   object.pirate_vessel_turret.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_turret.png";
-  object.cursor.src = "./resources/sprites/cursor-pixelated.png";
+  object.cursor.src = "./resources/sprites/UI/cursor-pixelated.png";
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
   object.LASER_panel.src = "./resources/sprites/UI/LASER_panel.png";
-  object.explosion.src = "./resources/sprites/explosion.png";
-  object.rocket.src = "./resources/sprites/player_ships/rocket.png";
-  object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png";
-  object.DOUBLE.src = "./resources/sprites/player_weapons/DOUBLE.png";
-  object.SPRAY.src = "./resources/sprites/player_weapons/SPRAY.png";
-  object.ROCKET.src = "./resources/sprites/player_weapons/ROCKET.png";
-  object.LASER.src = "./resources/sprites/player_weapons/LASER.png";
+  object.explosion.src = "./resources/sprites/projectiles/explosion.png";
+  object.rocket.src = "./resources/sprites/projectiles/rocket.png";
+  object.spread.src = "./resources/sprites/projectiles/spread.png";
+  object.spread_projectile.src = "./resources/sprites/projectiles/spread_projectile.png";
+  object.BASIC.src = "./resources/sprites/UI/BASIC.png";
+  object.DOUBLE.src = "./resources/sprites/UI/DOUBLE.png";
+  object.SPRAY.src = "./resources/sprites/UI/SPRAY.png";
+  object.ROCKET.src = "./resources/sprites/UI/ROCKET.png";
+  object.LASER.src = "./resources/sprites/UI/LASER.png";
   scale();
   player.inicialize();
   UI.inicialize();
@@ -732,12 +742,12 @@ var laserDuration = 300;
 var laserRecharging = false;
 function bullet(B,name,numberOfBullets){
   B.killed = false;
-  B.damage = activeWeapon.damage;
-  B.speed = activeWeapon.speed*screenratio;
-  B.width = activeWeapon.width*screenratio;
-  B.height = activeWeapon.height*screenratio;
-  B.piercing = activeWeapon.piercing
-  B.color = activeWeapon.color;
+  B.damage = localWeaponDatabase[name].damage;
+  B.speed = localWeaponDatabase[name].speed*screenratio;
+  B.width = localWeaponDatabase[name].width*screenratio;
+  B.height = localWeaponDatabase[name].height*screenratio;
+  B.piercing = localWeaponDatabase[name].piercing
+  B.color = localWeaponDatabase[name].color;
   B.opacity = 1;
   if(name == "BASIC"){
   }
@@ -784,7 +794,10 @@ function bullet(B,name,numberOfBullets){
 
   }
   else if (name == "SPREADER"){
-
+    B.sprite = object.spread;
+  }
+  else if (name == "SPREADER_PROJECTILE"){
+    B.sprite = object.spread_projectile;
   }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
@@ -839,7 +852,7 @@ function bullet(B,name,numberOfBullets){
       ctx.rotate(Math.atan2(B.diry,B.dirx)+Math.PI/2);
       ctx.globalAlpha = B.opacity;
       if(B.color == undefined){
-        ctx.drawImage(B.sprite,0,0,activeWeapon.width,activeWeapon.height,-B.width/2,-B.height/2,B.width,B.height);
+        ctx.drawImage(B.sprite,0,0,B.width/screenratio,B.height/screenratio,-B.width/2,-B.height/2,B.width,B.height);
       }
       else  {
         ctx.fillStyle = B.color;
@@ -1041,9 +1054,9 @@ var XCOINS = 0;
 async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    if(activeWeapon.name = "SPREADER"){
+    if(activeWeapon.name == "SPREADER"){
       for(let i=0;i<16;i++){
-        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER",1));
+        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
       }
     }
     if(levels_handler.level.total == 1&&enemy.sprite != object.pirate_mine){
@@ -1085,7 +1098,7 @@ function enemyBullet(B,type){
     ctx.rotate(Math.atan2(B.diry,B.dirx)+Math.PI/2);
     ctx.globalAlpha = B.opacity;
     if(B.color == undefined){
-      ctx.drawImage(B.sprite,0,0,activeWeapon.width,activeWeapon.height,-B.width/2,-B.height/2,B.width,B.height);
+      ctx.drawImage(B.sprite,0,0,B.width,B.height,-B.width/2,-B.height/2,B.width,B.height);
     }
     else {
       ctx.fillStyle = B.color;
