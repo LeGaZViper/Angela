@@ -5,14 +5,14 @@ levels
 
 ######POZNÁMKY######
 NEPŘÁTELÉ:
-  Každý objekt má momentálně svoji individuální sprite mapu.
-  Mezi každým spritem je 1px mezera.
-  ~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
+Každý objekt má momentálně svoji individuální sprite mapu.
+Mezi každým spritem je 1px mezera.
+~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
 
 NÁPAD NA SYSTÉM LEVELU:
-  Neomezený počet levelů v sekci, přičemž level scalují
-  Každá sekce končí, jakmile hráč koupí novou loď
-  Nová loď ==> nová sekce ==> nová planeta na obranu
+Neomezený počet levelů v sekci, přičemž level scalují
+Každá sekce končí, jakmile hráč koupí novou loď
+Nová loď ==> nová sekce ==> nová planeta na obranu
 
 context.drawImage(scout,sx,sy,swidth,sheight,x,y,width,height);
 scout	Specifies the image, canvas, or video element to use
@@ -36,11 +36,11 @@ function startTheGame(){
   UI.levelDisplayCheck = true;
   if(localStorage.level[1]>1||localStorage.level[3]>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
-      localStorage.level = "[1,1]";
-      localStorage.XCOINS = 0;
-      localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
-      localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
+      resetLocalStorage();
       activeWeapon = JSON.parse(localStorage.activeWeapon);
+      localWeaponDatabase = JSON.parse(localStorage.localWeaponDatabase);
+      activeShip = JSON.parse(localStorage.activeShip);
+      localShipDatabase = JSON.parse(localStorage.localShipDatabase);
       canvas.style.cursor = "none";
       player.HP = [player.maxHP[0],player.maxHP[1]];
       XCOINS = 0;
@@ -56,6 +56,7 @@ function startTheGame(){
 }
 //Continue the game function | used in: continue
 function continueTheGame(){
+  localStorage.level = JSON.stringify([activeShip.section,activeShip.level]);
   UI.levelDisplayCheck = true;
   UI.inMenu = false;
   canvas.style.cursor = "none";
@@ -66,8 +67,11 @@ function continueTheGame(){
 
 //Lose the game function | used in: gameover
 function loseTheGame(){
-  localStorage.level = "[1,1]";
-  localStorage.XCOINS = 0;
+  resetLocalStorage();
+  activeWeapon = JSON.parse(localStorage.activeWeapon);
+  localWeaponDatabase = JSON.parse(localStorage.localWeaponDatabase);
+  activeShip = JSON.parse(localStorage.activeShip);
+  localShipDatabase = JSON.parse(localStorage.localShipDatabase);
   canvas.style.cursor = "auto";
   bulletList = [];
   enemyList = [];
@@ -86,6 +90,14 @@ function winTheGame(){
   UI.currentMenu = 5;
   UI.inMenu = true;
   laserDuration = 300;
+  localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0],JSON.parse(localStorage.level)[1] + 1]);
+  activeShip.level += 1;
+  for(index in localShipDatabase){
+    if(index.name == activeShip.name) {
+      index.level += 1;
+    }
+  }
+  saveLocalStorage();
 }
 //List of spritemaps (might use only one in the final version) | used in: rendering
 var object = {
@@ -108,6 +120,7 @@ var object = {
   cursor : new Image(),
   HP_panel : new Image(),
   LASER_panel : new Image(),
+  shop_bg : new Image(),
   rocket : new Image(),
   spread : new Image(),
   spread_projectile : new Image(),
@@ -130,16 +143,28 @@ var defaultWeaponDatabase = {
   SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:8,width:14,height:30,cooldown:300,piercing:false,status:"LOCKED",cost:0},
   SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
 };
+var defaultShipDatabase = {
+  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1},
+  GOLIATH:{name:"GOLIATH",speed:5,width:70,height:70,widthOnPic:88,heightOnPic:88,maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1}
+};
+
 function saveLocalStorage(){
   localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
+  localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
+  localStorage.activeWeapon = JSON.stringify(activeWeapon);
+  localStorage.activeShip = JSON.stringify(activeShip);
 }
 
 //First inicialization
-if(localStorage.localWeaponDatabase == undefined){
+function resetLocalStorage(){
   localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
   localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
-  localStorage.level = "[1,1]";
+  localStorage.localShipDatabase = JSON.stringify(defaultShipDatabase);
+  localStorage.activeShip = JSON.stringify(defaultShipDatabase.SCOUT);
   localStorage.XCOINS = 0;
+}
+if(localStorage.localWeaponDatabase == undefined){
+  resetLocalStorage();
 }
 
 //Weapon choosing function | used in: upgrades
@@ -172,7 +197,36 @@ function chooseWeapon(name){
     }
   }
 }
-
+var activeShip = JSON.parse(localStorage.activeShip);
+var localShipDatabase = JSON.parse(localStorage.localShipDatabase);
+function chooseShip(name){
+  for(var index in localShipDatabase){
+    if(localShipDatabase[index].name == name){
+      if(localShipDatabase[index].status != "LOCKED"){
+        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
+        activeShip = localShipDatabase[index];
+        saveLocalStorage();
+        return true;
+      }
+      else if (localShipDatabase[index].cost<=parseInt(localStorage.XCOINS)){
+        console.log("Bought " + localShipDatabase[index].name + " for: " + localShipDatabase[index].cost + " XCOINS.");
+        console.log("Current XCOINS balance: " + localStorage.XCOINS);
+        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localShipDatabase[index].cost;
+        localShipDatabase[index].status = "UNLOCKED";
+        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
+        localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
+        activeShip = localShipDatabase[index];
+        saveLocalStorage();
+        return true;
+      }
+      else {
+        console.log("Insufficient funds.");
+        return false;
+      }
+    }
+  }
+}
+localStorage.level = JSON.stringify([activeShip.section,activeShip.level]);
 //Inicialization
 var canvas;
 var ctx;
@@ -203,6 +257,7 @@ window.onload = ()=>{
   object.earth.src = "./resources/sprites/earth.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
   object.LASER_panel.src = "./resources/sprites/UI/LASER_panel.png";
+  object.shop_bg.src = "./resources/sprites/UI/shop_bg.png";
   object.explosion.src = "./resources/sprites/projectiles/explosion.png";
   object.rocket.src = "./resources/sprites/projectiles/rocket.png";
   object.spread.src = "./resources/sprites/projectiles/spread.png";
@@ -275,32 +330,26 @@ function gameLoop(){
     if(UI.inMenu){ //Menu part of cycle
       switch(UI.currentMenu){
         case 0:
-          UI.menu_render(UI.mainMenu);
-          break;
+        UI.menu_render(UI.mainMenu);
+        break;
         case 1:
-          UI.menu_render(UI.upgradesMenu);
-          break;
+        UI.menu_render(UI.upgradesMenu);
+        break;
         case 2:
-          UI.menu_render(UI.weaponsUpgradesMenu);
-          break;
+        UI.menu_render(UI.weaponsUpgradesMenu);
+        break;
         case 3:
-          UI.menu_render(UI.shipsUpgradesMenu);
-          break;
+        UI.menu_render(UI.shipsUpgradesMenu);
+        break;
         case 4:
-          UI.menu_render(UI.gameOverMenu);
-          break;
+        UI.menu_render(UI.gameOverMenu);
+        break;
         case 5:
-          UI.menu_render(UI.youWinMenu);
-          break;
+        UI.menu_render(UI.youWinMenu);
+        break;
       }
     }
     else if(levels_handler.level.total == 0){
-      if(localStorage.level[3]<5){
-        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0],JSON.parse(localStorage.level)[1] + 1]);
-      }
-      else {
-        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0] + 1,JSON.parse(localStorage.level)[1] - 4]);
-      }
       winTheGame();
     }
     else { //Game part
@@ -364,7 +413,7 @@ function gameLoop(){
                   b.killed = true;
                 }
                 if(!e.piercingCD)
-                  e.piercingDamageCDstart();
+                e.piercingDamageCDstart();
               }
             }
             bulletList = bulletList.filter(check => !(check.killed));
@@ -456,26 +505,29 @@ var UI = {
     this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","white"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
-    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]};
-
-    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:300*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:800*screenratio,y:50*screenratio,opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:750*screenratio,y:800*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b1 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:390*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b2 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:460*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
+    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.shop_bg};
 
-    this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
-    this.weaponsUpgradesMenu_b7 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7,this.upgradesMenu_XCOINS];
-
-    this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
-    this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
-    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.upgradesMenu_XCOINS];
+    //  this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",ship:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",ship:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",ship:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",ship:"GOLIATH",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",ship:"GOLIATH",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",ship:"GOLIATH",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
+    this.weaponsUpgradesMenu_b7 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",ship:"GOLIATH",opacity:1,color:["grey","black","white"],selected:false};
+    this.upgradesMenu = [this.upgradesMenuWindow,this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7,this.upgradesMenu_XCOINS];
+    //this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7];
+    this.weaponsUpgradesMenu = [];
+    this.shipsUpgradesMenu = [];
+    // this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
+    // this.shipsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultShipDatabase["SCOUT"].cost,button:"SCOUT",opacity:1,color:["grey","black","white"],selected:false};
+    // this.shipsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultShipDatabase["GOLIATH"].cost,button:"GOLIATH",opacity:1,color:["grey","black","white"],selected:false};
+    // this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
+    // this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2,this.upgradesMenu_XCOINS];
 
     this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",opacity:1,color:["#4C4C4C","black","black"]};
     this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black","black"]};
@@ -492,6 +544,11 @@ var UI = {
         index.selected = true;
       }
     });
+    this.shipsUpgradesMenu.forEach((index)=>{
+      if(activeShip.name == index.button){
+        index.selected = true;
+      }
+    });
 
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
@@ -505,31 +562,59 @@ var UI = {
       this.mainMenu_b1.opacity = 1;
     }
     menu.forEach((index)=>{
-      ctx.fillStyle = index.color[0];
-      ctx.strokeStyle = index.color[1];
-      ctx.lineWidth = 5;
-      ctx.globalAlpha = index.opacity;
-      ctx.strokeRect(index.x,index.y,index.width,index.height);
-      ctx.fillRect(index.x,index.y,index.width,index.height);
-      ctx.fillStyle = index.color[2];
-      if(index.text != undefined){
-        ctx.font = 30*screenratio + "px FFFFORWA";
-        ctx.textAlign = "center";
-        ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio);
-        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio); //text on screen
+      if(index.ship == undefined||index.ship == activeShip.name){
+        ctx.fillStyle = index.color[0];
+        ctx.strokeStyle = index.color[1];
+        ctx.lineWidth = 5;
+        ctx.globalAlpha = index.opacity;
+        ctx.strokeRect(index.x,index.y,index.width,index.height);
+        ctx.fillRect(index.x,index.y,index.width,index.height);
+        ctx.fillStyle = index.color[2];
+        if(index.text != undefined){
+          ctx.font = 30*screenratio + "px FFFFORWA";
+          ctx.textAlign = "center";
+          ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio);
+          ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio); //text on screen
+        }
+        if(index.sprite != undefined){
+          ctx.globalAlpha = 1;
+          ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
+        }
+        if(index.cost != undefined){
+          ctx.font = 20*screenratio + "px FFFFORWA";
+          ctx.textAlign = "center";
+          ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+          ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+        }
       }
-      if(index.sprite != undefined){
-        if(JSON.parse(localStorage.localWeaponDatabase)[index.button].status != "UNLOCKED")
-        ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
-        else
-        ctx.drawImage(index.sprite,0,100,100,100,index.x,index.y,index.width,index.height);
-      }
-      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
-        ctx.font = 20*screenratio + "px FFFFORWA";
-        ctx.textAlign = "center";
-        ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
-      }
+      // if(menu == UI.weaponsUpgradesMenu){
+      //   if(index.sprite != undefined){
+      //     if(JSON.parse(localStorage.localWeaponDatabase)[index.button].status != "UNLOCKED")
+      //     ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
+      //     else
+      //     ctx.drawImage(index.sprite,0,100,100,100,index.x,index.y,index.width,index.height);
+      //   }
+      //   if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+      //     ctx.font = 20*screenratio + "px FFFFORWA";
+      //     ctx.textAlign = "center";
+      //     ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+      //     ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+      //   }
+      // }
+      // if(menu == UI.shipsUpgradesMenu){
+      //   if(index.sprite != undefined){
+      //     if(JSON.parse(localStorage.localShipDatabase)[index.button].status != "UNLOCKED")
+      //     ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
+      //     else
+      //     ctx.drawImage(index.sprite,0,100,100,100,index.x,index.y,index.width,index.height);
+      //   }
+      //   if(index.cost != undefined&&JSON.parse(localStorage.localShipDatabase)[index.button].status == "LOCKED"){
+      //     ctx.font = 20*screenratio + "px FFFFORWA";
+      //     ctx.textAlign = "center";
+      //     ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+      //     ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+      //   }
+      // }
     });
   },
   click : function(){
@@ -586,10 +671,12 @@ var UI = {
       this.shipsUpgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button != "BACK"){
-            for(var i=1;i<this.shipsUpgradesMenu.length;i++){
-              this.shipsUpgradesMenu[i].selected = false;
+            if(chooseShip(index.button)){
+              for(var i=1;i<this.shipsUpgradesMenu.length;i++){
+                this.shipsUpgradesMenu[i].selected = false;
+              }
+              index.selected = true;
             }
-            index.selected = true;
           }
           else {
             this.currentMenu = 1;
@@ -924,18 +1011,18 @@ var player = {
     player.y = 900/2*screenratio;
     player.futureX = 1100/2*screenratio;
     player.futureY = 900/2*screenratio;
-    player.speed = 5*screenratio;
+    player.speed = activeShip.speed*screenratio;
     player.xspeed = 0;
     player.yspeed = 0;
-    player.width = 60*screenratio;
-    player.height = 60*screenratio;
-    player.widthOnPic = 88;
-    player.heightOnPic = 88;
+    player.width = activeShip.width*screenratio;
+    player.height = activeShip.height*screenratio;
+    player.widthOnPic = activeShip.widthOnPic;
+    player.heightOnPic = activeShip.heightOnPic;
     player.animationX = 0;
     player.animationY = 0;
     player.fireCounter = 0;
     //0 = Earth, 1 = Ship
-    player.maxHP = [10,5];
+    player.maxHP = activeShip.maxHP;
     player.HP = [player.maxHP[0],player.maxHP[1]];
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas
@@ -1073,10 +1160,10 @@ async function checkTotal(enemy){
 }
 var enemyBulletList = [];
 function enemyBullet(B,type){
-    B.killed = false;
-    B.damage = 1;
-    B.speed = 15*screenratio;
-    B.color = "#FF0000";
+  B.killed = false;
+  B.damage = 1;
+  B.speed = 15*screenratio;
+  B.color = "#FF0000";
   if(type == "BASIC"){
     B.dirx = canvas.width/2-B.x;
     B.diry = canvas.height/2-B.y;
@@ -1337,7 +1424,7 @@ function enemyCharacter(E,type){
   }
   E.update = function(){
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
-    if(E.orbit&&distance<500&&!E.inOrbit){
+    if(E.orbit&&distance<500*screenratio&&!E.inOrbit){
       E.inOrbit = true;
     }
     else if (E.inOrbit&&!E.arrival){
@@ -1383,7 +1470,7 @@ function enemyCharacter(E,type){
       E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
     else {
-      E.angle-=0.01;
+      E.angle-=0.01*screenratio;
       E.x += E.speed*Math.cos(E.angle);
       E.y += E.speed*Math.sin(E.angle);
       E.hitBoxX = E.x-E.hitBoxWidth/2;
@@ -1422,35 +1509,35 @@ function enemyCharacter(E,type){
     ctx.restore();
     if(type == "pirate_vessel"){
       ctx.save();
-       if(!E.inOrbit){
-         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
-         E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
-         E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
-         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
-         ctx.translate(E.cannon1X,E.cannon1Y);
-         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
-         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
-         ctx.restore();
-         ctx.save();
-         ctx.translate(E.cannon2X,E.cannon2Y);
-         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
-         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
-       }
-       else {
-         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
-         E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
-         E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
-         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
-         ctx.translate(E.cannon1X,E.cannon1Y);
-         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
-         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
-         ctx.restore();
-         ctx.save();
-         ctx.translate(E.cannon2X,E.cannon2Y);
-         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
-         ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
-       }
-       ctx.restore();
+      if(!E.inOrbit){
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+        ctx.translate(E.cannon1X,E.cannon1Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.restore();
+        ctx.save();
+        ctx.translate(E.cannon2X,E.cannon2Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+      }
+      else {
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+        ctx.translate(E.cannon1X,E.cannon1Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.restore();
+        ctx.save();
+        ctx.translate(E.cannon2X,E.cannon2Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
+        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+      }
+      ctx.restore();
     }
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = "#606060";
@@ -1472,7 +1559,7 @@ function enemyCharacter(E,type){
         E.deathAnimation_angle = Math.random()*2*Math.PI;
         E.deathAnimation_index = E.deathAnimation_countdown/6;
         if(E.deathAnimation_index==1&&E.sprite == object.pirate_minedropper&&distance>=40)
-          enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirate_mine"));
+        enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirate_mine"));
       }
       ctx.beginPath();
       ctx.save();
@@ -1483,7 +1570,7 @@ function enemyCharacter(E,type){
       ctx.stroke();
       ctx.closePath();
       if(E.deathAnimation_index==6)
-        E.killed = true;
+      E.killed = true;
     }
   }
   //Cooldowns
@@ -1564,7 +1651,7 @@ var levels_handler = {
     let enemyArray = [];
     for(index in this.level){
       for(var i=0;i<this.level[index][0];i++){
-          enemyArray.push("" + index);
+        enemyArray.push("" + index);
       }
     }
     this.level.total = enemyArray.length;
