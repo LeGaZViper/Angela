@@ -21,57 +21,46 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function inicializeGame(){
+  UI.levelDisplayCheck = true;
+  player.HP = [player.maxHP[0],player.maxHP[1]];
+  bulletList = [];
+  enemyList = [];
+  enemyBulletList = [];
+  canvas.style.cursor = "none";
+  UI.inMenu = false;
+  spawn(levels_handler.levelCreator());
+}
+function inicializeMenu(menu){
+  XCOINS = 0;
+  laserDuration = 300;
+  canvas.style.cursor = "auto";
+  UI.inMenu = true;
+  UI.currentMenu = menu;
+}
 //Start the game function | used in: main menu
 function startTheGame(){
   //Reset Progress
-  UI.levelDisplayCheck = true;
   if(activeShip.section>1||activeShip.level>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
       resetLocalStorage();
-      canvas.style.cursor = "none";
-      player.HP = [player.maxHP[0],player.maxHP[1]];
-      XCOINS = 0;
-      UI.inMenu = false;
-      spawn(levels_handler.levelCreator());
     }
   }
-  else {
-    canvas.style.cursor = "none";
-    UI.inMenu = false;
-    spawn(levels_handler.levelCreator());
-  }
+  inicializeGame();
 }
 //Continue the game function | used in: continue
 function continueTheGame(){
-  UI.levelDisplayCheck = true;
-  UI.inMenu = false;
-  canvas.style.cursor = "none";
-  player.HP = [player.maxHP[0],player.maxHP[1]];
-  XCOINS = 0;
-  spawn(levels_handler.levelCreator());
+  inicializeGame();
 }
 
 //Lose the game function | used in: gameover
 function loseTheGame(){
   resetLocalStorage();
-  canvas.style.cursor = "auto";
-  bulletList = [];
-  enemyList = [];
-  XCOINS = 0;
-  UI.currentMenu = 2;
-  UI.inMenu = true;
-  laserDuration = 300;
+  inicializeMenu(2);
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame(){
-  canvas.style.cursor = "auto";
-  bulletList = [];
-  enemyList = [];
   localStorage.XCOINS = parseInt(localStorage.XCOINS) + XCOINS;
-  XCOINS = 0;
-  UI.currentMenu = 3;
-  UI.inMenu = true;
-  laserDuration = 300;
   activeShip.level += 1;
   for(index in localShipDatabase){
     if(index.name == activeShip.name) {
@@ -79,6 +68,7 @@ function winTheGame(){
     }
   }
   saveLocalStorage();
+  inicializeMenu(3);
 }
 //List of spritemaps (might use only one in the final version) | used in: rendering
 var object = {
@@ -110,7 +100,7 @@ var object = {
   DOUBLE : new Image(),
   SPRAY : new Image(),
   ROCKET : new Image(),
-  LASER : new Image()
+  LASER : new Image(),
 };
 
 //Default database for ingame weapons | used in: first inicialization
@@ -135,7 +125,6 @@ function saveLocalStorage(){
   localStorage.activeShip = JSON.stringify(activeShip);
 }
 
-//First inicialization
 function resetLocalStorage(){
   localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
   localStorage.localShipDatabase = JSON.stringify(defaultShipDatabase);
@@ -145,6 +134,7 @@ function resetLocalStorage(){
   localWeaponDatabase = defaultWeaponDatabase;
   localShipDatabase = defaultShipDatabase;
 }
+//First inicialization
 if(localStorage.localWeaponDatabase == undefined){
   resetLocalStorage();
 }
@@ -208,7 +198,6 @@ function chooseShip(name){
 //Inicialization
 var canvas;
 var ctx;
-var screenratio;
 window.onload = ()=>{
   canvas = document.getElementById("canvas");
   canvas.addEventListener("click",function(){UI.click()});
@@ -232,7 +221,7 @@ window.onload = ()=>{
   object.pirate_vessel.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel.png";
   object.pirate_vessel_turret.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_turret.png";
   object.cursor.src = "./resources/sprites/UI/cursor-pixelated.png";
-  object.earth.src = "./resources/sprites/earth.png";
+  object.earth.src = "./resources/sprites/earth3.png";
   object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
   object.LASER_panel.src = "./resources/sprites/UI/LASER_panel.png";
   object.shop_bg.src = "./resources/sprites/UI/shop_bg.png";
@@ -254,11 +243,11 @@ window.onload = ()=>{
   });
   //setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
   //Setting time for monitor refresh rate check
-  timeThen = Date.now();
   gameLoop();
 }
 
 //Dynamic resolution scaling function  | used in: rendering
+var screenratio;
 function scale(){
   screenratio = 1;
   canvas.width = 1100*screenratio;
@@ -293,14 +282,12 @@ async function userInput(event,which){
 }
 
 //Game cycle
-var timeNow;
-var timeThen;
-var dif;
 var fpsInterval = 1000/60; //60 FPS
 function gameLoop(){
   requestAnimationFrame(gameLoop);
-  timeNow = Date.now();
-  dif = timeNow - timeThen;
+  let timeThen = 0;
+  let timeNow = Date.now();
+  let dif = timeNow - timeThen;
   //If for a check of the monitor refresh rate
   if(dif>fpsInterval){
     timeThen = timeNow - (dif%fpsInterval);
@@ -481,8 +468,8 @@ var UI = {
     this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b1 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:390*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b2 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:460*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b3 = {width:50*screenratio,height:50*screenratio,x:627*screenratio,y:430,button:"CHANGE_L",text:"<-",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b4 = {width:50*screenratio,height:50*screenratio,x:727*screenratio,y:430,button:"CHANGE_R",text:"->",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b3 = {width:50*screenratio,height:50*screenratio,x:627*screenratio,y:520*screenratio,button:"CHANGE_L",text:"<-",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b4 = {width:50*screenratio,height:50*screenratio,x:727*screenratio,y:520*screenratio,button:"CHANGE_R",text:"->",opacity:1,color:["grey","black","white"]};
     this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.shop_bg};
     this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b3,this.upgradesMenu_b4];
 
