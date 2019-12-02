@@ -22,6 +22,7 @@ function sleep(ms) {
 }
 
 function inicializeGame(){
+  player.inicialize();
   UI.levelDisplayCheck = true;
   player.HP = [player.maxHP[0],player.maxHP[1]];
   bulletList = [];
@@ -87,6 +88,7 @@ var object = {
   void_spherefighter : new Image(),
   void_chakram : new Image(),
   scout : new Image(),
+  orbiter : new Image(),
   earth : new Image(),
   cursor : new Image(),
   HP_panel : new Image(),
@@ -115,8 +117,8 @@ var defaultWeaponDatabase = {
   SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
 };
 var defaultShipDatabase = {
-  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
-  GOLIATH:{name:"GOLIATH",speed:5,width:70,height:70,widthOnPic:88,heightOnPic:88,maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.ROCKET}
+  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,thrusterFire:[22,2,30],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
+  ORBITER:{name:"ORBITER",speed:5,width:44,height:60,widthOnPic:44,heightOnPic:60,thrusterFire:[0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.ROCKET}
 };
 
 function saveLocalStorage(){
@@ -206,6 +208,7 @@ window.onload = ()=>{
   canvas.addEventListener("mousemove",function(){userInput(event,0);});
   ctx = canvas.getContext("2d");
   object.scout.src = "./resources/sprites/player_ships/scout/scout.png";
+  object.orbiter.src = "./resources/sprites/player_ships/orbiter/orbiter.png";
   object.goblin.src = "./resources/sprites/enemy_ships/goblin/goblin.png";
   object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
@@ -477,15 +480,15 @@ var UI = {
     this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
     this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
     this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"GOLIATH",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"GOLIATH",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"GOLIATH",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
-    this.weaponsUpgradesMenu_b7 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"GOLIATH",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
+    this.weaponsUpgradesMenu_b7 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7];
 
     this.displayShip = activeShip.name;
     this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.scout,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"GOLIATH",ship:"GOLIATH",sprite:object.goblin,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.orbiter,color:["grey","black","white"],opacity:0};
 
     this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1];
 
@@ -683,7 +686,7 @@ var UI = {
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }
-        else if (index.button == "CHANGE_R"&&this.displayShip == "GOLIATH"){
+        else if (index.button == "CHANGE_R"&&this.displayShip == "ORBITER"){
           index.opacity = 0.5;
           index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
@@ -871,7 +874,7 @@ function bullet(B,name,numberOfBullets){
   B.explode = function(){
     B.explosion_triggered = true;
     enemyList.forEach((e)=>{
-      if(collides(e,{hitBoxX:B.x,hitBoxY:B.y,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
+      if(collides(e,{hitBoxX:B.x-B.explosion_radius/2,hitBoxY:B.y-B.explosion_radius/2,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
         e.HP -= B.damage;
         e.hitCDstart();
         checkTotal(e);
@@ -942,11 +945,12 @@ var player = {
     player.HP = [player.maxHP[0],player.maxHP[1]];
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas
-    player.thrusterFire = [22,2*screenratio,30*screenratio];
+    player.thrusterFire = activeShip.thrusterFire;
     player.hitBoxWidth = player.width/3*2;
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
     player.hitBoxY = player.y-player.hitBoxHeight/2;
+    player.sprite = object[activeShip.name.toLowerCase()];
   },
   update : ()=>{
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
@@ -1007,13 +1011,13 @@ var player = {
     ctx.rotate(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2);
     //Damaged Scout #RED
     if(player.HP[1] > 0){
-      ctx.drawImage(object.scout,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-      ctx.drawImage(object.scout,0,2*player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
+      ctx.drawImage(player.sprite,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
+      ctx.drawImage(player.sprite,0,2*player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1]*screenratio,player.width,player.thrusterFire[2]*screenratio*player.fireCounter);
     }
     ctx.globalAlpha = player.opacity[1];
     //Normal Scout
-    ctx.drawImage(object.scout,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-    ctx.drawImage(object.scout,0,player.heightOnPic,player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
+    ctx.drawImage(player.sprite,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
+    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1]*screenratio,player.width,player.thrusterFire[2]*screenratio*player.fireCounter);
     ctx.restore();
     ctx.stroke();
     ctx.closePath();
