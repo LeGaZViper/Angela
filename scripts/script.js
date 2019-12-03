@@ -45,8 +45,10 @@ function startTheGame(){
   if(activeShip.section>1||activeShip.level>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
       resetLocalStorage();
+      inicializeGame();
     }
   }
+  else
   inicializeGame();
 }
 //Continue the game function | used in: continue
@@ -117,8 +119,8 @@ var defaultWeaponDatabase = {
   SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
 };
 var defaultShipDatabase = {
-  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,thrusterFire:[22,2,30],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
-  ORBITER:{name:"ORBITER",speed:5,width:44,height:60,widthOnPic:44,heightOnPic:60,thrusterFire:[0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.ROCKET}
+  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,particles:[22,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
+  ORBITER:{name:"ORBITER",speed:5,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.ROCKET}
 };
 
 function saveLocalStorage(){
@@ -525,6 +527,9 @@ var UI = {
     this.hover();
     if(activeShip.section>1||activeShip.level>1){
       this.mainMenu_b1.opacity = 1;
+    }
+    else {
+      this.mainMenu_b1.opacity = 0.5;
     }
     menu.forEach((index)=>{
       if((index.ship == undefined&&index.toShip == undefined)||index.ship == this.displayShip||index.toShip == this.displayShip){
@@ -939,13 +944,15 @@ var player = {
     player.heightOnPic = activeShip.heightOnPic;
     player.animationX = 0;
     player.animationY = 0;
-    player.fireCounter = 0;
     //0 = Earth, 1 = Ship
     player.maxHP = activeShip.maxHP;
     player.HP = [player.maxHP[0],player.maxHP[1]];
-    //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas
-    player.thrusterFire = activeShip.thrusterFire;
+    //particle parameters
+    //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
+    player.particles = activeShip.particles;
+    player.particlesWidth = 1;
+    player.particlesHeight = 0.2;
+
     player.hitBoxWidth = player.width/3*2;
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
@@ -992,10 +999,15 @@ var player = {
   },
   render : ()=> {
     //fire animation
-    if(!player.xspeed == 0&&!player.yspeed == 0&&player.fireCounter<1)
-    player.fireCounter += 0.1;
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.fireCounter>0.2)
-    player.fireCounter -= 0.1;
+    if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
+    player.particlesWidth += player.particles[3];
+    player.particlesHeight += player.particles[4];
+  }
+
+    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>0.2){
+    player.particlesWidth -= player.particles[3];
+    player.particlesHeight -= player.particles[4];
+  }
     // if(player.counter == 30){
     //   player.counter = 0;
     //   if(player.animationX<96){
@@ -1011,13 +1023,13 @@ var player = {
     ctx.rotate(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2);
     //Damaged Scout #RED
     if(player.HP[1] > 0){
-      ctx.drawImage(player.sprite,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-      ctx.drawImage(player.sprite,0,2*player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1]*screenratio,player.width,player.thrusterFire[2]*screenratio*player.fireCounter);
+      ctx.drawImage(player.sprite,0,2*player.heightOnPic+player.particles[0],player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
+      ctx.drawImage(player.sprite,0,player.heightOnPic+player.particles[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     }
     ctx.globalAlpha = player.opacity[1];
     //Normal Scout
+    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
     ctx.drawImage(player.sprite,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1]*screenratio,player.width,player.thrusterFire[2]*screenratio*player.fireCounter);
     ctx.restore();
     ctx.stroke();
     ctx.closePath();
