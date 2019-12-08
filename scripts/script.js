@@ -1,6 +1,7 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-UI for upgrades
+SPRITES
+UI for upgrades?
 ================================================================================
 
 ######POZNÁMKY######
@@ -13,7 +14,6 @@ Mezi každým spritem je 1px mezera.
 NÁPAD NA SYSTÉM LEVELU:
 Neomezený počet levelů v sekci, přičemž levely scalují
 Nová loď ==> nová sekce ==> nová planeta na obranu
-
 
 */
 //Sleep function | used in: cooldowns
@@ -73,57 +73,7 @@ function winTheGame(){
   saveLocalStorage();
   inicializeMenu(3);
 }
-//List of spritemaps (might use only one in the final version) | used in: rendering
-var object = {
-  goblin : new Image(),
-  tooth : new Image(),
-  buzz : new Image(),
-  sharkfin : new Image(),
-  SG_40 : new Image(),
-  pirate_raider : new Image(),
-  pirate_minedropper : new Image(),
-  pirate_mine : new Image(),
-  pirate_vessel : new Image(),
-  pirate_vessel_turret : new Image(),
-  void_drone : new Image(),
-  void_chaser : new Image(),
-  void_spherefighter : new Image(),
-  void_chakram : new Image(),
-  scout : new Image(),
-  orbiter : new Image(),
-  slug : new Image(),
-  earth : new Image(),
-  cursor : new Image(),
-  HP_panel : new Image(),
-  LASER_panel : new Image(),
-  shop_bg : new Image(),
-  rocket : new Image(),
-  spread : new Image(),
-  spread_projectile : new Image(),
-  explosion : new Image(),
-  BASIC : new Image(),
-  DOUBLE : new Image(),
-  SPRAY : new Image(),
-  ROCKET : new Image(),
-  LASER : new Image(),
-};
 
-//Default database for ingame weapons | used in: first inicialization
-var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:"DEFAULT"},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:200},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:1000},
-  ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:"DEFAULT"},
-  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
-  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:8,width:14,height:30,cooldown:300,piercing:false,status:"LOCKED",cost:0},
-  SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
-};
-var defaultShipDatabase = {
-  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:92,heightOnPic:92,particles:[26,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
-  SLUG:{name:"SLUG",speed:5,width:60,height:60,widthOnPic:60,heightOnPic:60,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.DOUBLE},
-  ORBITER:{name:"ORBITER",speed:6,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:3,level:1,weapon:defaultWeaponDatabase.ROCKET}
-};
 
 function saveLocalStorage(){
   localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
@@ -211,37 +161,14 @@ window.onload = ()=>{
   canvas.addEventListener("mouseup",function(){userInput(event,2);});
   canvas.addEventListener("mousemove",function(){userInput(event,0);});
   ctx = canvas.getContext("2d");
-  object.scout.src = "./resources/sprites/player_ships/scout/scout.png";
-  object.orbiter.src = "./resources/sprites/player_ships/orbiter/orbiter.png";
-  object.slug.src = "./resources/sprites/player_ships/slug/slug.png";
-  object.goblin.src = "./resources/sprites/enemy_ships/goblin/goblin.png";
-  object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
-  object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
-  object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
-  object.SG_40.src = "./resources/sprites/enemy_ships/SG-40/SG-40.png";
-  object.void_drone.src = "./resources/sprites/enemy_ships/void_drone/void_drone.png";
-  object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
-  object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
-  object.void_spherefighter.src = "./resources/sprites/enemy_ships/void_spherefighter/void_spherefighter.png";
-  object.pirate_raider.src = "./resources/sprites/enemy_ships/pirate_raider/pirate_raider.png";
-  object.pirate_minedropper.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_minedropper.png";
-  object.pirate_mine.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_mine.png";
-  object.pirate_vessel.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel.png";
-  object.pirate_vessel_turret.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_turret.png";
-  object.cursor.src = "./resources/sprites/UI/cursor-pixelated.png";
-  object.earth.src = "./resources/sprites/earth3.png";
-  object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
-  object.LASER_panel.src = "./resources/sprites/UI/LASER_panel.png";
-  object.shop_bg.src = "./resources/sprites/UI/shop_bg.png";
-  object.explosion.src = "./resources/sprites/projectiles/explosion.png";
-  object.rocket.src = "./resources/sprites/projectiles/rocket.png";
-  object.spread.src = "./resources/sprites/projectiles/spread.png";
-  object.spread_projectile.src = "./resources/sprites/projectiles/spread_projectile.png";
-  object.BASIC.src = "./resources/sprites/UI/BASIC.png";
-  object.DOUBLE.src = "./resources/sprites/UI/DOUBLE.png";
-  object.SPRAY.src = "./resources/sprites/UI/SPRAY.png";
-  object.ROCKET.src = "./resources/sprites/UI/ROCKET.png";
-  object.LASER.src = "./resources/sprites/UI/LASER.png";
+  //Setting path
+  for(let index in object){
+    let precursor = index.split("_");
+    if(precursor[0] == "UI"||precursor[0] == "projectile")
+      object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+    else
+    object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
+  }
   scale();
   player.inicialize();
   UI.inicialize();
@@ -321,9 +248,9 @@ function gameLoop(){
     }
     else { //Game part
       ctx.beginPath();
-      ctx.drawImage(object.earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
+      ctx.drawImage(object.UI_earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = player.opacity[0];
-      ctx.drawImage(object.earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.drawImage(object.UI_earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
       ctx.globalAlpha = 1;
       ctx.closePath();
       bulletList.forEach((b)=>{//bullets - if render check
@@ -442,11 +369,11 @@ function gameLoop(){
         ctx.fillStyle = "#00FF00";
         if(laserRecharging)
         ctx.fillStyle = "#FF0000";
-        ctx.drawImage(object.LASER_panel,canvas.width-240*screenratio,canvas.height-55*screenratio,240*screenratio,55*screenratio);
+        ctx.drawImage(object.UI_LASERpanel,canvas.width-240*screenratio,canvas.height-55*screenratio,240*screenratio,55*screenratio);
         ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,laserDuration/300*120*screenratio,15*screenratio);
       }
-      ctx.drawImage(object.HP_panel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
-      ctx.drawImage(object.cursor,xMousePos-24,yMousePos-24,48,48); //cursor
+      ctx.drawImage(object.UI_HPpanel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
+      ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
       ctx.stroke();
       ctx.closePath();
 
@@ -478,23 +405,23 @@ var UI = {
     this.upgradesMenu_b2 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:460*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b3 = {width:50*screenratio,height:50*screenratio,x:627*screenratio,y:520*screenratio,button:"CHANGE_L",text:"<-",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b4 = {width:50*screenratio,height:50*screenratio,x:727*screenratio,y:520*screenratio,button:"CHANGE_R",text:"->",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.shop_bg};
+    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
     this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b3,this.upgradesMenu_b4];
 
     //  this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_BASIC,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.UI_DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_ROCKET,selected:false};
     this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_LASER,selected:false};
     this.weaponsUpgradesMenu_b7 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7];
 
     this.displayShip = activeShip.name;
-    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.scout,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.slug,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.orbiter,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.player_scout,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.player_slug,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.player_orbiter,color:["grey","black","white"],opacity:0};
 
     this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2];
 
@@ -801,7 +728,7 @@ function bullet(B,name,numberOfBullets){
     }
   }
   else if (name == "ROCKET"){
-    B.sprite = object.rocket;
+    B.sprite = object.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150*screenratio;
     B.explosion_triggered = false;
@@ -813,10 +740,10 @@ function bullet(B,name,numberOfBullets){
 
   }
   else if (name == "SPREADER"){
-    B.sprite = object.spread;
+    B.sprite = object.projectile_spread;
   }
   else if (name == "SPREADER_PROJECTILE"){
-    B.sprite = object.spread_projectile;
+    B.sprite = object.projectile_spreadProjectile;
   }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
@@ -903,7 +830,7 @@ function bullet(B,name,numberOfBullets){
       ctx.save();
       ctx.translate(B.x,B.y);
       ctx.rotate(B.explosion_angle);
-      ctx.drawImage(object.explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
+      ctx.drawImage(object.projectile_explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
@@ -963,7 +890,7 @@ var player = {
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
     player.hitBoxY = player.y-player.hitBoxHeight/2;
-    player.sprite = object[activeShip.name.toLowerCase()];
+    player.sprite = object["player_" + activeShip.name.toLowerCase()];
   },
   update : ()=>{
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
@@ -1086,11 +1013,11 @@ async function checkTotal(enemy){
         bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
       }
     }
-    if(levels_handler.level.total == 1&&enemy.sprite != object.pirate_mine){
+    if(levels_handler.level.total == 1&&enemy.sprite != object.enemy_pirateMine){
       await sleep(2000);
       levels_handler.level.total -= 1;
     }
-    else if (enemy.sprite != object.pirate_mine) {
+    else if (enemy.sprite != object.enemy_pirateMine) {
       levels_handler.level.total -= 1;
     }
     XCOINS += enemy.XCOINS;
@@ -1144,7 +1071,7 @@ function enemyCharacter(E,type){
   E.animation = false;
   E.attackCDvalue = 2000;
   if (type == "buzz"){
-    E.sprite = object.buzz;
+    E.sprite = object.enemy_buzz;
     E.widthOnPic = 56;
     E.heightOnPic = 62;
     E.hit = 0;
@@ -1158,7 +1085,7 @@ function enemyCharacter(E,type){
     E.thrusterFire = [10,10*screenratio,-1*screenratio];
   }
   else if (type == "tooth"){
-    E.sprite = object.tooth;
+    E.sprite = object.enemy_tooth;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     E.hit = 0;
@@ -1172,7 +1099,7 @@ function enemyCharacter(E,type){
     E.thrusterFire = [10,10*screenratio,-1*screenratio];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
-    E.sprite = object.sharkfin;
+    E.sprite = object.enemy_sharkfin;
     E.widthOnPic = 64;
     E.heightOnPic = 60;
     E.hit = 0;
@@ -1188,7 +1115,7 @@ function enemyCharacter(E,type){
     E.thrusterFire = [10,10*screenratio,-12*screenratio];
   }
   else if(type == "goblin"){// 2 - goblin
-    E.sprite = object.goblin;
+    E.sprite = object.enemy_goblin;
     E.widthOnPic = 76;
     E.heightOnPic = 100;
     //Ingame stats
@@ -1202,8 +1129,8 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.thrusterFire = [22,22*screenratio,-1*screenratio];
   }
-  else if(type == "SG_40"){// 2 - goblin
-    E.sprite = object.SG_40;
+  else if(type == "SG40"){// 2 - goblin
+    E.sprite = object.enemy_SG40;
     E.widthOnPic = 48;
     E.heightOnPic = 50;
     //Ingame stats
@@ -1215,10 +1142,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
-  else if (type == "pirate_raider"){
-    E.sprite = object.pirate_raider;
-    E.widthOnPic = 62;
-    E.heightOnPic = 34;
+  else if (type == "pirateRaider"){
+    E.sprite = object.enemy_pirateRaider;
+    E.widthOnPic = 60;
+    E.heightOnPic = 32;
     //Ingame stats
     E.width = 60*screenratio;
     E.height = 32*screenratio;
@@ -1228,10 +1155,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [12,10*screenratio,-1*screenratio];
+    E.thrusterFire = [10,10*screenratio,-1*screenratio];
   }
-  else if (type == "pirate_minedropper"){
-    E.sprite = object.pirate_minedropper;
+  else if (type == "pirateMinedropper"){
+    E.sprite = object.enemy_pirateMinedropper;
     E.widthOnPic = 56;
     E.heightOnPic = 74;
     //Ingame stats
@@ -1245,8 +1172,8 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.thrusterFire = [10,10*screenratio,-6*screenratio];
   }
-  else if (type == "pirate_mine"){
-    E.sprite = object.pirate_mine;
+  else if (type == "pirateMine"){
+    E.sprite = object.enemy_pirateMine;
     E.widthOnPic = 44;
     E.heightOnPic = 44;
     //Ingame stats
@@ -1260,8 +1187,8 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
-  else if (type == "pirate_vessel"){
-    E.sprite = object.pirate_vessel;
+  else if (type == "pirateVessel"){
+    E.sprite = object.enemy_pirateVessel;
     E.widthOnPic = 76;
     E.heightOnPic = 158;
     //Ingame stats
@@ -1278,8 +1205,8 @@ function enemyCharacter(E,type){
     E.orbit = true;
     E.inOrbit = false;
   }
-  else if (type == "void_drone"){
-    E.sprite = object.void_drone;
+  else if (type == "voidDrone"){
+    E.sprite = object.enemy_voidDrone;
     E.widthOnPic = 60;
     E.heightOnPic = 60;
     //Ingame stats
@@ -1293,8 +1220,8 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
-  else if (type == "void_chaser"){
-    E.sprite = object.void_chaser;
+  else if (type == "voidChaser"){
+    E.sprite = object.enemy_voidChaser;
     E.widthOnPic = 48;
     E.heightOnPic = 62;
     //Ingame stats
@@ -1308,8 +1235,8 @@ function enemyCharacter(E,type){
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.thrusterFire = [0,0*screenratio,0*screenratio];
   }
-  else if (type == "void_spherefighter"){
-    E.sprite = object.void_spherefighter;
+  else if (type == "voidSpherefighter"){
+    E.sprite = object.enemy_voidSpherefighter;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     //Ingame stats
@@ -1326,8 +1253,8 @@ function enemyCharacter(E,type){
     E.animationFrames = 8;
     E.animationFPS = 5;
   }
-  else if (type == "void_chakram"){
-    E.sprite = object.void_chakram;
+  else if (type == "voidChakram"){
+    E.sprite = object.enemy_voidChakram;
     E.widthOnPic = 180;
     E.heightOnPic = 180;
     //Ingame stats
@@ -1370,7 +1297,7 @@ function enemyCharacter(E,type){
       E.attackCDstart();
     }
     else if (E.inOrbit&&E.arrival&&!E.attackCD){
-      if(type == "pirate_vessel"){
+      if(type == "pirateVessel"){
         E.attackCDstart();
         if(Math.random()<0.5)
         enemyBulletList.push(enemyBullet({x:E.cannon1X,y:E.cannon1Y},"BASIC"));
@@ -1382,7 +1309,7 @@ function enemyCharacter(E,type){
         E.attackCDstart();
       }
     }
-    else if(distance < 140*screenratio&&(E.sprite != object.pirate_mine&&E.sprite != object.pirate_minedropper)&&!E.orbit){
+    else if(distance < 140*screenratio&&(type != "pirateMine"&&type != "pirateMinedropper")&&!E.orbit){
       E.speed = 0;
       if(!E.arrival){
         E.arrival = true;
@@ -1393,7 +1320,7 @@ function enemyCharacter(E,type){
         E.attackCDstart();
       }
     }
-    else if ((E.sprite == object.pirate_mine||E.sprite == object.pirate_minedropper)&&distance<40){
+    else if ((type == "pirateMine"||type == "pirateMinedropper")&&distance<40){
       E.HP = 0;
       player.HP[0] -= 2;
     }
@@ -1445,7 +1372,7 @@ function enemyCharacter(E,type){
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.restore();
-    if(type == "pirate_vessel"){
+    if(type == "pirateVessel"){
       ctx.save();
       if(!E.inOrbit){
         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
@@ -1454,12 +1381,12 @@ function enemyCharacter(E,type){
         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       else {
         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
@@ -1468,12 +1395,12 @@ function enemyCharacter(E,type){
         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
         ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
         ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       ctx.restore();
     }
@@ -1496,14 +1423,14 @@ function enemyCharacter(E,type){
         let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
         E.deathAnimation_angle = Math.random()*2*Math.PI;
         E.deathAnimation_index = E.deathAnimation_countdown/6;
-        if(E.deathAnimation_index==1&&E.sprite == object.pirate_minedropper&&distance>=40)
-        enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirate_mine"));
+        if(E.deathAnimation_index==1&&type == "pirateMinedropper"&&distance>=40)
+        enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirateMine"));
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(E.x,E.y);
       ctx.rotate(E.deathAnimation_angle);
-      ctx.drawImage(object.explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
+      ctx.drawImage(object.projectile_explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
@@ -1596,3 +1523,16 @@ var levels_handler = {
     return enemyArray.sort(function(){return 0.5 - Math.random()});
   }
 };
+
+function levelLayout(L){
+  if(activeShip.section>0){
+      L.pirateRaider = [6+activeShip.level,500];
+    if(activeShip.level>2){
+      L.pirateMinedropper = [3+activeShip.level,1000];
+    }
+    if(activeShip.level>0){
+      L.pirateVessel = [1+(activeShip.level-1)*2,5000];
+    }
+  }
+  return L;
+}
