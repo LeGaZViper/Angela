@@ -91,6 +91,7 @@ var object = {
   void_chakram : new Image(),
   scout : new Image(),
   orbiter : new Image(),
+  slug : new Image(),
   earth : new Image(),
   cursor : new Image(),
   HP_panel : new Image(),
@@ -120,7 +121,8 @@ var defaultWeaponDatabase = {
 };
 var defaultShipDatabase = {
   SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,particles:[22,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
-  ORBITER:{name:"ORBITER",speed:5,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.ROCKET}
+  SLUG:{name:"SLUG",speed:5,width:60,height:60,widthOnPic:60,heightOnPic:60,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.DOUBLE},
+  ORBITER:{name:"ORBITER",speed:6,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:3,level:1,weapon:defaultWeaponDatabase.ROCKET}
 };
 
 function saveLocalStorage(){
@@ -211,6 +213,7 @@ window.onload = ()=>{
   ctx = canvas.getContext("2d");
   object.scout.src = "./resources/sprites/player_ships/scout/scout.png";
   object.orbiter.src = "./resources/sprites/player_ships/orbiter/orbiter.png";
+  object.slug.src = "./resources/sprites/player_ships/slug/slug.png";
   object.goblin.src = "./resources/sprites/enemy_ships/goblin/goblin.png";
   object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
   object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
@@ -480,7 +483,7 @@ var UI = {
 
     //  this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
     this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
     this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
     this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
     this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
@@ -490,9 +493,10 @@ var UI = {
 
     this.displayShip = activeShip.name;
     this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.scout,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.orbiter,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.slug,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.orbiter,color:["grey","black","white"],opacity:0};
 
-    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1];
+    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2];
 
     this.upgradesMenu = this.upgradesMenu.concat(this.weaponsUpgradesMenu,this.shipsUpgradesMenu);
 
@@ -601,9 +605,10 @@ var UI = {
               for(let i=this.shipsUpgradesMenu.length-1;i>0;i--){
                 if(this.shipsUpgradesMenu[i].ship == this.displayShip){
                   this.displayShip = this.shipsUpgradesMenu[i-1].ship;
+                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
+                    chooseShip(this.displayShip);
                 }
-                if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
-                  chooseShip(this.displayShip);
+                break;
                 }
               }
             }
@@ -611,9 +616,10 @@ var UI = {
               for(let i=0;i<this.shipsUpgradesMenu.length-1;i++){
                 if(this.shipsUpgradesMenu[i].ship == this.displayShip){
                   this.displayShip = this.shipsUpgradesMenu[i+1].ship;
-                }
-                if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
-                  chooseShip(this.displayShip);
+                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
+                    chooseShip(this.displayShip);
+                  }
+                  break;
                 }
               }
             }
