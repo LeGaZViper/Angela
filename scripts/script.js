@@ -120,7 +120,7 @@ var defaultWeaponDatabase = {
   SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
 };
 var defaultShipDatabase = {
-  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,particles:[22,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
+  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:92,heightOnPic:92,particles:[26,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
   SLUG:{name:"SLUG",speed:5,width:60,height:60,widthOnPic:60,heightOnPic:60,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.DOUBLE},
   ORBITER:{name:"ORBITER",speed:6,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:3,level:1,weapon:defaultWeaponDatabase.ROCKET}
 };
@@ -1217,8 +1217,8 @@ function enemyCharacter(E,type){
   }
   else if (type == "pirate_raider"){
     E.sprite = object.pirate_raider;
-    E.widthOnPic = 60;
-    E.heightOnPic = 32;
+    E.widthOnPic = 62;
+    E.heightOnPic = 34;
     //Ingame stats
     E.width = 60*screenratio;
     E.height = 32*screenratio;
@@ -1228,7 +1228,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.thrusterFire = [12,10*screenratio,-1*screenratio];
   }
   else if (type == "pirate_minedropper"){
     E.sprite = object.pirate_minedropper;
