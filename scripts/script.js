@@ -248,9 +248,9 @@ function gameLoop(){
     }
     else { //Game part
       ctx.beginPath();
-      ctx.drawImage(object.UI_earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
-      ctx.globalAlpha = player.opacity[0];
       ctx.drawImage(object.UI_earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.globalAlpha = player.damageOpacity[0];
+      ctx.drawImage(object.UI_earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = 1;
       ctx.closePath();
       bulletList.forEach((b)=>{//bullets - if render check
@@ -263,6 +263,7 @@ function gameLoop(){
         if(collides(eb,player)&&player.HP[1]>0){
           player.HP[1] -= eb.damage;
           eb.killed = true;
+          player.hitCD = true;
           player.hitCDstart(1);
         }
         else if(distance <10){
@@ -315,6 +316,7 @@ function gameLoop(){
           if(!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
             player.HP[1] -= 1;
             if(player.HP[1] > 0){
+              player.hitCD = true;
               player.hitCDstart(1);
             }
           }
@@ -408,15 +410,14 @@ var UI = {
     this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
     this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b3,this.upgradesMenu_b4];
 
-    //  this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.UI_DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_ROCKET,selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_LASER,selected:false};
-    this.weaponsUpgradesMenu_b7 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.weaponsUpgradesMenu_b7];
+    this.weaponsUpgradesMenu_b0 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_BASIC,selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.UI_DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_LASER,selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6];
 
     this.displayShip = activeShip.name;
     this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.player_scout,color:["grey","black","white"],opacity:0};
@@ -447,10 +448,8 @@ var UI = {
         index.selected = true;
       }
     });
-
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
-
     this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
   },
   menu_render : function(menu){
@@ -931,7 +930,7 @@ var player = {
     }
   },
   render : ()=> {
-    //fire animation
+    //thruster animation
     if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
     player.particlesWidth += player.particles[3];
     player.particlesHeight += player.particles[4];
@@ -954,17 +953,19 @@ var player = {
     ctx.save();
     ctx.translate(player.x,player.y);
     ctx.rotate(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2);
+    //Normal Scout
+    ctx.globalAlpha = player.opacity[1];
+    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
+    ctx.drawImage(player.sprite,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     //Damaged Scout #RED
     if(player.HP[1] > 0){
+      ctx.globalAlpha = player.damageOpacity[1];
       ctx.drawImage(player.sprite,0,2*player.heightOnPic+player.particles[0],player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
       ctx.drawImage(player.sprite,0,player.heightOnPic+player.particles[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     }
-    ctx.globalAlpha = player.opacity[1];
-    //Normal Scout
-    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
-    ctx.drawImage(player.sprite,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     ctx.restore();
     ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.closePath();
   },
 
@@ -972,6 +973,7 @@ var player = {
   hitCD : false,
   killedCD : false,
   opacity : [1,1],
+  damageOpacity : [0,0],
   blikacky : false,
   attackCDstart : async function() {
     player.attackCD = true;
@@ -979,11 +981,10 @@ var player = {
     player.attackCD = false;
   },
   hitCDstart : async function(which) {
-    player.opacity[which] = 29/100;
-    if(which == 1)player.hitCD = true;
-    for(var i=30;i<130;i++){
-      if(player.opacity[which] == (i-1)/100){
-        player.opacity[which] = i/100;
+    player.damageOpacity[which] = 51/100;
+    for(var i=50;i>=0;i--){
+      if(player.damageOpacity[which] == (i+1)/100){
+        player.damageOpacity[which] = i/100;
         await sleep(10);
       }
       else break;
@@ -992,12 +993,10 @@ var player = {
   },
   killedCDstart : async function() {
     //EXPLOSION
-    player.opacity[0] = 0.5;
     player.opacity[1] = 0.5;
     player.killedCD = true;
     await sleep(5000);
     player.HP[1] = player.maxHP[1];
-    player.opacity[0] = 1;
     player.opacity[1] = 1;
     player.killedCD = false;
   }
@@ -1364,13 +1363,13 @@ function enemyCharacter(E,type){
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
     else
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI);
-    //damaged enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
-    ctx.globalAlpha = E.opacity;
     //normal enemy ship
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    //damaged enemy ship
+    ctx.globalAlpha = E.opacity;
+    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.restore();
     if(type == "pirateVessel"){
       ctx.save();
@@ -1441,16 +1440,16 @@ function enemyCharacter(E,type){
   //Cooldowns
   E.attackCD = false;
   E.piercingCD = false;
-  E.opacity = 1;
+  E.opacity = 0;
   E.attackCDstart = async function() {
     E.attackCD = true;
     await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
   E.hitCDstart = async function() {
-    E.opacity = 49/100;
-    for(var i=50;i<150;i++){
-      if(E.opacity!=(i-1)/100){
+    E.opacity = 0.51;
+    for(let i=50;i>=0;i--){
+      if(E.opacity!=(i+1)/100){
         break;
       }
       else {
