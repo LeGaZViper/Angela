@@ -261,6 +261,7 @@ function gameLoop(){
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
         if(collides(eb,player)&&player.HP[1]>0){
+
           player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
@@ -313,10 +314,10 @@ function gameLoop(){
             }
             bulletList = bulletList.filter(check => !(check.killed));
           });
-          if(!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
+          if(!player.colisionCD&&collides(e,player)&&player.HP[1]>0){ //player colision
             player.HP[1] -= 1;
+            player.colisionCD = true;
             if(player.HP[1] > 0){
-              player.hitCD = true;
               player.hitCDstart(1);
             }
           }
@@ -892,6 +893,16 @@ var player = {
     player.sprite = object["player_" + activeShip.name.toLowerCase()];
   },
   update : ()=>{
+    //thruster animation
+    if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
+    player.particlesWidth += player.particles[3];
+    player.particlesHeight += player.particles[4];
+  }
+
+    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>0.2){
+    player.particlesWidth -= player.particles[3];
+    player.particlesHeight -= player.particles[4];
+  }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
       loseTheGame();
@@ -930,16 +941,6 @@ var player = {
     }
   },
   render : ()=> {
-    //thruster animation
-    if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
-    player.particlesWidth += player.particles[3];
-    player.particlesHeight += player.particles[4];
-  }
-
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>0.2){
-    player.particlesWidth -= player.particles[3];
-    player.particlesHeight -= player.particles[4];
-  }
     // if(player.counter == 30){
     //   player.counter = 0;
     //   if(player.animationX<96){
@@ -971,6 +972,7 @@ var player = {
 
   attackCD : false,
   hitCD : false,
+  collisionCD : false,
   killedCD : false,
   opacity : [1,1],
   damageOpacity : [0,0],
@@ -980,7 +982,7 @@ var player = {
     await sleep(activeShip.weapon.cooldown);
     player.attackCD = false;
   },
-  hitCDstart : async function(which) {
+  hitCDstart : async function(which,what) {
     player.damageOpacity[which] = 51/100;
     for(var i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
@@ -989,7 +991,8 @@ var player = {
       }
       else break;
     }
-    if(which == 1)player.hitCD = false;
+    if(which == 1&& what == "hit")player.hitCD = false;
+    else if (which == 1 && what == "colision") player.collisionCD = true;
   },
   killedCDstart : async function() {
     //EXPLOSION
@@ -1081,7 +1084,7 @@ function enemyCharacter(E,type){
     E.HP = 6;
     E.maxHP = 6;
     E.XCOINS = 15;
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "tooth"){
     E.sprite = object.enemy_tooth;
@@ -1095,7 +1098,7 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 15;
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
     E.sprite = object.enemy_sharkfin;
@@ -1111,7 +1114,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-12*screenratio];
+    E.particles = [10,10*screenratio,-12*screenratio,0,0.1];
   }
   else if(type == "goblin"){// 2 - goblin
     E.sprite = object.enemy_goblin;
@@ -1126,7 +1129,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [22,22*screenratio,-1*screenratio];
+    E.particles = [22,22*screenratio,-1*screenratio,0,0.1];
   }
   else if(type == "SG40"){// 2 - goblin
     E.sprite = object.enemy_SG40;
@@ -1139,7 +1142,7 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 10;
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
   else if (type == "pirateRaider"){
     E.sprite = object.enemy_pirateRaider;
@@ -1154,7 +1157,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "pirateMinedropper"){
     E.sprite = object.enemy_pirateMinedropper;
@@ -1168,8 +1171,8 @@ function enemyCharacter(E,type){
     E.maxHP = 15;
     E.XCOINS = 10;
     //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-6*screenratio];
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship, 3 = particlesX add, 4 = particlesY add
+    E.particles = [10,10*screenratio,-6*screenratio,0,0.1];
   }
   else if (type == "pirateMine"){
     E.sprite = object.enemy_pirateMine;
@@ -1184,7 +1187,22 @@ function enemyCharacter(E,type){
     E.XCOINS = 0;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0,0];
+  }
+  else if (type == "pirateTiger"){
+    E.sprite = object.enemy_pirateTiger;
+    E.widthOnPic = 70;
+    E.heightOnPic = 70;
+    //Ingame stats
+    E.width = 70*screenratio;
+    E.height = 70*screenratio;
+    E.speed = 2*screenratio;
+    E.HP = 5;
+    E.maxHP = 5;
+    E.XCOINS = 0;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.particles = [18,18*screenratio,-13*screenratio,0,0.1];
   }
   else if (type == "pirateVessel"){
     E.sprite = object.enemy_pirateVessel;
@@ -1200,7 +1218,7 @@ function enemyCharacter(E,type){
     E.angle = Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [46,46*screenratio,-79*screenratio];
+    E.particles = [46,46*screenratio,-79*screenratio,0,0.1];
     E.orbit = true;
     E.inOrbit = false;
   }
@@ -1217,7 +1235,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
   }
   else if (type == "voidChaser"){
     E.sprite = object.enemy_voidChaser;
@@ -1232,7 +1250,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
   }
   else if (type == "voidSpherefighter"){
     E.sprite = object.enemy_voidSpherefighter;
@@ -1247,7 +1265,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
     E.animation = true;
     E.animationFrames = 8;
     E.animationFPS = 5;
@@ -1265,7 +1283,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 50;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
     E.animation = true;
     E.animationFrames = 4;
     E.animationFPS = 12;
@@ -1280,6 +1298,8 @@ function enemyCharacter(E,type){
   E.animationIndex = 0;
   E.counter = 0;
   E.arrival = false;
+  E.particlesWidth = 1;
+  E.particlesHeight = 0.2;
   if(E.hitBoxWidth == undefined){
     E.hitBoxWidth = E.width/3*2;
     E.hitBoxHeight = E.height/3*2;
@@ -1287,6 +1307,14 @@ function enemyCharacter(E,type){
     E.hitBoxY = E.y-E.hitBoxHeight/2;
   }
   E.update = function(){
+    if(E.speed != 0&&E.particlesHeight<1){
+      E.particlesWidth += E.particles[3];
+      E.particlesHeight += E.particles[4];
+    }
+    else if(E.speed == 0&&E.particlesHeight>0.2){
+      E.particlesWidth -= E.particles[3];
+      E.particlesHeight -= E.particles[4];
+    }
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
     if(E.orbit&&distance<500*screenratio&&!E.inOrbit){
       E.inOrbit = true;
@@ -1364,12 +1392,12 @@ function enemyCharacter(E,type){
     else
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI);
     //normal enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.particles[0],-E.width/2,E.height/2+E.particles[2],E.width*E.particlesWidth,E.particles[1]*E.particlesHeight);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     //damaged enemy ship
     ctx.globalAlpha = E.opacity;
-    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.particles[0]+3,E.widthOnPic,E.particles[0],-E.width/2,E.height/2+E.particles[2],E.width*E.particlesWidth,E.particles[1]*E.particlesHeight);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.particles[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     ctx.restore();
     if(type == "pirateVessel"){
       ctx.save();
@@ -1524,12 +1552,13 @@ var levels_handler = {
 };
 
 function levelLayout(L){
-  if(activeShip.section>0){
+  if(activeShip.section==1){
       L.pirateRaider = [6+activeShip.level,500];
+      L.pirateTiger = [6+activeShip.level,1000];
     if(activeShip.level>2){
       L.pirateMinedropper = [3+activeShip.level,1000];
     }
-    if(activeShip.level>0){
+    if(activeShip.level>5){
       L.pirateVessel = [1+(activeShip.level-1)*2,5000];
     }
   }
