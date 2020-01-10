@@ -248,10 +248,14 @@ function gameLoop(){
     }
     else { //Game part
       ctx.beginPath();
-      ctx.drawImage(object.UI_earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.drawImage(object.UI_earth,0,0,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//planet
       ctx.globalAlpha = player.damageOpacity[0];
-      ctx.drawImage(object.UI_earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
+      ctx.drawImage(object.UI_earth,0,200,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = 1;
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 5;
+      ctx.globalAlpha = 0.5;
+      ctx.strokeRect(player.earthX-player.spaceSize/2,player.earthY-player.spaceSize/2,player.spaceSize,player.spaceSize);
       ctx.closePath();
       bulletList.forEach((b)=>{//bullets - if render check
         if(b.explosive&&b.explosion_triggered)
@@ -259,7 +263,7 @@ function gameLoop(){
         b.update();
       });
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
-        let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
+        let distance = Math.abs(eb.x-player.earthX)+Math.abs(eb.y-player.earthY);
         if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
 
           player.HP[1] -= eb.damage;
@@ -788,8 +792,8 @@ function bullet(B,name,numberOfBullets){
       B.xspeed = ratio*B.dirx;
       B.yspeed = ratio*B.diry;
 
-      B.x += B.xspeed;
-      B.y += B.yspeed;
+      B.x += B.xspeed-player.xspeed;
+      B.y += B.yspeed-player.yspeed;
       B.hitBoxX = B.x-B.hitBoxWidth/2;
       B.hitBoxY = B.y-B.hitBoxHeight/2;
       ctx.beginPath();
@@ -864,10 +868,15 @@ function bullet(B,name,numberOfBullets){
 //player object
 var player = {
   inicialize : ()=>{
-    player.x = 1100/2*screenratio;
-    player.y = 900/2*screenratio;
-    player.futureX = 1100/2*screenratio;
-    player.futureY = 900/2*screenratio;
+    player.spaceSize = 4000*screenratio;
+    player.x = canvas.width/2;
+    player.y = canvas.height/2;
+    player.coordX = 0;
+    player.coordY = 0;
+    player.earthX = canvas.width/2;
+    player.earthY = canvas.height/2;
+    player.futureX = 0;
+    player.futureY = 0;
     player.speed = activeShip.speed*screenratio;
     player.xspeed = 0;
     player.yspeed = 0;
@@ -916,18 +925,17 @@ var player = {
         player.yspeed = ratio*(yMousePos-player.y);
         player.futureX += player.xspeed;
         player.futureY += player.yspeed;
-        let futureplayerDirFromCenter = Math.sqrt(Math.pow(player.futureX-canvas.width/2,2)+Math.pow(player.futureY-canvas.height/2,2));
-        if(Math.floor(futureplayerDirFromCenter)>=150*screenratio){
+        if(Math.abs(player.futureX) < player.spaceSize/2&&Math.abs(player.futureY) < player.spaceSize/2){
+          player.coordX += player.xspeed;
+          player.coordY += player.yspeed;
+          player.hitBoxX = player.x-player.hitBoxWidth/2;
+          player.hitBoxY = player.y-player.hitBoxHeight/2;
+        }
+        else {
           player.futureX -= player.xspeed;
           player.futureY -= player.yspeed;
           player.xspeed = 0;
           player.yspeed = 0;
-        }
-        else {
-          player.x += player.xspeed;
-          player.y += player.yspeed;
-          player.hitBoxX = player.x-player.hitBoxWidth/2;
-          player.hitBoxY = player.y-player.hitBoxHeight/2;
         }
       }
       else {
@@ -939,6 +947,8 @@ var player = {
       player.xspeed = 0;
       player.yspeed = 0;
     }
+    player.earthX -= player.xspeed;
+    player.earthY -= player.yspeed;
   },
   render : ()=> {
     // if(player.counter == 30){
@@ -1033,8 +1043,8 @@ function enemyBullet(B,type){
   B.speed = 15*screenratio;
   B.color = "#FF0000";
   if(type == "BASIC"){
-    B.dirx = canvas.width/2-B.x;
-    B.diry = canvas.height/2-B.y;
+    B.dirx = player.earthX-B.x;
+    B.diry = player.earthY-B.y;
     B.width = 4*screenratio;
     B.height = 25*screenratio;
   }
@@ -1043,8 +1053,8 @@ function enemyBullet(B,type){
     B.xspeed = ratio*B.dirx;
     B.yspeed = ratio*B.diry;
 
-    B.x += B.xspeed;
-    B.y += B.yspeed;
+    B.x += B.xspeed-player.xspeed;
+    B.y += B.yspeed-player.yspeed;
     B.hitBoxWidth = B.width/3*2;
     B.hitBoxHeight = B.height/3*2;
     B.hitBoxX = B.x-B.hitBoxWidth/2;
@@ -1071,6 +1081,14 @@ function enemyBullet(B,type){
 //enemy objects
 var enemyList = [];
 function enemyCharacter(E,type){
+  E.appearOpacity = 0;
+  E.appear = async function(){
+    for(let i=1;i<=100;i++){
+      E.appearOpacity = i/100;
+      await sleep(10);
+    }
+  }
+  E.appear();
   E.animation = false;
   E.attackCDvalue = 2000;
   if (type == "buzz"){
@@ -1216,7 +1234,7 @@ function enemyCharacter(E,type){
     E.HP = 50;
     E.maxHP = 50;
     E.XCOINS = 0;
-    E.angle = Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2;
+    E.angle = Math.atan2(player.earthX-E.y,player.earthY-E.x)+Math.PI/2;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [46,46*screenratio,-79*screenratio,0,0.1];
@@ -1316,7 +1334,7 @@ function enemyCharacter(E,type){
       E.particlesWidth -= E.particles[3];
       E.particlesHeight -= E.particles[4];
     }
-    let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
+    let distance = Math.abs(player.earthX-E.x)+Math.abs(player.earthY-E.y);
     if(E.orbit&&distance<500*screenratio&&!E.inOrbit){
       E.inOrbit = true;
     }
@@ -1353,9 +1371,9 @@ function enemyCharacter(E,type){
       player.HP[0] -= 2;
     }
     else if (!E.inOrbit){
-      let ratio = E.speed/(Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y));
-      E.xspeed = ratio*(canvas.width/2-E.x);
-      E.yspeed = ratio*(canvas.height/2-E.y);
+      let ratio = E.speed/(Math.abs(player.earthX-E.x)+Math.abs(player.earthY-E.y));
+      E.xspeed = ratio*(player.earthX-E.x);
+      E.yspeed = ratio*(player.earthY-E.y);
 
       E.x += E.xspeed;
       E.y += E.yspeed;
@@ -1369,6 +1387,8 @@ function enemyCharacter(E,type){
       E.hitBoxX = E.x-E.hitBoxWidth/2;
       E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
+    E.x -= player.xspeed;
+    E.y -= player.yspeed;
   };
   E.render = function(){
     let x1 = parseInt(-(E.HP/E.maxHP-1)*255).toString(16);
@@ -1389,10 +1409,11 @@ function enemyCharacter(E,type){
     ctx.save();
     ctx.translate(E.x,E.y);
     if(!E.inOrbit)
-    ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
+    ctx.rotate(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI/2);
     else
-    ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI);
+    ctx.rotate(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI);
     //normal enemy ship
+    ctx.globalAlpha = E.appearOpacity;
     ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.particles[0],-E.width/2,E.height/2+E.particles[2],E.width*E.particlesWidth,E.particles[1]*E.particlesHeight);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
     //damaged enemy ship
@@ -1402,32 +1423,33 @@ function enemyCharacter(E,type){
     ctx.restore();
     if(type == "pirateVessel"){
       ctx.save();
+      ctx.globalAlpha = E.appearOpacity;
       if(!E.inOrbit){
-        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
-        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
-        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
-        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
-        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.rotate(Math.atan2(player.earthY-E.cannon1Y,player.earthX-E.cannon1X)+Math.PI/2);
         ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
-        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
+        ctx.rotate(Math.atan2(player.earthY-E.cannon2Y,player.earthX-E.cannon2X)-Math.PI/2);
         ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       else {
-        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
-        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
-        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
-        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
-        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.rotate(Math.atan2(player.earthY-E.cannon1Y,player.earthX-E.cannon1X)+Math.PI/2);
         ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
-        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
+        ctx.rotate(Math.atan2(player.earthY-E.cannon2Y,player.earthX-E.cannon2X)+Math.PI/2);
         ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       ctx.restore();
@@ -1445,10 +1467,12 @@ function enemyCharacter(E,type){
     ctx.closePath();
   };
   E.deathAnimation_render = function(){
+    E.x -= player.xspeed; //So that explosions won't move with the player
+    E.y -= player.yspeed;
     if(!E.killed){
       E.deathAnimation_countdown += 1;
       if(E.deathAnimation_countdown%5 == 0){
-        let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
+        let distance = Math.abs(player.earthX-E.x)+Math.abs(player.earthY-E.y);
         E.deathAnimation_angle = Math.random()*2*Math.PI;
         E.deathAnimation_index += 1;
         if(E.deathAnimation_index==1&&type == "pirateMinedropper"&&distance>=40)
@@ -1528,10 +1552,10 @@ async function spawn(level_layout){
     let det_x = Math.floor(Math.random()*4);
     let det_y;
     if(UI.inMenu)break;
-    else if(det_x == 0){det_x = -50;det_y = Math.random()*canvas.height;}
-    else if(det_x == 1){det_x = Math.random()*canvas.width;det_y = -50;}
-    else if(det_x == 2){det_x = canvas.width+50;det_y = Math.random()*canvas.height}
-    else {det_x = Math.random()*canvas.width;det_y = canvas.height+50;}
+    else if(det_x == 0){det_x = player.earthX-player.spaceSize/2;det_y = player.earthY+(Math.random() < 0.5 ? -1 : 1)*Math.random()*player.spaceSize/2;}
+    else if(det_x == 1){det_x = player.earthX+(Math.random() < 0.5 ? -1 : 1)*Math.random()*player.spaceSize/2;det_y = player.earthY-player.spaceSize/2;}
+    else if(det_x == 2){det_x = player.earthX+player.spaceSize/2;det_y = player.earthY+(Math.random() < 0.5 ? -1 : 1)*Math.random()*player.spaceSize/2;}
+    else {det_x = player.earthX+(Math.random() < 0.5 ? -1 : 1)*Math.random()*player.spaceSize/2;det_y = player.earthY+player.spaceSize/2;}
     enemyList.push(enemyCharacter({x:det_x,y:det_y},level_layout[i]));
     await sleep(levels_handler.level[level_layout[i]][1]);
   }
