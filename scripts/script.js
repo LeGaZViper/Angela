@@ -260,17 +260,17 @@ function gameLoop(){
       });
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
-        if(collides(eb,player)&&player.HP[1]>0){
+        if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
 
           player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
-          player.hitCDstart(1);
+          player.hitCDstart(1,"bullet");
         }
         else if(distance <10){
           player.HP[0] -= eb.damage;
           eb.killed = true;
-          player.hitCDstart(0);
+          player.hitCDstart(0,"bullet");
         }
         eb.update();
         enemyBulletList = enemyBulletList.filter(check => !(check.killed));
@@ -314,11 +314,11 @@ function gameLoop(){
             }
             bulletList = bulletList.filter(check => !(check.killed));
           });
-          if(!player.colisionCD&&collides(e,player)&&player.HP[1]>0){ //player colision
+          if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
             player.HP[1] -= 1;
-            player.colisionCD = true;
+            player.collisionCD = true;
             if(player.HP[1] > 0){
-              player.hitCDstart(1);
+              player.hitCDstart(1,"collision");
             }
           }
         }
@@ -822,9 +822,9 @@ function bullet(B,name,numberOfBullets){
   B.explosion_render = function(){
     if(!B.killed){
       B.explosion_countdown += 1;
-      if(B.explosion_countdown%6 == 0){
+      if(B.explosion_countdown%5 == 0){
         B.explosion_angle = Math.random()*2*Math.PI;
-        B.explosion_index = B.explosion_countdown/6;
+        B.explosion_index += 1;
       }
       ctx.beginPath();
       ctx.save();
@@ -834,7 +834,7 @@ function bullet(B,name,numberOfBullets){
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if(B.explosion_index==6)B.killed = true;
+      if(B.explosion_index==11)B.killed = true;
     }
   }
   B.laserDurationCheck = function(){
@@ -984,15 +984,16 @@ var player = {
   },
   hitCDstart : async function(which,what) {
     player.damageOpacity[which] = 51/100;
-    for(var i=50;i>=0;i--){
+    for(let i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
         player.damageOpacity[which] = i/100;
-        await sleep(10);
+        await sleep(20);
       }
       else break;
     }
-    if(which == 1&& what == "hit")player.hitCD = false;
-    else if (which == 1 && what == "colision") player.collisionCD = true;
+    if(which == 1&& what == "bullet")
+    player.hitCD = false;
+    else if (which == 1 && what == "collision") player.collisionCD = false;
   },
   killedCDstart : async function() {
     //EXPLOSION
@@ -1446,10 +1447,10 @@ function enemyCharacter(E,type){
   E.deathAnimation_render = function(){
     if(!E.killed){
       E.deathAnimation_countdown += 1;
-      if(E.deathAnimation_countdown%6 == 0){
+      if(E.deathAnimation_countdown%5 == 0){
         let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
         E.deathAnimation_angle = Math.random()*2*Math.PI;
-        E.deathAnimation_index = E.deathAnimation_countdown/6;
+        E.deathAnimation_index += 1;
         if(E.deathAnimation_index==1&&type == "pirateMinedropper"&&distance>=40)
         enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirateMine"));
       }
@@ -1461,7 +1462,7 @@ function enemyCharacter(E,type){
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if(E.deathAnimation_index==6)
+      if(E.deathAnimation_index==11)
       E.killed = true;
     }
   }
