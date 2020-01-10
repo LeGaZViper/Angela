@@ -1,9 +1,7 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-levels
-Shop
-Text font
-LASER - new weapon (problém s x,y pozicí)
+SPRITES
+UI for upgrades?
 ================================================================================
 
 ######POZNÁMKY######
@@ -12,146 +10,109 @@ Každý objekt má momentálně svoji individuální sprite mapu.
 Mezi každým spritem je 1px mezera.
 ~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
 
-context.drawImage(scout,sx,sy,swidth,sheight,x,y,width,height);
-scout	Specifies the image, canvas, or video element to use
-sx	Optional. - Kde začít clipovat
-sy	Optional. -||-
-swidth	Optional. - Šířka výřezu na obrázku
-sheight	Optional. - Výška výřezu na obrázku
-x - Kam ho dát v canvasu
-y	-||-
-width - roztažení/zmenšení obrázku v canvasu
-height	-||-
+
+NÁPAD NA SYSTÉM LEVELU:
+Neomezený počet levelů v sekci, přičemž levely scalují
+Nová loď ==> nová sekce ==> nová planeta na obranu
+
 */
 //Sleep function | used in: cooldowns
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function inicializeGame(){
+  player.inicialize();
+  UI.levelDisplayCheck = true;
+  player.HP = [player.maxHP[0],player.maxHP[1]];
+  bulletList = [];
+  enemyList = [];
+  enemyBulletList = [];
+  canvas.style.cursor = "none";
+  UI.inMenu = false;
+  spawn(levels_handler.levelCreator());
+}
+function inicializeMenu(menu){
+  XCOINS = 0;
+  laserDuration = 300;
+  canvas.style.cursor = "auto";
+  UI.inMenu = true;
+  UI.currentMenu = menu;
+}
 //Start the game function | used in: main menu
 function startTheGame(){
   //Reset Progress
-  UI.levelDisplayCheck = true;
-  if(localStorage.level[1]>1||localStorage.level[3]>1){
+  if(activeShip.section>1||activeShip.level>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
-      localStorage.level = "[1,1]";
-      localStorage.XCOINS = 0;
-      localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
-      localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
-      activeWeapon = JSON.parse(localStorage.activeWeapon);
-      canvas.style.cursor = "none";
-      player.HP = [player.maxHP[0],player.maxHP[1]];
-      XCOINS = 0;
-      UI.inMenu = false;
-      spawn(levels_handler.levelCreator());
+      resetLocalStorage();
+      inicializeGame();
     }
   }
-  else {
-    canvas.style.cursor = "none";
-    UI.inMenu = false;
-    spawn(levels_handler.levelCreator());
-  }
+  else
+  inicializeGame();
 }
 //Continue the game function | used in: continue
 function continueTheGame(){
-  UI.levelDisplayCheck = true;
-  UI.inMenu = false;
-  canvas.style.cursor = "none";
-  player.HP = [player.maxHP[0],player.maxHP[1]];
-  XCOINS = 0;
-  spawn(levels_handler.levelCreator());
+  inicializeGame();
 }
 
 //Lose the game function | used in: gameover
 function loseTheGame(){
-  localStorage.level = "[1,1]";
-  localStorage.XCOINS = 0;
-  canvas.style.cursor = "auto";
-  bulletList = [];
-  enemyList = [];
-  XCOINS = 0;
-  UI.currentMenu = 4;
-  UI.inMenu = true;
-  laserDuration = 300;
+  resetLocalStorage();
+  inicializeMenu(2);
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame(){
-  canvas.style.cursor = "auto";
-  bulletList = [];
-  enemyList = [];
   localStorage.XCOINS = parseInt(localStorage.XCOINS) + XCOINS;
-  XCOINS = 0;
-  UI.currentMenu = 5;
-  UI.inMenu = true;
-  laserDuration = 300;
+  activeShip.level += 1;
+  for(index in localShipDatabase){
+    if(index.name == activeShip.name) {
+      index.level += 1;
+    }
+  }
+  saveLocalStorage();
+  inicializeMenu(3);
 }
-//List of spritemaps (might use only one in the final version) | used in: rendering
-var object = {
-  goblin : new Image(),
-  tooth : new Image(),
-  buzz : new Image(),
-  sharkfin : new Image(),
-  SG_40 : new Image(),
-  pirate_raider : new Image(),
-  pirate_minedropper : new Image(),
-  pirate_mine : new Image(),
-  pirate_vessel : new Image(),
-  pirate_vessel_turret : new Image(),
-  void_drone : new Image(),
-  void_chaser : new Image(),
-  void_spherefighter : new Image(),
-  void_chakram : new Image(),
-  scout : new Image(),
-  earth : new Image(),
-  cursor : new Image(),
-  HP_panel : new Image(),
-  LASER_panel : new Image(),
-  rocket : new Image(),
-  explosion : new Image(),
-  BASIC : new Image(),
-  DOUBLE : new Image(),
-  SPRAY : new Image(),
-  ROCKET : new Image(),
-  LASER : new Image()
-};
 
-//Default database for ingame weapons | used in: first inicialization
-var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:0},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:0},
-  ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:0},
-  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:3,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:0},
-};
 
+function saveLocalStorage(){
+  localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
+  localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
+  localStorage.activeShip = JSON.stringify(activeShip);
+}
+
+function resetLocalStorage(){
+  localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
+  localStorage.localShipDatabase = JSON.stringify(defaultShipDatabase);
+  localStorage.activeShip = JSON.stringify(defaultShipDatabase.SCOUT);
+  localStorage.XCOINS = 0;
+  activeShip = JSON.parse(localStorage.activeShip);
+  localWeaponDatabase = defaultWeaponDatabase;
+  localShipDatabase = defaultShipDatabase;
+}
 //First inicialization
 if(localStorage.localWeaponDatabase == undefined){
-  localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
-  localStorage.activeWeapon = JSON.stringify(defaultWeaponDatabase.BASIC);
-  localStorage.level = "[1,1]";
-  localStorage.XCOINS = 0;
+  resetLocalStorage();
 }
 
 //Weapon choosing function | used in: upgrades
-var activeWeapon = JSON.parse(localStorage.activeWeapon);
-function chooseWeapon(name){
-  let precursor = JSON.parse(localStorage.localWeaponDatabase);
-  for(var index in precursor){
-    if(precursor[index].name == name){
-      if(precursor[index].status != "LOCKED"){
-        localStorage.activeWeapon = JSON.stringify(precursor[index]);
-        activeWeapon = precursor[index];
+var localWeaponDatabase = JSON.parse(localStorage.localWeaponDatabase);
+function chooseWeapon(name,ship){
+  for(var index in localWeaponDatabase){
+    if(localWeaponDatabase[index].name == name&&activeShip.name == ship){
+      if(localWeaponDatabase[index].status != "LOCKED"){
+        activeShip.weapon = localWeaponDatabase[index];
+        saveLocalStorage();
         return true;
       }
-      else if (precursor[index].cost<=parseInt(localStorage.XCOINS)){
-        console.log("Bought " + precursor[index].name + " for: " + precursor[index].cost + " XCOINS.");
+      else if (localWeaponDatabase[index].cost<=parseInt(localStorage.XCOINS)){
+        console.log("Bought " + localWeaponDatabase[index].name + " for: " + localWeaponDatabase[index].cost + " XCOINS.");
         console.log("Current XCOINS balance: " + localStorage.XCOINS);
-        localStorage.XCOINS = parseInt(localStorage.XCOINS) - precursor[index].cost;
-        precursor[index].status = "UNLOCKED";
-        localStorage.activeWeapon = JSON.stringify(precursor[index]);
-        localStorage.localWeaponDatabase = JSON.stringify(precursor);
-        activeWeapon = precursor[index];
+        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localWeaponDatabase[index].cost;
+        localWeaponDatabase[index].status = "UNLOCKED";
+        localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
+        activeShip.weapon = localWeaponDatabase[index];
+        saveLocalStorage();
         return true;
       }
       else {
@@ -161,11 +122,38 @@ function chooseWeapon(name){
     }
   }
 }
-
+var activeShip = JSON.parse(localStorage.activeShip);
+var localShipDatabase = JSON.parse(localStorage.localShipDatabase);
+function chooseShip(name){
+  for(var index in localShipDatabase){
+    if(localShipDatabase[index].name == name){
+      if(localShipDatabase[index].status != "LOCKED"){
+        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
+        activeShip = localShipDatabase[index];
+        saveLocalStorage();
+        return true;
+      }
+      else if (localShipDatabase[index].cost<=parseInt(localStorage.XCOINS)){
+        console.log("Bought " + localShipDatabase[index].name + " for: " + localShipDatabase[index].cost + " XCOINS.");
+        console.log("Current XCOINS balance: " + localStorage.XCOINS);
+        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localShipDatabase[index].cost;
+        localShipDatabase[index].status = "UNLOCKED";
+        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
+        localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
+        activeShip = localShipDatabase[index];
+        saveLocalStorage();
+        return true;
+      }
+      else {
+        console.log("Insufficient funds.");
+        return false;
+      }
+    }
+  }
+}
 //Inicialization
 var canvas;
 var ctx;
-var screenratio = 1;
 window.onload = ()=>{
   canvas = document.getElementById("canvas");
   canvas.addEventListener("click",function(){UI.click()});
@@ -173,32 +161,14 @@ window.onload = ()=>{
   canvas.addEventListener("mouseup",function(){userInput(event,2);});
   canvas.addEventListener("mousemove",function(){userInput(event,0);});
   ctx = canvas.getContext("2d");
-  object.scout.src = "./resources/sprites/player_ships/scout/scout.png";
-  object.goblin.src = "./resources/sprites/enemy_ships/goblin/goblin.png";
-  object.tooth.src = "./resources/sprites/enemy_ships/tooth/tooth.png";
-  object.sharkfin.src = "./resources/sprites/enemy_ships/sharkfin/sharkfin.png";
-  object.buzz.src = "./resources/sprites/enemy_ships/buzz/buzz.png";
-  object.SG_40.src = "./resources/sprites/enemy_ships/SG-40/SG-40.png";
-  object.void_drone.src = "./resources/sprites/enemy_ships/void_drone/void_drone.png";
-  object.void_chaser.src = "./resources/sprites/enemy_ships/void_chaser/void_chaser.png";
-  object.void_chakram.src = "./resources/sprites/enemy_ships/void_chakram/void_chakram.png";
-  object.void_spherefighter.src = "./resources/sprites/enemy_ships/void_spherefighter/void_spherefighter.png";
-  object.pirate_raider.src = "./resources/sprites/enemy_ships/pirate_raider/pirate_raider.png";
-  object.pirate_minedropper.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_minedropper.png";
-  object.pirate_mine.src = "./resources/sprites/enemy_ships/pirate_minedropper/pirate_mine.png";
-  object.pirate_vessel.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel.png";
-  object.pirate_vessel_turret.src = "./resources/sprites/enemy_ships/pirate_vessel/pirate_vessel_turret.png";
-  object.cursor.src = "./resources/sprites/cursor-pixelated.png";
-  object.earth.src = "./resources/sprites/earth.png";
-  object.HP_panel.src = "./resources/sprites/UI/HP_panel.png";
-  object.LASER_panel.src = "./resources/sprites/UI/LASER_panel.png";
-  object.explosion.src = "./resources/sprites/explosion.png";
-  object.rocket.src = "./resources/sprites/player_ships/rocket.png";
-  object.BASIC.src = "./resources/sprites/player_weapons/BASIC.png";
-  object.DOUBLE.src = "./resources/sprites/player_weapons/DOUBLE.png";
-  object.SPRAY.src = "./resources/sprites/player_weapons/SPRAY.png";
-  object.ROCKET.src = "./resources/sprites/player_weapons/ROCKET.png";
-  object.LASER.src = "./resources/sprites/player_weapons/LASER.png";
+  //Setting path
+  for(let index in object){
+    let precursor = index.split("_");
+    if(precursor[0] == "UI"||precursor[0] == "projectile")
+      object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+    else
+    object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
+  }
   scale();
   player.inicialize();
   UI.inicialize();
@@ -206,14 +176,15 @@ window.onload = ()=>{
   $("#canvas").bind('contextmenu', function() {
     return false;
   });
-  //  setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
+  //setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
   //Setting time for monitor refresh rate check
-  timeThen = Date.now();
   gameLoop();
 }
 
 //Dynamic resolution scaling function  | used in: rendering
+var screenratio;
 function scale(){
+  screenratio = 1;
   canvas.width = 1100*screenratio;
   canvas.height = 900*screenratio;
   while($(window).height()<canvas.height||$(window).width()<canvas.width){
@@ -246,14 +217,12 @@ async function userInput(event,which){
 }
 
 //Game cycle
-var timeNow;
-var timeThen;
-var dif;
 var fpsInterval = 1000/60; //60 FPS
 function gameLoop(){
   requestAnimationFrame(gameLoop);
-  timeNow = Date.now();
-  dif = timeNow - timeThen;
+  let timeThen = 0;
+  let timeNow = Date.now();
+  let dif = timeNow - timeThen;
   //If for a check of the monitor refresh rate
   if(dif>fpsInterval){
     timeThen = timeNow - (dif%fpsInterval);
@@ -261,39 +230,27 @@ function gameLoop(){
     if(UI.inMenu){ //Menu part of cycle
       switch(UI.currentMenu){
         case 0:
-          UI.menu_render(UI.mainMenu);
-          break;
+        UI.menu_render(UI.mainMenu);
+        break;
         case 1:
-          UI.menu_render(UI.upgradesMenu);
-          break;
+        UI.menu_render(UI.upgradesMenu);
+        break;
         case 2:
-          UI.menu_render(UI.weaponsUpgradesMenu);
-          break;
+        UI.menu_render(UI.gameOverMenu);
+        break;
         case 3:
-          UI.menu_render(UI.shipsUpgradesMenu);
-          break;
-        case 4:
-          UI.menu_render(UI.gameOverMenu);
-          break;
-        case 5:
-          UI.menu_render(UI.youWinMenu);
-          break;
+        UI.menu_render(UI.youWinMenu);
+        break;
       }
     }
     else if(levels_handler.level.total == 0){
-      if(localStorage.level[3]<5){
-        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0],JSON.parse(localStorage.level)[1] + 1]);
-      }
-      else {
-        localStorage.level = JSON.stringify([JSON.parse(localStorage.level)[0] + 1,JSON.parse(localStorage.level)[1] - 4]);
-      }
       winTheGame();
     }
     else { //Game part
       ctx.beginPath();
-      ctx.drawImage(object.earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
-      ctx.globalAlpha = player.opacity[0];
-      ctx.drawImage(object.earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.drawImage(object.UI_earth,0,0,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.globalAlpha = player.damageOpacity[0];
+      ctx.drawImage(object.UI_earth,0,200,200,200,canvas.width/2-100*screenratio,canvas.height/2-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = 1;
       ctx.closePath();
       bulletList.forEach((b)=>{//bullets - if render check
@@ -303,15 +260,17 @@ function gameLoop(){
       });
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-canvas.width/2)+Math.abs(eb.y-canvas.height/2);
-        if(collides(eb,player)&&player.HP[1]>0){
+        if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
+
           player.HP[1] -= eb.damage;
           eb.killed = true;
-          player.hitCDstart(1);
+          player.hitCD = true;
+          player.hitCDstart(1,"bullet");
         }
         else if(distance <10){
           player.HP[0] -= eb.damage;
           eb.killed = true;
-          player.hitCDstart(0);
+          player.hitCDstart(0,"bullet");
         }
         eb.update();
         enemyBulletList = enemyBulletList.filter(check => !(check.killed));
@@ -319,15 +278,15 @@ function gameLoop(){
       player.update();//player pos update
       player.render();
       if(leftMouseDown){ //shooting
-        if(!player.attackCD&&player.HP[1] > 0&&activeWeapon.name != "LASER"){
-          bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
+        if(!player.attackCD&&player.HP[1] > 0&&activeShip.weapon.name != "LASER"){
+          bulletList.push(bullet({x:player.x,y:player.y,dirx:xMousePos-player.x,diry:yMousePos-player.y},activeShip.weapon.name,activeShip.weapon.bullets));
           player.attackCDstart();
         }
-        else if (activeWeapon.name == "LASER"&&bulletList.length != 1){
-          bulletList.push(bullet({},activeWeapon.name,activeWeapon.bullets));
+        else if (activeShip.weapon.name == "LASER"&&bulletList.length != 1){
+          bulletList.push(bullet({x:player.x,y:player.y},activeShip.weapon.name,activeShip.weapon.bullets));
         }
       }
-      else if (activeWeapon.name == "LASER"){
+      else if (activeShip.weapon.name == "LASER"){
         if(laserDuration<300&&laserDuration>0&&!laserRecharging)
         laserDuration++;
         bulletList = [];
@@ -350,15 +309,16 @@ function gameLoop(){
                   b.killed = true;
                 }
                 if(!e.piercingCD)
-                  e.piercingDamageCDstart();
+                e.piercingDamageCDstart();
               }
             }
             bulletList = bulletList.filter(check => !(check.killed));
           });
-          if(!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
+          if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
             player.HP[1] -= 1;
+            player.collisionCD = true;
             if(player.HP[1] > 0){
-              player.hitCDstart(1);
+              player.hitCDstart(1,"collision");
             }
           }
         }
@@ -408,15 +368,15 @@ function gameLoop(){
         ctx.fillRect(10*screenratio,canvas.height-61*screenratio,10*screenratio,10*screenratio);
       }
       //Panels
-      if(activeWeapon.name == "LASER"){
+      if(activeShip.weapon.name == "LASER"){
         ctx.fillStyle = "#00FF00";
         if(laserRecharging)
         ctx.fillStyle = "#FF0000";
-        ctx.drawImage(object.LASER_panel,canvas.width-240*screenratio,canvas.height-55*screenratio,240*screenratio,55*screenratio);
+        ctx.drawImage(object.UI_LASERpanel,canvas.width-240*screenratio,canvas.height-55*screenratio,240*screenratio,55*screenratio);
         ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,laserDuration/300*120*screenratio,15*screenratio);
       }
-      ctx.drawImage(object.HP_panel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
-      ctx.drawImage(object.cursor,xMousePos-24,yMousePos-24,48,48); //cursor
+      ctx.drawImage(object.UI_HPpanel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
+      ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
       ctx.stroke();
       ctx.closePath();
 
@@ -442,25 +402,32 @@ var UI = {
     this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","white"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
-    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]};
-
-    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:300*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b1 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:390*screenratio,text:"WEAPONS",button:"WEAPONS",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b2 = {width:300*screenratio,height:50*screenratio,x:canvas.width/2-150*screenratio,y:460*screenratio,text:"SHIPS",button:"SHIPS",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu = [this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_XCOINS];
+    this.upgradesMenu_b3 = {width:50*screenratio,height:50*screenratio,x:627*screenratio,y:520*screenratio,button:"CHANGE_L",text:"<-",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b4 = {width:50*screenratio,height:50*screenratio,x:727*screenratio,y:520*screenratio,button:"CHANGE_R",text:"->",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
+    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b3,this.upgradesMenu_b4];
 
-    this.weaponsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black"],selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",opacity:1,color:["grey","black","white"],sprite:object.BASIC,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:100*screenratio,height:100*screenratio,x:300*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",opacity:1,color:["grey","black","white"],sprite:object.DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:100*screenratio,height:100*screenratio,x:500*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",opacity:1,color:["grey","black","white"],sprite:object.SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:100*screenratio,height:100*screenratio,x:700*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",opacity:1,color:["grey","black","white"],sprite:object.ROCKET,selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:100*screenratio,height:100*screenratio,x:900*screenratio,y:200*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:100*screenratio,height:100*screenratio,x:100*screenratio,y:350*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",opacity:1,color:["grey","black","white"],sprite:object.LASER,selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6,this.upgradesMenu_XCOINS];
+    this.weaponsUpgradesMenu_b0 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_BASIC,selected:false};
+    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.UI_DOUBLE,selected:false};
+    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_SPRAY,selected:false};
+    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_ROCKET,selected:false};
+    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_LASER,selected:false};
+    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
+    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6];
 
-    this.shipsUpgradesMenu_b0 = {width:200*screenratio,height:50*screenratio,x:canvas.width/2-100,y:700*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
-    this.shipsUpgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:850*screenratio,y:0*screenratio,opacity:1,color:["grey","black","black"]}
-    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.upgradesMenu_XCOINS];
+    this.displayShip = activeShip.name;
+    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.player_scout,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.player_slug,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.player_orbiter,color:["grey","black","white"],opacity:0};
+
+    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2];
+
+    this.upgradesMenu = this.upgradesMenu.concat(this.weaponsUpgradesMenu,this.shipsUpgradesMenu);
 
     this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",opacity:1,color:["#4C4C4C","black","black"]};
     this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black","black"]};
@@ -473,45 +440,69 @@ var UI = {
     this.youWinMenu = [this.youWinMenuWindow,this.youWinMenu_b0,this.youWinMenu_b1];
 
     this.weaponsUpgradesMenu.forEach((index)=>{
-      if(activeWeapon.name == index.button){
+      if(activeShip.weapon.name == index.button){
         index.selected = true;
       }
     });
-
+    this.shipsUpgradesMenu.forEach((index)=>{
+      if(activeShip.name == index.button){
+        index.selected = true;
+      }
+    });
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
+    this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
   },
   menu_render : function(menu){
     this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
     this.hover();
-    if(localStorage.level[1]>1||localStorage.level[3]>1){
+    if(activeShip.section>1||activeShip.level>1){
       this.mainMenu_b1.opacity = 1;
     }
+    else {
+      this.mainMenu_b1.opacity = 0.5;
+    }
     menu.forEach((index)=>{
-      ctx.fillStyle = index.color[0];
-      ctx.strokeStyle = index.color[1];
-      ctx.lineWidth = 5;
-      ctx.globalAlpha = index.opacity;
-      ctx.strokeRect(index.x,index.y,index.width,index.height);
-      ctx.fillRect(index.x,index.y,index.width,index.height);
-      ctx.fillStyle = index.color[2];
-      if(index.text != undefined){
-        ctx.font = 30*screenratio + "px FFFFORWA";
-        ctx.textAlign = "center";
-        ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio);
-        ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio); //text on screen
-      }
-      if(index.sprite != undefined){
-        if(JSON.parse(localStorage.localWeaponDatabase)[index.button].status != "UNLOCKED")
-        ctx.drawImage(index.sprite,0,0,100,100,index.x,index.y,index.width,index.height);
-        else
-        ctx.drawImage(index.sprite,0,100,100,100,index.x,index.y,index.width,index.height);
-      }
-      if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
-        ctx.font = 20*screenratio + "px FFFFORWA";
-        ctx.textAlign = "center";
-        ctx.strokeText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
-        ctx.fillText(index.cost,index.x+index.width/2,index.y+index.height-30*screenratio);
+      if((index.ship == undefined&&index.toShip == undefined)||index.ship == this.displayShip||index.toShip == this.displayShip){
+        ctx.fillStyle = index.color[0];
+        ctx.strokeStyle = index.color[1];
+        ctx.lineWidth = 5;
+        ctx.globalAlpha = index.opacity;
+        ctx.strokeRect(index.x,index.y,index.width,index.height);
+        ctx.fillRect(index.x,index.y,index.width,index.height);
+        ctx.fillStyle = index.color[2];
+        if(index.text != undefined){
+          ctx.font = 30*screenratio + "px FFFFORWA";
+          ctx.textAlign = "center";
+          ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio);
+          ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio); //text on screen
+        }
+        if(index.sprite != undefined){
+          ctx.globalAlpha = 1;
+          if(index.button == undefined){
+            ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
+          }
+          else {
+            if(index.toShip == undefined){
+              if(localShipDatabase[index.button].status == "LOCKED")
+              ctx.drawImage(index.sprite,0,0,index.width/screenratio/2,index.height/screenratio/2,index.x,index.y,index.width,index.height);
+              else
+              ctx.drawImage(index.sprite,0,0,index.width/screenratio/2,index.height/screenratio/2,index.x,index.y,index.width,index.height);
+            }
+            else {
+              if(localWeaponDatabase[index.button].status == "LOCKED")
+              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
+              else
+              ctx.drawImage(index.sprite,0,100,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
+            }
+          }
+        }
+        if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
+          ctx.font = 20*screenratio + "px FFFFORWA";
+          ctx.textAlign = "center";
+          ctx.strokeText(index.cost,index.x+3*index.width/4,index.y+index.height-30*screenratio);
+          ctx.fillText(index.cost,index.x+3*index.width/4,index.y+index.height-30*screenratio);
+        }
       }
     });
   },
@@ -523,7 +514,7 @@ var UI = {
             startTheGame();
           }
           else if (index.button == "CONTINUE"){
-            if(localStorage.level[1]>1||localStorage.level[3]>1){
+            if(activeShip.section>1||activeShip.level>1){
               continueTheGame();
             }
           }
@@ -536,51 +527,49 @@ var UI = {
     else if (this.currentMenu == 1&&this.inMenu){
       this.upgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          if(index.button == "CONTINUE"){
+          if(index.button != "CONTINUE"){
+            if(index.button == "CHANGE_L"){
+              for(let i=this.shipsUpgradesMenu.length-1;i>0;i--){
+                if(this.shipsUpgradesMenu[i].ship == this.displayShip){
+                  this.displayShip = this.shipsUpgradesMenu[i-1].ship;
+                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
+                    chooseShip(this.displayShip);
+                }
+                break;
+                }
+              }
+            }
+            else if (index.button == "CHANGE_R"){
+              for(let i=0;i<this.shipsUpgradesMenu.length-1;i++){
+                if(this.shipsUpgradesMenu[i].ship == this.displayShip){
+                  this.displayShip = this.shipsUpgradesMenu[i+1].ship;
+                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
+                    chooseShip(this.displayShip);
+                  }
+                  break;
+                }
+              }
+            }
+            else if (index.ship != undefined&&index.ship == this.displayShip&&localShipDatabase[this.displayShip].status == "LOCKED"){
+              chooseShip(index.button);
+              activeShip.weapon.status = "UNLOCKED";
+              localWeaponDatabase[activeShip.weapon.name].status = "UNLOCKED";
+              saveLocalStorage();
+            }
+            else if(chooseWeapon(index.button,index.toShip)){
+              for(var i=0;i<this.weaponsUpgradesMenu.length;i++){
+                  this.weaponsUpgradesMenu[i].selected = false;
+              }
+                index.selected = true;
+            }
+          }
+          else {
             continueTheGame();
-          }
-          else if (index.button == "WEAPONS") {
-            this.currentMenu = 2;
-          }
-          else if (index.button == "SHIPS"){
-            this.currentMenu = 3;
           }
         }
       });
     }
     else if (this.currentMenu == 2&&this.inMenu){
-      this.weaponsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          if(index.button != "BACK"){
-            if(chooseWeapon(index.button)){
-              for(var i=1;i<this.weaponsUpgradesMenu.length;i++){
-                this.weaponsUpgradesMenu[i].selected = false;
-              }
-              index.selected = true;
-            }
-          }
-          else {
-            this.currentMenu = 1;
-          }
-        }
-      });
-    }
-    else if (this.currentMenu == 3&&this.inMenu){
-      this.shipsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          if(index.button != "BACK"){
-            for(var i=1;i<this.shipsUpgradesMenu.length;i++){
-              this.shipsUpgradesMenu[i].selected = false;
-            }
-            index.selected = true;
-          }
-          else {
-            this.currentMenu = 1;
-          }
-        }
-      });
-    }
-    else if (this.currentMenu == 4&&this.inMenu){
       this.gameOverMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "BACK"){
@@ -592,7 +581,7 @@ var UI = {
         }
       });
     }
-    else if (this.currentMenu == 5&&this.inMenu){
+    else if (this.currentMenu == 3&&this.inMenu){
       this.youWinMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           if(index.button == "UPGRADES"){
@@ -609,112 +598,84 @@ var UI = {
     if(this.currentMenu == 0){
       this.mainMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          if(index.button == "CONTINUE"&&(localStorage.level[1]>1||localStorage.level[3]>1)){
-            index.color[0] = "blue";
-            index.color[1] = "blue";
-            index.color[2] = "white";
+          if(index.button == "CONTINUE"&&(activeShip.section>1||activeShip.level>1)){
+            index.color[0] = this.UIColors.hoverFill;
+            index.color[1] = this.UIColors.hoverStroke;
+            index.color[2] = this.UIColors.hoverFontFill;
           }
           else if (index.button != "CONTINUE") {
-            index.color[0] = "blue";
-            index.color[1] = "blue";
-            index.color[2] = "white";
+            index.color[0] = this.UIColors.hoverFill;
+            index.color[1] = this.UIColors.hoverStroke;
+            index.color[2] = this.UIColors.hoverFontFill;
           }
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 1){
       this.upgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+        if(index.button == "CHANGE_L"&&this.displayShip == "SCOUT"){
+          index.opacity = 0.5;
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+        else if (index.button == "CHANGE_R"&&this.displayShip == "ORBITER"){
+          index.opacity = 0.5;
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+        else if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        }
+        else if (activeShip.weapon.name == index.button){
+          index.color[0] = this.UIColors.selectedFill;
+          index.color[1] = this.UIColors.selectedStroke;
+          index.color[2] = this.UIColors.selectedFontFill;
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          if(index.ship == undefined)
+          index.opacity = 1;
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 2){
-      this.weaponsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
-        }
-        else if(index.text == undefined){
-          if(!index.selected){
-            index.color[0] = "grey";
-            index.color[1] = "black";
-            index.color[2] = "white";
-          }
-          else {
-            index.color[0] = "grey";
-            index.color[1] = "white";
-            index.color[2] = "white";
-          }
+      this.gameOverMenu.forEach((index)=>{
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          if(index.text != "GAME OVER")
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
     else if (this.currentMenu == 3){
-      this.shipsUpgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
-        }
-        else {
-          if(!index.selected){
-            index.color[0] = "grey";
-            index.color[1] = "black";
-            index.color[2] = "white";
-          }
-          else {
-            index.color[0] = "grey";
-            index.color[1] = "white";
-            index.color[2] = "black";
-          }
-        }
-      });
-    }
-    else if (this.currentMenu == 4){
-      this.gameOverMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
-        }
-        else {
-          if(index.text != "GAME OVER")
-          index.color[0] = "grey";
-          index.color[1] = "black";
-          index.color[2] = "white";
-        }
-      });
-    }
-    else if (this.currentMenu == 5){
       this.youWinMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          index.color[0] = "blue";
-          index.color[1] = "blue";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
         }
         else {
           if(index.text != "YOU WIN!")
-          index.color[0] = "#4C4C4C";
-          index.color[1] = "black";
-          index.color[2] = "white";
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
         }
       });
     }
@@ -727,18 +688,14 @@ var laserDuration = 300;
 var laserRecharging = false;
 function bullet(B,name,numberOfBullets){
   B.killed = false;
-  B.damage = activeWeapon.damage;
-  B.speed = activeWeapon.speed*screenratio;
-  B.width = activeWeapon.width*screenratio;
-  B.height = activeWeapon.height*screenratio;
-  B.piercing = activeWeapon.piercing
-  B.color = activeWeapon.color;
+  B.damage = localWeaponDatabase[name].damage;
+  B.speed = localWeaponDatabase[name].speed*screenratio;
+  B.width = localWeaponDatabase[name].width*screenratio;
+  B.height = localWeaponDatabase[name].height*screenratio;
+  B.piercing = localWeaponDatabase[name].piercing;
+  B.color = localWeaponDatabase[name].color;
   B.opacity = 1;
-  B.x = player.x;
-  B.y = player.y;
   if(name == "BASIC"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
   }
   else if(name == "DOUBLE") {
     if (numberOfBullets == 2){
@@ -750,7 +707,7 @@ function bullet(B,name,numberOfBullets){
       B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
     }
     if(numberOfBullets>1){
-      bulletList.push(bullet({},name,numberOfBullets-1))
+      bulletList.push(bullet({x:player.x,y:player.y},name,numberOfBullets-1))
     }
   }
   else if(name == "SPRAY") {
@@ -767,13 +724,11 @@ function bullet(B,name,numberOfBullets){
       B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
     }
     if(numberOfBullets>1){
-      bulletList.push(bullet({},name,numberOfBullets-1));
+      bulletList.push(bullet({x:player.x,y:player.y},name,numberOfBullets-1));
     }
   }
   else if (name == "ROCKET"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
-    B.sprite = object.rocket;
+    B.sprite = object.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150*screenratio;
     B.explosion_triggered = false;
@@ -782,8 +737,13 @@ function bullet(B,name,numberOfBullets){
     B.explosion_angle = Math.random()*2*Math.PI;
   }
   else if (name == "GIANT"){
-    B.dirx = xMousePos-player.x;
-    B.diry = yMousePos-player.y;
+
+  }
+  else if (name == "SPREADER"){
+    B.sprite = object.projectile_spread;
+  }
+  else if (name == "SPREADER_PROJECTILE"){
+    B.sprite = object.projectile_spreadProjectile;
   }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
@@ -838,7 +798,7 @@ function bullet(B,name,numberOfBullets){
       ctx.rotate(Math.atan2(B.diry,B.dirx)+Math.PI/2);
       ctx.globalAlpha = B.opacity;
       if(B.color == undefined){
-        ctx.drawImage(B.sprite,0,0,activeWeapon.width,activeWeapon.height,-B.width/2,-B.height/2,B.width,B.height);
+        ctx.drawImage(B.sprite,0,0,B.width/screenratio,B.height/screenratio,-B.width/2,-B.height/2,B.width,B.height);
       }
       else  {
         ctx.fillStyle = B.color;
@@ -852,7 +812,7 @@ function bullet(B,name,numberOfBullets){
   B.explode = function(){
     B.explosion_triggered = true;
     enemyList.forEach((e)=>{
-      if(collides(e,{hitBoxX:B.x,hitBoxY:B.y,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
+      if(collides(e,{hitBoxX:B.x-B.explosion_radius/2,hitBoxY:B.y-B.explosion_radius/2,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
         e.HP -= B.damage;
         e.hitCDstart();
         checkTotal(e);
@@ -862,19 +822,19 @@ function bullet(B,name,numberOfBullets){
   B.explosion_render = function(){
     if(!B.killed){
       B.explosion_countdown += 1;
-      if(B.explosion_countdown%6 == 0){
+      if(B.explosion_countdown%5 == 0){
         B.explosion_angle = Math.random()*2*Math.PI;
-        B.explosion_index = B.explosion_countdown/6;
+        B.explosion_index += 1;
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(B.x,B.y);
       ctx.rotate(B.explosion_angle);
-      ctx.drawImage(object.explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
+      ctx.drawImage(object.projectile_explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if(B.explosion_index==6)B.killed = true;
+      if(B.explosion_index==11)B.killed = true;
     }
   }
   B.laserDurationCheck = function(){
@@ -892,7 +852,7 @@ function bullet(B,name,numberOfBullets){
     }
   }
   B.laserCDstart = async function(){
-    for(let i=0;i<activeWeapon.cooldown/10;i++){
+    for(let i=0;i<activeShip.weapon.cooldown/10;i++){
       laserDuration += 1.5;
       await sleep(10);
     }
@@ -908,28 +868,41 @@ var player = {
     player.y = 900/2*screenratio;
     player.futureX = 1100/2*screenratio;
     player.futureY = 900/2*screenratio;
-    player.speed = 5*screenratio;
+    player.speed = activeShip.speed*screenratio;
     player.xspeed = 0;
     player.yspeed = 0;
-    player.width = 60*screenratio;
-    player.height = 60*screenratio;
-    player.widthOnPic = 88;
-    player.heightOnPic = 88;
+    player.width = activeShip.width*screenratio;
+    player.height = activeShip.height*screenratio;
+    player.widthOnPic = activeShip.widthOnPic;
+    player.heightOnPic = activeShip.heightOnPic;
     player.animationX = 0;
     player.animationY = 0;
-    player.fireCounter = 0;
     //0 = Earth, 1 = Ship
-    player.maxHP = [10,5];
+    player.maxHP = activeShip.maxHP;
     player.HP = [player.maxHP[0],player.maxHP[1]];
-    //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas
-    player.thrusterFire = [22,2*screenratio,30*screenratio];
+    //particle parameters
+    //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
+    player.particles = activeShip.particles;
+    player.particlesWidth = 1;
+    player.particlesHeight = 0.2;
+
     player.hitBoxWidth = player.width/3*2;
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
     player.hitBoxY = player.y-player.hitBoxHeight/2;
+    player.sprite = object["player_" + activeShip.name.toLowerCase()];
   },
   update : ()=>{
+    //thruster animation
+    if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
+    player.particlesWidth += player.particles[3];
+    player.particlesHeight += player.particles[4];
+  }
+
+    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>0.2){
+    player.particlesWidth -= player.particles[3];
+    player.particlesHeight -= player.particles[4];
+  }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
       loseTheGame();
@@ -968,11 +941,6 @@ var player = {
     }
   },
   render : ()=> {
-    //fire animation
-    if(!player.xspeed == 0&&!player.yspeed == 0&&player.fireCounter<1)
-    player.fireCounter += 0.1;
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.fireCounter>0.2)
-    player.fireCounter -= 0.1;
     // if(player.counter == 30){
     //   player.counter = 0;
     //   if(player.animationX<96){
@@ -986,50 +954,53 @@ var player = {
     ctx.save();
     ctx.translate(player.x,player.y);
     ctx.rotate(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2);
+    //Normal Scout
+    ctx.globalAlpha = player.opacity[1];
+    ctx.drawImage(player.sprite,0,player.heightOnPic,player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
+    ctx.drawImage(player.sprite,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     //Damaged Scout #RED
     if(player.HP[1] > 0){
-      ctx.drawImage(object.scout,0,player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-      ctx.drawImage(object.scout,0,2*player.heightOnPic+player.thrusterFire[0],player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
+      ctx.globalAlpha = player.damageOpacity[1];
+      ctx.drawImage(player.sprite,0,2*player.heightOnPic+player.particles[0],player.widthOnPic,player.particles[0],-player.width/2*player.particlesWidth,player.height/2-player.particles[1]*screenratio,player.width*player.particlesWidth,player.particles[2]*screenratio*player.particlesHeight);
+      ctx.drawImage(player.sprite,0,player.heightOnPic+player.particles[0],player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
     }
-    ctx.globalAlpha = player.opacity[1];
-    //Normal Scout
-    ctx.drawImage(object.scout,0,0,player.widthOnPic,player.heightOnPic,-player.width/2,-player.height/2,player.width,player.height);
-    ctx.drawImage(object.scout,0,player.heightOnPic,player.widthOnPic,player.thrusterFire[0],-player.width/2,player.height/2-player.thrusterFire[1],player.width,player.thrusterFire[2]*player.fireCounter);
     ctx.restore();
     ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.closePath();
   },
 
   attackCD : false,
   hitCD : false,
+  collisionCD : false,
   killedCD : false,
   opacity : [1,1],
+  damageOpacity : [0,0],
   blikacky : false,
   attackCDstart : async function() {
     player.attackCD = true;
-    await sleep(activeWeapon.cooldown);
+    await sleep(activeShip.weapon.cooldown);
     player.attackCD = false;
   },
-  hitCDstart : async function(which) {
-    player.opacity[which] = 29/100;
-    if(which == 1)player.hitCD = true;
-    for(var i=30;i<130;i++){
-      if(player.opacity[which] == (i-1)/100){
-        player.opacity[which] = i/100;
-        await sleep(10);
+  hitCDstart : async function(which,what) {
+    player.damageOpacity[which] = 51/100;
+    for(let i=50;i>=0;i--){
+      if(player.damageOpacity[which] == (i+1)/100){
+        player.damageOpacity[which] = i/100;
+        await sleep(20);
       }
       else break;
     }
-    if(which == 1)player.hitCD = false;
+    if(which == 1&& what == "bullet")
+    player.hitCD = false;
+    else if (which == 1 && what == "collision") player.collisionCD = false;
   },
   killedCDstart : async function() {
     //EXPLOSION
-    player.opacity[0] = 0.5;
     player.opacity[1] = 0.5;
     player.killedCD = true;
     await sleep(5000);
     player.HP[1] = player.maxHP[1];
-    player.opacity[0] = 1;
     player.opacity[1] = 1;
     player.killedCD = false;
   }
@@ -1040,11 +1011,16 @@ var XCOINS = 0;
 async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    if(levels_handler.level.total == 1&&enemy.sprite != object.pirate_mine){
+    if(activeShip.weapon.name == "SPREADER"){
+      for(let i=0;i<16;i++){
+        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
+      }
+    }
+    if(levels_handler.level.total == 1&&enemy.sprite != object.enemy_pirateMine){
       await sleep(2000);
       levels_handler.level.total -= 1;
     }
-    else if (enemy.sprite != object.pirate_mine) {
+    else if (enemy.sprite != object.enemy_pirateMine) {
       levels_handler.level.total -= 1;
     }
     XCOINS += enemy.XCOINS;
@@ -1052,10 +1028,10 @@ async function checkTotal(enemy){
 }
 var enemyBulletList = [];
 function enemyBullet(B,type){
-    B.killed = false;
-    B.damage = 1;
-    B.speed = 15*screenratio;
-    B.color = "#FF0000";
+  B.killed = false;
+  B.damage = 1;
+  B.speed = 15*screenratio;
+  B.color = "#FF0000";
   if(type == "BASIC"){
     B.dirx = canvas.width/2-B.x;
     B.diry = canvas.height/2-B.y;
@@ -1079,7 +1055,7 @@ function enemyBullet(B,type){
     ctx.rotate(Math.atan2(B.diry,B.dirx)+Math.PI/2);
     ctx.globalAlpha = B.opacity;
     if(B.color == undefined){
-      ctx.drawImage(B.sprite,0,0,activeWeapon.width,activeWeapon.height,-B.width/2,-B.height/2,B.width,B.height);
+      ctx.drawImage(B.sprite,0,0,B.width,B.height,-B.width/2,-B.height/2,B.width,B.height);
     }
     else {
       ctx.fillStyle = B.color;
@@ -1096,8 +1072,9 @@ function enemyBullet(B,type){
 var enemyList = [];
 function enemyCharacter(E,type){
   E.animation = false;
+  E.attackCDvalue = 2000;
   if (type == "buzz"){
-    E.sprite = object.buzz;
+    E.sprite = object.enemy_buzz;
     E.widthOnPic = 56;
     E.heightOnPic = 62;
     E.hit = 0;
@@ -1108,10 +1085,10 @@ function enemyCharacter(E,type){
     E.HP = 6;
     E.maxHP = 6;
     E.XCOINS = 15;
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "tooth"){
-    E.sprite = object.tooth;
+    E.sprite = object.enemy_tooth;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     E.hit = 0;
@@ -1122,10 +1099,10 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 15;
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
-    E.sprite = object.sharkfin;
+    E.sprite = object.enemy_sharkfin;
     E.widthOnPic = 64;
     E.heightOnPic = 60;
     E.hit = 0;
@@ -1138,10 +1115,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-12*screenratio];
+    E.particles = [10,10*screenratio,-12*screenratio,0,0.1];
   }
   else if(type == "goblin"){// 2 - goblin
-    E.sprite = object.goblin;
+    E.sprite = object.enemy_goblin;
     E.widthOnPic = 76;
     E.heightOnPic = 100;
     //Ingame stats
@@ -1153,10 +1130,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [22,22*screenratio,-1*screenratio];
+    E.particles = [22,22*screenratio,-1*screenratio,0,0.1];
   }
-  else if(type == "SG_40"){// 2 - goblin
-    E.sprite = object.SG_40;
+  else if(type == "SG40"){// 2 - goblin
+    E.sprite = object.enemy_SG40;
     E.widthOnPic = 48;
     E.heightOnPic = 50;
     //Ingame stats
@@ -1166,10 +1143,10 @@ function enemyCharacter(E,type){
     E.HP = 10;
     E.maxHP = 10;
     E.XCOINS = 10;
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
-  else if (type == "pirate_raider"){
-    E.sprite = object.pirate_raider;
+  else if (type == "pirateRaider"){
+    E.sprite = object.enemy_pirateRaider;
     E.widthOnPic = 60;
     E.heightOnPic = 32;
     //Ingame stats
@@ -1181,10 +1158,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-1*screenratio];
+    E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
-  else if (type == "pirate_minedropper"){
-    E.sprite = object.pirate_minedropper;
+  else if (type == "pirateMinedropper"){
+    E.sprite = object.enemy_pirateMinedropper;
     E.widthOnPic = 56;
     E.heightOnPic = 74;
     //Ingame stats
@@ -1195,11 +1172,11 @@ function enemyCharacter(E,type){
     E.maxHP = 15;
     E.XCOINS = 10;
     //Custom thruster fire parameters
-    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [10,10*screenratio,-6*screenratio];
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship, 3 = particlesX add, 4 = particlesY add
+    E.particles = [10,10*screenratio,-6*screenratio,0,0.1];
   }
-  else if (type == "pirate_mine"){
-    E.sprite = object.pirate_mine;
+  else if (type == "pirateMine"){
+    E.sprite = object.enemy_pirateMine;
     E.widthOnPic = 44;
     E.heightOnPic = 44;
     //Ingame stats
@@ -1211,10 +1188,25 @@ function enemyCharacter(E,type){
     E.XCOINS = 0;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
-  else if (type == "pirate_vessel"){
-    E.sprite = object.pirate_vessel;
+  else if (type == "pirateTiger"){
+    E.sprite = object.enemy_pirateTiger;
+    E.widthOnPic = 70;
+    E.heightOnPic = 70;
+    //Ingame stats
+    E.width = 70*screenratio;
+    E.height = 70*screenratio;
+    E.speed = 2*screenratio;
+    E.HP = 5;
+    E.maxHP = 5;
+    E.XCOINS = 0;
+    //Custom thruster fire parameters
+    //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
+    E.particles = [18,18*screenratio,-13*screenratio,0,0.1];
+  }
+  else if (type == "pirateVessel"){
+    E.sprite = object.enemy_pirateVessel;
     E.widthOnPic = 76;
     E.heightOnPic = 158;
     //Ingame stats
@@ -1227,12 +1219,12 @@ function enemyCharacter(E,type){
     E.angle = Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
-    E.thrusterFire = [46,46*screenratio,-79*screenratio];
+    E.particles = [46,46*screenratio,-79*screenratio,0,0.1];
     E.orbit = true;
     E.inOrbit = false;
   }
-  else if (type == "void_drone"){
-    E.sprite = object.void_drone;
+  else if (type == "voidDrone"){
+    E.sprite = object.enemy_voidDrone;
     E.widthOnPic = 60;
     E.heightOnPic = 60;
     //Ingame stats
@@ -1244,10 +1236,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
   }
-  else if (type == "void_chaser"){
-    E.sprite = object.void_chaser;
+  else if (type == "voidChaser"){
+    E.sprite = object.enemy_voidChaser;
     E.widthOnPic = 48;
     E.heightOnPic = 62;
     //Ingame stats
@@ -1259,10 +1251,10 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
   }
-  else if (type == "void_spherefighter"){
-    E.sprite = object.void_spherefighter;
+  else if (type == "voidSpherefighter"){
+    E.sprite = object.enemy_voidSpherefighter;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     //Ingame stats
@@ -1274,13 +1266,13 @@ function enemyCharacter(E,type){
     E.XCOINS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
     E.animation = true;
     E.animationFrames = 8;
     E.animationFPS = 5;
   }
-  else if (type == "void_chakram"){
-    E.sprite = object.void_chakram;
+  else if (type == "voidChakram"){
+    E.sprite = object.enemy_voidChakram;
     E.widthOnPic = 180;
     E.heightOnPic = 180;
     //Ingame stats
@@ -1292,7 +1284,7 @@ function enemyCharacter(E,type){
     E.XCOINS = 50;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
-    E.thrusterFire = [0,0*screenratio,0*screenratio];
+    E.particles = [0,0*screenratio,0*screenratio,0];
     E.animation = true;
     E.animationFrames = 4;
     E.animationFPS = 12;
@@ -1307,6 +1299,8 @@ function enemyCharacter(E,type){
   E.animationIndex = 0;
   E.counter = 0;
   E.arrival = false;
+  E.particlesWidth = 1;
+  E.particlesHeight = 0.2;
   if(E.hitBoxWidth == undefined){
     E.hitBoxWidth = E.width/3*2;
     E.hitBoxHeight = E.height/3*2;
@@ -1314,8 +1308,16 @@ function enemyCharacter(E,type){
     E.hitBoxY = E.y-E.hitBoxHeight/2;
   }
   E.update = function(){
+    if(E.speed != 0&&E.particlesHeight<1){
+      E.particlesWidth += E.particles[3];
+      E.particlesHeight += E.particles[4];
+    }
+    else if(E.speed == 0&&E.particlesHeight>0.2){
+      E.particlesWidth -= E.particles[3];
+      E.particlesHeight -= E.particles[4];
+    }
     let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
-    if(E.orbit&&distance<500&&!E.inOrbit){
+    if(E.orbit&&distance<500*screenratio&&!E.inOrbit){
       E.inOrbit = true;
     }
     else if (E.inOrbit&&!E.arrival){
@@ -1323,10 +1325,19 @@ function enemyCharacter(E,type){
       E.attackCDstart();
     }
     else if (E.inOrbit&&E.arrival&&!E.attackCD){
-      enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
-      E.attackCDstart();
+      if(type == "pirateVessel"){
+        E.attackCDstart();
+        if(Math.random()<0.5)
+        enemyBulletList.push(enemyBullet({x:E.cannon1X,y:E.cannon1Y},"BASIC"));
+        else
+        enemyBulletList.push(enemyBullet({x:E.cannon2X,y:E.cannon2Y},"BASIC"));
+      }
+      else {
+        enemyBulletList.push(enemyBullet({x:E.x,y:E.y},"BASIC"));
+        E.attackCDstart();
+      }
     }
-    else if(distance < 140*screenratio&&(E.sprite != object.pirate_mine&&E.sprite != object.pirate_minedropper)&&!E.orbit){
+    else if(distance < 140*screenratio&&(type != "pirateMine"&&type != "pirateMinedropper")&&!E.orbit){
       E.speed = 0;
       if(!E.arrival){
         E.arrival = true;
@@ -1337,7 +1348,7 @@ function enemyCharacter(E,type){
         E.attackCDstart();
       }
     }
-    else if ((E.sprite == object.pirate_mine||E.sprite == object.pirate_minedropper)&&distance<40){
+    else if ((type == "pirateMine"||type == "pirateMinedropper")&&distance<40){
       E.HP = 0;
       player.HP[0] -= 2;
     }
@@ -1352,7 +1363,7 @@ function enemyCharacter(E,type){
       E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
     else {
-      E.angle-=0.01;
+      E.angle-=0.01*screenratio;
       E.x += E.speed*Math.cos(E.angle);
       E.y += E.speed*Math.sin(E.angle);
       E.hitBoxX = E.x-E.hitBoxWidth/2;
@@ -1381,24 +1392,46 @@ function enemyCharacter(E,type){
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI/2);
     else
     ctx.rotate(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI);
-    //damaged enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.thrusterFire[0]+3,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.thrusterFire[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
-    ctx.globalAlpha = E.opacity;
     //normal enemy ship
-    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.thrusterFire[0],-E.width/2,E.height/2+E.thrusterFire[2],E.width,E.thrusterFire[1]);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+1,E.widthOnPic,E.particles[0],-E.width/2,E.height/2+E.particles[2],E.width*E.particlesWidth,E.particles[1]*E.particlesHeight);
     ctx.drawImage(E.sprite,0+E.animationX,0,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
-    if(type == "pirate_vessel"){
+    //damaged enemy ship
+    ctx.globalAlpha = E.opacity;
+    ctx.drawImage(E.sprite,0+E.animationX,2*E.heightOnPic+E.particles[0]+3,E.widthOnPic,E.particles[0],-E.width/2,E.height/2+E.particles[2],E.width*E.particlesWidth,E.particles[1]*E.particlesHeight);
+    ctx.drawImage(E.sprite,0+E.animationX,E.heightOnPic+E.particles[0]+2,E.widthOnPic,E.heightOnPic,-E.width/2,-E.height/2,E.width,E.height);
+    ctx.restore();
+    if(type == "pirateVessel"){
+      ctx.save();
       if(!E.inOrbit){
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,-58*screenratio,24*screenratio,36*screenratio);
-        ctx.drawImage(object.pirate_vessel_turret,0,0,24,36,-24/2*screenratio,10*screenratio,24*screenratio,36*screenratio);
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)+Math.PI)+E.y;
+        ctx.translate(E.cannon1X,E.cannon1Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.restore();
+        ctx.save();
+        ctx.translate(E.cannon2X,E.cannon2Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)-Math.PI/2);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       else {
-        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,-45*screenratio,36*screenratio,24*screenratio);
-        ctx.drawImage(object.pirate_vessel_turret,24,0,36,24,-24*screenratio,20*screenratio,36*screenratio,24*screenratio);
+        E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+        E.cannon1Y = -(32*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+        E.cannon2X = (35*screenratio)*Math.cos(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.x;
+        E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(canvas.height/2-E.y,canvas.width/2-E.x)-Math.PI/2)+E.y;
+        ctx.translate(E.cannon1X,E.cannon1Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon1Y,canvas.width/2-E.cannon1X)+Math.PI/2);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.restore();
+        ctx.save();
+        ctx.translate(E.cannon2X,E.cannon2Y);
+        ctx.rotate(Math.atan2(canvas.height/2-E.cannon2Y,canvas.width/2-E.cannon2X)+Math.PI/2);
+        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
+      ctx.restore();
     }
-    ctx.restore();
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = "#606060";
     ctx.fillRect(E.x-15,E.y-25,30,5);
@@ -1414,38 +1447,38 @@ function enemyCharacter(E,type){
   E.deathAnimation_render = function(){
     if(!E.killed){
       E.deathAnimation_countdown += 1;
-      if(E.deathAnimation_countdown%6 == 0){
+      if(E.deathAnimation_countdown%5 == 0){
         let distance = Math.abs(canvas.width/2-E.x)+Math.abs(canvas.height/2-E.y);
         E.deathAnimation_angle = Math.random()*2*Math.PI;
-        E.deathAnimation_index = E.deathAnimation_countdown/6;
-        if(E.deathAnimation_index==1&&E.sprite == object.pirate_minedropper&&distance>=40)
-          enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirate_mine"));
+        E.deathAnimation_index += 1;
+        if(E.deathAnimation_index==1&&type == "pirateMinedropper"&&distance>=40)
+        enemyList.push(enemyCharacter({x:E.x,y:E.y},"pirateMine"));
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(E.x,E.y);
       ctx.rotate(E.deathAnimation_angle);
-      ctx.drawImage(object.explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
+      ctx.drawImage(object.projectile_explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if(E.deathAnimation_index==6)
-        E.killed = true;
+      if(E.deathAnimation_index==11)
+      E.killed = true;
     }
   }
   //Cooldowns
   E.attackCD = false;
   E.piercingCD = false;
-  E.opacity = 1;
+  E.opacity = 0;
   E.attackCDstart = async function() {
     E.attackCD = true;
-    await sleep(2000);
+    await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
   E.hitCDstart = async function() {
-    E.opacity = 49/100;
-    for(var i=50;i<150;i++){
-      if(E.opacity!=(i-1)/100){
+    E.opacity = 0.51;
+    for(let i=50;i>=0;i--){
+      if(E.opacity!=(i+1)/100){
         break;
       }
       else {
@@ -1456,7 +1489,7 @@ function enemyCharacter(E,type){
   };
   E.piercingDamageCDstart = async function(){
     E.piercingCD = true;
-    await sleep(activeWeapon.hitCD);
+    await sleep(activeShip.weapon.hitCD);
     E.piercingCD = false;
   }
   return E;
@@ -1480,7 +1513,7 @@ function collides(a, b) {
 
 //spawner of enemies
 async function spawn(level_layout){
-  UI.levelDisplay.text = localStorage.level[1] + "-" + localStorage.level[3];
+  UI.levelDisplay.text = activeShip.section + "-" + activeShip.level;
   for(let i=1;i<=400;i++){
     if(i<=100){
       UI.levelDisplay.opacity = i/100;
@@ -1511,10 +1544,24 @@ var levels_handler = {
     let enemyArray = [];
     for(index in this.level){
       for(var i=0;i<this.level[index][0];i++){
-          enemyArray.push("" + index);
+        enemyArray.push("" + index);
       }
     }
     this.level.total = enemyArray.length;
     return enemyArray.sort(function(){return 0.5 - Math.random()});
   }
 };
+
+function levelLayout(L){
+  if(activeShip.section==1){
+      L.pirateRaider = [6+activeShip.level,500];
+      L.pirateTiger = [6+activeShip.level,1000];
+    if(activeShip.level>2){
+      L.pirateMinedropper = [3+activeShip.level,1000];
+    }
+    if(activeShip.level>5){
+      L.pirateVessel = [1+(activeShip.level-1)*2,5000];
+    }
+  }
+  return L;
+}
