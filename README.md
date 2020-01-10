@@ -3,4 +3,4 @@
 Hi and welcome to my game project!
 
 This simple game is about defending planets from hostile ships. Nothing special at the moment, but give it time and we might witness something special!
-![alt text](https://raw.githubusercontent.com/GlitchedDreamer/LocusDefender/branch/master/wannabe logo.png)
+![alt text](https://raw.githubusercontent.com/GlitchedDreamer/LocusDefender/branch/master/wannabelogo.png)
