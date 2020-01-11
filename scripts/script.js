@@ -336,98 +336,7 @@ function gameLoop(){
         }
         checkTotal(e);
       });
-
-      //UI
-      ctx.beginPath();
-      ctx.fillStyle = "#0A0A0A";
-      ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
-      //HP bars
-      let x1_player = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
-      let x2_player = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
-      if (x1_player.length == 1) x1_player = "0" + x1_player;
-      if (x2_player.length == 1) x2_player = "0" + x2_player;
-      let x_player = "#" + x1_player + x2_player + "00";
-
-      let x1_earth = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
-      let x2_earth = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
-      if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
-      if (x2_earth.length == 1) x2_earth = "0" + x2_earth;
-      let x_earth = "#" + x1_earth + x2_earth + "00";
-
-      ctx.fillStyle = x_earth;
-      ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*120*screenratio,15*screenratio);
-      ctx.fillStyle = x_player;
-      ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
-      //Blikačky
-      if(player.HP[0]<player.maxHP[0]/3){
-        ctx.fillStyle = "red";
-        ctx.fillRect(10*screenratio,canvas.height-31*screenratio,10*screenratio,10*screenratio);
-      }
-      else {
-        ctx.fillStyle = "black";
-        ctx.fillRect(10*screenratio,canvas.height-31*screenratio,10*screenratio,10*screenratio);
-      }
-      if(player.HP[1]<player.maxHP[1]/3){
-        ctx.fillStyle = "red";
-        ctx.fillRect(10*screenratio,canvas.height-61*screenratio,10*screenratio,10*screenratio);
-      }
-      else {
-        ctx.fillStyle = "black";
-        ctx.fillRect(10*screenratio,canvas.height-61*screenratio,10*screenratio,10*screenratio);
-      }
-      //Panels
-      if(activeShip.weapon.name == "LASER"){
-        ctx.fillStyle = "#00FF00";
-        if(laserRecharging)
-        ctx.fillStyle = "#FF0000";
-        ctx.drawImage(object.UI_LASERpanel,canvas.width-240*screenratio,canvas.height-55*screenratio,240*screenratio,55*screenratio);
-        ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,laserDuration/300*120*screenratio,15*screenratio);
-      }
-      ctx.drawImage(object.UI_HPpanel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
-      ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
-      if(UI.levelDisplayCheck){
-        ctx.globalAlpha = UI.levelDisplay.opacity;
-        ctx.textAlign = "center";
-        ctx.font = 80*screenratio + "px FFFFORWA";
-        ctx.fillStyle = UI.levelDisplay.color;
-        ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
-        ctx.globalAlpha = 1;
-      }
-      ctx.globalAlpha = 0.5;
-      ctx.strokeStyle = "#6B6B6B";
-      ctx.lineWidth = 3;
-      ctx.strokeRect(2,2,200*screenratio,200*screenratio);
-      ctx.fillStyle = "#193019";
-      ctx.fillRect(2,2,200*screenratio,200*screenratio);
-      ctx.fillStyle = "green";
-      ctx.strokeStyle = "green";
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.arc(100*screenratio,100*screenratio,5*screenratio,0,2*Math.PI,false);
-      ctx.fill();
-      ctx.closePath();
-      ctx.beginPath();
-      ctx.fillStyle = "red";
-      enemyList.forEach((e)=>{
-        if(!e.deathAnimation)
-        ctx.fillRect(e.coordX/(player.spaceSize/(200*screenratio))-2.5,e.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
-      });
-      ctx.fillStyle = "green";
-      ctx.strokeStyle = "green";
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = 0.7;
-      ctx.moveTo(3,player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),3);
-      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.moveTo(200*screenratio,player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),200*screenratio);
-      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
-      ctx.stroke();
-      ctx.fillRect(player.coordX/(player.spaceSize/(200*screenratio))-2.5,player.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
-      ctx.closePath();
-      ctx.globalAlpha = 1;
+      UI.game_render();
     }
   }
 }
@@ -492,6 +401,17 @@ var UI = {
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
     this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
+    //Gameplay UI
+    this.HPbar_player = {color:""};
+    this.HPbar_earth = {color:""};
+    this.HPpanel = {width:250*screenratio,height:96*screenratio,x:0,y:canvas.height-96*screenratio,sprite:object.UI_HPpanel};
+
+    this.dangerLight_0 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-31*screenratio};
+    this.dangerLight_1 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-61*screenratio};
+
+    this.panel_laser = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:object.UI_LASERpanel};
+
+    this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#6B6B6B"]};
   },
   menu_render : function(menu){
     this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
@@ -545,6 +465,93 @@ var UI = {
         }
       }
     });
+  },
+  game_render : function(){
+    //UI
+    ctx.beginPath();
+    ctx.fillStyle = "#0A0A0A";
+    ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
+    //HP bars
+    let x1_earth = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
+    let x2_earth = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
+    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
+    if (x2_earth.length == 1) x2_earth = "0" + x2_earth;
+    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
+
+    let x1_player = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
+    let x2_player = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+    if (x1_player.length == 1) x1_player = "0" + x1_player;
+    if (x2_player.length == 1) x2_player = "0" + x2_player;
+    this.HPbar_player.color = "#" + x1_player + x2_player + "00";
+
+    ctx.fillStyle = this.HPbar_earth.color;
+    ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*120*screenratio,15*screenratio);
+    ctx.fillStyle = this.HPbar_player.color;
+    ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
+    //Blikačky
+    ctx.fillStyle = "black";
+    if(player.HP[0]<player.maxHP[0]/3){
+      ctx.fillStyle = "red";
+    }
+    ctx.fillRect(this.dangerLight_0.x,this.dangerLight_0.y,this.dangerLight_0.width,this.dangerLight_0.height);
+    if(player.HP[1]<player.maxHP[1]/3){
+      ctx.fillStyle = "red";
+    }
+    ctx.fillRect(this.dangerLight_1.x,this.dangerLight_1.y,this.dangerLight_1.width,this.dangerLight_1.height);
+
+    //Panels
+    if(activeShip.weapon.name == "LASER"){
+      ctx.fillStyle = "#00FF00";
+      if(laserRecharging)
+      ctx.fillStyle = "#FF0000";
+      ctx.drawImage(this.panel_laser.sprite,this.panel_laser.x,this.panel_laser.y,this.panel_laser.width,this.panel_laser.height);
+      ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,laserDuration/300*120*screenratio,15*screenratio);
+    }
+    ctx.drawImage(this.HPpanel.sprite,this.HPpanel.x,this.HPpanel.y,this.HPpanel.width,this.HPpanel.height);
+    ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
+
+    if(UI.levelDisplayCheck){
+      ctx.globalAlpha = UI.levelDisplay.opacity;
+      ctx.textAlign = "center";
+      ctx.font = 80*screenratio + "px FFFFORWA";
+      ctx.fillStyle = UI.levelDisplay.color;
+      ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
+      ctx.globalAlpha = 1;
+    }
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = this.minimapLayer.color[1];
+    ctx.lineWidth = 3;
+    ctx.strokeRect(this.minimapLayer.x,this.minimapLayer.y,this.minimapLayer.width,this.minimapLayer.height);
+    ctx.fillStyle = this.minimapLayer.color[0];
+    ctx.fillRect(this.minimapLayer.x,this.minimapLayer.y,this.minimapLayer.width,this.minimapLayer.height);
+    ctx.fillStyle = "green";
+    ctx.strokeStyle = "green";
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.arc(100*screenratio,100*screenratio,5*screenratio,0,2*Math.PI,false);
+    ctx.fill();
+    ctx.closePath();
+    ctx.beginPath();
+
+    ctx.fillStyle = "red";
+    enemyList.forEach((e)=>{
+      if(!e.deathAnimation)
+      ctx.fillRect(e.coordX/(player.spaceSize/(200*screenratio))-2.5,e.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
+    });
+
+    ctx.fillStyle = "green";
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 1;
+    ctx.moveTo(3,player.coordY/(player.spaceSize/(200*screenratio)));
+    ctx.lineTo(200*screenratio,player.coordY/(player.spaceSize/(200*screenratio)));
+
+    ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),3);
+    ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),200*screenratio);
+
+    ctx.stroke();
+    ctx.fillRect(player.coordX/(player.spaceSize/(200*screenratio))-2.5,player.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
+    ctx.closePath();
+    ctx.globalAlpha = 1;
   },
   click : function(){
     if(this.currentMenu == 0&&this.inMenu){
