@@ -381,9 +381,6 @@ function gameLoop(){
       }
       ctx.drawImage(object.UI_HPpanel,0,canvas.height-96*screenratio,250*screenratio,96*screenratio);
       ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
-      ctx.stroke();
-      ctx.closePath();
-
       if(UI.levelDisplayCheck){
         ctx.globalAlpha = UI.levelDisplay.opacity;
         ctx.textAlign = "center";
@@ -392,6 +389,41 @@ function gameLoop(){
         ctx.fillText(UI.levelDisplay.text,UI.levelDisplay.x,UI.levelDisplay.y); //text on screen
         ctx.globalAlpha = 1;
       }
+      ctx.globalAlpha = 0.5;
+      ctx.strokeStyle = "#6B6B6B";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(2,2,200*screenratio,200*screenratio);
+      ctx.fillStyle = "#191919";
+      ctx.fillRect(2,2,200*screenratio,200*screenratio);
+      ctx.fillStyle = "blue";
+      ctx.strokeStyle = "blue";
+      ctx.closePath();
+      ctx.beginPath();
+      ctx.arc(100*screenratio,100*screenratio,5*screenratio,0,2*Math.PI,false);
+      ctx.fill();
+      ctx.closePath();
+      ctx.beginPath();
+      ctx.fillStyle = "red";
+      enemyList.forEach((e)=>{
+        if(!e.deathAnimation)
+        ctx.fillRect(e.coordX/(player.spaceSize/(200*screenratio))-2.5,e.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
+      });
+      ctx.fillStyle = "green";
+      ctx.strokeStyle = "green";
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.7;
+      ctx.moveTo(3,player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),3);
+      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.moveTo(200*screenratio,player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),200*screenratio);
+      ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),player.coordY/(player.spaceSize/(200*screenratio)));
+      ctx.stroke();
+      ctx.fillRect(player.coordX/(player.spaceSize/(200*screenratio))-2.5,player.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
+      ctx.closePath();
+      ctx.globalAlpha = 1;
     }
   }
 }
@@ -871,8 +903,8 @@ var player = {
     player.spaceSize = 4000*screenratio;
     player.x = canvas.width/2;
     player.y = canvas.height/2;
-    player.coordX = 0;
-    player.coordY = 0;
+    player.coordX = player.spaceSize/2;
+    player.coordY = player.spaceSize/2;
     player.earthX = canvas.width/2;
     player.earthY = canvas.height/2;
     player.futureX = 0;
@@ -1307,6 +1339,8 @@ function enemyCharacter(E,type){
     E.animationFrames = 4;
     E.animationFPS = 12;
   }
+  E.coordX = player.spaceSize/2 + E.x - player.earthX;
+  E.coordY = player.spaceSize/2 + E.y - player.earthY;
   E.deathAnimation = false;
   E.deathAnimation_angle = Math.random()*2*Math.PI;
   E.deathAnimation_index = 0;
@@ -1377,6 +1411,8 @@ function enemyCharacter(E,type){
 
       E.x += E.xspeed;
       E.y += E.yspeed;
+      E.coordX += E.xspeed;
+      E.coordY += E.yspeed;
       E.hitBoxX = E.x-E.hitBoxWidth/2;
       E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
@@ -1384,6 +1420,8 @@ function enemyCharacter(E,type){
       E.angle-=0.01*screenratio;
       E.x += E.speed*Math.cos(E.angle);
       E.y += E.speed*Math.sin(E.angle);
+      E.coordX += E.xspeed;
+      E.coordY += E.yspeed;
       E.hitBoxX = E.x-E.hitBoxWidth/2;
       E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
