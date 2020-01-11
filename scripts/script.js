@@ -399,8 +399,8 @@ function gameLoop(){
       ctx.strokeRect(2,2,200*screenratio,200*screenratio);
       ctx.fillStyle = "#193019";
       ctx.fillRect(2,2,200*screenratio,200*screenratio);
-      ctx.fillStyle = "blue";
-      ctx.strokeStyle = "blue";
+      ctx.fillStyle = "green";
+      ctx.strokeStyle = "green";
       ctx.closePath();
       ctx.beginPath();
       ctx.arc(100*screenratio,100*screenratio,5*screenratio,0,2*Math.PI,false);
