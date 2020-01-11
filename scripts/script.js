@@ -261,11 +261,12 @@ function gameLoop(){
         if(b.explosive&&b.explosion_triggered)
         b.explosion_render();
         b.update();
+        if(b.x > 0 && b.x < canvas.width || b.y > 0 && b.y < canvas.height)
+        b.render();
       });
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-player.earthX)+Math.abs(eb.y-player.earthY);
         if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
-
           player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
@@ -277,6 +278,8 @@ function gameLoop(){
           player.hitCDstart(0,"bullet");
         }
         eb.update();
+        if(eb.x > 0 && eb.x < canvas.width || eb.y > 0 && eb.y < canvas.height)
+        eb.render();
         enemyBulletList = enemyBulletList.filter(check => !(check.killed));
       });
       player.update();//player pos update
@@ -299,6 +302,7 @@ function gameLoop(){
         if(!e.deathAnimation){
           if(!e.killed){
             e.update();
+            if(e.x > 0 && e.x < canvas.width || e.y > 0 && e.y < canvas.height)
             e.render();
           }
           bulletList.forEach((b)=>{ //Collision with enemies
@@ -393,7 +397,7 @@ function gameLoop(){
       ctx.strokeStyle = "#6B6B6B";
       ctx.lineWidth = 3;
       ctx.strokeRect(2,2,200*screenratio,200*screenratio);
-      ctx.fillStyle = "#191919";
+      ctx.fillStyle = "#193019";
       ctx.fillRect(2,2,200*screenratio,200*screenratio);
       ctx.fillStyle = "blue";
       ctx.strokeStyle = "blue";
@@ -806,19 +810,9 @@ function bullet(B,name,numberOfBullets){
       }
       B.x = hitDetectionX;
       B.y = hitDetectionY;
-
-      ctx.beginPath();
-      ctx.save();
-      ctx.strokeStyle = B.color;
-      ctx.lineWidth = 6*screenratio;
-      ctx.moveTo(player.x,player.y);
-      ctx.lineTo(B.x,B.y);
-      ctx.stroke();
-      ctx.restore();
-      ctx.closePath();
     }
     else if(!B.explosion_triggered){
-      bulletList = bulletList.filter(check => !(check.x < 0||check.x > canvas.width||check.y < 0||check.y > canvas.height));
+      bulletList = bulletList.filter(check => !(check.x < -canvas.width||check.x > canvas.width*2||check.y < -canvas.height||check.y > canvas.height*2));
 
       let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
       B.xspeed = ratio*B.dirx;
@@ -828,6 +822,22 @@ function bullet(B,name,numberOfBullets){
       B.y += B.yspeed-player.yspeed;
       B.hitBoxX = B.x-B.hitBoxWidth/2;
       B.hitBoxY = B.y-B.hitBoxHeight/2;
+    }
+  }
+  B.render = function(){
+    if(name == "LASER"&&B.laserDurationCheck()){
+      ctx.beginPath();
+      ctx.save();
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = B.color;
+      ctx.lineWidth = 6*screenratio;
+      ctx.moveTo(player.x,player.y);
+      ctx.lineTo(B.x,B.y);
+      ctx.stroke();
+      ctx.restore();
+      ctx.closePath();
+    }
+    else if(!B.explosion_triggered){
       ctx.beginPath();
       ctx.save();
       ctx.translate(B.x,B.y);
@@ -1091,6 +1101,8 @@ function enemyBullet(B,type){
     B.hitBoxHeight = B.height/3*2;
     B.hitBoxX = B.x-B.hitBoxWidth/2;
     B.hitBoxY = B.y-B.hitBoxHeight/2;
+  }
+  B.render = function(){
     ctx.beginPath();
     ctx.save();
     ctx.translate(B.x,B.y);
@@ -1615,7 +1627,7 @@ var levels_handler = {
 };
 
 function levelLayout(L){
-  if(activeShip.section==1){
+  if(activeShip.section>0){
       L.pirateRaider = [6+activeShip.level,500];
       L.pirateTiger = [6+activeShip.level,1000];
     if(activeShip.level>2){
