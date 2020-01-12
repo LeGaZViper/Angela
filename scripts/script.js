@@ -1098,6 +1098,8 @@ function enemyBullet(B,type){
     B.width = 4*screenratio;
     B.height = 25*screenratio;
   }
+  B.hitBoxWidth = B.width/3*2;
+  B.hitBoxHeight = B.height/3*2;
   B.update = function(){
     let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
     B.xspeed = ratio*B.dirx;
@@ -1105,8 +1107,6 @@ function enemyBullet(B,type){
 
     B.x += B.xspeed-player.xspeed;
     B.y += B.yspeed-player.yspeed;
-    B.hitBoxWidth = B.width/3*2;
-    B.hitBoxHeight = B.height/3*2;
     B.hitBoxX = B.x-B.hitBoxWidth/2;
     B.hitBoxY = B.y-B.hitBoxHeight/2;
   }
@@ -1433,8 +1433,6 @@ function enemyCharacter(E,type){
       E.y += E.yspeed;
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
-      E.hitBoxX = E.x-E.hitBoxWidth/2;
-      E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
     else {
       E.angle-=0.01*screenratio;
@@ -1442,11 +1440,11 @@ function enemyCharacter(E,type){
       E.y += E.speed*Math.sin(E.angle);
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
-      E.hitBoxX = E.x-E.hitBoxWidth/2;
-      E.hitBoxY = E.y-E.hitBoxHeight/2;
     }
     E.x -= player.xspeed;
     E.y -= player.yspeed;
+    E.hitBoxX = E.x-E.hitBoxWidth/2;
+    E.hitBoxY = E.y-E.hitBoxHeight/2;
   };
   E.render = function(){
     let x1 = parseInt(-(E.HP/E.maxHP-1)*255).toString(16);
