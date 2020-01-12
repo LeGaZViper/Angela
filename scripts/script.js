@@ -370,8 +370,8 @@ var UI = {
     this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6];
 
     this.displayShip = activeShip.name;
-    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.player_scout,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.player_slug,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.UI_scout,color:["grey","black","white"],opacity:0};
+    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.UI_slug,color:["grey","black","white"],opacity:0};
     this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.player_orbiter,color:["grey","black","white"],opacity:0};
 
     this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2];
@@ -445,9 +445,9 @@ var UI = {
           else {
             if(index.toShip == undefined){
               if(localShipDatabase[index.button].status == "LOCKED")
-              ctx.drawImage(index.sprite,0,0,index.width/screenratio/2,index.height/screenratio/2,index.x,index.y,index.width,index.height);
+              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
               else
-              ctx.drawImage(index.sprite,0,0,index.width/screenratio/2,index.height/screenratio/2,index.x,index.y,index.width,index.height);
+              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
             }
             else {
               if(localWeaponDatabase[index.button].status == "LOCKED")
@@ -957,7 +957,7 @@ var player = {
     player.particlesHeight += player.particles[4];
   }
 
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>0.2){
+    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0){
     player.particlesWidth -= player.particles[3];
     player.particlesHeight -= player.particles[4];
   }

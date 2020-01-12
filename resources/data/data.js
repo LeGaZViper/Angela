@@ -26,6 +26,8 @@ var object = {
   UI_cursor : new Image(),
   UI_HPpanel : new Image(),
   UI_LASERpanel : new Image(),
+  UI_scout : new Image(),
+  UI_slug : new Image(),
   UI_shopBG : new Image(),
   UI_BASIC : new Image(),
   UI_DOUBLE : new Image(),
