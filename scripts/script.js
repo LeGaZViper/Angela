@@ -969,7 +969,7 @@ var player = {
       player.killedCDstart();
     }
     else if(!isNaN(ratio)&&!rightMouseDown){
-      if(Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2))>50*screenratio){
+      if(Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2))>100*screenratio){
         player.xspeed = ratio*(xMousePos-player.x);
         player.yspeed = ratio*(yMousePos-player.y);
         player.futureX += player.xspeed;
@@ -1062,6 +1062,7 @@ var player = {
     player.HP[1] = player.maxHP[1];
     player.opacity[1] = 1;
     player.killedCD = false;
+    player.collisionCD = false;
   }
 };
 
@@ -1070,9 +1071,9 @@ var XCOINS = 0;
 async function checkTotal(enemy){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    if(activeShip.weapon.name == "SPREADER"){
-      for(let i=0;i<16;i++){
-        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
+    if(activeShip.weapon.name == "SPREADER"&&bulletList.length < 300){
+      for(let i=0;i<8;i++){
+        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/4*i),diry:Math.sin(Math.PI/4*i)},"SPREADER_PROJECTILE",1));
       }
     }
     if(levels_handler.level.total == 1&&enemy.sprite != object.enemy_pirateMine){
@@ -1635,8 +1636,8 @@ var levels_handler = {
 
 function levelLayout(L){
   if(activeShip.section>0){
-      L.pirateRaider = [6+activeShip.level,500];
-      L.pirateTiger = [6+activeShip.level,1000];
+      L.pirateRaider = [25+activeShip.level,500];
+      L.pirateTiger = [25+activeShip.level,1000];
     if(activeShip.level>2){
       L.pirateMinedropper = [3+activeShip.level,1000];
     }
