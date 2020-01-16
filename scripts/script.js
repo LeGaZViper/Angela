@@ -1,7 +1,11 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-SPRITES
-UI for upgrades?
+Random guns
+  - UI change
+  - active weapon
+  - in game drops
+  - removing XCOINS
+  - perhaps no more new ships?
 ================================================================================
 
 ######POZNÁMKY######
