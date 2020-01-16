@@ -411,7 +411,7 @@ var UI = {
 
     this.panel_laser = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:object.UI_LASERpanel};
 
-    this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#6B6B6B"]};
+    this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#353535"]};
   },
   menu_render : function(menu){
     this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
@@ -547,7 +547,6 @@ var UI = {
 
     ctx.moveTo(player.coordX/(player.spaceSize/(200*screenratio)),3);
     ctx.lineTo(player.coordX/(player.spaceSize/(200*screenratio)),200*screenratio);
-
     ctx.stroke();
     ctx.fillRect(player.coordX/(player.spaceSize/(200*screenratio))-2.5,player.coordY/(player.spaceSize/(200*screenratio))-2.5,5,5);
     ctx.closePath();
@@ -957,7 +956,7 @@ var player = {
     player.particlesHeight += player.particles[4];
   }
 
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0){
+    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0.2){
     player.particlesWidth -= player.particles[3];
     player.particlesHeight -= player.particles[4];
   }
