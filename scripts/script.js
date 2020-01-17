@@ -207,7 +207,10 @@ function gameLoop(){
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-player.earthX)+Math.abs(eb.y-player.earthY);
         if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
-          player.HP[1] -= eb.damage;
+          if(player.shield[1]>0)
+            player.shield[1] -= eb.damage;
+          else
+            player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
           player.hitCDstart(1,"bullet");
@@ -250,7 +253,10 @@ function gameLoop(){
             if(e.x > 0 && e.x < canvas.width || e.y > 0 && e.y < canvas.height){
               e.render();
               if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
-                player.HP[1] -= 1;
+                if(player.shield[1]>0)
+                  player.shield[1] -= 1;
+                else
+                  player.HP[1] -= 1;
                 player.collisionCD = true;
                 if(player.HP[1] > 0){
                   player.hitCDstart(1,"collision");
@@ -388,21 +394,24 @@ var UI = {
     ctx.fillStyle = "#0A0A0A";
     ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
     //HP bars
-    let x1_earth = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
-    let x2_earth = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
-    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
-    if (x2_earth.length == 1) x2_earth = "0" + x2_earth;
-    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
-
-    let x1_player = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
-    let x2_player = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+    let x1_player = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
+    let x2_player = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
     if (x1_player.length == 1) x1_player = "0" + x1_player;
     if (x2_player.length == 1) x2_player = "0" + x2_player;
     this.HPbar_player.color = "#" + x1_player + x2_player + "00";
 
-    ctx.fillStyle = this.HPbar_earth.color;
-    ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*120*screenratio,15*screenratio);
+    let x1_earth = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
+    let x2_earth = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
+    if (x2_earth.length == 1) x2_player = "0" + x2_earth;
+    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
+
     ctx.fillStyle = this.HPbar_player.color;
+    ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
+    ctx.fillStyle = "#008FFF";
+    ctx.fillRect(35*screenratio+player.maxHP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,canvas.height-66*screenratio,player.shield[1]/player.maxShield[1]*(player.maxShield[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
+
+    ctx.fillStyle = this.HPbar_earth.color;
     ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
     //Danger light
     ctx.fillStyle = "black";
@@ -770,6 +779,8 @@ var player = {
     //0 = Earth, 1 = Ship
     player.maxHP = ship.maxHP;
     player.HP = [player.maxHP[0],player.maxHP[1]];
+    player.maxShield = ship.maxShield;
+    player.shield = [player.maxShield[0],player.maxShield[1]];
     //particle parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
     player.particles = ship.particles;
@@ -783,6 +794,7 @@ var player = {
     player.sprite = object["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
+    player.shieldRecharge();
     //thruster animation
     if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
       player.particlesWidth += player.particles[3];
@@ -852,6 +864,7 @@ var player = {
     ctx.closePath();
   },
 
+  shieldCD : 0,
   attackCD : false,
   hitCD : false,
   collisionCD : false,
@@ -866,6 +879,7 @@ var player = {
   },
   hitCDstart : async function(which,what) {
     player.damageOpacity[which] = 51/100;
+    player.shieldCD = 300;
     for(let i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
         player.damageOpacity[which] = i/100;
@@ -876,6 +890,15 @@ var player = {
     if(which == 1&& what == "bullet")
     player.hitCD = false;
     else if (which == 1 && what == "collision") player.collisionCD = false;
+  },
+  shieldRecharge : function(){
+    if(player.shieldCD>0){
+      player.shieldCD--;
+    }
+    else if(player.shield[1]<player.maxShield[1]){
+      player.shieldCD = 60;
+      player.shield[1] += 1;
+    }
   },
   killedCDstart : async function() {
     //EXPLOSION

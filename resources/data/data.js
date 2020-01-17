@@ -55,6 +55,7 @@ var defaultShip = {
   widthOnPic:88,
   heightOnPic:88,
   particles:[22,2,30,0,0.1],
+  maxShield:[0,1],
   maxHP:[10,5],
   section:1,
   level:1,
