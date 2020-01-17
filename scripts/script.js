@@ -1,7 +1,8 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-SPRITES
-UI for upgrades?
+Random guns
+- UI change
+- in game drops
 ================================================================================
 
 ######POZNÁMKY######
@@ -9,11 +10,6 @@ NEPŘÁTELÉ:
 Každý objekt má momentálně svoji individuální sprite mapu.
 Mezi každým spritem je 1px mezera.
 ~Pokud se jedná o sprite bez trysek, dává se 2px mezera.
-
-
-NÁPAD NA SYSTÉM LEVELU:
-Neomezený počet levelů v sekci, přičemž levely scalují
-Nová loď ==> nová sekce ==> nová planeta na obranu
 
 */
 //Sleep function | used in: cooldowns
@@ -28,13 +24,14 @@ function inicializeGame(){
   bulletList = [];
   enemyList = [];
   enemyBulletList = [];
+  randomDropList = [];
+  weaponDuration = 0;
   canvas.style.cursor = "none";
   UI.inMenu = false;
   spawn(levels_handler.levelCreator());
 }
 function inicializeMenu(menu){
   XCOINS = 0;
-  laserDuration = 300;
   canvas.style.cursor = "auto";
   UI.inMenu = true;
   UI.currentMenu = menu;
@@ -42,7 +39,7 @@ function inicializeMenu(menu){
 //Start the game function | used in: main menu
 function startTheGame(){
   //Reset Progress
-  if(activeShip.section>1||activeShip.level>1){
+  if(ship.section>1||ship.level>1){
     if(confirm("Are you sure you want to start a new game?\nYour current progress will reset!")){
       resetLocalStorage();
       inicializeGame();
@@ -64,93 +61,36 @@ function loseTheGame(){
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame(){
   localStorage.XCOINS = parseInt(localStorage.XCOINS) + XCOINS;
-  activeShip.level += 1;
-  for(index in localShipDatabase){
-    if(index.name == activeShip.name) {
-      index.level += 1;
-    }
-  }
+  ship.level += 1;
   saveLocalStorage();
   inicializeMenu(3);
 }
 
-
 function saveLocalStorage(){
-  localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
-  localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
-  localStorage.activeShip = JSON.stringify(activeShip);
+  localStorage.ship = JSON.stringify(ship);
 }
 
 function resetLocalStorage(){
-  localStorage.localWeaponDatabase = JSON.stringify(defaultWeaponDatabase);
-  localStorage.localShipDatabase = JSON.stringify(defaultShipDatabase);
-  localStorage.activeShip = JSON.stringify(defaultShipDatabase.SCOUT);
+  localStorage.ship = JSON.stringify(defaultShip);
   localStorage.XCOINS = 0;
-  activeShip = JSON.parse(localStorage.activeShip);
-  localWeaponDatabase = defaultWeaponDatabase;
-  localShipDatabase = defaultShipDatabase;
 }
 //First inicialization
-if(localStorage.localWeaponDatabase == undefined){
+if(localStorage.ship == undefined){
   resetLocalStorage();
 }
 
-//Weapon choosing function | used in: upgrades
-var localWeaponDatabase = JSON.parse(localStorage.localWeaponDatabase);
-function chooseWeapon(name,ship){
-  for(var index in localWeaponDatabase){
-    if(localWeaponDatabase[index].name == name&&activeShip.name == ship){
-      if(localWeaponDatabase[index].status != "LOCKED"){
-        activeShip.weapon = localWeaponDatabase[index];
-        saveLocalStorage();
-        return true;
-      }
-      else if (localWeaponDatabase[index].cost<=parseInt(localStorage.XCOINS)){
-        console.log("Bought " + localWeaponDatabase[index].name + " for: " + localWeaponDatabase[index].cost + " XCOINS.");
-        console.log("Current XCOINS balance: " + localStorage.XCOINS);
-        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localWeaponDatabase[index].cost;
-        localWeaponDatabase[index].status = "UNLOCKED";
-        localStorage.localWeaponDatabase = JSON.stringify(localWeaponDatabase);
-        activeShip.weapon = localWeaponDatabase[index];
-        saveLocalStorage();
-        return true;
-      }
-      else {
-        console.log("Insufficient funds.");
-        return false;
-      }
+//Weapon choosing function | used in weapons
+function chooseWeapon(name){
+  for(var index in weaponDatabase){
+    if(weaponDatabase[index].name == name){
+      ship.weapon = weaponDatabase[index];
+      weaponDuration = ship.weapon.duration;
+      saveLocalStorage();
+      break;
     }
   }
 }
-var activeShip = JSON.parse(localStorage.activeShip);
-var localShipDatabase = JSON.parse(localStorage.localShipDatabase);
-function chooseShip(name){
-  for(var index in localShipDatabase){
-    if(localShipDatabase[index].name == name){
-      if(localShipDatabase[index].status != "LOCKED"){
-        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
-        activeShip = localShipDatabase[index];
-        saveLocalStorage();
-        return true;
-      }
-      else if (localShipDatabase[index].cost<=parseInt(localStorage.XCOINS)){
-        console.log("Bought " + localShipDatabase[index].name + " for: " + localShipDatabase[index].cost + " XCOINS.");
-        console.log("Current XCOINS balance: " + localStorage.XCOINS);
-        localStorage.XCOINS = parseInt(localStorage.XCOINS) - localShipDatabase[index].cost;
-        localShipDatabase[index].status = "UNLOCKED";
-        localStorage.activeShip = JSON.stringify(localShipDatabase[index]);
-        localStorage.localShipDatabase = JSON.stringify(localShipDatabase);
-        activeShip = localShipDatabase[index];
-        saveLocalStorage();
-        return true;
-      }
-      else {
-        console.log("Insufficient funds.");
-        return false;
-      }
-    }
-  }
-}
+
 //Inicialization
 var canvas;
 var ctx;
@@ -165,7 +105,7 @@ window.onload = ()=>{
   for(let index in object){
     let precursor = index.split("_");
     if(precursor[0] == "UI"||precursor[0] == "projectile")
-      object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+    object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
     else
     object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
   }
@@ -261,13 +201,16 @@ function gameLoop(){
         if(b.explosive&&b.explosion_triggered)
         b.explosion_render();
         b.update();
-        if(b.x > 0 && b.x < canvas.width || b.y > 0 && b.y < canvas.height)
+        if((b.x > 0 && b.x < canvas.width || b.y > 0 && b.y < canvas.height)||ship.weapon.name == "LASER")
         b.render();
       });
       enemyBulletList.forEach((eb)=>{//enemy bullets - render
         let distance = Math.abs(eb.x-player.earthX)+Math.abs(eb.y-player.earthY);
         if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
-          player.HP[1] -= eb.damage;
+          if(player.shield[1]>0)
+            player.shield[1] -= eb.damage;
+          else
+            player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
           player.hitCDstart(1,"bullet");
@@ -284,26 +227,42 @@ function gameLoop(){
       });
       player.update();//player pos update
       player.render();
+      if(weaponDuration == 0){
+        chooseWeapon("BASIC");
+        weaponDuration--;
+      }
+      else if(weaponDuration>0) weaponDuration--;
       if(leftMouseDown){ //shooting
-        if(!player.attackCD&&player.HP[1] > 0&&activeShip.weapon.name != "LASER"){
-          bulletList.push(bullet({x:player.x,y:player.y,dirx:xMousePos-player.x,diry:yMousePos-player.y},activeShip.weapon.name,activeShip.weapon.bullets));
-          player.attackCDstart();
-        }
-        else if (activeShip.weapon.name == "LASER"&&bulletList.length != 1){
-          bulletList.push(bullet({x:player.x,y:player.y},activeShip.weapon.name,activeShip.weapon.bullets));
+        if(!player.attackCD&&player.HP[1] > 0){
+          if(ship.weapon.name == "LASER"&&bulletList.length != 1){
+            bulletList.push(bullet({x:player.x,y:player.y},ship.weapon.name,ship.weapon.bullets));
+          }
+          else if (ship.weapon.name != "LASER") {
+            bulletList.push(bullet({x:player.x,y:player.y,dirx:xMousePos-player.x,diry:yMousePos-player.y},ship.weapon.name,ship.weapon.bullets));
+            player.attackCDstart();
+          }
         }
       }
-      else if (activeShip.weapon.name == "LASER"){
-        if(laserDuration<300&&laserDuration>0&&!laserRecharging)
-        laserDuration++;
-        bulletList = [];
+      else if (ship.weapon.name == "LASER"){
+        bulletList = bulletList.filter(check => check.name != "LASER");
       }
       enemyList.forEach((e)=>{//enemies
         if(!e.deathAnimation){
           if(!e.killed){
             e.update();
-            if(e.x > 0 && e.x < canvas.width || e.y > 0 && e.y < canvas.height)
-            e.render();
+            if(e.x > 0 && e.x < canvas.width || e.y > 0 && e.y < canvas.height){
+              e.render();
+              if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
+                if(player.shield[1]>0)
+                  player.shield[1] -= 1;
+                else
+                  player.HP[1] -= 1;
+                player.collisionCD = true;
+                if(player.HP[1] > 0){
+                  player.hitCDstart(1,"collision");
+                }
+              }
+            }
           }
           bulletList.forEach((b)=>{ //Collision with enemies
             if(collides(e,b)){
@@ -321,20 +280,23 @@ function gameLoop(){
               }
             }
             bulletList = bulletList.filter(check => !(check.killed));
+            checkDeath(e,b.name);
           });
-          if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
-            player.HP[1] -= 1;
-            player.collisionCD = true;
-            if(player.HP[1] > 0){
-              player.hitCDstart(1,"collision");
-            }
-          }
         }
         else {
           e.deathAnimation_render();
           enemyList = enemyList.filter(check => !(check.killed));
         }
-        checkTotal(e);
+      });
+      randomDropList.forEach((r,i)=>{
+        r.update();
+        if(r.x > 0 && r.x < canvas.width || r.y > 0 && r.y < canvas.height){
+          r.render();
+          if(collides(r,player)){
+            chooseWeapon(r.name);
+            randomDropList.splice(i,1);
+          }
+        }
       });
       UI.game_render();
     }
@@ -360,24 +322,6 @@ var UI = {
     this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
     this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b3,this.upgradesMenu_b4];
 
-    this.weaponsUpgradesMenu_b0 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["BASIC"].cost,button:"BASIC",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_BASIC,selected:false};
-    this.weaponsUpgradesMenu_b1 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["DOUBLE"].cost,button:"DOUBLE",toShip:"SLUG",opacity:1,color:["grey","black","white"],sprite:object.UI_DOUBLE,selected:false};
-    this.weaponsUpgradesMenu_b2 = {width:284*screenratio,height:100*screenratio,x:80*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["SPRAY"].cost,button:"SPRAY",toShip:"SCOUT",opacity:1,color:["grey","black","white"],sprite:object.UI_SPRAY,selected:false};
-    this.weaponsUpgradesMenu_b3 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:81*screenratio,cost:defaultWeaponDatabase["ROCKET"].cost,button:"ROCKET",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_ROCKET,selected:false};
-    this.weaponsUpgradesMenu_b4 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:188*screenratio,cost:defaultWeaponDatabase["GIANT"].cost,button:"GIANT",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu_b5 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:293*screenratio,cost:defaultWeaponDatabase["LASER"].cost,button:"LASER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],sprite:object.UI_LASER,selected:false};
-    this.weaponsUpgradesMenu_b6 = {width:284*screenratio,height:100*screenratio,x:81*screenratio,y:398*screenratio,cost:defaultWeaponDatabase["SPREADER"].cost,button:"SPREADER",toShip:"ORBITER",opacity:1,color:["grey","black","white"],selected:false};
-    this.weaponsUpgradesMenu = [this.weaponsUpgradesMenu_b0,this.weaponsUpgradesMenu_b1,this.weaponsUpgradesMenu_b2,this.weaponsUpgradesMenu_b3,this.weaponsUpgradesMenu_b4,this.weaponsUpgradesMenu_b5,this.weaponsUpgradesMenu_b6];
-
-    this.displayShip = activeShip.name;
-    this.shipsUpgradesMenu_b0 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SCOUT",ship:"SCOUT",sprite:object.UI_scout,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b1 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"SLUG",ship:"SLUG",sprite:object.UI_slug,color:["grey","black","white"],opacity:0};
-    this.shipsUpgradesMenu_b2 = {width:176*screenratio,height:176*screenratio,x:614*screenratio,y:310*screenratio,button:"ORBITER",ship:"ORBITER",sprite:object.player_orbiter,color:["grey","black","white"],opacity:0};
-
-    this.shipsUpgradesMenu = [this.shipsUpgradesMenu_b0,this.shipsUpgradesMenu_b1,this.shipsUpgradesMenu_b2];
-
-    this.upgradesMenu = this.upgradesMenu.concat(this.weaponsUpgradesMenu,this.shipsUpgradesMenu);
-
     this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",opacity:1,color:["#4C4C4C","black","black"]};
     this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black","black"]};
     this.gameOverMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
@@ -388,16 +332,6 @@ var UI = {
     this.youWinMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","black"]};
     this.youWinMenu = [this.youWinMenuWindow,this.youWinMenu_b0,this.youWinMenu_b1];
 
-    this.weaponsUpgradesMenu.forEach((index)=>{
-      if(activeShip.weapon.name == index.button){
-        index.selected = true;
-      }
-    });
-    this.shipsUpgradesMenu.forEach((index)=>{
-      if(activeShip.name == index.button){
-        index.selected = true;
-      }
-    });
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
     this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
@@ -416,7 +350,7 @@ var UI = {
   menu_render : function(menu){
     this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
     this.hover();
-    if(activeShip.section>1||activeShip.level>1){
+    if(ship.section>1||ship.level>1){
       this.mainMenu_b1.opacity = 1;
     }
     else {
@@ -449,19 +383,7 @@ var UI = {
               else
               ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
             }
-            else {
-              if(localWeaponDatabase[index.button].status == "LOCKED")
-              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
-              else
-              ctx.drawImage(index.sprite,0,100,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
-            }
           }
-        }
-        if(index.cost != undefined&&JSON.parse(localStorage.localWeaponDatabase)[index.button].status == "LOCKED"){
-          ctx.font = 20*screenratio + "px FFFFORWA";
-          ctx.textAlign = "center";
-          ctx.strokeText(index.cost,index.x+3*index.width/4,index.y+index.height-30*screenratio);
-          ctx.fillText(index.cost,index.x+3*index.width/4,index.y+index.height-30*screenratio);
         }
       }
     });
@@ -472,23 +394,26 @@ var UI = {
     ctx.fillStyle = "#0A0A0A";
     ctx.fillRect(10*screenratio,canvas.height-70*screenratio,190*screenratio,50*screenratio);
     //HP bars
-    let x1_earth = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
-    let x2_earth = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
-    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
-    if (x2_earth.length == 1) x2_earth = "0" + x2_earth;
-    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
-
-    let x1_player = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
-    let x2_player = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+    let x1_player = parseInt(-(player.HP[1]/player.maxHP[1]-1)*255).toString(16);
+    let x2_player = parseInt(player.HP[1]/player.maxHP[1]*255).toString(16);
     if (x1_player.length == 1) x1_player = "0" + x1_player;
     if (x2_player.length == 1) x2_player = "0" + x2_player;
     this.HPbar_player.color = "#" + x1_player + x2_player + "00";
 
-    ctx.fillStyle = this.HPbar_earth.color;
-    ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*120*screenratio,15*screenratio);
+    let x1_earth = parseInt(-(player.HP[0]/player.maxHP[0]-1)*255).toString(16);
+    let x2_earth = parseInt(player.HP[0]/player.maxHP[0]*255).toString(16);
+    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
+    if (x2_earth.length == 1) x2_player = "0" + x2_earth;
+    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
+
     ctx.fillStyle = this.HPbar_player.color;
+    ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
+    ctx.fillStyle = "#008FFF";
+    ctx.fillRect(35*screenratio+player.maxHP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,canvas.height-66*screenratio,player.shield[1]/player.maxShield[1]*(player.maxShield[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
+
+    ctx.fillStyle = this.HPbar_earth.color;
     ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
-    //Blikačky
+    //Danger light
     ctx.fillStyle = "black";
     if(player.HP[0]<player.maxHP[0]/3){
       ctx.fillStyle = "red";
@@ -500,12 +425,10 @@ var UI = {
     ctx.fillRect(this.dangerLight_1.x,this.dangerLight_1.y,this.dangerLight_1.width,this.dangerLight_1.height);
 
     //Panels
-    if(activeShip.weapon.name == "LASER"){
+    if(ship.weapon.name != "BASIC"){
       ctx.fillStyle = "#00FF00";
-      if(laserRecharging)
-      ctx.fillStyle = "#FF0000";
       ctx.drawImage(this.panel_laser.sprite,this.panel_laser.x,this.panel_laser.y,this.panel_laser.width,this.panel_laser.height);
-      ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,laserDuration/300*120*screenratio,15*screenratio);
+      ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,weaponDuration/ship.weapon.duration*120*screenratio,15*screenratio);
     }
     ctx.drawImage(this.HPpanel.sprite,this.HPpanel.x,this.HPpanel.y,this.HPpanel.width,this.HPpanel.height);
     ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
@@ -560,7 +483,7 @@ var UI = {
             startTheGame();
           }
           else if (index.button == "CONTINUE"){
-            if(activeShip.section>1||activeShip.level>1){
+            if(ship.section>1||ship.level>1){
               continueTheGame();
             }
           }
@@ -571,49 +494,7 @@ var UI = {
       });
     }
     else if (this.currentMenu == 1&&this.inMenu){
-      this.upgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
-          if(index.button != "CONTINUE"){
-            if(index.button == "CHANGE_L"){
-              for(let i=this.shipsUpgradesMenu.length-1;i>0;i--){
-                if(this.shipsUpgradesMenu[i].ship == this.displayShip){
-                  this.displayShip = this.shipsUpgradesMenu[i-1].ship;
-                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
-                    chooseShip(this.displayShip);
-                }
-                break;
-                }
-              }
-            }
-            else if (index.button == "CHANGE_R"){
-              for(let i=0;i<this.shipsUpgradesMenu.length-1;i++){
-                if(this.shipsUpgradesMenu[i].ship == this.displayShip){
-                  this.displayShip = this.shipsUpgradesMenu[i+1].ship;
-                  if(localShipDatabase[this.displayShip].status == "UNLOCKED"){
-                    chooseShip(this.displayShip);
-                  }
-                  break;
-                }
-              }
-            }
-            else if (index.ship != undefined&&index.ship == this.displayShip&&localShipDatabase[this.displayShip].status == "LOCKED"){
-              chooseShip(index.button);
-              activeShip.weapon.status = "UNLOCKED";
-              localWeaponDatabase[activeShip.weapon.name].status = "UNLOCKED";
-              saveLocalStorage();
-            }
-            else if(chooseWeapon(index.button,index.toShip)){
-              for(var i=0;i<this.weaponsUpgradesMenu.length;i++){
-                  this.weaponsUpgradesMenu[i].selected = false;
-              }
-                index.selected = true;
-            }
-          }
-          else {
-            continueTheGame();
-          }
-        }
-      });
+
     }
     else if (this.currentMenu == 2&&this.inMenu){
       this.gameOverMenu.forEach((index)=>{
@@ -644,7 +525,7 @@ var UI = {
     if(this.currentMenu == 0){
       this.mainMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-          if(index.button == "CONTINUE"&&(activeShip.section>1||activeShip.level>1)){
+          if(index.button == "CONTINUE"&&(ship.section>1||ship.level>1)){
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;
@@ -664,31 +545,12 @@ var UI = {
     }
     else if (this.currentMenu == 1){
       this.upgradesMenu.forEach((index)=>{
-        if(index.button == "CHANGE_L"&&this.displayShip == "SCOUT"){
-          index.opacity = 0.5;
-          index.color[0] = this.UIColors.fill;
-          index.color[1] = this.UIColors.stroke;
-          index.color[2] = this.UIColors.fontFill;
-        }
-        else if (index.button == "CHANGE_R"&&this.displayShip == "ORBITER"){
-          index.opacity = 0.5;
-          index.color[0] = this.UIColors.fill;
-          index.color[1] = this.UIColors.stroke;
-          index.color[2] = this.UIColors.fontFill;
-        }
-        else if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         }
-        else if (activeShip.weapon.name == index.button){
-          index.color[0] = this.UIColors.selectedFill;
-          index.color[1] = this.UIColors.selectedStroke;
-          index.color[2] = this.UIColors.selectedFontFill;
-        }
         else {
-          if(index.ship == undefined)
-          index.opacity = 1;
           index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
@@ -730,27 +592,27 @@ var UI = {
 
 //bullets
 var bulletList = [];
-var laserDuration = 300;
-var laserRecharging = false;
+var weaponDuration = 0;
 function bullet(B,name,numberOfBullets){
   B.killed = false;
-  B.damage = localWeaponDatabase[name].damage;
-  B.speed = localWeaponDatabase[name].speed*screenratio;
-  B.width = localWeaponDatabase[name].width*screenratio;
-  B.height = localWeaponDatabase[name].height*screenratio;
-  B.piercing = localWeaponDatabase[name].piercing;
-  B.color = localWeaponDatabase[name].color;
+  B.name = name;
+  B.damage = ship.weapon.damage;
+  B.speed = ship.weapon.speed*screenratio;
+  B.width = ship.weapon.width*screenratio;
+  B.height = ship.weapon.height*screenratio;
+  B.piercing = ship.weapon.piercing;
+  B.color = ship.weapon.color;
   B.opacity = 1;
   if(name == "BASIC"){
   }
   else if(name == "DOUBLE") {
     if (numberOfBullets == 2){
-      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
-      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+(1/180*Math.PI));
+      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+(1/180*Math.PI));
     }
     else if (numberOfBullets == 1){
-      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
-      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)-(1/180)*Math.PI));
+      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)-(1/180)*Math.PI));
     }
     if(numberOfBullets>1){
       bulletList.push(bullet({x:player.x,y:player.y},name,numberOfBullets-1))
@@ -762,12 +624,12 @@ function bullet(B,name,numberOfBullets){
       B.diry = yMousePos-player.y;
     }
     else if (numberOfBullets == 2){
-      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
-      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2+(3/180*Math.PI)-Math.PI/2);
+      B.dirx = Math.cos(Math.atan2(yMousePos-player.y,xMousePos-player.x)+(3/180*Math.PI));
+      B.diry = Math.sin(Math.atan2(yMousePos-player.y,xMousePos-player.x)+(3/180*Math.PI));
     }
     else if (numberOfBullets == 1){
-      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
-      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)+Math.PI/2-(3/180)*Math.PI)-Math.PI/2);
+      B.dirx = Math.cos((Math.atan2(yMousePos-player.y,xMousePos-player.x)-(3/180)*Math.PI));
+      B.diry = Math.sin((Math.atan2(yMousePos-player.y,xMousePos-player.x)-(3/180)*Math.PI));
     }
     if(numberOfBullets>1){
       bulletList.push(bullet({x:player.x,y:player.y},name,numberOfBullets-1));
@@ -796,7 +658,7 @@ function bullet(B,name,numberOfBullets){
   B.hitBoxX = B.x-B.hitBoxWidth/2;
   B.hitBoxY = B.y-B.hitBoxHeight/2;
   B.update = function(){
-    if(name == "LASER"&&B.laserDurationCheck()){
+    if(name == "LASER"){
       let hitDetectionX = player.x;
       let hitDetectionY = player.y;
       B.dirx = xMousePos-player.x;
@@ -810,7 +672,7 @@ function bullet(B,name,numberOfBullets){
             e.piercingDamageCDstart();
             e.HP -= B.damage;
             e.hitCDstart();
-            checkTotal(e);
+            checkDeath(e,"LASER");
           }
         });
       }
@@ -831,7 +693,7 @@ function bullet(B,name,numberOfBullets){
     }
   }
   B.render = function(){
-    if(name == "LASER"&&B.laserDurationCheck()){
+    if(name == "LASER"){
       ctx.beginPath();
       ctx.save();
       ctx.globalAlpha = 1;
@@ -867,7 +729,7 @@ function bullet(B,name,numberOfBullets){
       if(collides(e,{hitBoxX:B.x-B.explosion_radius/2,hitBoxY:B.y-B.explosion_radius/2,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
         e.HP -= B.damage;
         e.hitCDstart();
-        checkTotal(e);
+        checkDeath(e,"ROCKET");
       }
     });
   }
@@ -889,31 +751,11 @@ function bullet(B,name,numberOfBullets){
       if(B.explosion_index==11)B.killed = true;
     }
   }
-  B.laserDurationCheck = function(){
-    if(laserDuration>0&&!laserRecharging){
-      laserDuration--;
-      return true;
-    }
-    else if(!laserRecharging){
-      laserRecharging = true;
-      B.laserCDstart();
-      return false;
-    }
-    else {
-      return false;
-    }
-  }
-  B.laserCDstart = async function(){
-    for(let i=0;i<activeShip.weapon.cooldown/10;i++){
-      laserDuration += 1.5;
-      await sleep(10);
-    }
-    laserRecharging = false;
-  }
   return B;
 }
 
 //player object
+var ship = JSON.parse(localStorage.ship);
 var player = {
   inicialize : ()=>{
     player.spaceSize = 4000*screenratio;
@@ -925,21 +767,23 @@ var player = {
     player.earthY = canvas.height/2;
     player.futureX = 0;
     player.futureY = 0;
-    player.speed = activeShip.speed*screenratio;
+    player.speed = ship.speed*screenratio;
     player.xspeed = 0;
     player.yspeed = 0;
-    player.width = activeShip.width*screenratio;
-    player.height = activeShip.height*screenratio;
-    player.widthOnPic = activeShip.widthOnPic;
-    player.heightOnPic = activeShip.heightOnPic;
+    player.width = ship.width*screenratio;
+    player.height = ship.height*screenratio;
+    player.widthOnPic = ship.widthOnPic;
+    player.heightOnPic = ship.heightOnPic;
     player.animationX = 0;
     player.animationY = 0;
     //0 = Earth, 1 = Ship
-    player.maxHP = activeShip.maxHP;
+    player.maxHP = ship.maxHP;
     player.HP = [player.maxHP[0],player.maxHP[1]];
+    player.maxShield = ship.maxShield;
+    player.shield = [player.maxShield[0],player.maxShield[1]];
     //particle parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
-    player.particles = activeShip.particles;
+    player.particles = ship.particles;
     player.particlesWidth = 1;
     player.particlesHeight = 0.2;
 
@@ -947,19 +791,20 @@ var player = {
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
     player.hitBoxY = player.y-player.hitBoxHeight/2;
-    player.sprite = object["player_" + activeShip.name.toLowerCase()];
+    player.sprite = object["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
+    player.shieldRecharge();
     //thruster animation
     if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
-    player.particlesWidth += player.particles[3];
-    player.particlesHeight += player.particles[4];
-  }
+      player.particlesWidth += player.particles[3];
+      player.particlesHeight += player.particles[4];
+    }
 
     else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0.2){
-    player.particlesWidth -= player.particles[3];
-    player.particlesHeight -= player.particles[4];
-  }
+      player.particlesWidth -= player.particles[3];
+      player.particlesHeight -= player.particles[4];
+    }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
       loseTheGame();
@@ -999,15 +844,6 @@ var player = {
     player.earthY -= player.yspeed;
   },
   render : ()=> {
-    // if(player.counter == 30){
-    //   player.counter = 0;
-    //   if(player.animationX<96){
-    //     player.animationX += 96;
-    //   }
-    //   else {
-    //     player.animationX = 0;
-    //   }
-    // }
     ctx.beginPath();
     ctx.save();
     ctx.translate(player.x,player.y);
@@ -1028,6 +864,7 @@ var player = {
     ctx.closePath();
   },
 
+  shieldCD : 0,
   attackCD : false,
   hitCD : false,
   collisionCD : false,
@@ -1037,11 +874,12 @@ var player = {
   blikacky : false,
   attackCDstart : async function() {
     player.attackCD = true;
-    await sleep(activeShip.weapon.cooldown);
+    await sleep(ship.weapon.cooldown);
     player.attackCD = false;
   },
   hitCDstart : async function(which,what) {
     player.damageOpacity[which] = 51/100;
+    player.shieldCD = 300;
     for(let i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
         player.damageOpacity[which] = i/100;
@@ -1052,6 +890,15 @@ var player = {
     if(which == 1&& what == "bullet")
     player.hitCD = false;
     else if (which == 1 && what == "collision") player.collisionCD = false;
+  },
+  shieldRecharge : function(){
+    if(player.shieldCD>0){
+      player.shieldCD--;
+    }
+    else if(player.shield[1]<player.maxShield[1]){
+      player.shieldCD = 60;
+      player.shield[1] += 1;
+    }
   },
   killedCDstart : async function() {
     //EXPLOSION
@@ -1065,14 +912,51 @@ var player = {
   }
 };
 
+var randomDropList = []
+function randomDrop(R){
+  R.width = 50;
+  R.height = 50;
+  R.hitBoxWidth = R.width/3*2;
+  R.hitBoxHeight = R.height/3*2;
+  R.hitBoxX = R.x-R.hitBoxWidth/2;
+  R.hitBoxY = R.y-R.hitBoxHeight/2;
+  let choose = Math.floor(Math.random()*6)+1;
+  for(let index in weaponDatabase){
+    if (choose == weaponDatabase[index].index){
+      R.name = weaponDatabase[index].name;
+    }
+  }
+  R.update = function(){
+    R.x -= player.xspeed;
+    R.y -= player.yspeed;
+    R.hitBoxX = R.x-R.hitBoxWidth/2;
+    R.hitBoxY = R.y-R.hitBoxHeight/2;
+  }
+  R.render = function(){
+    ctx.beginPath();
+    try {
+      ctx.drawImage(object["UI_" + R.name],0,100,100,100,R.x,R.y,R.width,R.height);
+    }
+    catch(error){
+      ctx.drawImage(object["UI_" + "DOUBLE"],0,100,100,100,R.x,R.y,R.width,R.height);
+    }
+    ctx.stroke();
+    ctx.closePath();
+  }
+  return R;
+}
+
 //Check for total of enemies on the map | used in: win condition
 var XCOINS = 0;
-async function checkTotal(enemy){
+async function checkDeath(enemy,b){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
-    if(activeShip.weapon.name == "SPREADER"&&bulletList.length < 300){
-      for(let i=0;i<8;i++){
-        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/4*i),diry:Math.sin(Math.PI/4*i)},"SPREADER_PROJECTILE",1));
+    if(Math.round(Math.random()*1) == 1) {
+      randomDropList.push(randomDrop({x:enemy.x,y:enemy.y}));
+    }
+    if(b == "SPREADER"&&bulletList.length < 300){
+      for(let i=0;i<16;i++){
+        bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
       }
     }
     if(levels_handler.level.total == 1&&enemy.sprite != object.enemy_pirateMine){
@@ -1568,7 +1452,7 @@ function enemyCharacter(E,type){
   };
   E.piercingDamageCDstart = async function(){
     E.piercingCD = true;
-    await sleep(activeShip.weapon.hitCD);
+    await sleep(ship.weapon.hitCD);
     E.piercingCD = false;
   }
   return E;
@@ -1592,7 +1476,7 @@ function collides(a, b) {
 
 //spawner of enemies
 async function spawn(level_layout){
-  UI.levelDisplay.text = activeShip.section + "-" + activeShip.level;
+  UI.levelDisplay.text = ship.section + "-" + ship.level;
   for(let i=1;i<=400;i++){
     if(i<=100){
       UI.levelDisplay.opacity = i/100;
@@ -1632,14 +1516,14 @@ var levels_handler = {
 };
 
 function levelLayout(L){
-  if(activeShip.section>0){
-      L.pirateRaider = [25+activeShip.level,500];
-      L.pirateTiger = [25+activeShip.level,1000];
-    if(activeShip.level>2){
-      L.pirateMinedropper = [3+activeShip.level,1000];
+  if(ship.section>0){
+    L.pirateRaider = [25+ship.level,500];
+    L.pirateTiger = [25+ship.level,1000];
+    if(ship.level>2){
+      L.pirateMinedropper = [3+ship.level,1000];
     }
-    if(activeShip.level>5){
-      L.pirateVessel = [1+(activeShip.level-1)*2,5000];
+    if(ship.level>5){
+      L.pirateVessel = [1+(ship.level-1)*2,5000];
     }
   }
   return L;
