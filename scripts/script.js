@@ -72,6 +72,7 @@ function saveLocalStorage(){
 
 function resetLocalStorage(){
   localStorage.ship = JSON.stringify(defaultShip);
+  ship = defaultShip;
   localStorage.XCOINS = 0;
 }
 //First inicialization
@@ -228,6 +229,8 @@ function gameLoop(){
       player.update();//player pos update
       player.render();
       if(weaponDuration == 0){
+        if(ship.weapon.name == "LASER")
+        bulletList = bulletList.filter(check => check.name != "LASER");
         chooseWeapon("BASIC");
         weaponDuration--;
       }
@@ -293,6 +296,8 @@ function gameLoop(){
         if(r.x > 0 && r.x < canvas.width || r.y > 0 && r.y < canvas.height){
           r.render();
           if(collides(r,player)){
+            if(ship.weapon.name == "LASER"&&r.name != "LASER")
+            bulletList = bulletList.filter(check => check.name != "LASER");
             chooseWeapon(r.name);
             randomDropList.splice(i,1);
           }
@@ -343,7 +348,7 @@ var UI = {
     this.dangerLight_0 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-31*screenratio};
     this.dangerLight_1 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-61*screenratio};
 
-    this.panel_laser = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:object.UI_LASERpanel};
+    this.duration_panel = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:object.UI_durationPanel};
 
     this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#353535"]};
   },
@@ -427,7 +432,13 @@ var UI = {
     //Panels
     if(ship.weapon.name != "BASIC"){
       ctx.fillStyle = "#00FF00";
-      ctx.drawImage(this.panel_laser.sprite,this.panel_laser.x,this.panel_laser.y,this.panel_laser.width,this.panel_laser.height);
+      ctx.drawImage(this.duration_panel.sprite,this.duration_panel.x,this.duration_panel.y,this.duration_panel.width,this.duration_panel.height);
+      try {
+        ctx.drawImage(object["UI_" + ship.weapon.name ],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
+      }
+      catch(err){
+        ctx.drawImage(object["UI_DOUBLE"],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
+      }
       ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,weaponDuration/ship.weapon.duration*120*screenratio,15*screenratio);
     }
     ctx.drawImage(this.HPpanel.sprite,this.HPpanel.x,this.HPpanel.y,this.HPpanel.width,this.HPpanel.height);
@@ -679,7 +690,7 @@ function bullet(B,name,numberOfBullets){
       B.x = hitDetectionX;
       B.y = hitDetectionY;
     }
-    else if(!B.explosion_triggered){
+    else {
       bulletList = bulletList.filter(check => !(check.x < -canvas.width||check.x > canvas.width*2||check.y < -canvas.height||check.y > canvas.height*2));
 
       let ratio = B.speed/(Math.abs(B.dirx)+Math.abs(B.diry));
@@ -725,6 +736,7 @@ function bullet(B,name,numberOfBullets){
   }
   B.explode = function(){
     B.explosion_triggered = true;
+    B.speed = 0;
     enemyList.forEach((e)=>{
       if(collides(e,{hitBoxX:B.x-B.explosion_radius/2,hitBoxY:B.y-B.explosion_radius/2,hitBoxWidth:B.explosion_radius,hitBoxHeight:B.explosion_radius})){
         e.HP -= B.damage;
@@ -741,6 +753,7 @@ function bullet(B,name,numberOfBullets){
         B.explosion_index += 1;
       }
       ctx.beginPath();
+      ctx.globalAlpha = 1;
       ctx.save();
       ctx.translate(B.x,B.y);
       ctx.rotate(B.explosion_angle);
@@ -794,6 +807,7 @@ var player = {
     player.sprite = object["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
+    if(!player.collisionCD)
     player.shieldRecharge();
     //thruster animation
     if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
@@ -914,8 +928,8 @@ var player = {
 
 var randomDropList = []
 function randomDrop(R){
-  R.width = 50;
-  R.height = 50;
+  R.width = 75*screenratio;
+  R.height = 75*screenratio;
   R.hitBoxWidth = R.width/3*2;
   R.hitBoxHeight = R.height/3*2;
   R.hitBoxX = R.x-R.hitBoxWidth/2;
@@ -935,10 +949,10 @@ function randomDrop(R){
   R.render = function(){
     ctx.beginPath();
     try {
-      ctx.drawImage(object["UI_" + R.name],0,100,100,100,R.x,R.y,R.width,R.height);
+      ctx.drawImage(object["UI_" + R.name],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
     }
     catch(error){
-      ctx.drawImage(object["UI_" + "DOUBLE"],0,100,100,100,R.x,R.y,R.width,R.height);
+      ctx.drawImage(object["UI_" + "DOUBLE"],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
     }
     ctx.stroke();
     ctx.closePath();
