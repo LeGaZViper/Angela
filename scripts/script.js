@@ -31,7 +31,7 @@ function inicializeGame(){
   spawn(levels_handler.levelCreator());
 }
 function inicializeMenu(menu){
-  XCOINS = 0;
+  PARTS = 0;
   canvas.style.cursor = "auto";
   UI.inMenu = true;
   UI.currentMenu = menu;
@@ -60,7 +60,7 @@ function loseTheGame(){
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame(){
-  localStorage.XCOINS = parseInt(localStorage.XCOINS) + XCOINS;
+  localStorage.PARTS = parseInt(localStorage.PARTS) + PARTS;
   ship.level += 1;
   saveLocalStorage();
   inicializeMenu(3);
@@ -73,7 +73,7 @@ function saveLocalStorage(){
 function resetLocalStorage(){
   localStorage.ship = JSON.stringify(defaultShip);
   ship = defaultShip;
-  localStorage.XCOINS = 0;
+  localStorage.PARTS = 0;
 }
 //First inicialization
 if(localStorage.ship == undefined){
@@ -85,7 +85,7 @@ function chooseWeapon(name){
   for(var index in weaponDatabase){
     if(weaponDatabase[index].name == name){
       ship.weapon = weaponDatabase[index];
-      weaponDuration = ship.weapon.duration;
+      weaponDuration = ship.weapon.duration + ship.weapon.duration*ship.weaponDuration/5;
       saveLocalStorage();
       break;
     }
@@ -318,33 +318,34 @@ var UI = {
     this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",textSize:30*screenratio,button:"UPGRADES",opacity:1,color:["grey","black","white"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
-    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,textSize:30*screenratio,opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_PARTS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,textSize:30*screenratio,opacity:1,color:["grey","black","black"]};
     this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b1 = {width:264*screenratio,height:264*screenratio,x:710*screenratio,y:311*screenratio,sprite:object.UI_scout,color:["grey","black","white"],opacity:1};
 
-    this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,button:"SHIELDS",text:"13->14",textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b3 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:319*screenratio,button:"HEALTH",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b4 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:384*screenratio,button:"SPEED",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b5 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:448*screenratio,button:"DURATION",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b6 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:513*screenratio,button:"E.SHIELDS",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b7 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:577*screenratio,button:"E.WEAPONS",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,upgrade:ship.maxShield[1]-defaultShip.maxShield[1],maxUpgrade:5,button:"maxShield",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b3 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:319*screenratio,upgrade:ship.maxHP[1]-defaultShip.maxHP[1],maxUpgrade:5,button:"maxHP",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b4 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:384*screenratio,upgrade:ship.speed-defaultShip.speed,maxUpgrade:10,button:"speed",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b5 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:448*screenratio,upgrade:ship.weaponDuration-defaultShip.weaponDuration,maxUpgrade:5,button:"weaponDuration",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b6 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:513*screenratio,upgrade:0,maxUpgrade:0,button:"E.SHIELDS",text:"TBA",textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b7 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:577*screenratio,upgrade:0,maxUpgrade:0,button:"E.WEAPONS",text:"TBA",textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
 
-    this.upgradesMenu_t0 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:254*screenratio,text:"Shields",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t0 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:254*screenratio,text:"Shield",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t1 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:319*screenratio,text:"Health",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t2 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:384*screenratio,text:"Speed",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t3 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:448*screenratio,text:"W. Duration",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t4 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:513*screenratio,text:"E. Shields",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t5 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:577*screenratio,text:"E. Weapons",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
 
-    this.upgradesMenu_sl0 = {width:(ship.maxShield[1]-1)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:254*screenratio,slider:true,opacity:1,color:["green","green","green"]};
-    this.upgradesMenu_sl1 = {width:(ship.maxHP[1]-5)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:319*screenratio,slider:true,opacity:1,color:["green","green","green"]};
-    this.upgradesMenu_sl2 = {width:(ship.speed[1]-10)*190/10*screenratio,height:38*screenratio,x:333*screenratio,y:384*screenratio,slider:true,opacity:1,color:["green","green","green"]};
-    this.upgradesMenu_sl3 = {width:(ship.maxShield[1]-1)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:448*screenratio,slider:true,opacity:1,color:["green","green","green"]};
-    this.upgradesMenu_sl4 = {width:0*screenratio,height:38*screenratio,x:333*screenratio,y:513*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl0 = {width:this.upgradesMenu_b2.upgrade*190/this.upgradesMenu_b2.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:254*screenratio,slider:"maxShield",opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl1 = {width:this.upgradesMenu_b3.upgrade*190/this.upgradesMenu_b3.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:319*screenratio,slider:"maxHP",opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl2 = {width:this.upgradesMenu_b4.upgrade*190/this.upgradesMenu_b4.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:384*screenratio,slider:"speed",opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl3 = {width:this.upgradesMenu_b5.upgrade*190/this.upgradesMenu_b5.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:448*screenratio,slider:"weaponDuration",opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl4 = {width:this.upgradesMenu_b6.upgrade*190/this.upgradesMenu_b6.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:513*screenratio,slider:true,opacity:1,color:["green","green","green"]};
     this.upgradesMenu_sl5 = {width:190*screenratio,height:38*screenratio,x:333*screenratio,y:577*screenratio,slider:true,opacity:1,color:["green","green","green"]};
 
     this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
-    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
+    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_PARTS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
+    this.upgradesMenu_sliders = [this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
 
     this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",textSize:30*screenratio,opacity:1,color:["#4C4C4C","black","black"]};
     this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",textSize:30*screenratio,button:"RESTART",opacity:1,color:["grey","black","black"]};
@@ -358,7 +359,7 @@ var UI = {
 
     this.levelDisplay = {x:canvas.width/2,y:300*screenratio,textSize:6,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
-    this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue",sliderFill:"green",sliderStroke:"#414141"};
+    this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue",sliderFill:"#40FF40",sliderStroke:"#414141"};
     //Gameplay UI
     this.HPbar_player = {color:""};
     this.HPbar_earth = {color:""};
@@ -372,7 +373,7 @@ var UI = {
     this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#353535"]};
   },
   menu_render : function(menu){
-    this.upgradesMenu_XCOINS.text = "XCOINS: " + localStorage.XCOINS;
+    this.upgradesMenu_PARTS.text = "Parts: " + localStorage.PARTS;
     this.hover();
     if(ship.section>1||ship.level>1){
       this.mainMenu_b1.opacity = 1;
@@ -519,7 +520,38 @@ var UI = {
       });
     }
     else if (this.currentMenu == 1&&this.inMenu){
-
+      this.upgradesMenu.forEach((index)=>{
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
+        if(index.button == "CONTINUE"){
+          if(ship.section>1||ship.level>1){
+            continueTheGame();
+          }
+        }
+        else {
+          if(parseInt(localStorage.PARTS)>= index.text&&index.maxUpgrade>index.upgrade){
+            localStorage.PARTS = parseInt(localStorage.PARTS) - index.text;
+            index.upgrade++;
+            if(index.button == "maxHP"||index.button == "maxShield"){
+              ship[index.button][1] += 1;
+              this.upgradesMenu_sliders.forEach(slider =>{
+                if(slider.slider == index.button){
+                  slider.width = (ship[index.button][1]-defaultShip[index.button][1])*190/index.maxUpgrade*screenratio;
+                }
+              });
+            }
+            else {
+              ship[index.button] += 1;
+              this.upgradesMenu_sliders.forEach(slider =>{
+                if(slider.slider == index.button){
+                  slider.width = (ship[index.button]-defaultShip[index.button])*190/index.maxUpgrade*screenratio;
+                }
+              });
+            }
+            saveLocalStorage();
+          }
+        }
+      }
+      });
     }
     else if (this.currentMenu == 2&&this.inMenu){
       this.gameOverMenu.forEach((index)=>{
@@ -911,8 +943,9 @@ var player = {
     player.attackCD = false;
   },
   hitCDstart : async function(which,what) {
+    if(which == 1)
+      player.shieldCD = 300;
     player.damageOpacity[which] = 51/100;
-    player.shieldCD = 300;
     for(let i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
         player.damageOpacity[which] = i/100;
@@ -980,7 +1013,7 @@ function randomDrop(R){
 }
 
 //Check for total of enemies on the map | used in: win condition
-var XCOINS = 0;
+var PARTS = 0;
 async function checkDeath(enemy,b){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
@@ -999,7 +1032,7 @@ async function checkDeath(enemy,b){
     else if (enemy.sprite != object.enemy_pirateMine) {
       levels_handler.level.total -= 1;
     }
-    XCOINS += enemy.XCOINS;
+    PARTS += enemy.PARTS;
   }
 }
 var enemyBulletList = [];
@@ -1070,7 +1103,7 @@ function enemyCharacter(E,type){
     E.speed = 2*screenratio;
     E.HP = 6;
     E.maxHP = 6;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "tooth"){
@@ -1084,7 +1117,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 10;
     E.maxHP = 10;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
@@ -1098,7 +1131,7 @@ function enemyCharacter(E,type){
     E.speed = 3*screenratio;
     E.HP = 3;
     E.maxHP = 3;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [10,10*screenratio,-12*screenratio,0,0.1];
@@ -1113,7 +1146,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 10;
     E.maxHP = 10;
-    E.XCOINS = 10;
+    E.PARTS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [22,22*screenratio,-1*screenratio,0,0.1];
@@ -1128,7 +1161,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 10;
     E.maxHP = 10;
-    E.XCOINS = 10;
+    E.PARTS = 10;
     E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
   else if (type == "pirateRaider"){
@@ -1141,7 +1174,7 @@ function enemyCharacter(E,type){
     E.speed = 1.5*screenratio;
     E.HP = 5;
     E.maxHP = 5;
-    E.XCOINS = 10;
+    E.PARTS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
@@ -1156,7 +1189,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 15;
     E.maxHP = 15;
-    E.XCOINS = 10;
+    E.PARTS = 10;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship, 3 = particlesX add, 4 = particlesY add
     E.particles = [10,10*screenratio,-6*screenratio,0,0.1];
@@ -1171,7 +1204,7 @@ function enemyCharacter(E,type){
     E.speed = 0.5*screenratio;
     E.HP = 5;
     E.maxHP = 5;
-    E.XCOINS = 0;
+    E.PARTS = 0;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [0,0*screenratio,0*screenratio,0,0];
@@ -1186,7 +1219,7 @@ function enemyCharacter(E,type){
     E.speed = 2*screenratio;
     E.HP = 5;
     E.maxHP = 5;
-    E.XCOINS = 0;
+    E.PARTS = 0;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [18,18*screenratio,-13*screenratio,0,0.1];
@@ -1201,7 +1234,7 @@ function enemyCharacter(E,type){
     E.speed = 3*screenratio;
     E.HP = 50;
     E.maxHP = 50;
-    E.XCOINS = 0;
+    E.PARTS = 0;
     E.angle = Math.atan2(player.earthX-E.y,player.earthY-E.x)+Math.PI/2;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
@@ -1219,7 +1252,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 5;
     E.maxHP = 5;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.particles = [0,0*screenratio,0*screenratio,0];
@@ -1234,7 +1267,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 20;
     E.maxHP = 20;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.particles = [0,0*screenratio,0*screenratio,0];
@@ -1249,7 +1282,7 @@ function enemyCharacter(E,type){
     E.speed = 1*screenratio;
     E.HP = 20;
     E.maxHP = 20;
-    E.XCOINS = 15;
+    E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.particles = [0,0*screenratio,0*screenratio,0];
@@ -1267,7 +1300,7 @@ function enemyCharacter(E,type){
     E.speed = 0.5*screenratio;
     E.HP = 50;
     E.maxHP = 50;
-    E.XCOINS = 50;
+    E.PARTS = 50;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
     E.particles = [0,0*screenratio,0*screenratio,0];

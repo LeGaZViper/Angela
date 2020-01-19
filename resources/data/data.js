@@ -54,7 +54,7 @@ var defaultShip = {
   height:66,
   widthOnPic:88,
   heightOnPic:88,
-  duration:600,
+  weaponDuration:0,
   particles:[22,2,30,0,0.1],
   maxShield:[0,1],
   maxHP:[10,5],
