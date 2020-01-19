@@ -313,29 +313,52 @@ var UI = {
   inMenu : true,
   currentMenu : 0,
   inicialize : function(){
-    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",button:"NEW GAME",opacity:1,color:["grey","black","white"]};
-    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:0.5,color:["grey","black","white"]};
-    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","white"]};
+    this.mainMenu_b0 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:300*screenratio,text:"NEW GAME",textSize:30*screenratio,button:"NEW GAME",opacity:1,color:["grey","black","white"]};
+    this.mainMenu_b1 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:370*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:0.5,color:["grey","black","white"]};
+    this.mainMenu_b2 = {width:300*screenratio,height:50*screenratio,x:400*screenratio,y:440*screenratio,text:"UPGRADES",textSize:30*screenratio,button:"UPGRADES",opacity:1,color:["grey","black","white"]};
     this.mainMenu = [this.mainMenu_b0,this.mainMenu_b1,this.mainMenu_b2];
 
-    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,opacity:1,color:["grey","black","black"]};
-    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
-    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0];
+    this.upgradesMenu_XCOINS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,textSize:30*screenratio,opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b1 = {width:264*screenratio,height:264*screenratio,x:710*screenratio,y:311*screenratio,sprite:object.UI_scout,color:["grey","black","white"],opacity:1};
 
-    this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",opacity:1,color:["#4C4C4C","black","black"]};
-    this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",button:"RESTART",opacity:1,color:["grey","black","black"]};
-    this.gameOverMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"BACK",button:"BACK",opacity:1,color:["grey","black","black"]};
+    this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,button:"SHIELDS",text:"13->14",textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b3 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:319*screenratio,button:"HEALTH",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b4 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:384*screenratio,button:"SPEED",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b5 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:448*screenratio,button:"DURATION",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b6 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:513*screenratio,button:"E.SHIELDS",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b7 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:577*screenratio,button:"E.WEAPONS",textSize:30*screenratio,opacity:1,color:["grey","black","white"]};
+
+    this.upgradesMenu_t0 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:254*screenratio,text:"Shields",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t1 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:319*screenratio,text:"Health",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t2 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:384*screenratio,text:"Speed",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t3 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:448*screenratio,text:"W. Duration",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t4 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:513*screenratio,text:"E. Shields",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t5 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:577*screenratio,text:"E. Weapons",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+
+    this.upgradesMenu_sl0 = {width:(ship.maxShield[1]-1)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:254*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl1 = {width:(ship.maxHP[1]-5)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:319*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl2 = {width:(ship.speed[1]-10)*190/10*screenratio,height:38*screenratio,x:333*screenratio,y:384*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl3 = {width:(ship.maxShield[1]-1)*190/5*screenratio,height:38*screenratio,x:333*screenratio,y:448*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl4 = {width:0*screenratio,height:38*screenratio,x:333*screenratio,y:513*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+    this.upgradesMenu_sl5 = {width:190*screenratio,height:38*screenratio,x:333*screenratio,y:577*screenratio,slider:true,opacity:1,color:["green","green","green"]};
+
+    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
+    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_XCOINS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
+
+    this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",textSize:30*screenratio,opacity:1,color:["#4C4C4C","black","black"]};
+    this.gameOverMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"RESTART",textSize:30*screenratio,button:"RESTART",opacity:1,color:["grey","black","black"]};
+    this.gameOverMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"BACK",textSize:30*screenratio,button:"BACK",opacity:1,color:["grey","black","black"]};
     this.gameOverMenu = [this.gameOverMenuWindow,this.gameOverMenu_b0,this.gameOverMenu_b1];
 
-    this.youWinMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"YOU WIN!",opacity:1,color:["#4C4C4C","black","black"]};
-    this.youWinMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"UPGRADES",button:"UPGRADES",opacity:1,color:["grey","black","black"]};
-    this.youWinMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"CONTINUE",button:"CONTINUE",opacity:1,color:["grey","black","black"]};
+    this.youWinMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"YOU WIN!",textSize:30*screenratio,opacity:1,color:["#4C4C4C","black","black"]};
+    this.youWinMenu_b0 = {width:250*screenratio,height:50*screenratio,x:290*screenratio,y:470*screenratio,text:"UPGRADES",textSize:30*screenratio,button:"UPGRADES",opacity:1,color:["grey","black","black"]};
+    this.youWinMenu_b1 = {width:250*screenratio,height:50*screenratio,x:560*screenratio,y:470*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:1,color:["grey","black","black"]};
     this.youWinMenu = [this.youWinMenuWindow,this.youWinMenu_b0,this.youWinMenu_b1];
 
-    this.levelDisplay = {x:canvas.width/2,y:300*screenratio,opacity:0,color:"white"};
+    this.levelDisplay = {x:canvas.width/2,y:300*screenratio,textSize:6,opacity:0,color:"white"};
     this.levelDisplayCheck = false;
-    this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue"};
+    this.UIColors = {fill:"grey",stroke:"#333333",fontFill:"white",fontStroke:"black",hoverFill:"blue",hoverStroke:"blue",hoverFontFill:"white",hoverFontStroke:"blue",selectedFill:"grey",selectedStroke:"white",selectedFontFill:"white",selectedFontStroke:"blue",sliderFill:"green",sliderStroke:"#414141"};
     //Gameplay UI
     this.HPbar_player = {color:""};
     this.HPbar_earth = {color:""};
@@ -361,32 +384,27 @@ var UI = {
       if((index.ship == undefined&&index.toShip == undefined)||index.ship == this.displayShip||index.toShip == this.displayShip){
         ctx.fillStyle = index.color[0];
         ctx.strokeStyle = index.color[1];
-        ctx.lineWidth = 5;
+        if(index.textSize != undefined)
+        ctx.lineWidth = 6;
         ctx.globalAlpha = index.opacity;
-        ctx.strokeRect(index.x,index.y,index.width,index.height);
-        ctx.fillRect(index.x,index.y,index.width,index.height);
+        if(index.sprite == undefined&&index.textOnly == undefined){
+          ctx.strokeRect(index.x,index.y,index.width,index.height);
+          ctx.fillRect(index.x,index.y,index.width,index.height);
+        }
         ctx.fillStyle = index.color[2];
         if(index.text != undefined){
-          ctx.font = 30*screenratio + "px FFFFORWA";
+          ctx.font = index.textSize + "px FFFFORWA";
           ctx.textAlign = "center";
-          ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio);
-          ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+19*screenratio); //text on screen
+          ctx.strokeText(index.text,index.x+index.width/2,index.y+index.height/2+index.textSize/2+index.height/14);
+          ctx.fillText(index.text,index.x+index.width/2,index.y+index.height/2+index.textSize/2+index.height/14); //text on screen
         }
         if(index.sprite != undefined){
           ctx.globalAlpha = 1;
           if(index.button == undefined){
             ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
           }
-          else {
-            if(index.toShip == undefined){
-              if(localShipDatabase[index.button].status == "LOCKED")
-              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
-              else
-              ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
-            }
           }
         }
-      }
     });
   },
   game_render : function(){
@@ -557,10 +575,15 @@ var UI = {
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         }
-        else {
+        else if(index.slider == undefined) {
           index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
+        }
+        else {
+          index.color[0] = this.UIColors.sliderFill;
+          index.color[1] = this.UIColors.sliderStroke;
+          index.color[2] = this.UIColors.slider;
         }
       });
     }
