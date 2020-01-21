@@ -92,10 +92,14 @@ function chooseWeapon(name){
   }
 }
 
+window.onload = ()=>{
+  loadTheGame(gameLoop);
+}
+
 //Inicialization
 var canvas;
 var ctx;
-window.onload = ()=>{
+function loadTheGame(callback){
   canvas = document.getElementById("canvas");
   canvas.addEventListener("click",function(){UI.click()});
   canvas.addEventListener("mousedown",function(){userInput(event,1);});
@@ -117,9 +121,7 @@ window.onload = ()=>{
   $("#canvas").bind('contextmenu', function() {
     return false;
   });
-  //setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
-  //Setting time for monitor refresh rate check
-  gameLoop();
+  callback();
 }
 
 //Dynamic resolution scaling function  | used in: rendering
@@ -158,6 +160,7 @@ async function userInput(event,which){
 }
 
 //Game cycle
+//setInterval(gameLoop,1000/120); //120 cyklů/s pro lepší detekci kolize
 var fpsInterval = 1000/60; //60 FPS
 function gameLoop(){
   requestAnimationFrame(gameLoop);
@@ -209,9 +212,9 @@ function gameLoop(){
         let distance = Math.abs(eb.x-player.earthX)+Math.abs(eb.y-player.earthY);
         if(collides(eb,player)&&player.HP[1]>0&&!player.hitCD&&!player.collisionCD){
           if(player.shield[1]>0)
-            player.shield[1] -= eb.damage;
+          player.shield[1] -= eb.damage;
           else
-            player.HP[1] -= eb.damage;
+          player.HP[1] -= eb.damage;
           eb.killed = true;
           player.hitCD = true;
           player.hitCDstart(1,"bullet");
@@ -257,9 +260,9 @@ function gameLoop(){
               e.render();
               if(!player.collisionCD&&!player.hitCD&&collides(e,player)&&player.HP[1]>0){ //player colision
                 if(player.shield[1]>0)
-                  player.shield[1] -= 1;
+                player.shield[1] -= 1;
                 else
-                  player.HP[1] -= 1;
+                player.HP[1] -= 1;
                 player.collisionCD = true;
                 if(player.HP[1] > 0){
                   player.hitCDstart(1,"collision");
@@ -404,8 +407,8 @@ var UI = {
           if(index.button == undefined){
             ctx.drawImage(index.sprite,0,0,index.width/screenratio,index.height/screenratio,index.x,index.y,index.width,index.height);
           }
-          }
         }
+      }
     });
   },
   game_render : function(){
@@ -522,35 +525,35 @@ var UI = {
     else if (this.currentMenu == 1&&this.inMenu){
       this.upgradesMenu.forEach((index)=>{
         if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
-        if(index.button == "CONTINUE"){
-          if(ship.section>1||ship.level>1){
-            continueTheGame();
+          if(index.button == "CONTINUE"){
+            if(ship.section>1||ship.level>1){
+              continueTheGame();
+            }
+          }
+          else {
+            if(parseInt(localStorage.PARTS)>= index.text&&index.maxUpgrade>index.upgrade){
+              localStorage.PARTS = parseInt(localStorage.PARTS) - index.text;
+              index.upgrade++;
+              if(index.button == "maxHP"||index.button == "maxShield"){
+                ship[index.button][1] += 1;
+                this.upgradesMenu_sliders.forEach(slider =>{
+                  if(slider.slider == index.button){
+                    slider.width = (ship[index.button][1]-defaultShip[index.button][1])*190/index.maxUpgrade*screenratio;
+                  }
+                });
+              }
+              else {
+                ship[index.button] += 1;
+                this.upgradesMenu_sliders.forEach(slider =>{
+                  if(slider.slider == index.button){
+                    slider.width = (ship[index.button]-defaultShip[index.button])*190/index.maxUpgrade*screenratio;
+                  }
+                });
+              }
+              saveLocalStorage();
+            }
           }
         }
-        else {
-          if(parseInt(localStorage.PARTS)>= index.text&&index.maxUpgrade>index.upgrade){
-            localStorage.PARTS = parseInt(localStorage.PARTS) - index.text;
-            index.upgrade++;
-            if(index.button == "maxHP"||index.button == "maxShield"){
-              ship[index.button][1] += 1;
-              this.upgradesMenu_sliders.forEach(slider =>{
-                if(slider.slider == index.button){
-                  slider.width = (ship[index.button][1]-defaultShip[index.button][1])*190/index.maxUpgrade*screenratio;
-                }
-              });
-            }
-            else {
-              ship[index.button] += 1;
-              this.upgradesMenu_sliders.forEach(slider =>{
-                if(slider.slider == index.button){
-                  slider.width = (ship[index.button]-defaultShip[index.button])*190/index.maxUpgrade*screenratio;
-                }
-              });
-            }
-            saveLocalStorage();
-          }
-        }
-      }
       });
     }
     else if (this.currentMenu == 2&&this.inMenu){
@@ -944,7 +947,7 @@ var player = {
   },
   hitCDstart : async function(which,what) {
     if(which == 1)
-      player.shieldCD = 300;
+    player.shieldCD = 300;
     player.damageOpacity[which] = 51/100;
     for(let i=50;i>=0;i--){
       if(player.damageOpacity[which] == (i+1)/100){
