@@ -240,7 +240,7 @@ function gameLoop(){
       else if(weaponDuration>0) weaponDuration--;
       if(leftMouseDown){ //shooting
         if(!player.attackCD&&player.HP[1] > 0){
-          if(ship.weapon.name == "LASER"&&bulletList.length != 1){
+          if(ship.weapon.name == "LASER"&&bulletList.filter(check => check.name == "LASER").length < 1){
             bulletList.push(bullet({x:player.x,y:player.y},ship.weapon.name,ship.weapon.bullets));
           }
           else if (ship.weapon.name != "LASER") {
@@ -325,7 +325,7 @@ var UI = {
     this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b1 = {width:264*screenratio,height:264*screenratio,x:710*screenratio,y:311*screenratio,sprite:object.UI_scout,color:["grey","black","white"],opacity:1};
 
-    this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,upgrade:ship.maxShield[1]-defaultShip.maxShield[1],maxUpgrade:5,button:"maxShield",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,upgrade:ship.maxShield[1]-defaultShip.maxShield[1],maxUpgrade:5,button:"maxShield",text:40,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b3 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:319*screenratio,upgrade:ship.maxHP[1]-defaultShip.maxHP[1],maxUpgrade:5,button:"maxHP",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b4 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:384*screenratio,upgrade:ship.speed-defaultShip.speed,maxUpgrade:10,button:"speed",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b5 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:448*screenratio,upgrade:ship.weaponDuration-defaultShip.weaponDuration,maxUpgrade:5,button:"weaponDuration",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
@@ -338,6 +338,8 @@ var UI = {
     this.upgradesMenu_t3 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:448*screenratio,text:"W. Duration",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t4 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:513*screenratio,text:"E. Shields",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_t5 = {width:75*screenratio,height:38*screenratio,x:165*screenratio,y:577*screenratio,text:"E. Weapons",textSize:30*screenratio,textOnly:true,opacity:1,color:["grey","black","white"]};
+    this.upgradesMenu_t6 = {width:0*screenratio,height:0*screenratio,x:canvas.width/2,y:700*screenratio,opacity:0,text:"Insufficient parts!",textOnly:true,cooldown:3000,textSize:35*screenratio,color:["red","red","red"]};
+
 
     this.upgradesMenu_sl0 = {width:this.upgradesMenu_b2.upgrade*190/this.upgradesMenu_b2.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:254*screenratio,slider:"maxShield",opacity:1,color:["green","green","green"]};
     this.upgradesMenu_sl1 = {width:this.upgradesMenu_b3.upgrade*190/this.upgradesMenu_b3.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:319*screenratio,slider:"maxHP",opacity:1,color:["green","green","green"]};
@@ -347,7 +349,7 @@ var UI = {
     this.upgradesMenu_sl5 = {width:190*screenratio,height:38*screenratio,x:333*screenratio,y:577*screenratio,slider:true,opacity:1,color:["green","green","green"]};
 
     this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
-    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_PARTS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
+    this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_PARTS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_t6,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
     this.upgradesMenu_sliders = [this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
 
     this.gameOverMenuWindow = {width:550*screenratio,height:250*screenratio,x:275*screenratio,y:canvas.height/2-150*screenratio,text:"GAME OVER",textSize:30*screenratio,opacity:1,color:["#4C4C4C","black","black"]};
@@ -532,6 +534,7 @@ var UI = {
           }
           else {
             if(parseInt(localStorage.PARTS)>= index.text&&index.maxUpgrade>index.upgrade){
+              UI.upgradesMenu_t6.opacity = 0;
               localStorage.PARTS = parseInt(localStorage.PARTS) - index.text;
               index.upgrade++;
               if(index.button == "maxHP"||index.button == "maxShield"){
@@ -551,6 +554,9 @@ var UI = {
                 });
               }
               saveLocalStorage();
+            }
+            else if (parseInt(localStorage.PARTS)< index.text){
+              this.cooldown(UI.upgradesMenu_t6);
             }
           }
         }
@@ -605,15 +611,22 @@ var UI = {
     }
     else if (this.currentMenu == 1){
       this.upgradesMenu.forEach((index)=>{
-        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&!index.selected&&index.button!=undefined){
+        if(collides_UI(index,{x:xMousePos-5,y:yMousePos-5,width:1,height:1})&&index.button!=undefined){
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         }
         else if(index.slider == undefined) {
-          index.color[0] = this.UIColors.fill;
-          index.color[1] = this.UIColors.stroke;
-          index.color[2] = this.UIColors.fontFill;
+          if(index.text == "Insufficient parts!"){
+            index.color[0] = "red";
+            index.color[1] = "black";
+            index.color[2] = "red";
+          }
+          else {
+            index.color[0] = this.UIColors.fill;
+            index.color[1] = this.UIColors.stroke;
+            index.color[2] = this.UIColors.fontFill;
+          }
         }
         else {
           index.color[0] = this.UIColors.sliderFill;
@@ -651,6 +664,16 @@ var UI = {
           index.color[2] = this.UIColors.fontFill;
         }
       });
+    }
+  },
+  cooldown: async function(object){
+    object.opacity = 1;
+    for(let i=1;i<=object.cooldown/10;i++){
+      await sleep(10);
+      if(i == object.cooldown/10)
+        object.opacity = 0;
+      if(object.opacity == 0)
+       break;
     }
   }
 };
