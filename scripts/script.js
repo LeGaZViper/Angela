@@ -19,6 +19,7 @@ function sleep(ms) {
 
 function inicializeGame(){
   player.inicialize();
+  backgroundParticles.set();
   UI.levelDisplayCheck = true;
   player.HP = [player.maxHP[0],player.maxHP[1]];
   bulletList = [];
@@ -115,6 +116,7 @@ function loadTheGame(callback){
     object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
   }
   scale();
+  backgroundParticles.set();
   player.inicialize();
   UI.inicialize();
   //Disabling rightclick popup
@@ -171,6 +173,7 @@ function gameLoop(){
   if(dif>fpsInterval){
     timeThen = timeNow - (dif%fpsInterval);
     ctx.clearRect(0,0,canvas.width,canvas.height); //Clearing scene
+    backgroundParticles.update_render();
     if(UI.inMenu){ //Menu part of cycle
       switch(UI.currentMenu){
         case 0:
@@ -192,6 +195,7 @@ function gameLoop(){
     }
     else { //Game part
       ctx.beginPath();
+      player.update();//player pos update - needs to be done as soon as possible to set correct positions for other objects
       ctx.drawImage(object.UI_earth,0,0,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//planet
       ctx.globalAlpha = player.damageOpacity[0];
       ctx.drawImage(object.UI_earth,0,200,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//damaged planet
@@ -229,7 +233,6 @@ function gameLoop(){
         eb.render();
         enemyBulletList = enemyBulletList.filter(check => !(check.killed));
       });
-      player.update();//player pos update
       player.render();
       if(weaponDuration == 0){
         if(ship.weapon.name == "LASER")
@@ -459,7 +462,7 @@ var UI = {
       catch(err){
         ctx.drawImage(object["UI_DOUBLE"],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
       }
-      ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,weaponDuration/ship.weapon.duration*120*screenratio,15*screenratio);
+      ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,weaponDuration/(ship.weapon.duration+ship.weapon.duration*ship.weaponDuration/5)*120*screenratio,15*screenratio);
     }
     ctx.drawImage(this.HPpanel.sprite,this.HPpanel.x,this.HPpanel.y,this.HPpanel.width,this.HPpanel.height);
     ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
@@ -1036,6 +1039,28 @@ function randomDrop(R){
     ctx.closePath();
   }
   return R;
+}
+
+var backgroundParticles = {
+  set : function(){
+    this.x1 = canvas.width/2;
+    this.y1 = canvas.height/2;
+
+    this.x2 = canvas.width/2;
+    this.y2 = canvas.height/2;
+  },
+  update_render : function(){
+    this.x1 -= player.xspeed/8;
+    this.y1 -= player.yspeed/8;
+    this.x2 -= player.xspeed/10;
+    this.y2 -= player.yspeed/10;
+
+    ctx.beginPath();
+    ctx.drawImage(object.UI_stars1,this.x1-1000*screenratio,this.y1-1000*screenratio,2000*screenratio,2000*screenratio);
+    ctx.drawImage(object.UI_stars2,this.x2-1000*screenratio,this.y2-1000*screenratio,2000*screenratio,2000*screenratio);
+    ctx.stroke();
+    ctx.closePath();
+  }
 }
 
 //Check for total of enemies on the map | used in: win condition

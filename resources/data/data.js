@@ -22,6 +22,8 @@ var object = {
   projectile_spread : new Image(),
   projectile_spreadProjectile : new Image(),
   projectile_explosion : new Image(),
+  UI_stars1 : new Image(),
+  UI_stars2 : new Image(),
   UI_earth : new Image(),
   UI_cursor : new Image(),
   UI_HPpanel : new Image(),
