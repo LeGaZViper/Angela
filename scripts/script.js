@@ -108,12 +108,12 @@ function loadTheGame(callback){
   canvas.addEventListener("mousemove",function(){userInput(event,0);});
   ctx = canvas.getContext("2d");
   //Setting path
-  for(let index in object){
+  for(let index in sprite){
     let precursor = index.split("_");
     if(precursor[0] == "UI"||precursor[0] == "projectile")
-    object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+    sprite[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
     else
-    object[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
+    sprite[index].src = "./resources/sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
   }
   scale();
   backgroundParticles.set();
@@ -196,9 +196,9 @@ function gameLoop(){
     else { //Game part
       ctx.beginPath();
       player.update();//player pos update - needs to be done as soon as possible to set correct positions for other objects
-      ctx.drawImage(object.UI_earth,0,0,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//planet
+      ctx.drawImage(sprite.UI_earth,0,0,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//planet
       ctx.globalAlpha = player.damageOpacity[0];
-      ctx.drawImage(object.UI_earth,0,200,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//damaged planet
+      ctx.drawImage(sprite.UI_earth,0,200,200,200,player.earthX-100*screenratio,player.earthY-100*screenratio,200*screenratio,200*screenratio);//damaged planet
       ctx.globalAlpha = 1;
       ctx.strokeStyle = "red";
       ctx.lineWidth = 5;
@@ -223,7 +223,7 @@ function gameLoop(){
           player.hitCD = true;
           player.hitCDstart(1,"bullet");
         }
-        else if(distance <10){
+        else if(distance <20){
           player.HP[0] -= eb.damage;
           eb.killed = true;
           player.hitCDstart(0,"bullet");
@@ -326,7 +326,7 @@ var UI = {
 
     this.upgradesMenu_PARTS = {width:250*screenratio,height:75*screenratio,x:773*screenratio,y:77*screenratio,textSize:30*screenratio,opacity:1,color:["grey","black","black"]};
     this.upgradesMenu_b0 = {width:300*screenratio,height:50*screenratio,x:723*screenratio,y:773*screenratio,text:"CONTINUE",textSize:30*screenratio,button:"CONTINUE",opacity:1,color:["grey","black","white"]};
-    this.upgradesMenu_b1 = {width:264*screenratio,height:264*screenratio,x:710*screenratio,y:311*screenratio,sprite:object.UI_scout,color:["grey","black","white"],opacity:1};
+    this.upgradesMenu_b1 = {width:264*screenratio,height:264*screenratio,x:710*screenratio,y:311*screenratio,sprite:sprite.UI_scout,color:["grey","black","white"],opacity:1};
 
     this.upgradesMenu_b2 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:254*screenratio,upgrade:ship.maxShield[1]-defaultShip.maxShield[1],maxUpgrade:5,button:"maxShield",text:40,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
     this.upgradesMenu_b3 = {width:100*screenratio,height:38*screenratio,x:550*screenratio,y:319*screenratio,upgrade:ship.maxHP[1]-defaultShip.maxHP[1],maxUpgrade:5,button:"maxHP",text:0,textSize:20*screenratio,opacity:1,color:["grey","black","white"]};
@@ -351,7 +351,7 @@ var UI = {
     this.upgradesMenu_sl4 = {width:this.upgradesMenu_b6.upgrade*190/this.upgradesMenu_b6.maxUpgrade*screenratio,height:38*screenratio,x:333*screenratio,y:513*screenratio,slider:true,opacity:1,color:["green","green","green"]};
     this.upgradesMenu_sl5 = {width:190*screenratio,height:38*screenratio,x:333*screenratio,y:577*screenratio,slider:true,opacity:1,color:["green","green","green"]};
 
-    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:object.UI_shopBG};
+    this.upgradesMenuWindow = {width:1000*screenratio,height:800*screenratio,x:canvas.width/2-500*screenratio,y:canvas.height/2-400*screenratio,opacity:0,color:["grey","black","white"],sprite:sprite.UI_shopBG};
     this.upgradesMenu = [this.upgradesMenuWindow,this.upgradesMenu_PARTS,this.upgradesMenu_b0,this.upgradesMenu_b1,this.upgradesMenu_b2,this.upgradesMenu_b3,this.upgradesMenu_b4,this.upgradesMenu_b5,this.upgradesMenu_b6,this.upgradesMenu_b7,this.upgradesMenu_t0,this.upgradesMenu_t1,this.upgradesMenu_t2,this.upgradesMenu_t3,this.upgradesMenu_t4,this.upgradesMenu_t5,this.upgradesMenu_t6,this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
     this.upgradesMenu_sliders = [this.upgradesMenu_sl0,this.upgradesMenu_sl1,this.upgradesMenu_sl2,this.upgradesMenu_sl3,this.upgradesMenu_sl4,this.upgradesMenu_sl5];
 
@@ -371,12 +371,12 @@ var UI = {
     //Gameplay UI
     this.HPbar_player = {color:""};
     this.HPbar_earth = {color:""};
-    this.HPpanel = {width:250*screenratio,height:96*screenratio,x:0,y:canvas.height-96*screenratio,sprite:object.UI_HPpanel};
+    this.HPpanel = {width:250*screenratio,height:96*screenratio,x:0,y:canvas.height-96*screenratio,sprite:sprite.UI_HPpanel};
 
     this.dangerLight_0 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-31*screenratio};
     this.dangerLight_1 = {width:10*screenratio,height:10*screenratio,x:10*screenratio,y:canvas.height-61*screenratio};
 
-    this.duration_panel = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:object.UI_durationPanel};
+    this.duration_panel = {width:240*screenratio,height:55*screenratio,x:canvas.width-240*screenratio,y:canvas.height-55*screenratio,sprite:sprite.UI_durationPanel};
 
     this.minimapLayer = {width:200*screenratio,height:200*screenratio,x:2,y:2,color:["#193019","#353535"]};
   },
@@ -457,15 +457,15 @@ var UI = {
       ctx.fillStyle = "#00FF00";
       ctx.drawImage(this.duration_panel.sprite,this.duration_panel.x,this.duration_panel.y,this.duration_panel.width,this.duration_panel.height);
       try {
-        ctx.drawImage(object["UI_" + ship.weapon.name ],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
+        ctx.drawImage(sprite["UI_" + ship.weapon.name],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
       }
       catch(err){
-        ctx.drawImage(object["UI_DOUBLE"],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
+        ctx.drawImage(sprite["UI_DOUBLE"],0,100,100,100,this.duration_panel.x+40*screenratio,this.duration_panel.y+15*screenratio,40*screenratio,40*screenratio);
       }
       ctx.fillRect(canvas.width-155*screenratio,canvas.height-25*screenratio,weaponDuration/(ship.weapon.duration+ship.weapon.duration*ship.weaponDuration/5)*120*screenratio,15*screenratio);
     }
     ctx.drawImage(this.HPpanel.sprite,this.HPpanel.x,this.HPpanel.y,this.HPpanel.width,this.HPpanel.height);
-    ctx.drawImage(object.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
+    ctx.drawImage(sprite.UI_cursor,xMousePos-25,yMousePos-25,50,50); //cursor
 
     if(UI.levelDisplayCheck){
       ctx.globalAlpha = UI.levelDisplay.opacity;
@@ -727,7 +727,7 @@ function bullet(B,name,numberOfBullets){
     }
   }
   else if (name == "ROCKET"){
-    B.sprite = object.projectile_rocket;
+    B.sprite = sprite.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150*screenratio;
     B.explosion_triggered = false;
@@ -739,10 +739,10 @@ function bullet(B,name,numberOfBullets){
 
   }
   else if (name == "SPREADER"){
-    B.sprite = object.projectile_spread;
+    B.sprite = sprite.projectile_spread;
   }
   else if (name == "SPREADER_PROJECTILE"){
-    B.sprite = object.projectile_spreadProjectile;
+    B.sprite = sprite.projectile_spreadProjectile;
   }
   B.hitBoxWidth = B.width/3*2;
   B.hitBoxHeight = B.height/3*2;
@@ -837,7 +837,7 @@ function bullet(B,name,numberOfBullets){
       ctx.save();
       ctx.translate(B.x,B.y);
       ctx.rotate(B.explosion_angle);
-      ctx.drawImage(object.projectile_explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
+      ctx.drawImage(sprite.projectile_explosion,0,B.explosion_radius/screenratio*B.explosion_index,150,150,-75*screenratio,-75*screenratio,B.explosion_radius,B.explosion_radius);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
@@ -884,7 +884,7 @@ var player = {
     player.hitBoxHeight = player.height/3*2;
     player.hitBoxX = player.x-player.hitBoxWidth/2;
     player.hitBoxY = player.y-player.hitBoxHeight/2;
-    player.sprite = object["player_" + ship.name.toLowerCase()];
+    player.sprite = sprite["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
     if(!player.collisionCD)
@@ -901,9 +901,11 @@ var player = {
     }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
+      player.xspeed = 0;
+      player.yspeed = 0;
       loseTheGame();
     }
-    if(player.HP[1] <= 0&&!player.killedCD){
+    else if(player.HP[1] <= 0&&!player.killedCD){
       player.killedCDstart();
     }
     else if(!isNaN(ratio)&&!rightMouseDown){
@@ -1030,10 +1032,10 @@ function randomDrop(R){
   R.render = function(){
     ctx.beginPath();
     try {
-      ctx.drawImage(object["UI_" + R.name],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
+      ctx.drawImage(sprite["UI_" + R.name],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
     }
     catch(error){
-      ctx.drawImage(object["UI_" + "DOUBLE"],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
+      ctx.drawImage(sprite["UI_" + "DOUBLE"],0,100,100,100,R.x-R.width/2,R.y-R.height/2,R.width,R.height);
     }
     ctx.stroke();
     ctx.closePath();
@@ -1056,8 +1058,8 @@ var backgroundParticles = {
     this.y2 -= player.yspeed/10;
 
     ctx.beginPath();
-    ctx.drawImage(object.UI_stars1,this.x1-1000*screenratio,this.y1-1000*screenratio,2000*screenratio,2000*screenratio);
-    ctx.drawImage(object.UI_stars2,this.x2-1000*screenratio,this.y2-1000*screenratio,2000*screenratio,2000*screenratio);
+    ctx.drawImage(sprite.UI_stars1,this.x1-1000*screenratio,this.y1-1000*screenratio,2000*screenratio,2000*screenratio);
+    ctx.drawImage(sprite.UI_stars2,this.x2-1000*screenratio,this.y2-1000*screenratio,2000*screenratio,2000*screenratio);
     ctx.stroke();
     ctx.closePath();
   }
@@ -1076,11 +1078,11 @@ async function checkDeath(enemy,b){
         bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
       }
     }
-    if(levels_handler.level.total == 1&&enemy.sprite != object.enemy_pirateMine){
+    if(levels_handler.level.total == 1&&enemy.sprite != sprite.enemy_pirateMine){
       await sleep(2000);
       levels_handler.level.total -= 1;
     }
-    else if (enemy.sprite != object.enemy_pirateMine) {
+    else if (enemy.sprite != sprite.enemy_pirateMine) {
       levels_handler.level.total -= 1;
     }
     PARTS += enemy.PARTS;
@@ -1144,7 +1146,7 @@ function enemyCharacter(E,type){
   E.animation = false;
   E.attackCDvalue = 2000;
   if (type == "buzz"){
-    E.sprite = object.enemy_buzz;
+    E.sprite = sprite.enemy_buzz;
     E.widthOnPic = 56;
     E.heightOnPic = 62;
     E.hit = 0;
@@ -1158,7 +1160,7 @@ function enemyCharacter(E,type){
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "tooth"){
-    E.sprite = object.enemy_tooth;
+    E.sprite = sprite.enemy_tooth;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     E.hit = 0;
@@ -1172,7 +1174,7 @@ function enemyCharacter(E,type){
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "sharkfin"){// 1 - sharkfin
-    E.sprite = object.enemy_sharkfin;
+    E.sprite = sprite.enemy_sharkfin;
     E.widthOnPic = 64;
     E.heightOnPic = 60;
     E.hit = 0;
@@ -1188,7 +1190,7 @@ function enemyCharacter(E,type){
     E.particles = [10,10*screenratio,-12*screenratio,0,0.1];
   }
   else if(type == "goblin"){// 2 - goblin
-    E.sprite = object.enemy_goblin;
+    E.sprite = sprite.enemy_goblin;
     E.widthOnPic = 76;
     E.heightOnPic = 100;
     //Ingame stats
@@ -1203,7 +1205,7 @@ function enemyCharacter(E,type){
     E.particles = [22,22*screenratio,-1*screenratio,0,0.1];
   }
   else if(type == "SG40"){// 2 - goblin
-    E.sprite = object.enemy_SG40;
+    E.sprite = sprite.enemy_SG40;
     E.widthOnPic = 48;
     E.heightOnPic = 50;
     //Ingame stats
@@ -1216,7 +1218,7 @@ function enemyCharacter(E,type){
     E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
   else if (type == "pirateRaider"){
-    E.sprite = object.enemy_pirateRaider;
+    E.sprite = sprite.enemy_pirateRaider;
     E.widthOnPic = 60;
     E.heightOnPic = 32;
     //Ingame stats
@@ -1231,7 +1233,7 @@ function enemyCharacter(E,type){
     E.particles = [10,10*screenratio,-1*screenratio,0,0.1];
   }
   else if (type == "pirateMinedropper"){
-    E.sprite = object.enemy_pirateMinedropper;
+    E.sprite = sprite.enemy_pirateMinedropper;
     E.widthOnPic = 56;
     E.heightOnPic = 74;
     //Ingame stats
@@ -1246,7 +1248,7 @@ function enemyCharacter(E,type){
     E.particles = [10,10*screenratio,-6*screenratio,0,0.1];
   }
   else if (type == "pirateMine"){
-    E.sprite = object.enemy_pirateMine;
+    E.sprite = sprite.enemy_pirateMine;
     E.widthOnPic = 44;
     E.heightOnPic = 44;
     //Ingame stats
@@ -1261,7 +1263,7 @@ function enemyCharacter(E,type){
     E.particles = [0,0*screenratio,0*screenratio,0,0];
   }
   else if (type == "pirateTiger"){
-    E.sprite = object.enemy_pirateTiger;
+    E.sprite = sprite.enemy_pirateTiger;
     E.widthOnPic = 70;
     E.heightOnPic = 70;
     //Ingame stats
@@ -1276,7 +1278,7 @@ function enemyCharacter(E,type){
     E.particles = [18,18*screenratio,-13*screenratio,0,0.1];
   }
   else if (type == "pirateVessel"){
-    E.sprite = object.enemy_pirateVessel;
+    E.sprite = sprite.enemy_pirateVessel;
     E.widthOnPic = 76;
     E.heightOnPic = 158;
     //Ingame stats
@@ -1294,7 +1296,7 @@ function enemyCharacter(E,type){
     E.inOrbit = false;
   }
   else if (type == "voidDrone"){
-    E.sprite = object.enemy_voidDrone;
+    E.sprite = sprite.enemy_voidDrone;
     E.widthOnPic = 60;
     E.heightOnPic = 60;
     //Ingame stats
@@ -1309,7 +1311,7 @@ function enemyCharacter(E,type){
     E.particles = [0,0*screenratio,0*screenratio,0];
   }
   else if (type == "voidChaser"){
-    E.sprite = object.enemy_voidChaser;
+    E.sprite = sprite.enemy_voidChaser;
     E.widthOnPic = 48;
     E.heightOnPic = 62;
     //Ingame stats
@@ -1324,7 +1326,7 @@ function enemyCharacter(E,type){
     E.particles = [0,0*screenratio,0*screenratio,0];
   }
   else if (type == "voidSpherefighter"){
-    E.sprite = object.enemy_voidSpherefighter;
+    E.sprite = sprite.enemy_voidSpherefighter;
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     //Ingame stats
@@ -1342,7 +1344,7 @@ function enemyCharacter(E,type){
     E.animationFPS = 5;
   }
   else if (type == "voidChakram"){
-    E.sprite = object.enemy_voidChakram;
+    E.sprite = sprite.enemy_voidChakram;
     E.widthOnPic = 180;
     E.heightOnPic = 180;
     //Ingame stats
@@ -1487,12 +1489,12 @@ function enemyCharacter(E,type){
         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)+Math.PI)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
         ctx.rotate(Math.atan2(player.earthY-E.cannon1Y,player.earthX-E.cannon1X)+Math.PI/2);
-        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(sprite.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
         ctx.rotate(Math.atan2(player.earthY-E.cannon2Y,player.earthX-E.cannon2X)-Math.PI/2);
-        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(sprite.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       else {
         E.cannon1X = -(32*screenratio)*Math.cos(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.x;
@@ -1501,12 +1503,12 @@ function enemyCharacter(E,type){
         E.cannon2Y = (35*screenratio)*Math.sin(Math.atan2(player.earthY-E.y,player.earthX-E.x)-Math.PI/2)+E.y;
         ctx.translate(E.cannon1X,E.cannon1Y);
         ctx.rotate(Math.atan2(player.earthY-E.cannon1Y,player.earthX-E.cannon1X)+Math.PI/2);
-        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(sprite.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
         ctx.restore();
         ctx.save();
         ctx.translate(E.cannon2X,E.cannon2Y);
         ctx.rotate(Math.atan2(player.earthY-E.cannon2Y,player.earthX-E.cannon2X)+Math.PI/2);
-        ctx.drawImage(object.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
+        ctx.drawImage(sprite.enemy_pirateVesselturret,0,0,24,36,-12*screenratio,-26*screenratio,24*screenratio,36*screenratio);
       }
       ctx.restore();
     }
@@ -1538,7 +1540,7 @@ function enemyCharacter(E,type){
       ctx.save();
       ctx.translate(E.x,E.y);
       ctx.rotate(E.deathAnimation_angle);
-      ctx.drawImage(object.projectile_explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
+      ctx.drawImage(sprite.projectile_explosion,0,150*E.deathAnimation_index,150,150,-(E.width+20)/2,-(E.width+20)/2,E.width+20,E.width+20);
       ctx.restore();
       ctx.stroke();
       ctx.closePath();

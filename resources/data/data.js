@@ -1,5 +1,5 @@
 //List of spritemaps (might use only one in the final version) | used in: rendering
-var object = {
+var sprite = {
   enemy_goblin : new Image(),
   enemy_tooth : new Image(),
   enemy_buzz : new Image(),
