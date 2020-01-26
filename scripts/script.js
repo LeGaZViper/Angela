@@ -1,8 +1,6 @@
 /*
 ============================ WHAT TO DO LIST ===================================
-Random guns
-- UI change
-- in game drops
+
 ================================================================================
 
 ######POZNÁMKY######
@@ -437,7 +435,7 @@ var UI = {
     ctx.fillStyle = this.HPbar_player.color;
     ctx.fillRect(35*screenratio,canvas.height-66*screenratio,player.HP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
     ctx.fillStyle = "#008FFF";
-    ctx.fillRect(35*screenratio+player.maxHP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,canvas.height-66*screenratio,player.shield[1]/player.maxShield[1]*(player.maxShield[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
+    ctx.fillRect(35*screenratio+player.HP[1]/player.maxHP[1]*(player.maxHP[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,canvas.height-66*screenratio,player.shield[1]/player.maxShield[1]*(player.maxShield[1]*120/(player.maxHP[1]+player.maxShield[1]))*screenratio,15*screenratio);
 
     ctx.fillStyle = this.HPbar_earth.color;
     ctx.fillRect(35*screenratio,canvas.height-36*screenratio,player.HP[0]/player.maxHP[0]*160*screenratio,15*screenratio);
@@ -1067,13 +1065,13 @@ var backgroundParticles = {
 
 //Check for total of enemies on the map | used in: win condition
 var PARTS = 0;
-async function checkDeath(enemy,b){
+async function checkDeath(enemy,bulletName){
   if(enemy.HP <= 0&&!enemy.deathAnimation){
     enemy.deathAnimation = true;
     if(Math.round(Math.random()*1) == 1) {
       randomDropList.push(randomDrop({x:enemy.x,y:enemy.y}));
     }
-    if(b == "SPREADER"&&bulletList.length < 300){
+    if(bulletName == "SPREADER"&&bulletList.length < 300){
       for(let i=0;i<16;i++){
         bulletList.push(bullet({x:enemy.x,y:enemy.y,dirx:Math.cos(Math.PI/8*i),diry:Math.sin(Math.PI/8*i)},"SPREADER_PROJECTILE",1));
       }
