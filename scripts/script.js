@@ -445,6 +445,7 @@ var UI = {
       ctx.fillStyle = "red";
     }
     ctx.fillRect(this.dangerLight_0.x,this.dangerLight_0.y,this.dangerLight_0.width,this.dangerLight_0.height);
+    ctx.fillStyle = "black";
     if(player.HP[1]<player.maxHP[1]/3){
       ctx.fillStyle = "red";
     }
@@ -858,7 +859,7 @@ var player = {
     player.earthY = canvas.height/2;
     player.futureX = 0;
     player.futureY = 0;
-    player.speed = ship.speed*screenratio;
+    player.speed = 0;
     player.xspeed = 0;
     player.yspeed = 0;
     player.width = ship.width*screenratio;
@@ -885,18 +886,29 @@ var player = {
     player.sprite = sprite["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
+    let distance = Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2));
+    if(distance > 200*screenratio)player.speed = ship.speed;
+    else player.speed = distance*ship.speed/200*screenratio;
     if(!player.collisionCD)
     player.shieldRecharge();
     //thruster animation
-    if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
-      player.particlesWidth += player.particles[3];
-      player.particlesHeight += player.particles[4];
-    }
-
-    else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0.2){
-      player.particlesWidth -= player.particles[3];
+    if(player.speed == ship.speed&&player.particlesHeight<1)
+    player.particlesHeight += player.particles[4];
+    else if(player.particlesHeight<0.9&&(player.xspeed != 0 && player.yspeed !=0))
+    player.particlesHeight = (player.speed/ship.speed)*1.5;
+    else if (player.particlesHeight>=0.2) {
       player.particlesHeight -= player.particles[4];
     }
+
+    // if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
+    //   player.particlesWidth += player.particles[3];
+    //   player.particlesHeight += player.particles[4];
+    // }
+    //
+    // else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0.2){
+    //   player.particlesWidth -= player.particles[3];
+    //   player.particlesHeight -= player.particles[4];
+    // }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
       player.xspeed = 0;
@@ -907,7 +919,7 @@ var player = {
       player.killedCDstart();
     }
     else if(!isNaN(ratio)&&!rightMouseDown){
-      if(Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2))>100*screenratio){
+      if(distance>100*screenratio){
         player.xspeed = ratio*(xMousePos-player.x);
         player.yspeed = ratio*(yMousePos-player.y);
         player.futureX += player.xspeed;
