@@ -887,18 +887,17 @@ var player = {
   },
   update : ()=>{
     let distance = Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2));
-    if(distance > 200*screenratio)player.speed = ship.speed;
+    if(distance > 200*screenratio)player.speed = ship.speed*screenratio;
     else player.speed = distance*ship.speed/200*screenratio;
     if(!player.collisionCD)
     player.shieldRecharge();
     //thruster animation
-    if(player.speed == ship.speed&&player.particlesHeight<1)
+    if(player.speed == ship.speed*screenratio&&player.particlesHeight<1&&(player.xspeed != 0 && player.yspeed !=0))
     player.particlesHeight += player.particles[4];
-    else if(player.particlesHeight<0.9&&(player.xspeed != 0 && player.yspeed !=0))
+    else if(player.particlesHeight<0.8&&(player.xspeed != 0 && player.yspeed !=0))
     player.particlesHeight = (player.speed/ship.speed)*1.5;
-    else if (player.particlesHeight>=0.2) {
-      player.particlesHeight -= player.particles[4];
-    }
+    else if (player.particlesHeight>=0.2)
+    player.particlesHeight -= player.particles[4];
 
     // if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
     //   player.particlesWidth += player.particles[3];
