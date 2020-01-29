@@ -886,30 +886,17 @@ var player = {
     player.sprite = sprite["player_" + ship.name.toLowerCase()];
   },
   update : ()=>{
+    //speed calculation
     let distance = Math.sqrt(Math.pow(xMousePos-player.x,2)+Math.pow(yMousePos-player.y,2));
     if(distance > 200*screenratio)player.speed = ship.speed*screenratio;
-    else player.speed = distance*ship.speed/200*screenratio;
+    else if (distance < 100*screenratio)player.speed = 0;
+    else player.speed = (distance/(20*screenratio))*screenratio;
     if(!player.collisionCD)
     player.shieldRecharge();
-    //thruster animation
-    if(player.speed == ship.speed*screenratio&&player.particlesHeight<1&&(player.xspeed != 0 && player.yspeed !=0))
-    player.particlesHeight += player.particles[4];
-    else if(player.particlesHeight<0.8&&(player.xspeed != 0 && player.yspeed !=0))
-    player.particlesHeight = (player.speed/ship.speed)*1.5;
-    else if (player.particlesHeight>=0.2)
-    player.particlesHeight -= player.particles[4];
 
-    // if(!player.xspeed == 0&&!player.yspeed == 0&&player.particlesHeight<1){
-    //   player.particlesWidth += player.particles[3];
-    //   player.particlesHeight += player.particles[4];
-    // }
-    //
-    // else if(player.xspeed == 0&&player.yspeed == 0&&player.particlesHeight>=0.2){
-    //   player.particlesWidth -= player.particles[3];
-    //   player.particlesHeight -= player.particles[4];
-    // }
     let ratio = player.speed/((Math.abs(xMousePos-player.x)+Math.abs(yMousePos-player.y)));
     if(player.HP[0] <= 0){
+      player.speed = 0;
       player.xspeed = 0;
       player.yspeed = 0;
       loseTheGame();
@@ -917,8 +904,7 @@ var player = {
     else if(player.HP[1] <= 0&&!player.killedCD){
       player.killedCDstart();
     }
-    else if(!isNaN(ratio)&&!rightMouseDown){
-      if(distance>100*screenratio){
+    else if(!isNaN(ratio)&&!rightMouseDown){ //player positioner
         player.xspeed = ratio*(xMousePos-player.x);
         player.yspeed = ratio*(yMousePos-player.y);
         player.futureX += player.xspeed;
@@ -928,25 +914,32 @@ var player = {
           player.coordY += player.yspeed;
           player.hitBoxX = player.x-player.hitBoxWidth/2;
           player.hitBoxY = player.y-player.hitBoxHeight/2;
+          player.earthX -= player.xspeed;
+          player.earthY -= player.yspeed;
         }
         else {
           player.futureX -= player.xspeed;
           player.futureY -= player.yspeed;
+          player.speed = 0;
           player.xspeed = 0;
           player.yspeed = 0;
         }
-      }
-      else {
-        player.xspeed = 0;
-        player.yspeed = 0;
-      }
     }
     else {
+      player.speed = 0;
       player.xspeed = 0;
       player.yspeed = 0;
     }
-    player.earthX -= player.xspeed;
-    player.earthY -= player.yspeed;
+    //New thruster sprite control
+    let needToGet = Math.round(player.speed/screenratio)/10+0.1;
+    if(needToGet>player.particlesHeight){
+      player.particlesHeight += player.particles[4];
+      player.particlesHeight = Math.round(player.particlesHeight*10)/10;
+    }
+    else if(needToGet<player.particlesHeight){
+      player.particlesHeight -= player.particles[4];
+      player.particlesHeight = Math.round(player.particlesHeight*10)/10;
+    }
   },
   render : ()=> {
     ctx.beginPath();
