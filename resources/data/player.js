@@ -33,7 +33,7 @@ var backgroundParticles = {
 };
 
 //player object
-var ship = JSON.parse(localStorage.ship);
+var ship;
 var player = {
   inicialize: () => {
     player.spaceSize = 4000 * screenratio;
@@ -119,13 +119,13 @@ var player = {
       player.yspeed = 0;
     }
     //New thruster sprite control
-    let needToGet = Math.round(player.speed / screenratio) / 10 + 0.1;
+    let needToGet = (Math.round(player.speed) / 10 + 0.1);
     if (needToGet > player.particlesHeight) {
       player.particlesHeight += player.particles[4];
-      player.particlesHeight = Math.round(player.particlesHeight * 10) / 10;
+      player.particlesHeight = Math.round(player.particlesHeight * 100) / 100;
     } else if (needToGet < player.particlesHeight) {
       player.particlesHeight -= player.particles[4];
-      player.particlesHeight = Math.round(player.particlesHeight * 10) / 10;
+      player.particlesHeight = Math.round(player.particlesHeight * 100) / 100;
     }
   },
   render: () => {

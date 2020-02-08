@@ -82,6 +82,7 @@ function loadTheGame(callback) {
   }
   scale();
   backgroundParticles.set();
+  ship = JSON.parse(localStorage.ship);
   player.inicialize();
   UI.inicialize();
   //Disabling rightclick popup
