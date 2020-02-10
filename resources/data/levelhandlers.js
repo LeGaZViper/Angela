@@ -59,14 +59,20 @@ var levels_handler = {
 };
 
 function levelLayout(L) {
-  if (ship.section > 0) {
+  if (ship.section == 1) {
     L.pirateRaider = [25 + ship.level, 500];
     L.pirateTiger = [25 + ship.level, 1000];
     if (ship.level > 2) {
-      L.pirateMinedropper = [3 + ship.level, 1000];
+      L.pirateMinedropper = [25 + ship.level, 1000];
     }
-    if (ship.level > 5) {
-      L.pirateVessel = [1 + (ship.level - 1) * 2, 5000];
+    if (ship.level > 4) {
+      L.pirateVessel = [3 + (ship.level - 1) * 2, 5000];
+    }
+  } else if (ship.section == 2) {
+    L.voidDrone = [40 + ship.level * 2, 250];
+    L.voidChaser = [10 + ship.level, 500];
+    if (ship.level > 4) {
+      L.voidSpherefighter = [5 + ship.level, 1000];
     }
   }
   return L;

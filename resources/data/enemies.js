@@ -3,7 +3,7 @@ var PARTS = 0;
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     enemy.deathAnimation = true;
-    if (Math.round(Math.random() * 1) == 1) {
+    if (Math.round(Math.random() * 10) == 1) {
       randomDropList.push(randomDrop({ x: enemy.x, y: enemy.y }));
     }
     if (bulletName == "SPREADER" && bulletList.length < 300) {
@@ -22,7 +22,10 @@ async function checkDeath(enemy, bulletName) {
         );
       }
     }
-    if (levels_handler.level.total == 1 && enemy.sprite != sprite.enemy_pirateMine) {
+    if (
+      levels_handler.level.total == 1 &&
+      enemy.sprite != sprite.enemy_pirateMine
+    ) {
       await sleep(2000);
       levels_handler.level.total -= 1;
     } else if (enemy.sprite != sprite.enemy_pirateMine) {
@@ -234,7 +237,8 @@ function enemyCharacter(E, type) {
     E.HP = 50;
     E.maxHP = 50;
     E.PARTS = 0;
-    E.angle = Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
+    E.angle =
+      Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = heightOnCanvas, 2 = distance from ship
     E.particles = [46, 46 * screenratio, -79 * screenratio, 0, 0.1];
@@ -245,11 +249,11 @@ function enemyCharacter(E, type) {
     E.widthOnPic = 60;
     E.heightOnPic = 60;
     //Ingame stats
-    E.width = 45 * screenratio;
-    E.height = 45 * screenratio;
+    E.width = 30 * screenratio;
+    E.height = 30 * screenratio;
     E.speed = 1 * screenratio;
-    E.HP = 5;
-    E.maxHP = 5;
+    E.HP = 2;
+    E.maxHP = 2;
     E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
@@ -262,8 +266,8 @@ function enemyCharacter(E, type) {
     E.width = 48 * screenratio;
     E.height = 62 * screenratio;
     E.speed = 1 * screenratio;
-    E.HP = 20;
-    E.maxHP = 20;
+    E.HP = 7;
+    E.maxHP = 7;
     E.PARTS = 15;
     //Custom thruster fire parameters
     //0 = heightOnPic, 1 = widthOnCanvas, 2 = YdistanceFromShip, 3 = heightOnCanvas
@@ -273,8 +277,8 @@ function enemyCharacter(E, type) {
     E.widthOnPic = 64;
     E.heightOnPic = 64;
     //Ingame stats
-    E.width = 64 * screenratio;
-    E.height = 64 * screenratio;
+    E.width = 128 * screenratio;
+    E.height = 128 * screenratio;
     E.speed = 1 * screenratio;
     E.HP = 20;
     E.maxHP = 20;
@@ -331,7 +335,8 @@ function enemyCharacter(E, type) {
       E.particlesWidth -= E.particles[3];
       E.particlesHeight -= E.particles[4];
     }
-    let distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
+    let distance =
+      Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
     if (E.orbit && distance < 500 * screenratio && !E.inOrbit) {
       E.inOrbit = true;
     } else if (E.inOrbit && !E.arrival) {
@@ -341,8 +346,13 @@ function enemyCharacter(E, type) {
       if (type == "pirateVessel") {
         E.attackCDstart();
         if (Math.random() < 0.5)
-          enemyBulletList.push(enemyBullet({ x: E.cannon1X, y: E.cannon1Y }, "BASIC"));
-        else enemyBulletList.push(enemyBullet({ x: E.cannon2X, y: E.cannon2Y }, "BASIC"));
+          enemyBulletList.push(
+            enemyBullet({ x: E.cannon1X, y: E.cannon1Y }, "BASIC")
+          );
+        else
+          enemyBulletList.push(
+            enemyBullet({ x: E.cannon2X, y: E.cannon2Y }, "BASIC")
+          );
       } else {
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
         E.attackCDstart();
@@ -361,12 +371,16 @@ function enemyCharacter(E, type) {
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
         E.attackCDstart();
       }
-    } else if ((type == "pirateMine" || type == "pirateMinedropper") && distance < 40) {
+    } else if (
+      (type == "pirateMine" || type == "pirateMinedropper") &&
+      distance < 40
+    ) {
       E.HP = 0;
       player.HP[0] -= 2;
     } else if (!E.inOrbit) {
       let ratio =
-        E.speed / (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+        E.speed /
+        (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
       E.xspeed = ratio * (player.earthX - E.x);
       E.yspeed = ratio * (player.earthY - E.y);
 
@@ -405,8 +419,13 @@ function enemyCharacter(E, type) {
     ctx.save();
     ctx.translate(E.x, E.y);
     if (!E.inOrbit)
-      ctx.rotate(Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2);
-    else ctx.rotate(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI);
+      ctx.rotate(
+        Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2
+      );
+    else
+      ctx.rotate(
+        Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
+      );
     //normal enemy ship
     ctx.globalAlpha = E.appearOpacity;
     ctx.drawImage(
@@ -462,25 +481,34 @@ function enemyCharacter(E, type) {
       if (!E.inOrbit) {
         E.cannon1X =
           -(32 * screenratio) *
-            Math.cos(Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI) +
+            Math.cos(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
+            ) +
           E.x;
         E.cannon1Y =
           -(32 * screenratio) *
-            Math.sin(Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI) +
+            Math.sin(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
+            ) +
           E.y;
         E.cannon2X =
           35 *
             screenratio *
-            Math.cos(Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI) +
+            Math.cos(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
+            ) +
           E.x;
         E.cannon2Y =
           35 *
             screenratio *
-            Math.sin(Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI) +
+            Math.sin(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
+            ) +
           E.y;
         ctx.translate(E.cannon1X, E.cannon1Y);
         ctx.rotate(
-          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) + Math.PI / 2
+          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) +
+            Math.PI / 2
         );
         ctx.drawImage(
           sprite.enemy_pirateVesselturret,
@@ -497,7 +525,8 @@ function enemyCharacter(E, type) {
         ctx.save();
         ctx.translate(E.cannon2X, E.cannon2Y);
         ctx.rotate(
-          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) - Math.PI / 2
+          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) -
+            Math.PI / 2
         );
         ctx.drawImage(
           sprite.enemy_pirateVesselturret,
@@ -513,25 +542,34 @@ function enemyCharacter(E, type) {
       } else {
         E.cannon1X =
           -(32 * screenratio) *
-            Math.cos(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2) +
+            Math.cos(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
+            ) +
           E.x;
         E.cannon1Y =
           -(32 * screenratio) *
-            Math.sin(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2) +
+            Math.sin(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
+            ) +
           E.y;
         E.cannon2X =
           35 *
             screenratio *
-            Math.cos(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2) +
+            Math.cos(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
+            ) +
           E.x;
         E.cannon2Y =
           35 *
             screenratio *
-            Math.sin(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2) +
+            Math.sin(
+              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
+            ) +
           E.y;
         ctx.translate(E.cannon1X, E.cannon1Y);
         ctx.rotate(
-          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) + Math.PI / 2
+          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) +
+            Math.PI / 2
         );
         ctx.drawImage(
           sprite.enemy_pirateVesselturret,
@@ -548,7 +586,8 @@ function enemyCharacter(E, type) {
         ctx.save();
         ctx.translate(E.cannon2X, E.cannon2Y);
         ctx.rotate(
-          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) + Math.PI / 2
+          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) +
+            Math.PI / 2
         );
         ctx.drawImage(
           sprite.enemy_pirateVesselturret,
@@ -582,10 +621,15 @@ function enemyCharacter(E, type) {
     if (!E.killed) {
       E.deathAnimation_countdown += 1;
       if (E.deathAnimation_countdown % 5 == 0) {
-        let distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
+        let distance =
+          Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
         E.deathAnimation_angle = Math.random() * 2 * Math.PI;
         E.deathAnimation_index += 1;
-        if (E.deathAnimation_index == 1 && type == "pirateMinedropper" && distance >= 40)
+        if (
+          E.deathAnimation_index == 1 &&
+          type == "pirateMinedropper" &&
+          distance >= 40
+        )
           enemyList.push(enemyCharacter({ x: E.x, y: E.y }, "pirateMine"));
       }
       ctx.beginPath();

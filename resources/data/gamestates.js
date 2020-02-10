@@ -32,7 +32,11 @@ function loseTheGame() {
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame() {
   localStorage.PARTS = parseInt(localStorage.PARTS) + PARTS;
-  ship.level += 1;
+  if (ship.level < 6) ship.level += 1;
+  else {
+    ship.level = 1;
+    ship.section += 1;
+  }
   saveLocalStorage();
   getMenu(3);
 }
