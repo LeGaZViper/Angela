@@ -1,5 +1,5 @@
 //List of spritemaps (might use only one in the final version) | used in: rendering
-var object = {
+var sprite = {
   enemy_goblin : new Image(),
   enemy_tooth : new Image(),
   enemy_buzz : new Image(),
@@ -22,10 +22,14 @@ var object = {
   projectile_spread : new Image(),
   projectile_spreadProjectile : new Image(),
   projectile_explosion : new Image(),
+  UI_stars1 : new Image(),
+  UI_stars2 : new Image(),
   UI_earth : new Image(),
   UI_cursor : new Image(),
   UI_HPpanel : new Image(),
-  UI_LASERpanel : new Image(),
+  UI_durationPanel : new Image(),
+  UI_scout : new Image(),
+  UI_slug : new Image(),
   UI_shopBG : new Image(),
   UI_BASIC : new Image(),
   UI_DOUBLE : new Image(),
@@ -35,18 +39,28 @@ var object = {
 };
 
 //Default database for ingame weapons | used in: first inicialization
-var defaultWeaponDatabase = {
-  BASIC:{name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"UNLOCKED",cost:"DEFAULT"},
-  DOUBLE:{name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#04F7FF",status:"LOCKED",cost:200},
-  SPRAY:{name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,color:"#00FF00",status:"LOCKED",cost:1000},
-  ROCKET:{name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,status:"LOCKED",cost:"DEFAULT"},
-  GIANT:{name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED",cost:0},
-  LASER:{name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED",cost:99999},
-  SPREADER:{name:"SPREADER",bullets:1,damage:2,speed:8,width:14,height:30,cooldown:300,piercing:false,status:"LOCKED",cost:0},
-  SPREADER_PROJECTILE:{name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false},
+var weaponDatabase = {
+  BASIC:{index:0,name:"BASIC",bullets:1,damage:1,speed:15,width:4,height:25,cooldown:150,duration:0,color:"#00FF00",status:"DEFAULT"},
+  DOUBLE:{index:1,name:"DOUBLE",bullets:2,damage:1,speed:15,width:4,height:25,cooldown:150,duration:600,color:"#00FF00",status:"LOCKED"},
+  SPRAY:{index:2,name:"SPRAY",bullets:3,damage:1,speed:15,width:4,height:25,cooldown:150,duration:600,color:"#00FF00",status:"LOCKED"},
+  ROCKET:{index:3,name:"ROCKET",bullets:1,damage:5,speed:7,width:12,height:33,cooldown:300,duration:600,status:"LOCKED"},
+  GIANT:{index:4,name:"GIANT",bullets:1,damage:2,speed:7,width:10,height:50,cooldown:300,duration:600,piercing:true,hitCD:500,color:"#00FF00",status:"LOCKED"},
+  LASER:{index:5,name:"LASER",bullets:1,damage:4,speed:0,width:1,height:1,cooldown:2000,duration:600,piercing:true,hitCD:200,color:"#00FF00",status:"LOCKED"},
+  SPREADER:{index:6,name:"SPREADER",bullets:1,damage:2,speed:8,width:14,height:30,cooldown:300,duration:600,piercing:false,status:"LOCKED"},
+  SPREADER_PROJECTILE:{index:7,name:"SPREADER_PROJECTILE",bullets:1,damage:2,speed:15,width:7,height:13,piercing:false,status:"UNAVAILABLE"}
 };
-var defaultShipDatabase = {
-  SCOUT:{name:"SCOUT",speed:5,width:60,height:60,widthOnPic:88,heightOnPic:88,particles:[22,2,30,0,0.1],maxHP:[10,5],status:"UNLOCKED",cost:0,section:1,level:1,weapon:defaultWeaponDatabase.BASIC},
-  SLUG:{name:"SLUG",speed:5,width:88,height:88,widthOnPic:88,heightOnPic:88,particles:[23,45,23,0,0.1],maxHP:[10,10],status:"LOCKED",cost:0,section:2,level:1,weapon:defaultWeaponDatabase.DOUBLE},
-  ORBITER:{name:"ORBITER",speed:6,width:55,height:83,widthOnPic:55,heightOnPic:83,particles:[0,0,0,0,0],maxHP:[10,5],status:"LOCKED",cost:0,section:3,level:1,weapon:defaultWeaponDatabase.ROCKET}
+var defaultShip = {
+  name:"SCOUT",
+  speed:10,
+  width:66,
+  height:66,
+  widthOnPic:88,
+  heightOnPic:88,
+  weaponDuration:0,
+  particles:[22,2,30,0,0.1],
+  maxShield:[0,1],
+  maxHP:[10,5],
+  section:1,
+  level:1,
+  weapon:weaponDatabase.BASIC
 };

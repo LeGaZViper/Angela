@@ -1,16 +1,24 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8"/>
-  <!-- If you expected more, ↓↓↓ is where magic happens. -->
-  <script src="./resources/data/data.js" type="text/javascript"></script>
-  <script src="./scripts/script.js" type="text/javascript"></script>
-  <!-- If you expected more, ↑↑↑ is where magic happens. -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <link type="text/css" rel="stylesheet" href="./css.css"></link>
-  <button onclick="localStorage.clear();location.reload()">LocalStorage Reset</button>
-</head>
-<body>
-  <canvas id="canvas"></canvas>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- If you expected more, ↓↓↓ is where magic happens. -->
+    <script src="./resources/data/gamestates.js"></script>
+    <script src="./resources/data/data.js" type="text/javascript"></script>
+    <script src="./resources/data/ui.js"></script>
+    <script src="./resources/data/enemies.js"></script>
+    <script src="./resources/data/levelhandlers.js"></script>
+    <script src="./resources/data/eventlistener.js"></script>
+    <script src="./resources/data/player.js"></script>
+    <script src="./resources/data/weapons.js"></script>
+    <script src="./resources/data/gameloop.js"></script>
+    <script src="./resources/data/inicialization.js"></script>
+    <!-- If you expected more, ↑↑↑ is where magic happens. -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="./css.css" />
+  </head>
+  <body>
+    <button onclick="localStorage.clear();location.reload()">LocalStorage Reset</button>
+    <canvas id="canvas"></canvas>
+  </body>
 </html>
