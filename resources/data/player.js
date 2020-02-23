@@ -7,10 +7,10 @@ var backgroundParticles = {
     this.y2 = canvas.height / 2;
   },
   update_render: function() {
-    this.x1 -= player.xspeed / 8;
-    this.y1 -= player.yspeed / 8;
-    this.x2 -= player.xspeed / 10;
-    this.y2 -= player.yspeed / 10;
+    this.x1 += -(player.xspeed + camera.offSetX) / 8;
+    this.y1 += -(player.yspeed + camera.offSetY) / 8;
+    this.x2 += -(player.xspeed + camera.offSetX) / 10;
+    this.y2 += -(player.yspeed + camera.offSetY) / 10;
 
     ctx.beginPath();
     ctx.drawImage(
@@ -29,6 +29,45 @@ var backgroundParticles = {
     );
     ctx.stroke();
     ctx.closePath();
+  }
+};
+
+var camera = {
+  inicialize: function() {
+    this.x = 0;
+    this.y = 0;
+    this.offSetX = 0;
+    this.offSetY = 0;
+    this.offSetXNew = 0;
+    this.offSetYNew = 0;
+    this.offSetXOld = 0;
+    this.offSetYOld = 0;
+    this.offSetStorageX = 0;
+    this.offSetStorageY = 0;
+  },
+  update: function() {
+    let point = Math.atan2(
+      yMousePos - canvas.height / 2,
+      xMousePos - canvas.width / 2
+    );
+    let distance = Math.sqrt(
+      Math.pow(xMousePos - canvas.width / 2, 2) +
+        Math.pow(yMousePos - canvas.height / 2, 2)
+    );
+    this.x = distance * 2 * Math.cos(point) + canvas.width / 2;
+    this.y = distance * 2 * Math.sin(point) + canvas.height / 2;
+    this.offSetXNew = this.x - canvas.width / 2;
+    this.offSetYNew = this.y - canvas.height / 2;
+  },
+  check: function() {
+    this.offSetX =
+      (Math.round((this.offSetXNew - this.offSetXOld) * 10) / 10 / 5) *
+      screenratio;
+    this.offSetXOld = this.offSetXNew;
+    this.offSetY =
+      (Math.round((this.offSetYNew - this.offSetYOld) * 10) / 10 / 5) *
+      screenratio;
+    this.offSetYOld = this.offSetYNew;
   }
 };
 
@@ -74,7 +113,8 @@ var player = {
   update: () => {
     //speed calculation
     let distance = Math.sqrt(
-      Math.pow(xMousePos - player.x, 2) + Math.pow(yMousePos - player.y, 2)
+      Math.pow(xMousePos - canvas.width / 2, 2) +
+        Math.pow(yMousePos - canvas.height / 2, 2)
     );
     if (distance > 200 * screenratio) player.speed = ship.speed * screenratio;
     else if (distance < 100 * screenratio) player.speed = 0;
@@ -82,7 +122,9 @@ var player = {
     if (!player.collisionCD) player.shieldRecharge();
 
     let ratio =
-      player.speed / (Math.abs(xMousePos - player.x) + Math.abs(yMousePos - player.y));
+      player.speed /
+      (Math.abs(xMousePos - canvas.width / 2) +
+        Math.abs(yMousePos - canvas.height / 2));
     if (player.HP[0] <= 0) {
       player.speed = 0;
       player.xspeed = 0;
@@ -118,8 +160,12 @@ var player = {
       player.xspeed = 0;
       player.yspeed = 0;
     }
+    player.earthX -= camera.offSetX;
+    player.earthY -= camera.offSetY;
+    player.x -= camera.offSetX;
+    player.y -= camera.offSetY;
     //New thruster sprite control
-    let needToGet = (Math.round(player.speed) / 10 + 0.1);
+    let needToGet = Math.round(player.speed) / 10 + 0.1;
     if (needToGet > player.particlesHeight) {
       player.particlesHeight += player.particles[4];
       player.particlesHeight = Math.round(player.particlesHeight * 100) / 100;
@@ -132,7 +178,9 @@ var player = {
     ctx.beginPath();
     ctx.save();
     ctx.translate(player.x, player.y);
-    ctx.rotate(Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2);
+    ctx.rotate(
+      Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2
+    );
     //Normal Scout
     ctx.globalAlpha = player.opacity[1];
     ctx.drawImage(

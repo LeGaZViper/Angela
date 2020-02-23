@@ -53,8 +53,8 @@ function enemyBullet(B, type) {
     B.xspeed = ratio * B.dirx;
     B.yspeed = ratio * B.diry;
 
-    B.x += B.xspeed - player.xspeed;
-    B.y += B.yspeed - player.yspeed;
+    B.x += B.xspeed - player.xspeed - camera.offSetX;
+    B.y += B.yspeed - player.yspeed - camera.offSetY;
     B.hitBoxX = B.x - B.hitBoxWidth / 2;
     B.hitBoxY = B.y - B.hitBoxHeight / 2;
   };
@@ -395,8 +395,8 @@ function enemyCharacter(E, type) {
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
     }
-    E.x -= player.xspeed;
-    E.y -= player.yspeed;
+    E.x += -player.xspeed - camera.offSetX;
+    E.y += -player.yspeed - camera.offSetY;
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
@@ -616,8 +616,8 @@ function enemyCharacter(E, type) {
     ctx.closePath();
   };
   E.deathAnimation_render = function() {
-    E.x -= player.xspeed; //So that explosions won't move with the player
-    E.y -= player.yspeed;
+    E.x += -player.xspeed - camera.offSetX; //So that explosions won't move with the player
+    E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
       E.deathAnimation_countdown += 1;
       if (E.deathAnimation_countdown % 5 == 0) {

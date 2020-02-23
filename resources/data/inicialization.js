@@ -33,6 +33,7 @@ function collides_UI(a, b) {
 
 function inicializeGame() {
   player.inicialize();
+  camera.inicialize();
   backgroundParticles.set();
   UI.levelDisplayCheck = true;
   player.HP = [player.maxHP[0], player.maxHP[1]];
@@ -83,6 +84,7 @@ function loadTheGame(callback) {
   scale();
   backgroundParticles.set();
   ship = JSON.parse(localStorage.ship);
+  camera.inicialize();
   player.inicialize();
   UI.inicialize();
   //Disabling rightclick popup
@@ -98,7 +100,10 @@ function scale() {
   screenratio = 1;
   canvas.width = 1100 * screenratio;
   canvas.height = 900 * screenratio;
-  while ($(window).height() < canvas.height || $(window).width() < canvas.width) {
+  while (
+    $(window).height() < canvas.height ||
+    $(window).width() < canvas.width
+  ) {
     screenratio -= 0.1;
     canvas.width = 1100 * screenratio;
     canvas.height = 900 * screenratio;
