@@ -36,7 +36,12 @@ async function spawn(level_layout) {
         ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
       det_y = player.earthY + player.spaceSize / 2;
     }
-    enemyList.push(enemyCharacter({ x: det_x, y: det_y }, level_layout[i]));
+    enemyList.push(
+      enemyCharacter(
+        { x: det_x, y: det_y, ...enemyDatabase[level_layout[i]] },
+        level_layout[i]
+      )
+    );
     await sleep(levels_handler.level[level_layout[i]][1]);
   }
 }

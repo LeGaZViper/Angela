@@ -86,6 +86,7 @@ function loadTheGame(callback) {
   ship = JSON.parse(localStorage.ship);
   camera.inicialize();
   player.inicialize();
+  defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup
   $("#canvas").bind("contextmenu", function() {
