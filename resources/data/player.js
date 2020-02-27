@@ -84,6 +84,7 @@ var player = {
     player.earthY = canvas.height / 2;
     player.futureX = 0;
     player.futureY = 0;
+    player.acceleration = 0;
     player.speed = 0;
     player.xspeed = 0;
     player.yspeed = 0;
@@ -116,11 +117,24 @@ var player = {
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
-    if (distance > 200 * screenratio) player.speed = ship.speed * screenratio;
-    else if (distance < 100 * screenratio) player.speed = 0;
-    else player.speed = (distance / (20 * screenratio)) * screenratio;
+    if (
+      distance > 300 * screenratio &&
+      player.acceleration < 100 &&
+      !rightMouseDown
+    )
+      player.acceleration = player.acceleration + 5;
+    else if (distance < 100 * screenratio && player.acceleration > 0)
+      player.acceleration = player.acceleration - 5;
+    else if (player.acceleration < 50) {
+      player.acceleration = player.acceleration + 1;
+    } else if (player.acceleration > 0) {
+      player.acceleration = player.acceleration - 1;
+    }
     if (!player.collisionCD) player.shieldRecharge();
-
+    if (rightMouseDown && player.acceleration > 0) {
+      player.acceleration = player.acceleration - 5;
+    }
+    player.speed = ((ship.speed * player.acceleration) / 100) * screenratio;
     let ratio =
       player.speed /
       (Math.abs(xMousePos - canvas.width / 2) +
@@ -132,7 +146,7 @@ var player = {
       loseTheGame();
     } else if (player.HP[1] <= 0 && !player.killedCD) {
       player.killedCDstart();
-    } else if (!isNaN(ratio) && !rightMouseDown) {
+    } else if (!isNaN(ratio)) {
       //player positioner
       player.xspeed = ratio * (xMousePos - player.x);
       player.yspeed = ratio * (yMousePos - player.y);
@@ -155,10 +169,6 @@ var player = {
         player.xspeed = 0;
         player.yspeed = 0;
       }
-    } else {
-      player.speed = 0;
-      player.xspeed = 0;
-      player.yspeed = 0;
     }
     player.earthX -= camera.offSetX;
     player.earthY -= camera.offSetY;

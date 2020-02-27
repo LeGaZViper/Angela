@@ -64,6 +64,12 @@ function loadTheGame(callback) {
   canvas.addEventListener("mousemove", function() {
     userInput(event, 0);
   });
+  document.addEventListener("keydown", function() {
+    userInput(event, 1);
+  });
+  document.addEventListener("keyup", function() {
+    userInput(event, 2);
+  });
   ctx = canvas.getContext("2d");
   //Setting path
   for (let index in sprite) {
