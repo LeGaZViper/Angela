@@ -50,10 +50,13 @@ var camera = {
       yMousePos - canvas.height / 2,
       xMousePos - canvas.width / 2
     );
-    let distance = Math.sqrt(
-      Math.pow(xMousePos - canvas.width / 2, 2) +
-        Math.pow(yMousePos - canvas.height / 2, 2)
-    );
+    let distance =
+      (Math.sqrt(
+        Math.pow(xMousePos - canvas.width / 2, 2) +
+          Math.pow(yMousePos - canvas.height / 2, 2)
+      ) *
+        player.acceleration) /
+      100;
     this.x = distance * 2 * Math.cos(point) + canvas.width / 2;
     this.y = distance * 2 * Math.sin(point) + canvas.height / 2;
     this.offSetXNew = this.x - canvas.width / 2;
@@ -117,14 +120,15 @@ var player = {
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
-    if (
-      distance > 300 * screenratio &&
-      player.acceleration < 100 &&
-      !rightMouseDown
-    )
-      player.acceleration = player.acceleration + 5;
-    else if (distance < 100 * screenratio && player.acceleration > 0)
-      player.acceleration = player.acceleration - 5;
+    if (distance > 300 * screenratio) {
+      if (player.acceleration < 100 && !rightMouseDown)
+        if (player.acceleration <= 95)
+          player.acceleration = player.acceleration + 5;
+        else player.acceleration += 1;
+    } else if (distance < 100 * screenratio && player.acceleration > 0)
+      if (player.acceleration >= 5)
+        player.acceleration = player.acceleration - 5;
+      else player.acceleration -= 1;
     else if (player.acceleration < 50) {
       player.acceleration = player.acceleration + 1;
     } else if (player.acceleration > 0) {
@@ -132,7 +136,9 @@ var player = {
     }
     if (!player.collisionCD) player.shieldRecharge();
     if (rightMouseDown && player.acceleration > 0) {
-      player.acceleration = player.acceleration - 5;
+      if (player.acceleration >= 5)
+        player.acceleration = player.acceleration - 5;
+      else player.acceleration -= 1;
     }
     player.speed = ((ship.speed * player.acceleration) / 100) * screenratio;
     let ratio =
