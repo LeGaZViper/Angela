@@ -51,25 +51,24 @@ var camera = {
       xMousePos - canvas.width / 2
     );
     let distance =
-      (Math.sqrt(
-        Math.pow(xMousePos - canvas.width / 2, 2) +
-          Math.pow(yMousePos - canvas.height / 2, 2)
-      ) *
-        player.acceleration) /
+      (2 *
+        (Math.sqrt(
+          Math.pow(xMousePos - canvas.width / 2, 2) +
+            Math.pow(yMousePos - canvas.height / 2, 2)
+        ) *
+          player.acceleration)) /
       100;
-    this.x = distance * 2 * Math.cos(point) + canvas.width / 2;
-    this.y = distance * 2 * Math.sin(point) + canvas.height / 2;
+    this.x = distance * Math.cos(point) + canvas.width / 2;
+    this.y = distance * Math.sin(point) + canvas.height / 2;
     this.offSetXNew = this.x - canvas.width / 2;
     this.offSetYNew = this.y - canvas.height / 2;
   },
   check: function() {
     this.offSetX =
-      (Math.round((this.offSetXNew - this.offSetXOld) * 10) / 10 / 5) *
-      screenratio;
+      (Math.round((this.offSetXNew - this.offSetXOld) * 10) / 50) * screenratio;
     this.offSetXOld = this.offSetXNew;
     this.offSetY =
-      (Math.round((this.offSetYNew - this.offSetYOld) * 10) / 10 / 5) *
-      screenratio;
+      (Math.round((this.offSetYNew - this.offSetYOld) * 10) / 50) * screenratio;
     this.offSetYOld = this.offSetYNew;
   }
 };
@@ -122,22 +121,19 @@ var player = {
     );
     if (distance > 300 * screenratio) {
       if (player.acceleration < 100 && !rightMouseDown)
-        if (player.acceleration <= 95)
-          player.acceleration = player.acceleration + 5;
+        if (player.acceleration <= 97) player.acceleration += 3;
         else player.acceleration += 1;
-    } else if (distance < 100 * screenratio && player.acceleration > 0)
-      if (player.acceleration >= 5)
-        player.acceleration = player.acceleration - 5;
+    } else if (distance < 170 * screenratio && player.acceleration > 0) {
+      if (player.acceleration >= 3) player.acceleration -= 3;
       else player.acceleration -= 1;
-    else if (player.acceleration < 50) {
-      player.acceleration = player.acceleration + 1;
-    } else if (player.acceleration > 0) {
-      player.acceleration = player.acceleration - 1;
+    } else if (distance < 300 * screenratio && distance > 170 * screenratio) {
+      if (player.acceleration < 50) player.acceleration += 1;
+      else if (player.acceleration > 0) player.acceleration -= 1;
     }
+
     if (!player.collisionCD) player.shieldRecharge();
     if (rightMouseDown && player.acceleration > 0) {
-      if (player.acceleration >= 5)
-        player.acceleration = player.acceleration - 5;
+      if (player.acceleration >= 3) player.acceleration -= 3;
       else player.acceleration -= 1;
     }
     player.speed = ((ship.speed * player.acceleration) / 100) * screenratio;
