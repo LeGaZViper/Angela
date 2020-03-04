@@ -105,8 +105,8 @@ function loadTheGame(callback) {
 var screenratio;
 function scale() {
   screenratio = 1;
-  canvas.width = 1100 * screenratio;
-  canvas.height = 900 * screenratio;
+  canvas.width = 1100;
+  canvas.height = 900;
   while (
     $(window).height() < canvas.height ||
     $(window).width() < canvas.width
@@ -115,5 +115,6 @@ function scale() {
     canvas.width = 1100 * screenratio;
     canvas.height = 900 * screenratio;
   }
-  canvas.style.marginLeft = -canvas.width / 2 + "px";
+  canvas.width = $(window).width();
+  canvas.height = $(window).height();
 }

@@ -2,12 +2,10 @@
   background:url('./resources/sprites/UI/bg.png');
   background-size:100% 100%;
   top:0;
+  margin:0;
   cursor:auto;
-  margin-top:1%;
   position:absolute;
   display:block;
-  left:50%;
-  border: solid black 5px;
 }
 
 body {
@@ -18,4 +16,51 @@ body {
 @font-face {
     font-family: 'FFFFORWA';
     src: url('./FFFFORWA.TTF');
+}
+
+html,
+body {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+address,
+big,
+cite,
+code,
+em,
+font,
+img,
+small,
+strike,
+sub,
+sup,
+li,
+ol,
+ul,
+fieldset,
+form,
+label,
+legend,
+button,
+table,
+caption,
+tr,
+th,
+td {
+  border: none;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  text-align: inherit;
 }
