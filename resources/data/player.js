@@ -15,19 +15,19 @@ var backgroundParticles = {
     ctx.beginPath();
     ctx.drawImage(
       sprite.UI_stars1,
-      this.x1 - 1000 * screenratio,
+      this.x1 - 1500 * screenratio,
       this.y1 - 1000 * screenratio,
-      2000 * screenratio,
+      3000 * screenratio,
       2000 * screenratio
     );
     ctx.drawImage(
       sprite.UI_stars2,
-      this.x2 - 1000 * screenratio,
+      this.x2 - 1500 * screenratio,
       this.y2 - 1000 * screenratio,
-      2000 * screenratio,
+      3000 * screenratio,
       2000 * screenratio
     );
-    ctx.stroke();
+    ctx.fill();
     ctx.closePath();
   }
 };
