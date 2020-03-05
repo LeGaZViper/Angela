@@ -26,8 +26,8 @@ function randomDrop(R) {
     }
   }
   R.update = function() {
-    R.x -= player.xspeed;
-    R.y -= player.yspeed;
+    R.x += -player.xspeed - camera.offSetX;
+    R.y += -player.yspeed - camera.offSetY;
     R.hitBoxX = R.x - R.hitBoxWidth / 2;
     R.hitBoxY = R.y - R.hitBoxHeight / 2;
   };
@@ -71,7 +71,10 @@ function bullet(B, name, numberOfBullets) {
   B.killed = false;
   B.name = name;
   B.damage = ship.weapon.damage;
-  B.speed = ship.weapon.speed * screenratio;
+  B.speed =
+    ship.weapon.speed * screenratio +
+    Math.abs(player.xspeed) +
+    Math.abs(player.yspeed);
   B.width = ship.weapon.width * screenratio;
   B.height = ship.weapon.height * screenratio;
   B.piercing = ship.weapon.piercing;
@@ -81,21 +84,27 @@ function bullet(B, name, numberOfBullets) {
   } else if (name == "DOUBLE") {
     if (numberOfBullets == 2) {
       B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) + (1 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
+          (1 / 180) * Math.PI
       );
       B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) + (1 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
+          (1 / 180) * Math.PI
       );
     } else if (numberOfBullets == 1) {
       B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) - (1 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
+          (1 / 180) * Math.PI
       );
       B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) - (1 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
+          (1 / 180) * Math.PI
       );
     }
     if (numberOfBullets > 1) {
-      bulletList.push(bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1));
+      bulletList.push(
+        bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1)
+      );
     }
   } else if (name == "SPRAY") {
     if (numberOfBullets == 3) {
@@ -103,21 +112,27 @@ function bullet(B, name, numberOfBullets) {
       B.diry = yMousePos - player.y;
     } else if (numberOfBullets == 2) {
       B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) + (3 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
+          (3 / 180) * Math.PI
       );
       B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) + (3 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
+          (3 / 180) * Math.PI
       );
     } else if (numberOfBullets == 1) {
       B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) - (3 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
+          (3 / 180) * Math.PI
       );
       B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) - (3 / 180) * Math.PI
+        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
+          (3 / 180) * Math.PI
       );
     }
     if (numberOfBullets > 1) {
-      bulletList.push(bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1));
+      bulletList.push(
+        bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1)
+      );
     }
   } else if (name == "ROCKET") {
     B.sprite = sprite.projectile_rocket;
@@ -176,13 +191,12 @@ function bullet(B, name, numberOfBullets) {
             check.y > canvas.height * 2
           )
       );
-
       let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
       B.xspeed = ratio * B.dirx;
       B.yspeed = ratio * B.diry;
 
-      B.x += B.xspeed - player.xspeed;
-      B.y += B.yspeed - player.yspeed;
+      B.x += B.xspeed - player.xspeed - camera.offSetX;
+      B.y += B.yspeed - player.yspeed - camera.offSetY;
       B.hitBoxX = B.x - B.hitBoxWidth / 2;
       B.hitBoxY = B.y - B.hitBoxHeight / 2;
     }

@@ -5,8 +5,8 @@ var UI = {
     this.mainMenu_b0 = {
       width: 300 * screenratio,
       height: 50 * screenratio,
-      x: 400 * screenratio,
-      y: 300 * screenratio,
+      x: canvas.width/2 - 150*screenratio,
+      y: canvas.height/2 - 150*screenratio,
       text: "NEW GAME",
       textSize: 30 * screenratio,
       button: "NEW GAME",
@@ -16,8 +16,8 @@ var UI = {
     this.mainMenu_b1 = {
       width: 300 * screenratio,
       height: 50 * screenratio,
-      x: 400 * screenratio,
-      y: 370 * screenratio,
+      x: canvas.width/2 - 150*screenratio,
+      y: canvas.height/2 - 80 *screenratio,
       text: "CONTINUE",
       textSize: 30 * screenratio,
       button: "CONTINUE",
@@ -27,8 +27,8 @@ var UI = {
     this.mainMenu_b2 = {
       width: 300 * screenratio,
       height: 50 * screenratio,
-      x: 400 * screenratio,
-      y: 440 * screenratio,
+      x: canvas.width/2 - 150*screenratio,
+      y: canvas.height/2 - 10*screenratio,
       text: "UPGRADES",
       textSize: 30 * screenratio,
       button: "UPGRADES",
@@ -40,28 +40,29 @@ var UI = {
     this.upgradesMenu_PARTS = {
       width: 250 * screenratio,
       height: 75 * screenratio,
-      x: 773 * screenratio,
-      y: 77 * screenratio,
+      x: canvas.width/2 + 200 * screenratio,
+      y: canvas.height/2 - 370 * screenratio,
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "black"]
     };
     this.upgradesMenu_b0 = {
       width: 300 * screenratio,
-      height: 50 * screenratio,
-      x: 723 * screenratio,
-      y: 773 * screenratio,
+      height: 60 * screenratio,
+      x: canvas.width/2 + 150 * screenratio,
+      y: canvas.height/2 + 300 * screenratio,
       text: "CONTINUE",
       textSize: 30 * screenratio,
       button: "CONTINUE",
       opacity: 1,
       color: ["grey", "black", "white"]
     };
+    //Ship
     this.upgradesMenu_b1 = {
       width: 264 * screenratio,
       height: 264 * screenratio,
-      x: 710 * screenratio,
-      y: 311 * screenratio,
+      x: canvas.width/2 + 150 * screenratio,
+      y: canvas.height/2 - 150 * screenratio,
       sprite: sprite.UI_scout,
       color: ["grey", "black", "white"],
       opacity: 1
@@ -69,9 +70,9 @@ var UI = {
 
     this.upgradesMenu_b2 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 254 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 - 195 * screenratio,
       upgrade: ship.maxShield[1] - defaultShip.maxShield[1],
       maxUpgrade: 5,
       button: "maxShield",
@@ -82,9 +83,9 @@ var UI = {
     };
     this.upgradesMenu_b3 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 319 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 - 130 * screenratio,
       upgrade: ship.maxHP[1] - defaultShip.maxHP[1],
       maxUpgrade: 5,
       button: "maxHP",
@@ -95,9 +96,9 @@ var UI = {
     };
     this.upgradesMenu_b4 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 384 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 - 66*screenratio,
       upgrade: ship.speed - defaultShip.speed,
       maxUpgrade: 10,
       button: "speed",
@@ -108,9 +109,9 @@ var UI = {
     };
     this.upgradesMenu_b5 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 448 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 - 1 * screenratio,
       upgrade: ship.weaponDuration - defaultShip.weaponDuration,
       maxUpgrade: 5,
       button: "weaponDuration",
@@ -121,9 +122,9 @@ var UI = {
     };
     this.upgradesMenu_b6 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 513 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 + 64*screenratio,
       upgrade: 0,
       maxUpgrade: 0,
       button: "E.SHIELDS",
@@ -134,9 +135,9 @@ var UI = {
     };
     this.upgradesMenu_b7 = {
       width: 100 * screenratio,
-      height: 38 * screenratio,
-      x: 550 * screenratio,
-      y: 577 * screenratio,
+      height: 36 * screenratio,
+      x: canvas.width/2,
+      y: canvas.height/2 + 129*screenratio,
       upgrade: 0,
       maxUpgrade: 0,
       button: "E.WEAPONS",
@@ -149,8 +150,8 @@ var UI = {
     this.upgradesMenu_t0 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 254 * screenratio,
+      x: canvas.width/2 - 390 * screenratio,
+      y: canvas.height/2 - 195 * screenratio,
       text: "Shield",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -160,8 +161,8 @@ var UI = {
     this.upgradesMenu_t1 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 319 * screenratio,
+      x: canvas.width/2 - 370 * screenratio,
+      y: canvas.height/2 - 129 * screenratio,
       text: "Health",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -171,8 +172,8 @@ var UI = {
     this.upgradesMenu_t2 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 384 * screenratio,
+      x: canvas.width/2 - 390 * screenratio,
+      y: canvas.height/2 - 65 * screenratio,
       text: "Speed",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -182,8 +183,8 @@ var UI = {
     this.upgradesMenu_t3 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 448 * screenratio,
+      x: canvas.width/2 - 390 * screenratio,
+      y: canvas.height/2 - 1 * screenratio,
       text: "W. Duration",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -193,8 +194,8 @@ var UI = {
     this.upgradesMenu_t4 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 513 * screenratio,
+      x: canvas.width/2 - 390 * screenratio,
+      y: canvas.height/2 + 64 * screenratio,
       text: "E. Shields",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -204,8 +205,8 @@ var UI = {
     this.upgradesMenu_t5 = {
       width: 75 * screenratio,
       height: 38 * screenratio,
-      x: 165 * screenratio,
-      y: 577 * screenratio,
+      x: canvas.width/2 - 390 * screenratio,
+      y: canvas.height/2 + 129 * screenratio,
       text: "E. Weapons",
       textSize: 30 * screenratio,
       textOnly: true,
@@ -216,7 +217,7 @@ var UI = {
       width: 0 * screenratio,
       height: 0 * screenratio,
       x: canvas.width / 2,
-      y: 700 * screenratio,
+      y: canvas.height/2 + 250 * screenratio,
       opacity: 0,
       text: "Insufficient parts!",
       textOnly: true,
@@ -229,9 +230,9 @@ var UI = {
       width:
         ((this.upgradesMenu_b2.upgrade * 190) / this.upgradesMenu_b2.maxUpgrade) *
         screenratio,
-      height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 254 * screenratio,
+      height: 35 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 - 194 * screenratio,
       slider: "maxShield",
       opacity: 1,
       color: ["green", "green", "green"]
@@ -240,9 +241,9 @@ var UI = {
       width:
         ((this.upgradesMenu_b3.upgrade * 190) / this.upgradesMenu_b3.maxUpgrade) *
         screenratio,
-      height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 319 * screenratio,
+      height: 35 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 - 129 * screenratio,
       slider: "maxHP",
       opacity: 1,
       color: ["green", "green", "green"]
@@ -251,9 +252,9 @@ var UI = {
       width:
         ((this.upgradesMenu_b4.upgrade * 190) / this.upgradesMenu_b4.maxUpgrade) *
         screenratio,
-      height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 384 * screenratio,
+      height: 35 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 - 65 * screenratio,
       slider: "speed",
       opacity: 1,
       color: ["green", "green", "green"]
@@ -262,9 +263,9 @@ var UI = {
       width:
         ((this.upgradesMenu_b5.upgrade * 190) / this.upgradesMenu_b5.maxUpgrade) *
         screenratio,
-      height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 448 * screenratio,
+      height: 35 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 - 1 * screenratio,
       slider: "weaponDuration",
       opacity: 1,
       color: ["green", "green", "green"]
@@ -273,9 +274,9 @@ var UI = {
       width:
         ((this.upgradesMenu_b6.upgrade * 190) / this.upgradesMenu_b6.maxUpgrade) *
         screenratio,
-      height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 513 * screenratio,
+      height: 35 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 + 65 * screenratio,
       slider: true,
       opacity: 1,
       color: ["green", "green", "green"]
@@ -283,8 +284,8 @@ var UI = {
     this.upgradesMenu_sl5 = {
       width: 190 * screenratio,
       height: 38 * screenratio,
-      x: 333 * screenratio,
-      y: 577 * screenratio,
+      x: canvas.width/2 - 217 * screenratio,
+      y: canvas.height/2 + 130 * screenratio,
       slider: true,
       opacity: 1,
       color: ["green", "green", "green"]
@@ -336,7 +337,7 @@ var UI = {
     this.gameOverMenuWindow = {
       width: 550 * screenratio,
       height: 250 * screenratio,
-      x: 275 * screenratio,
+      x: canvas.width/2 - 275 * screenratio,
       y: canvas.height / 2 - 150 * screenratio,
       text: "GAME OVER",
       textSize: 30 * screenratio,
@@ -346,8 +347,8 @@ var UI = {
     this.gameOverMenu_b0 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: 290 * screenratio,
-      y: 470 * screenratio,
+      x: canvas.width/2 - 265 * screenratio,
+      y: canvas.height/2 + 40 * screenratio,
       text: "RESTART",
       textSize: 30 * screenratio,
       button: "RESTART",
@@ -357,8 +358,8 @@ var UI = {
     this.gameOverMenu_b1 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: 560 * screenratio,
-      y: 470 * screenratio,
+      x: canvas.width/2 + 15 * screenratio,
+      y: canvas.height/2 + 40 * screenratio,
       text: "BACK",
       textSize: 30 * screenratio,
       button: "BACK",
@@ -374,7 +375,7 @@ var UI = {
     this.youWinMenuWindow = {
       width: 550 * screenratio,
       height: 250 * screenratio,
-      x: 275 * screenratio,
+      x: canvas.width/2 - 275 * screenratio,
       y: canvas.height / 2 - 150 * screenratio,
       text: "YOU WIN!",
       textSize: 30 * screenratio,
@@ -384,8 +385,8 @@ var UI = {
     this.youWinMenu_b0 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: 290 * screenratio,
-      y: 470 * screenratio,
+      x: canvas.width/2 - 265 * screenratio,
+      y: canvas.height/2 + 40 * screenratio,
       text: "UPGRADES",
       textSize: 30 * screenratio,
       button: "UPGRADES",
@@ -395,8 +396,8 @@ var UI = {
     this.youWinMenu_b1 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: 560 * screenratio,
-      y: 470 * screenratio,
+      x: canvas.width/2 + 15 * screenratio,
+      y: canvas.height/2 + 40 * screenratio,
       text: "CONTINUE",
       textSize: 30 * screenratio,
       button: "CONTINUE",
@@ -408,7 +409,7 @@ var UI = {
     this.levelDisplay = {
       x: canvas.width / 2,
       y: 300 * screenratio,
-      textSize: 6,
+      textSize: 120*screenratio,
       opacity: 0,
       color: "white"
     };
@@ -656,7 +657,7 @@ var UI = {
     if (UI.levelDisplayCheck) {
       ctx.globalAlpha = UI.levelDisplay.opacity;
       ctx.textAlign = "center";
-      ctx.font = 80 * screenratio + "px FFFFORWA";
+      ctx.font = UI.levelDisplay.textSize + "px FFFFORWA";
       ctx.fillStyle = UI.levelDisplay.color;
       ctx.fillText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y); //text on screen
       ctx.globalAlpha = 1;

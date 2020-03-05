@@ -33,6 +33,7 @@ function collides_UI(a, b) {
 
 function inicializeGame() {
   player.inicialize();
+  camera.inicialize();
   backgroundParticles.set();
   UI.levelDisplayCheck = true;
   player.HP = [player.maxHP[0], player.maxHP[1]];
@@ -63,6 +64,12 @@ function loadTheGame(callback) {
   canvas.addEventListener("mousemove", function() {
     userInput(event, 0);
   });
+  document.addEventListener("keydown", function() {
+    userInput(event, 1);
+  });
+  document.addEventListener("keyup", function() {
+    userInput(event, 2);
+  });
   ctx = canvas.getContext("2d");
   //Setting path
   for (let index in sprite) {
@@ -83,7 +90,9 @@ function loadTheGame(callback) {
   scale();
   backgroundParticles.set();
   ship = JSON.parse(localStorage.ship);
+  camera.inicialize();
   player.inicialize();
+  defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup
   $("#canvas").bind("contextmenu", function() {
@@ -96,12 +105,16 @@ function loadTheGame(callback) {
 var screenratio;
 function scale() {
   screenratio = 1;
-  canvas.width = 1100 * screenratio;
-  canvas.height = 900 * screenratio;
-  while ($(window).height() < canvas.height || $(window).width() < canvas.width) {
+  canvas.width = 1100;
+  canvas.height = 900;
+  while (
+    $(window).height() < canvas.height ||
+    $(window).width() < canvas.width
+  ) {
     screenratio -= 0.1;
     canvas.width = 1100 * screenratio;
     canvas.height = 900 * screenratio;
   }
-  canvas.style.marginLeft = -canvas.width / 2 + "px";
+  canvas.width = $(window).width();
+  canvas.height = $(window).height();
 }

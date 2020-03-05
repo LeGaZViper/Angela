@@ -31,6 +31,8 @@ function gameLoop() {
     } else {
       //Game part
       ctx.beginPath();
+      camera.update();
+      camera.check();
       player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
       ctx.drawImage(
         sprite.UI_earth,
@@ -79,7 +81,8 @@ function gameLoop() {
       });
       enemyBulletList.forEach(eb => {
         //enemy bullets - render
-        let distance = Math.abs(eb.x - player.earthX) + Math.abs(eb.y - player.earthY);
+        let distance =
+          Math.abs(eb.x - player.earthX) + Math.abs(eb.y - player.earthY);
         if (
           collides(eb, player) &&
           player.HP[1] > 0 &&
@@ -97,7 +100,10 @@ function gameLoop() {
           player.hitCDstart(0, "bullet");
         }
         eb.update();
-        if ((eb.x > 0 && eb.x < canvas.width) || (eb.y > 0 && eb.y < canvas.height))
+        if (
+          (eb.x > 0 && eb.x < canvas.width) ||
+          (eb.y > 0 && eb.y < canvas.height)
+        )
           eb.render();
         enemyBulletList = enemyBulletList.filter(check => !check.killed);
       });
@@ -116,7 +122,11 @@ function gameLoop() {
             bulletList.filter(check => check.name == "LASER").length < 1
           ) {
             bulletList.push(
-              bullet({ x: player.x, y: player.y }, ship.weapon.name, ship.weapon.bullets)
+              bullet(
+                { x: player.x, y: player.y },
+                ship.weapon.name,
+                ship.weapon.bullets
+              )
             );
           } else if (ship.weapon.name != "LASER") {
             bulletList.push(
@@ -142,7 +152,10 @@ function gameLoop() {
         if (!e.deathAnimation) {
           if (!e.killed) {
             e.update();
-            if ((e.x > 0 && e.x < canvas.width) || (e.y > 0 && e.y < canvas.height)) {
+            if (
+              (e.x > 0 && e.x < canvas.width) ||
+              (e.y > 0 && e.y < canvas.height)
+            ) {
               e.render();
               if (
                 !player.collisionCD &&
@@ -183,7 +196,10 @@ function gameLoop() {
       });
       randomDropList.forEach((r, i) => {
         r.update();
-        if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
+        if (
+          (r.x > 0 && r.x < canvas.width) ||
+          (r.y > 0 && r.y < canvas.height)
+        ) {
           r.render();
           if (collides(r, player)) {
             if (ship.weapon.name == "LASER" && r.name != "LASER")
