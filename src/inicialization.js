@@ -76,10 +76,10 @@ function loadTheGame(callback) {
     let precursor = index.split("_");
     if (precursor[0] == "UI" || precursor[0] == "projectile")
       sprite[index].src =
-        "./resources/sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+        "./sprites/" + precursor[0] + "/" + precursor[1] + ".png";
     else
       sprite[index].src =
-        "./resources/sprites/" +
+        "./sprites/" +
         precursor[0] +
         "/" +
         precursor[1] +
