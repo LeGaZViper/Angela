@@ -469,6 +469,7 @@ var UI = {
       y: 2,
       color: ["#193019", "#353535"]
     };
+    this.menuList = [this.mainMenu,this.upgradesMenu,this.gameOverMenu,this.youWinMenu];
   },
   menu_render: function(menu) {
     this.upgradesMenu_PARTS.text = "Parts: " + localStorage.PARTS;
