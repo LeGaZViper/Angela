@@ -48,10 +48,9 @@ function inicializeGame() {
 }
 
 //Main Inicialization
-var canvas;
-var ctx;
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
 function loadTheGame(callback) {
-  canvas = document.getElementById("canvas");
   canvas.addEventListener("click", function() {
     UI.click();
   });
@@ -70,7 +69,6 @@ function loadTheGame(callback) {
   document.addEventListener("keyup", function() {
     userInput(event, 2);
   });
-  ctx = canvas.getContext("2d");
   //Setting path
   for (let index in sprite) {
     let precursor = index.split("_");
