@@ -12,12 +12,24 @@ async function userInput(event, which) {
   } else if (which == 1) {
     if (event.which == 1) leftMouseDown = true;
     else if (event.which == 3) rightMouseDown = true;
-    else if (event.which == 70) leftMouseDown = true;
-    else if (event.which == 71) rightMouseDown = true;
+    else if (event.which == 65) leftMouseDown = true;
+    else if (event.which == 83) rightMouseDown = true;
   } else if (which == 2) {
     if (event.which == 1) leftMouseDown = false;
     else if (event.which == 3) rightMouseDown = false;
-    else if (event.which == 70) leftMouseDown = false;
-    else if (event.which == 71) rightMouseDown = false;
+    else if (event.which == 65) leftMouseDown = false;
+    else if (event.which == 83) rightMouseDown = false;
+    else if (event.which == 70) {
+      if (!document.fullscreenElement) {
+        canvas.requestFullscreen().catch(err => {
+          console.log(err);
+        });
+      } else document.exitFullscreen();
+    }
   }
 }
+
+document.onfullscreenchange = function(event) {
+  scale();
+  UI.inicialize();
+};
