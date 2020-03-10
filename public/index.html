@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- If you expected more, ↓↓↓ is where magic happens. -->
+    <script defer src="./src/gamestates.js"></script>
+    <script defer src="./src/data.js" type="text/javascript"></script>
+    <script defer src="./src/ui.js"></script>
+    <script defer src="./src/enemies.js"></script>
+    <script defer src="./src/levelhandlers.js"></script>
+    <script defer src="./src/eventlistener.js"></script>
+    <script defer src="./src/player.js"></script>
+    <script defer src="./src/weapons.js"></script>
+    <script defer src="./src/gameloop.js"></script>
+    <script defer src="./src/inicialization.js"></script>
+    <!-- If you expected more, ↑↑↑ is where magic happens. -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="./css.css" />
+  </head>
+  <body>
+    <button onclick="localStorage.clear();location.reload()">
+      LocalStorage Reset
+    </button>
+    <canvas id="canvas"></canvas>
+  </body>
+</html>
