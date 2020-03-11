@@ -12,6 +12,11 @@ function startTheGame() {
     }
   } else inicializeGame();
 }
+
+function startMutliplayer() {
+  multiplayer = true;
+  startTheGame();
+}
 //Continue the game function | used in: continue
 function continueTheGame() {
   inicializeGame();

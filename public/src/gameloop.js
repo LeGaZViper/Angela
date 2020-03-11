@@ -22,6 +22,11 @@ function gameLoop() {
     camera.update();
     camera.check();
     player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
+    if (multiplayer) {
+      player2.update();
+      player2.render();
+      sendData(new Data());
+    }
     ctx.drawImage(
       sprite.UI_earth,
       0,

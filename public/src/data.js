@@ -16,6 +16,7 @@ var sprite = {
   enemy_voidSpherefighter: new Image(),
   enemy_voidChakram: new Image(),
   player_scout: new Image(),
+  player_scout2: new Image(),
   player_orbiter: new Image(),
   player_slug: new Image(),
   projectile_rocket: new Image(),
@@ -165,6 +166,19 @@ var defaultShip = {
 var enemyDatabase;
 function defineEnemyDatabase() {
   enemyDatabase = {
+    test: {
+      sprite: sprite.enemy_buzz,
+      widthOnPic: 56,
+      heightOnPic: 62,
+      //Ingame stats
+      width: 45 * screenratio,
+      height: 50 * screenratio,
+      speed: 0 * screenratio,
+      HP: 6,
+      maxHP: 6,
+      PARTS: 15,
+      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
+    },
     buzz: {
       sprite: sprite.enemy_buzz,
       widthOnPic: 56,

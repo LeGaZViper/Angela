@@ -101,6 +101,7 @@ var player = {
     player.HP = [player.maxHP[0], player.maxHP[1]];
     player.maxShield = ship.maxShield;
     player.shield = [player.maxShield[0], player.maxShield[1]];
+    player.angle = 0;
     //particle parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
     player.particles = ship.particles;
@@ -176,23 +177,17 @@ var player = {
     player.earthY -= camera.offSetY;
     player.x -= camera.offSetX;
     player.y -= camera.offSetY;
+
     //New thruster sprite control
-    let needToGet = Math.round(player.speed) / 10 + 0.1;
-    if (needToGet > player.particlesHeight) {
-      player.particlesHeight += player.particles[4];
-      player.particlesHeight = Math.round(player.particlesHeight * 100) / 100;
-    } else if (needToGet < player.particlesHeight) {
-      player.particlesHeight -= player.particles[4];
-      player.particlesHeight = Math.round(player.particlesHeight * 100) / 100;
-    }
+    player.particlesHeight = player.acceleration / 100 + 0.1;
   },
   render: () => {
     ctx.beginPath();
     ctx.save();
     ctx.translate(player.x, player.y);
-    ctx.rotate(
-      Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2
-    );
+    player.angle =
+      Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2;
+    ctx.rotate(player.angle);
     //Normal Scout
     ctx.globalAlpha = player.opacity[1];
     ctx.drawImage(
@@ -291,5 +286,54 @@ var player = {
     player.opacity[1] = 1;
     player.killedCD = false;
     player.collisionCD = false;
+  }
+};
+
+var player2 = {
+  inicialize: function() {
+    this.x = 0;
+    this.y = 0;
+    this.speed = 0;
+    this.angle = 0;
+    this.widthOnPic = ship.widthOnPic;
+    this.heightOnPic = ship.heightOnPic;
+    this.width = ship.width * screenratio;
+    this.height = ship.height * screenratio;
+    this.particles = ship.particles;
+    this.particlesWidth = 1;
+    this.particlesHeight = 0.2;
+  },
+  update: function() {
+    this.particlesHeight = this.speed / 10 + 0.1;
+  },
+  render: function() {
+    ctx.beginPath();
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    ctx.drawImage(
+      sprite.player_scout2,
+      0,
+      this.heightOnPic,
+      this.widthOnPic,
+      this.particles[0],
+      (-this.width / 2) * this.particlesWidth,
+      this.height / 2 - this.particles[1] * screenratio,
+      this.width * this.particlesWidth,
+      this.particles[2] * screenratio * this.particlesHeight
+    );
+    ctx.drawImage(
+      sprite.player_scout2,
+      0,
+      0,
+      this.widthOnPic,
+      this.heightOnPic,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
+    );
+    ctx.restore();
+    ctx.closePath();
   }
 };

@@ -90,6 +90,7 @@ function loadTheGame(callback) {
   ship = JSON.parse(localStorage.ship);
   camera.inicialize();
   player.inicialize();
+  if (multiplayer) player2.inicialize();
   defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup

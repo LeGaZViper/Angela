@@ -12,11 +12,14 @@ app.get("/public", (req, res) => {
 io.on("connection", socket => {
   //při spojení
   console.log("user connected");
-  socket.on("click", click); //Doráží mi socket od klienta
-  function click(data) {
-    socket.broadcast.emit("click", data); //Posílám socket všem ostatním klientům
+  socket.on("data", sendData); //Doráží mi socket od klienta
+  socket.on("disconnect", disconnect);
+  function sendData(data) {
+    socket.broadcast.emit("data", data); //Posílám socket všem ostatním klientům
     //io.sockets.emit("click",data); //Posílám všem i sobě
-    console.log(data);
+  }
+  function disconnect() {
+    console.log("user disconnected");
   }
 });
 
