@@ -72,16 +72,20 @@ function sendPlayerData(playerData, id = roomId) {
 }
 
 socket.on("playerData", playerData => {
-  player2.x = playerData.x * screenratio + player.earthX;
-  player2.y = playerData.y * screenratio + player.earthY;
+  player2.xspeed = playerData.xspeed * screenratio;
+  player2.yspeed = playerData.yspeed * screenratio;
+  //player2.x = playerData.x * screenratio + player.earthX;
+  //player2.y = playerData.y * screenratio + player.earthY;
   player2.angle = playerData.angle;
   player2.speed = playerData.speed;
 });
 
 class playerData {
   constructor() {
-    this.x = (player.coordX - player.spaceSize / 2) / screenratio;
-    this.y = (player.coordY - player.spaceSize / 2) / screenratio;
+    this.xspeed = player.xspeed / screenratio;
+    this.yspeed = player.yspeed / screenratio;
+    //this.x = (player.coordX - player.spaceSize / 2) / screenratio;
+    //this.y = (player.coordY - player.spaceSize / 2) / screenratio;
     this.angle = player.angle;
     this.speed = player.speed;
   }

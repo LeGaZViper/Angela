@@ -291,8 +291,10 @@ var player = {
 
 var player2 = {
   inicialize: function() {
-    this.x = 0;
-    this.y = 0;
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 2;
+    this.xspeed = 0;
+    this.yspeed = 0;
     this.speed = 0;
     this.angle = 0;
     this.widthOnPic = ship.widthOnPic;
@@ -304,6 +306,8 @@ var player2 = {
     this.particlesHeight = 0.2;
   },
   update: function() {
+    this.x += this.xspeed - player.xspeed - camera.offSetX;
+    this.y += this.yspeed - player.yspeed - camera.offSetY;
     this.particlesHeight = this.speed / 10 + 0.1;
   },
   render: function() {

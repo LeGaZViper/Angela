@@ -32,6 +32,8 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
+  xMousePos = canvas.width / 2;
+  yMousePos = canvas.height / 2;
   player.inicialize();
   camera.inicialize();
   backgroundParticles.set();

@@ -31,6 +31,7 @@ function getMenu(menu) {
 
 //Lose the game function | used in: gameover
 function loseTheGame() {
+  player.inicialize();
   camera.inicialize();
   resetLocalStorage();
   getMenu(2);
