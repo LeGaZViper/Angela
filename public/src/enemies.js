@@ -3,7 +3,7 @@ var PARTS = 0;
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     enemy.deathAnimation = true;
-    if (Math.round(Math.random() * 10) == 1) {
+    if (enemy.randomDrop) {
       randomDropList.push(randomDrop({ x: enemy.x, y: enemy.y }));
     }
     if (bulletName == "SPREADER" && bulletList.length < 300) {

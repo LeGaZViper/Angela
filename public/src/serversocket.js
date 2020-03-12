@@ -78,6 +78,8 @@ socket.on("playerData", playerData => {
   //player2.y = playerData.y * screenratio + player.earthY;
   player2.angle = playerData.angle;
   player2.speed = playerData.speed;
+  player2.leftMouseDown = playerData.leftMouseDown;
+  player2.weapon = playerData.weapon;
 });
 
 class playerData {
@@ -88,5 +90,7 @@ class playerData {
     //this.y = (player.coordY - player.spaceSize / 2) / screenratio;
     this.angle = player.angle;
     this.speed = player.speed;
+    this.leftMouseDown = leftMouseDown;
+    this.weapon = ship.weapon;
   }
 }

@@ -14,6 +14,7 @@ async function spawn(level_layout) {
   for (var i = 0; i < level_layout.length; i++) {
     let det_x = Math.floor(Math.random() * 4);
     let det_y;
+    let randomDrop;
     if (UI.inMenu) break;
     else if (det_x == 0) {
       det_x = player.earthX - player.spaceSize / 2;
@@ -36,9 +37,16 @@ async function spawn(level_layout) {
         ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
       det_y = player.earthY + player.spaceSize / 2;
     }
+    if (Math.round(Math.random() * 10) == 1) randomDrop = true;
+    else randomDrop = false;
     enemyList.push(
       enemyCharacter(
-        { x: det_x, y: det_y, ...enemyDatabase[level_layout[i]] },
+        {
+          x: det_x,
+          y: det_y,
+          randomDrop: randomDrop,
+          ...enemyDatabase[level_layout[i]]
+        },
         level_layout[i]
       )
     );
