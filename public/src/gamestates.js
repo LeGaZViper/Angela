@@ -13,7 +13,7 @@ function startTheGame() {
   } else inicializeGame();
 }
 
-function startMutliplayer() {
+function startMultiplayer_this() {
   multiplayer = true;
   startTheGame();
 }

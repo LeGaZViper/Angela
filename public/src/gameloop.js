@@ -25,7 +25,7 @@ function gameLoop() {
     if (multiplayer) {
       player2.update();
       player2.render();
-      sendData(new Data());
+      sendPlayerData(new playerData());
     }
     ctx.drawImage(
       sprite.UI_earth,
