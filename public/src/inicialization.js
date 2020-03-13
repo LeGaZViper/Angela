@@ -34,19 +34,24 @@ function collides_UI(a, b) {
 function inicializeGame() {
   xMousePos = canvas.width / 2;
   yMousePos = canvas.height / 2;
-  player.inicialize();
-  camera.inicialize();
-  backgroundParticles.set();
   UI.levelDisplayCheck = true;
-  player.HP = [player.maxHP[0], player.maxHP[1]];
   bulletList = [];
   enemyList = [];
   enemyBulletList = [];
   randomDropList = [];
-  weaponDuration = 0;
   canvas.style.cursor = "none";
   UI.inMenu = false;
-  spawn(levels_handler.levelCreator());
+  player.inicialize();
+  playerList = [player];
+  if (multiplayer) {
+    player2.inicialize();
+    playerList.push(player2);
+  } else {
+    levels_handler.levelCreator();
+  }
+  spawn();
+  camera.inicialize();
+  backgroundParticles.set();
 }
 
 //Main Inicialization
@@ -92,7 +97,7 @@ function loadTheGame(callback) {
   ship = JSON.parse(localStorage.ship);
   camera.inicialize();
   player.inicialize();
-  player2.inicialize();
+  if (multiplayer) player2.inicialize();
   defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup

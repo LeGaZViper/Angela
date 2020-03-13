@@ -1,5 +1,5 @@
 //spawner of enemies
-async function spawn(level_layout) {
+async function spawn() {
   UI.levelDisplay.text = ship.section + "-" + ship.level;
   for (let i = 1; i <= 400; i++) {
     if (i <= 100) {
@@ -11,61 +11,66 @@ async function spawn(level_layout) {
   }
 
   UI.levelDisplayCheck = false;
-  for (var i = 0; i < level_layout.length; i++) {
-    let det_x = Math.floor(Math.random() * 4);
-    let det_y;
-    let randomDrop;
-    if (UI.inMenu) break;
-    else if (det_x == 0) {
-      det_x = player.earthX - player.spaceSize / 2;
-      det_y =
-        player.earthY +
-        ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
-    } else if (det_x == 1) {
-      det_x =
-        player.earthX +
-        ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
-      det_y = player.earthY - player.spaceSize / 2;
-    } else if (det_x == 2) {
-      det_x = player.earthX + player.spaceSize / 2;
-      det_y =
-        player.earthY +
-        ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
-    } else {
-      det_x =
-        player.earthX +
-        ((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / 2;
-      det_y = player.earthY + player.spaceSize / 2;
-    }
-    if (Math.round(Math.random() * 10) == 1) randomDrop = true;
-    else randomDrop = false;
-    enemyList.push(
-      enemyCharacter(
-        {
-          x: det_x,
-          y: det_y,
-          randomDrop: randomDrop,
-          ...enemyDatabase[level_layout[i]]
-        },
-        level_layout[i]
-      )
-    );
-    await sleep(levels_handler.level[level_layout[i]][1]);
+  for (let i = 0; i < enemySpawnList.length; i++) {
+    enemyList.push(enemyCharacter(enemySpawnList[i]));
+    await sleep(enemySpawnList[i].spawnCD);
   }
 }
 
+let enemySpawnList = [];
 var levels_handler = {
   level: {},
   levelCreator: function() {
     this.level = levelLayout({});
-    let enemyArray = [];
     for (index in this.level) {
-      for (var i = 0; i < this.level[index][0]; i++) {
-        enemyArray.push("" + index);
+      for (let i = 0; i < this.level[index][0]; i++) {
+        enemySpawnList.push(enemyDatabase[index]);
+        let det_x = Math.floor(Math.random() * 4);
+        let det_y;
+        let randomDrop;
+        if (det_x == 0) {
+          det_x = player.earthX - player.spaceSize / 2;
+          det_y =
+            player.earthY +
+            ((Math.random() < 0.5 ? -1 : 1) *
+              Math.random() *
+              player.spaceSize) /
+              2;
+        } else if (det_x == 1) {
+          det_x =
+            player.earthX +
+            ((Math.random() < 0.5 ? -1 : 1) *
+              Math.random() *
+              player.spaceSize) /
+              2;
+          det_y = player.earthY - player.spaceSize / 2;
+        } else if (det_x == 2) {
+          det_x = player.earthX + player.spaceSize / 2;
+          det_y =
+            player.earthY +
+            ((Math.random() < 0.5 ? -1 : 1) *
+              Math.random() *
+              player.spaceSize) /
+              2;
+        } else {
+          det_x =
+            player.earthX +
+            ((Math.random() < 0.5 ? -1 : 1) *
+              Math.random() *
+              player.spaceSize) /
+              2;
+          det_y = player.earthY + player.spaceSize / 2;
+        }
+        if (Math.round(Math.random() * 10) == 1) randomDrop = true;
+        else randomDrop = false;
+        enemySpawnList[i].x = det_x;
+        enemySpawnList[i].y = det_y;
+        enemySpawnList[i].randomDrop = randomDrop;
+        enemySpawnList[i].spawnCD = this.level[index][1];
       }
     }
-    this.level.total = enemyArray.length;
-    return enemyArray.sort(function() {
+    this.level.total = enemySpawnList.length;
+    return enemySpawnList.sort(function() {
       return 0.5 - Math.random();
     });
   }

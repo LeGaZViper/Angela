@@ -89,7 +89,7 @@ function enemyBullet(B, type) {
 }
 //enemy objects
 var enemyList = [];
-function enemyCharacter(E, type) {
+function enemyCharacter(E) {
   E.appearOpacity = 0;
   E.appear = async function() {
     for (let i = 1; i <= 100; i++) {
@@ -136,7 +136,7 @@ function enemyCharacter(E, type) {
       E.arrival = true;
       E.attackCDstart();
     } else if (E.inOrbit && E.arrival && !E.attackCD) {
-      if (type == "pirateVessel") {
+      if (E.type == "pirateVessel") {
         E.attackCDstart();
         if (Math.random() < 0.5)
           enemyBulletList.push(
@@ -152,8 +152,8 @@ function enemyCharacter(E, type) {
       }
     } else if (
       distance < 140 * screenratio &&
-      type != "pirateMine" &&
-      type != "pirateMinedropper" &&
+      E.type != "pirateMine" &&
+      E.type != "pirateMinedropper" &&
       !E.orbit
     ) {
       E.speed = 0;
@@ -165,7 +165,7 @@ function enemyCharacter(E, type) {
         E.attackCDstart();
       }
     } else if (
-      (type == "pirateMine" || type == "pirateMinedropper") &&
+      (E.type == "pirateMine" || E.type == "pirateMinedropper") &&
       distance < 40
     ) {
       E.HP = 0;
@@ -268,7 +268,7 @@ function enemyCharacter(E, type) {
       E.height
     );
     ctx.restore();
-    if (type == "pirateVessel") {
+    if (E.type == "pirateVessel") {
       ctx.save();
       ctx.globalAlpha = E.appearOpacity;
       if (!E.inOrbit) {
@@ -420,7 +420,7 @@ function enemyCharacter(E, type) {
         E.deathAnimation_index += 1;
         if (
           E.deathAnimation_index == 1 &&
-          type == "pirateMinedropper" &&
+          E.type == "pirateMinedropper" &&
           distance >= 40
         )
           enemyList.push(enemyCharacter({ x: E.x, y: E.y }, "pirateMine"));
@@ -466,9 +466,9 @@ function enemyCharacter(E, type) {
       }
     }
   };
-  E.piercingDamageCDstart = async function() {
+  E.piercingDamageCDstart = async function(cd) {
     E.piercingCD = true;
-    await sleep(ship.weapon.hitCD);
+    await sleep(cd);
     E.piercingCD = false;
   };
   return E;

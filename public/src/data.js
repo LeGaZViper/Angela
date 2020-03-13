@@ -107,7 +107,7 @@ var weaponDatabase = {
     color: "#00FF00",
     status: "LOCKED"
   },
-  LASER: {
+  /* LASER: {
     index: 5,
     name: "LASER",
     bullets: 1,
@@ -120,8 +120,8 @@ var weaponDatabase = {
     piercing: true,
     hitCD: 200,
     color: "#00FF00",
-    status: "LOCKED"
-  },
+    status: "LOCKED" 
+  },*/
   SPREADER: {
     index: 6,
     name: "SPREADER",
@@ -159,14 +159,14 @@ var defaultShip = {
   maxShield: [0, 1],
   maxHP: [10, 5],
   section: 1,
-  level: 1,
-  weapon: weaponDatabase.BASIC
+  level: 1
 };
 
 var enemyDatabase;
 function defineEnemyDatabase() {
   enemyDatabase = {
     test: {
+      type: "buzz",
       sprite: sprite.enemy_buzz,
       widthOnPic: 56,
       heightOnPic: 62,
@@ -180,6 +180,7 @@ function defineEnemyDatabase() {
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
     },
     buzz: {
+      type: "buzz",
       sprite: sprite.enemy_buzz,
       widthOnPic: 56,
       heightOnPic: 62,
@@ -193,6 +194,7 @@ function defineEnemyDatabase() {
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
     },
     tooth: {
+      type: "tooth",
       sprite: sprite.enemy_tooth,
       widthOnPic: 64,
       heightOnPic: 64,
@@ -207,6 +209,7 @@ function defineEnemyDatabase() {
     },
     sharkfin: {
       // 1 - sharkfin
+      type: "sharkfin",
       sprite: sprite.enemy_sharkfin,
       widthOnPic: 64,
       heightOnPic: 60,
@@ -223,6 +226,7 @@ function defineEnemyDatabase() {
     },
     goblin: {
       // 2 - goblin
+      type: "goblin",
       sprite: sprite.enemy_goblin,
       widthOnPic: 76,
       heightOnPic: 100,
@@ -239,6 +243,7 @@ function defineEnemyDatabase() {
     },
     SG40: {
       // 2 - goblin
+      type: "SG40",
       sprite: sprite.enemy_SG40,
       widthOnPic: 48,
       heightOnPic: 50,
@@ -252,6 +257,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0, 0]
     },
     pirateRaider: {
+      type: "pirateRaider",
       sprite: sprite.enemy_pirateRaider,
       widthOnPic: 60,
       heightOnPic: 32,
@@ -267,6 +273,7 @@ function defineEnemyDatabase() {
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
     },
     pirateMineDropper: {
+      type: "pirateMineDropper",
       sprite: sprite.enemy_pirateMinedropper,
       widthOnPic: 56,
       heightOnPic: 74,
@@ -282,6 +289,7 @@ function defineEnemyDatabase() {
       particles: [10, 10 * screenratio, -6 * screenratio, 0, 0.1]
     },
     pirateMine: {
+      type: "pirateMine",
       sprite: sprite.enemy_pirateMine,
       widthOnPic: 44,
       heightOnPic: 44,
@@ -297,6 +305,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0, 0]
     },
     pirateTiger: {
+      type: "pirateTiger",
       sprite: sprite.enemy_pirateTiger,
       widthOnPic: 70,
       heightOnPic: 70,
@@ -312,6 +321,7 @@ function defineEnemyDatabase() {
       particles: [18, 18 * screenratio, -13 * screenratio, 0, 0.1]
     },
     pirateVessel: {
+      type: "pirateVessel",
       sprite: sprite.enemy_pirateVessel,
       widthOnPic: 76,
       heightOnPic: 158,
@@ -332,6 +342,7 @@ function defineEnemyDatabase() {
       inOrbit: false
     },
     voidDrone: {
+      type: "voidDrone",
       sprite: sprite.enemy_voidDrone,
       widthOnPic: 60,
       heightOnPic: 60,
@@ -347,6 +358,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0]
     },
     voidChaser: {
+      type: "voidChaser",
       sprite: sprite.enemy_voidChaser,
       widthOnPic: 48,
       heightOnPic: 62,
@@ -362,6 +374,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0]
     },
     voidSphereFighter: {
+      type: "voidSphereFighter",
       sprite: sprite.enemy_voidSpherefighter,
       widthOnPic: 64,
       heightOnPic: 64,
@@ -380,6 +393,7 @@ function defineEnemyDatabase() {
       animationFPS: 5
     },
     voidChakram: {
+      type: "voidChakram",
       sprite: sprite.enemy_voidChakram,
       widthOnPic: 180,
       heightOnPic: 180,

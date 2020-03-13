@@ -75,6 +75,7 @@ var camera = {
 
 //player object
 var ship;
+var playerList = [];
 var player = {
   inicialize: () => {
     player.spaceSize = 4000 * screenratio;
@@ -98,9 +99,9 @@ var player = {
     player.animationY = 0;
     //0 = Earth, 1 = Ship
     player.maxHP = ship.maxHP;
-    player.HP = [player.maxHP[0], player.maxHP[1]];
+    player.HP = player.maxHP;
     player.maxShield = ship.maxShield;
-    player.shield = [player.maxShield[0], player.maxShield[1]];
+    player.shield = ship.maxShield;
     player.angle = 0;
     //particle parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
@@ -113,6 +114,10 @@ var player = {
     player.hitBoxX = player.x - player.hitBoxWidth / 2;
     player.hitBoxY = player.y - player.hitBoxHeight / 2;
     player.sprite = sprite["player_" + ship.name.toLowerCase()];
+
+    player.leftMouseDown = false;
+    player.weapon = weaponDatabase.BASIC;
+    player.weaponDuration = 0;
   },
   update: () => {
     //speed calculation
@@ -254,7 +259,7 @@ var player = {
   blikacky: false,
   attackCDstart: async function() {
     player.attackCD = true;
-    await sleep(ship.weapon.cooldown);
+    await sleep(player.weapon.cooldown);
     player.attackCD = false;
   },
   hitCDstart: async function(which, what) {
@@ -304,6 +309,11 @@ var player2 = {
     this.particles = ship.particles;
     this.particlesWidth = 1;
     this.particlesHeight = 0.2;
+    this.leftMouseDown = false;
+    this.weapon = weaponDatabase.BASIC;
+    this.maxHP = ship.maxHP;
+    this.HP = this.maxHP;
+    this.attacCD = false;
   },
   update: function() {
     this.x += this.xspeed - player.xspeed - camera.offSetX;
@@ -339,5 +349,10 @@ var player2 = {
     );
     ctx.restore();
     ctx.closePath();
+  },
+  attackCDstart: async function() {
+    this.attackCD = true;
+    await sleep(this.weapon.cooldown);
+    this.attackCD = false;
   }
 };

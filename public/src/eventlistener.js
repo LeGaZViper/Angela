@@ -10,14 +10,22 @@ async function userInput(event, which) {
     yMousePos =
       Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   } else if (which == 1) {
-    if (event.which == 1) leftMouseDown = true;
-    else if (event.which == 3) rightMouseDown = true;
-    else if (event.which == 70) leftMouseDown = true;
-    else if (event.which == 71) rightMouseDown = true;
+    if (event.which == 1) {
+      leftMouseDown = true;
+      player.leftMouseDown = true;
+    } else if (event.which == 3) rightMouseDown = true;
+    else if (event.which == 70) {
+      leftMouseDown = true;
+      player.leftMouseDown = true;
+    } else if (event.which == 71) rightMouseDown = true;
   } else if (which == 2) {
-    if (event.which == 1) leftMouseDown = false;
-    else if (event.which == 3) rightMouseDown = false;
-    else if (event.which == 70) leftMouseDown = false;
-    else if (event.which == 71) rightMouseDown = false;
+    if (event.which == 1) {
+      leftMouseDown = false;
+      player.leftMouseDown = false;
+    } else if (event.which == 3) rightMouseDown = false;
+    else if (event.which == 70) {
+      leftMouseDown = false;
+      player.leftMouseDown = false;
+    } else if (event.which == 71) rightMouseDown = false;
   }
 }

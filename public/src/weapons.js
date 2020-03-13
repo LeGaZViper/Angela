@@ -2,9 +2,10 @@
 function chooseWeapon(name) {
   for (var index in weaponDatabase) {
     if (weaponDatabase[index].name == name) {
-      ship.weapon = weaponDatabase[index];
-      weaponDuration =
-        ship.weapon.duration + (ship.weapon.duration * ship.weaponDuration) / 5;
+      player.weapon = weaponDatabase[index];
+      player.weaponDuration =
+        player.weapon.duration +
+        (player.weapon.duration * ship.weaponDuration) / 5;
       saveLocalStorage();
       break;
     }
@@ -19,7 +20,7 @@ function randomDrop(R) {
   R.hitBoxHeight = (R.height / 3) * 2;
   R.hitBoxX = R.x - R.hitBoxWidth / 2;
   R.hitBoxY = R.y - R.hitBoxHeight / 2;
-  let choose = Math.floor(Math.random() * 6) + 1;
+  let choose = Math.floor(Math.random() * 5) + 1;
   for (let index in weaponDatabase) {
     if (choose == weaponDatabase[index].index) {
       R.name = weaponDatabase[index].name;
@@ -66,75 +67,50 @@ function randomDrop(R) {
 
 //bullets
 var bulletList = [];
-var weaponDuration = 0;
-function bullet(B, name, numberOfBullets) {
+function bullet(B, who, numberOfBullets) {
+  B.ttl = 300;
   B.killed = false;
-  B.name = name;
-  B.damage = ship.weapon.damage;
+  B.name = who.weapon.name;
+  B.damage = who.weapon.damage;
   B.speed =
-    ship.weapon.speed * screenratio +
-    Math.abs(player.xspeed) +
-    Math.abs(player.yspeed);
-  B.width = ship.weapon.width * screenratio;
-  B.height = ship.weapon.height * screenratio;
-  B.piercing = ship.weapon.piercing;
-  B.color = ship.weapon.color;
+    who.weapon.speed * screenratio +
+    Math.abs(who.xspeed) +
+    Math.abs(who.yspeed);
+  B.width = who.weapon.width * screenratio;
+  B.height = who.weapon.height * screenratio;
+  B.piercing = who.weapon.piercing;
+  B.color = who.weapon.color;
+  B.hitCD = who.weapon.hitCD;
   B.opacity = 1;
-  if (name == "BASIC") {
-  } else if (name == "DOUBLE") {
+  if (who.weapon.name == "BASIC") {
+    B.dirx = Math.cos(who.angle - Math.PI / 2);
+    B.diry = Math.sin(who.angle - Math.PI / 2);
+  } else if (who.weapon.name == "DOUBLE") {
     if (numberOfBullets == 2) {
-      B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
-          (1 / 180) * Math.PI
-      );
-      B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
-          (1 / 180) * Math.PI
-      );
+      B.dirx = Math.cos(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
+      B.diry = Math.sin(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
     } else if (numberOfBullets == 1) {
-      B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
-          (1 / 180) * Math.PI
-      );
-      B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
-          (1 / 180) * Math.PI
-      );
+      B.dirx = Math.cos(who.angle - Math.PI / 2 - (1 / 180) * Math.PI);
+      B.diry = Math.sin(who.angle - Math.PI / 2 - (1 / 180) * Math.PI);
     }
     if (numberOfBullets > 1) {
-      bulletList.push(
-        bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1)
-      );
+      bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
     }
-  } else if (name == "SPRAY") {
+  } else if (who.weapon.name == "SPRAY") {
     if (numberOfBullets == 3) {
-      B.dirx = xMousePos - player.x;
-      B.diry = yMousePos - player.y;
+      B.dirx = Math.cos(who.angle - Math.PI / 2);
+      B.diry = Math.sin(who.angle - Math.PI / 2);
     } else if (numberOfBullets == 2) {
-      B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
-          (3 / 180) * Math.PI
-      );
-      B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) +
-          (3 / 180) * Math.PI
-      );
+      B.dirx = Math.cos(who.angle - Math.PI / 2 + (3 / 180) * Math.PI);
+      B.diry = Math.sin(who.angle - Math.PI / 2 + (3 / 180) * Math.PI);
     } else if (numberOfBullets == 1) {
-      B.dirx = Math.cos(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
-          (3 / 180) * Math.PI
-      );
-      B.diry = Math.sin(
-        Math.atan2(yMousePos - player.y, xMousePos - player.x) -
-          (3 / 180) * Math.PI
-      );
+      B.dirx = Math.cos(who.angle - Math.PI / 2 - (3 / 180) * Math.PI);
+      B.diry = Math.sin(who.angle - Math.PI / 2 - (3 / 180) * Math.PI);
     }
     if (numberOfBullets > 1) {
-      bulletList.push(
-        bullet({ x: player.x, y: player.y }, name, numberOfBullets - 1)
-      );
+      bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
     }
-  } else if (name == "ROCKET") {
+  } else if (who.weapon.name == "ROCKET") {
     B.sprite = sprite.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150 * screenratio;
@@ -142,10 +118,10 @@ function bullet(B, name, numberOfBullets) {
     B.explosion_countdown = 0;
     B.explosion_index = 0;
     B.explosion_angle = Math.random() * 2 * Math.PI;
-  } else if (name == "GIANT") {
-  } else if (name == "SPREADER") {
+  } else if (who.weapon.name == "GIANT") {
+  } else if (who.weapon.name == "SPREADER") {
     B.sprite = sprite.projectile_spread;
-  } else if (name == "SPREADER_PROJECTILE") {
+  } else if (who.weapon.name == "SPREADER_PROJECTILE") {
     B.sprite = sprite.projectile_spreadProjectile;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
@@ -153,11 +129,11 @@ function bullet(B, name, numberOfBullets) {
   B.hitBoxX = B.x - B.hitBoxWidth / 2;
   B.hitBoxY = B.y - B.hitBoxHeight / 2;
   B.update = function() {
-    if (name == "LASER") {
-      let hitDetectionX = player.x;
-      let hitDetectionY = player.y;
-      B.dirx = xMousePos - player.x;
-      B.diry = yMousePos - player.y;
+    if (who.weapon.name == "LASER") {
+      let hitDetectionX = who.x;
+      let hitDetectionY = who.y;
+      B.dirx = Math.cos(who.angle - Math.PI / 2);
+      B.diry = Math.sin(who.angle - Math.PI / 2);
       let ratio = 6 / (Math.abs(B.dirx) + Math.abs(B.diry));
       for (let i = 0; i < 200; i++) {
         hitDetectionX += B.dirx * ratio;
@@ -182,15 +158,6 @@ function bullet(B, name, numberOfBullets) {
       B.x = hitDetectionX;
       B.y = hitDetectionY;
     } else {
-      bulletList = bulletList.filter(
-        check =>
-          !(
-            check.x < -canvas.width ||
-            check.x > canvas.width * 2 ||
-            check.y < -canvas.height ||
-            check.y > canvas.height * 2
-          )
-      );
       let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
       B.xspeed = ratio * B.dirx;
       B.yspeed = ratio * B.diry;
@@ -199,16 +166,17 @@ function bullet(B, name, numberOfBullets) {
       B.y += B.yspeed - player.yspeed - camera.offSetY;
       B.hitBoxX = B.x - B.hitBoxWidth / 2;
       B.hitBoxY = B.y - B.hitBoxHeight / 2;
+      B.calcTTL();
     }
   };
   B.render = function() {
-    if (name == "LASER") {
+    if (who.weapon.name == "LASER") {
       ctx.beginPath();
       ctx.save();
       ctx.globalAlpha = 1;
       ctx.strokeStyle = B.color;
       ctx.lineWidth = 6 * screenratio;
-      ctx.moveTo(player.x, player.y);
+      ctx.moveTo(who.x, who.y);
       ctx.lineTo(B.x, B.y);
       ctx.stroke();
       ctx.restore();
@@ -285,6 +253,13 @@ function bullet(B, name, numberOfBullets) {
       ctx.stroke();
       ctx.closePath();
       if (B.explosion_index == 11) B.killed = true;
+    }
+  };
+  B.calcTTL = function() {
+    if (B.ttl > 0) {
+      B.ttl -= 1;
+    } else {
+      B.killed = true;
     }
   };
   return B;

@@ -14,6 +14,7 @@ function startTheGame() {
 }
 
 function startMultiplayer_this() {
+  if (host) levels_handler.levelCreator();
   multiplayer = true;
   startTheGame();
 }

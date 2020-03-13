@@ -68,7 +68,7 @@ function gameLoop() {
       if (
         (b.x > 0 && b.x < canvas.width) ||
         (b.y > 0 && b.y < canvas.height) ||
-        ship.weapon.name == "LASER"
+        b.name == "LASER"
       )
         b.render();
     });
@@ -101,45 +101,39 @@ function gameLoop() {
       enemyBulletList = enemyBulletList.filter(check => !check.killed);
     });
     player.render();
-    if (weaponDuration == 0) {
-      if (ship.weapon.name == "LASER")
+    if (player.weaponDuration == 0) {
+      if (player.weapon.name == "LASER")
         bulletList = bulletList.filter(check => check.name != "LASER");
       chooseWeapon("BASIC");
-      weaponDuration--;
-    } else if (weaponDuration > 0) weaponDuration--;
-    if (leftMouseDown) {
-      //shooting
-      if (!player.attackCD && player.HP[1] > 0) {
-        if (
-          ship.weapon.name == "LASER" &&
-          bulletList.filter(check => check.name == "LASER").length < 1
-        ) {
-          bulletList.push(
-            bullet(
-              { x: player.x, y: player.y },
-              ship.weapon.name,
-              ship.weapon.bullets
-            )
-          );
-        } else if (ship.weapon.name != "LASER") {
-          bulletList.push(
-            bullet(
-              {
-                x: player.x,
-                y: player.y,
-                dirx: xMousePos - player.x,
-                diry: yMousePos - player.y
-              },
-              ship.weapon.name,
-              ship.weapon.bullets
-            )
-          );
-          player.attackCDstart();
+      player.weaponDuration--;
+    } else if (player.weaponDuration > 0) player.weaponDuration--;
+    playerList.forEach(p => {
+      if (p.leftMouseDown) {
+        //shooting
+        if (!p.attackCD && p.HP[1] > 0) {
+          if (
+            p.weapon.name == "LASER" &&
+            bulletList.filter(check => check.name == "LASER").length < 1
+          ) {
+            bulletList.push(bullet({ x: p.x, y: p.y }, p, p.weapon.bullets));
+          } else if (p.weapon.name != "LASER") {
+            bulletList.push(
+              bullet(
+                {
+                  x: p.x,
+                  y: p.y
+                },
+                p,
+                p.weapon.bullets
+              )
+            );
+            p.attackCDstart();
+          }
         }
+      } else if (p.weapon.name == "LASER") {
+        bulletList = bulletList.filter(check => check.name != "LASER");
       }
-    } else if (ship.weapon.name == "LASER") {
-      bulletList = bulletList.filter(check => check.name != "LASER");
-    }
+    });
     enemyList.forEach(e => {
       //enemies
       if (!e.deathAnimation) {
@@ -176,7 +170,7 @@ function gameLoop() {
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;
               }
-              if (!e.piercingCD) e.piercingDamageCDstart();
+              if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
             }
           }
           bulletList = bulletList.filter(check => !check.killed);
@@ -191,12 +185,14 @@ function gameLoop() {
       r.update();
       if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
         r.render();
-        if (collides(r, player)) {
-          if (ship.weapon.name == "LASER" && r.name != "LASER")
-            bulletList = bulletList.filter(check => check.name != "LASER");
-          chooseWeapon(r.name);
-          randomDropList.splice(i, 1);
-        }
+        playerList.forEach(p, pi => {
+          if (collides(r, p)) {
+            if (p.weapon.name == "LASER" && r.name != "LASER")
+              bulletList = bulletList.filter(check => check.name != "LASER");
+            if (pi == 0) chooseWeapon(r.name);
+            randomDropList.splice(i, 1);
+          }
+        });
       }
     });
     UI.game_render();

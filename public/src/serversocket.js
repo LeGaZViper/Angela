@@ -1,5 +1,6 @@
 const socket = io();
 let multiplayer = false;
+let host = false;
 var roomId;
 //https://socket.io/docs/rooms-and-namespaces/#Rooms -- important!
 
@@ -29,6 +30,7 @@ function showRoomList(id = socket.id) {
 function createRoom(id = socket.id) {
   if (roomId == undefined) {
     roomId = socket.id;
+    host = true;
     socket.emit("createRoom", id);
   } else {
     console.log("Already in a room.");
@@ -47,6 +49,7 @@ function joinRoom(id) {
 function leaveRoom(id = roomId) {
   if (id != undefined) {
     roomId = undefined;
+    host = false;
     socket.emit("leaveRoom", id);
   } else {
     console.log("No room to leave.");
@@ -78,6 +81,7 @@ socket.on("playerData", playerData => {
   //player2.y = playerData.y * screenratio + player.earthY;
   player2.angle = playerData.angle;
   player2.speed = playerData.speed;
+  player2.HP = playerData.HP;
   player2.leftMouseDown = playerData.leftMouseDown;
   player2.weapon = playerData.weapon;
 });
@@ -90,7 +94,8 @@ class playerData {
     //this.y = (player.coordY - player.spaceSize / 2) / screenratio;
     this.angle = player.angle;
     this.speed = player.speed;
-    this.leftMouseDown = leftMouseDown;
-    this.weapon = ship.weapon;
+    this.HP = player.HP;
+    this.leftMouseDown = player.leftMouseDown;
+    this.weapon = player.weapon;
   }
 }
