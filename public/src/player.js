@@ -99,9 +99,9 @@ var player = {
     player.animationY = 0;
     //0 = Earth, 1 = Ship
     player.maxHP = ship.maxHP;
-    player.HP = player.maxHP;
+    player.HP = [player.maxHP[0], player.maxHP[1]];
     player.maxShield = ship.maxShield;
-    player.shield = ship.maxShield;
+    player.shield = [ship.maxShield[0], ship.maxShield[1]];
     player.angle = 0;
     //particle parameters
     //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
@@ -113,7 +113,8 @@ var player = {
     player.hitBoxHeight = (player.height / 3) * 2;
     player.hitBoxX = player.x - player.hitBoxWidth / 2;
     player.hitBoxY = player.y - player.hitBoxHeight / 2;
-    player.sprite = sprite["player_" + ship.name.toLowerCase()];
+    if (host) player.sprite = sprite["player_" + ship.name.toLowerCase()];
+    else player.sprite = sprite.player_scout2;
 
     player.leftMouseDown = false;
     player.weapon = weaponDatabase.BASIC;
@@ -151,6 +152,7 @@ var player = {
       player.speed = 0;
       player.xspeed = 0;
       player.yspeed = 0;
+      if (multiplayer) loseMultiplayerGame();
       loseTheGame();
     } else if (player.HP[1] <= 0 && !player.killedCD) {
       player.killedCDstart();
@@ -312,8 +314,10 @@ var player2 = {
     this.leftMouseDown = false;
     this.weapon = weaponDatabase.BASIC;
     this.maxHP = ship.maxHP;
-    this.HP = this.maxHP;
-    this.attacCD = false;
+    this.HP = [this.maxHP[0], this.maxHP[1]];
+    this.attackCD = false;
+    if (host) this.sprite = sprite.player_scout2;
+    else this.sprite = sprite.player_scout;
   },
   update: function() {
     this.x += this.xspeed - player.xspeed - camera.offSetX;
@@ -326,7 +330,7 @@ var player2 = {
     ctx.translate(this.x, this.y);
     ctx.rotate(this.angle);
     ctx.drawImage(
-      sprite.player_scout2,
+      this.sprite,
       0,
       this.heightOnPic,
       this.widthOnPic,
@@ -337,7 +341,7 @@ var player2 = {
       this.particles[2] * screenratio * this.particlesHeight
     );
     ctx.drawImage(
-      sprite.player_scout2,
+      this.sprite,
       0,
       0,
       this.widthOnPic,

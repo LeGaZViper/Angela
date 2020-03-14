@@ -97,7 +97,6 @@ function enemyCharacter(E) {
       await sleep(10);
     }
   };
-  E.appear();
   E.animation = false;
   E.attackCDvalue = 2000;
   E.coordX = player.spaceSize / 2 + E.x - player.earthX;
@@ -121,6 +120,7 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   }
   E.update = function() {
+    if (E.appearOpacity == 0) E.appear();
     if (E.speed != 0 && E.particlesHeight < 1) {
       E.particlesWidth += E.particles[3];
       E.particlesHeight += E.particles[4];

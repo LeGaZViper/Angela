@@ -10,19 +10,25 @@ function checkRefreshRate() {
 }
 
 function gameLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); //Clearing scene
-  backgroundParticles.update_render();
+  //Clearing scene
   if (UI.inMenu) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    backgroundParticles.update_render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
   } else if (levels_handler.level.total == 0) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    backgroundParticles.update_render();
     winTheGame();
-  } else {
+  } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    backgroundParticles.update_render();
     //Game part
     ctx.beginPath();
     camera.update();
     camera.check();
     player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
     if (multiplayer) {
+      frame = false;
       player2.update();
       player2.render();
       sendPlayerData(new playerData());
@@ -185,7 +191,7 @@ function gameLoop() {
       r.update();
       if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
         r.render();
-        playerList.forEach(p, pi => {
+        playerList.forEach((p, pi) => {
           if (collides(r, p)) {
             if (p.weapon.name == "LASER" && r.name != "LASER")
               bulletList = bulletList.filter(check => check.name != "LASER");

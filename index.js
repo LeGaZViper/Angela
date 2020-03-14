@@ -19,6 +19,13 @@ io.on("connection", socket => {
     //io.sockets.emit("click",data); //Posílám všem i sobě
   }); //Doráží mi socket od klienta
 
+  socket.on("spawnList", ([enemySpawnList, id]) => {
+    socket.broadcast.to(id).emit("spawnList", enemySpawnList);
+  });
+
+  socket.on("loseGame", id => {
+    socket.broadcast.to(id).emit("loseGame");
+  });
   socket.on("createRoom", id => {
     roomList.push(id);
   });

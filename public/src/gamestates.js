@@ -14,8 +14,9 @@ function startTheGame() {
 }
 
 function startMultiplayer_this() {
-  if (host) levels_handler.levelCreator();
+  if (host) sendSpawnList();
   multiplayer = true;
+  frame = true;
   startTheGame();
 }
 //Continue the game function | used in: continue
