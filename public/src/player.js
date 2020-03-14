@@ -113,7 +113,8 @@ var player = {
     player.hitBoxHeight = (player.height / 3) * 2;
     player.hitBoxX = player.x - player.hitBoxWidth / 2;
     player.hitBoxY = player.y - player.hitBoxHeight / 2;
-    if (host) player.sprite = sprite["player_" + ship.name.toLowerCase()];
+    if (host || !multiplayer)
+      player.sprite = sprite["player_" + ship.name.toLowerCase()];
     else player.sprite = sprite.player_scout2;
 
     player.leftMouseDown = false;
