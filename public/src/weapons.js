@@ -119,7 +119,11 @@ function bullet(B, who, numberOfBullets) {
     B.explosion_index = 0;
     B.explosion_angle = Math.random() * 2 * Math.PI;
   } else if (who.weapon.name == "GIANT") {
+    B.dirx = Math.cos(who.angle - Math.PI / 2);
+    B.diry = Math.sin(who.angle - Math.PI / 2);
   } else if (who.weapon.name == "SPREADER") {
+    B.dirx = Math.cos(who.angle - Math.PI / 2);
+    B.diry = Math.sin(who.angle - Math.PI / 2);
     B.sprite = sprite.projectile_spread;
   } else if (who.weapon.name == "SPREADER_PROJECTILE") {
     B.sprite = sprite.projectile_spreadProjectile;
