@@ -167,6 +167,7 @@ function defineEnemyDatabase() {
   enemyDatabase = {
     test: {
       type: "buzz",
+      behaviour: "ignore",
       sprite: sprite.enemy_buzz,
       widthOnPic: 56,
       heightOnPic: 62,
@@ -181,6 +182,7 @@ function defineEnemyDatabase() {
     },
     buzz: {
       type: "buzz",
+      behaviour: "ignore",
       sprite: sprite.enemy_buzz,
       widthOnPic: 56,
       heightOnPic: 62,
@@ -195,6 +197,7 @@ function defineEnemyDatabase() {
     },
     tooth: {
       type: "tooth",
+      behaviour: "ignore",
       sprite: sprite.enemy_tooth,
       widthOnPic: 64,
       heightOnPic: 64,
@@ -210,6 +213,7 @@ function defineEnemyDatabase() {
     sharkfin: {
       // 1 - sharkfin
       type: "sharkfin",
+      behaviour: "ignore",
       sprite: sprite.enemy_sharkfin,
       widthOnPic: 64,
       heightOnPic: 60,
@@ -227,6 +231,7 @@ function defineEnemyDatabase() {
     goblin: {
       // 2 - goblin
       type: "goblin",
+      behaviour: "ignore",
       sprite: sprite.enemy_goblin,
       widthOnPic: 76,
       heightOnPic: 100,
@@ -244,6 +249,7 @@ function defineEnemyDatabase() {
     SG40: {
       // 2 - goblin
       type: "SG40",
+      behaviour: "ignore",
       sprite: sprite.enemy_SG40,
       widthOnPic: 48,
       heightOnPic: 50,
@@ -258,13 +264,16 @@ function defineEnemyDatabase() {
     },
     pirateRaider: {
       type: "pirateRaider",
+      behaviour: "chase",
       sprite: sprite.enemy_pirateRaider,
+      chaseDistance: Infinity,
       widthOnPic: 60,
       heightOnPic: 32,
       //Ingame stats
       width: 60 * screenratio,
       height: 32 * screenratio,
-      speed: 1.5 * screenratio,
+      speed: 5 * screenratio,
+      defaultSpeed: 5 * screenratio,
       HP: 5,
       maxHP: 5,
       PARTS: 10,
@@ -274,6 +283,7 @@ function defineEnemyDatabase() {
     },
     pirateMineDropper: {
       type: "pirateMineDropper",
+      behaviour: "mine",
       sprite: sprite.enemy_pirateMinedropper,
       widthOnPic: 56,
       heightOnPic: 74,
@@ -290,6 +300,7 @@ function defineEnemyDatabase() {
     },
     pirateMine: {
       type: "pirateMine",
+      behaviour: "mine",
       sprite: sprite.enemy_pirateMine,
       widthOnPic: 44,
       heightOnPic: 44,
@@ -306,6 +317,7 @@ function defineEnemyDatabase() {
     },
     pirateTiger: {
       type: "pirateTiger",
+      behaviour: "ignore",
       sprite: sprite.enemy_pirateTiger,
       widthOnPic: 70,
       heightOnPic: 70,
@@ -322,6 +334,7 @@ function defineEnemyDatabase() {
     },
     pirateVessel: {
       type: "pirateVessel",
+      behaviour: "orbit",
       sprite: sprite.enemy_pirateVessel,
       widthOnPic: 76,
       heightOnPic: 158,
@@ -332,9 +345,6 @@ function defineEnemyDatabase() {
       HP: 50,
       maxHP: 50,
       PARTS: 0,
-      angle:
-        Math.atan2(player.earthX - this.y, player.earthY - this.x) +
-        Math.PI / 2,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [46, 46 * screenratio, -79 * screenratio, 0, 0.1],
@@ -343,6 +353,7 @@ function defineEnemyDatabase() {
     },
     voidDrone: {
       type: "voidDrone",
+      behaviour: "ignore",
       sprite: sprite.enemy_voidDrone,
       widthOnPic: 60,
       heightOnPic: 60,
@@ -359,6 +370,7 @@ function defineEnemyDatabase() {
     },
     voidChaser: {
       type: "voidChaser",
+      behaviour: "ignore",
       sprite: sprite.enemy_voidChaser,
       widthOnPic: 48,
       heightOnPic: 62,
@@ -375,6 +387,7 @@ function defineEnemyDatabase() {
     },
     voidSphereFighter: {
       type: "voidSphereFighter",
+      behaviour: "ignore",
       sprite: sprite.enemy_voidSpherefighter,
       widthOnPic: 64,
       heightOnPic: 64,
@@ -394,6 +407,7 @@ function defineEnemyDatabase() {
     },
     voidChakram: {
       type: "voidChakram",
+      behaviour: "ignore",
       sprite: sprite.enemy_voidChakram,
       widthOnPic: 180,
       heightOnPic: 180,

@@ -6,6 +6,17 @@ async function checkDeath(enemy, bulletName) {
     if (enemy.randomDrop) {
       randomDropList.push(randomDrop({ x: enemy.x, y: enemy.y }));
     }
+    if (enemy.type == "pirateMineDropper" && enemy.distance > 40) {
+      enemyList.push(
+        enemyCharacter({
+          x: enemy.x,
+          y: enemy.y,
+          randomDrop: false,
+          spawnCD: 0,
+          ...enemyDatabase["pirateMine"]
+        })
+      );
+    }
     if (bulletName == "SPREADER" && bulletList.length < 300) {
       for (let i = 0; i < 16; i++) {
         bulletList.push(
@@ -28,21 +39,27 @@ async function checkDeath(enemy, bulletName) {
     ) {
       await sleep(2000);
       levels_handler.level.total -= 1;
-    } else if (enemy.sprite != sprite.enemy_pirateMine) {
+    } else if (enemy.type != "pirateMine") {
       levels_handler.level.total -= 1;
     }
     PARTS += enemy.PARTS;
   }
 }
 var enemyBulletList = [];
-function enemyBullet(B, type) {
+function enemyBullet(B, type, target) {
   B.killed = false;
   B.damage = 1;
   B.speed = 15 * screenratio;
   B.color = "#FF0000";
+  console.log(target);
   if (type == "BASIC") {
-    B.dirx = player.earthX - B.x;
-    B.diry = player.earthY - B.y;
+    if (target == "none") {
+      B.dirx = playerEarthX - B.x;
+      B.diry = playerEarthY - B.y;
+    } else {
+      B.dirx = target.x - B.x;
+      B.diry = target.y - B.y;
+    }
     B.width = 4 * screenratio;
     B.height = 25 * screenratio;
   }
@@ -113,6 +130,10 @@ function enemyCharacter(E) {
   E.arrival = false;
   E.particlesWidth = 1;
   E.particlesHeight = 0.2;
+  E.target = "none";
+  E.orbitAngle =
+    Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
+  E.angle = Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
   if (E.hitBoxWidth == undefined) {
     E.hitBoxWidth = (E.width / 3) * 2;
     E.hitBoxHeight = (E.height / 3) * 2;
@@ -128,49 +149,8 @@ function enemyCharacter(E) {
       E.particlesWidth -= E.particles[3];
       E.particlesHeight -= E.particles[4];
     }
-    let distance =
-      Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
-    if (E.orbit && distance < 500 * screenratio && !E.inOrbit) {
-      E.inOrbit = true;
-    } else if (E.inOrbit && !E.arrival) {
-      E.arrival = true;
-      E.attackCDstart();
-    } else if (E.inOrbit && E.arrival && !E.attackCD) {
-      if (E.type == "pirateVessel") {
-        E.attackCDstart();
-        if (Math.random() < 0.5)
-          enemyBulletList.push(
-            enemyBullet({ x: E.cannon1X, y: E.cannon1Y }, "BASIC")
-          );
-        else
-          enemyBulletList.push(
-            enemyBullet({ x: E.cannon2X, y: E.cannon2Y }, "BASIC")
-          );
-      } else {
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
-        E.attackCDstart();
-      }
-    } else if (
-      distance < 140 * screenratio &&
-      E.type != "pirateMine" &&
-      E.type != "pirateMinedropper" &&
-      !E.orbit
-    ) {
-      E.speed = 0;
-      if (!E.arrival) {
-        E.arrival = true;
-        E.attackCDstart();
-      } else if (!E.attackCD) {
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
-        E.attackCDstart();
-      }
-    } else if (
-      (E.type == "pirateMine" || E.type == "pirateMinedropper") &&
-      distance < 40
-    ) {
-      E.HP = 0;
-      player.HP[0] -= 2;
-    } else if (!E.inOrbit) {
+    E.attack();
+    if (!E.inOrbit && E.target == "none") {
       let ratio =
         E.speed /
         (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
@@ -181,10 +161,20 @@ function enemyCharacter(E) {
       E.y += E.yspeed;
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
+    } else if (E.inOrbit && E.target == "none") {
+      E.orbitAngle -= 0.01;
+      E.x += E.speed * Math.cos(E.orbitAngle);
+      E.y += E.speed * Math.sin(E.orbitAngle);
+      E.coordX += E.xspeed;
+      E.coordY += E.yspeed;
     } else {
-      E.angle -= 0.01 * screenratio;
-      E.x += E.speed * Math.cos(E.angle);
-      E.y += E.speed * Math.sin(E.angle);
+      let ratio =
+        E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
+
+      E.xspeed = ratio * (E.target.x - E.x);
+      E.yspeed = ratio * (E.target.y - E.y);
+      E.x += E.xspeed;
+      E.y += E.yspeed;
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
     }
@@ -211,10 +201,7 @@ function enemyCharacter(E) {
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
-    if (!E.inOrbit)
-      ctx.rotate(
-        Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2
-      );
+    if (!E.inOrbit) ctx.rotate(E.angle);
     else
       ctx.rotate(
         Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
@@ -450,6 +437,70 @@ function enemyCharacter(E) {
   E.attackCD = false;
   E.piercingCD = false;
   E.opacity = 0;
+  E.attack = function() {
+    E.distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
+    if (E.behaviour == "orbit") {
+      if (E.distance < 500 * screenratio && !E.inOrbit) {
+        E.inOrbit = true;
+        E.arrival = true;
+        E.attackCDstart();
+      } else if (E.inOrbit && !E.attackCD) {
+        E.attackCDstart();
+        if (E.type == "pirateVessel") {
+          if (Math.random() < 0.5)
+            enemyBulletList.push(
+              enemyBullet({ x: E.cannon1X, y: E.cannon1Y }, "BASIC")
+            );
+          else
+            enemyBulletList.push(
+              enemyBullet({ x: E.cannon2X, y: E.cannon2Y }, "BASIC")
+            );
+        } else enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
+      }
+    } else if (E.behaviour == "mine") {
+      if (E.distance < 40 * screenratio && E.HP > 0) {
+        E.HP = 0;
+        player.HP[0] -= 2;
+        checkDeath(E, "BASIC");
+      }
+    } else if (E.behaviour == "ignore") {
+      if (E.distance < 140 * screenratio && !E.arrival) {
+        E.speed = 0;
+        E.arrival = true;
+        E.attackCDstart();
+      } else if (E.arrival && !E.attackCD) {
+        E.attackCDstart();
+        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
+      }
+    } else if (E.behaviour == "chase") {
+      playerList.forEach(p => {
+        E.chaseDistance = Math.abs(p.x - E.x) + Math.abs(p.y - E.y);
+        if (E.chaseDistance < 500 * screenratio && E.target == "none") {
+          E.target = p;
+        }
+      });
+      if (E.target != "none") {
+        E.chaseDistance =
+          Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
+        E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+        if (E.chaseDistance > 500 * screenratio) {
+          E.target = "none";
+          E.angle =
+            Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
+        } else if (E.chaseDistance < 200 * screenratio) {
+          E.speed = 0;
+          if (!E.attackCD) {
+            E.attackCDstart();
+            enemyBulletList.push(
+              enemyBullet({ x: E.x, y: E.y }, "BASIC", E.target)
+            );
+          }
+        } else {
+          E.speed = E.defaultSpeed;
+        }
+      }
+    }
+  };
   E.attackCDstart = async function() {
     E.attackCD = true;
     await sleep(E.attackCDvalue);
