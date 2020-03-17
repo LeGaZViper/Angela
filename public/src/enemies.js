@@ -47,6 +47,7 @@ async function checkDeath(enemy, bulletName) {
 }
 var enemyBulletList = [];
 function enemyBullet(B, type, target) {
+  B.ttl = 300;
   B.killed = false;
   B.damage = 1;
   B.speed = 15 * screenratio;
@@ -74,6 +75,7 @@ function enemyBullet(B, type, target) {
     B.y += B.yspeed - player.yspeed - camera.offSetY;
     B.hitBoxX = B.x - B.hitBoxWidth / 2;
     B.hitBoxY = B.y - B.hitBoxHeight / 2;
+    B.calcTTL();
   };
   B.render = function() {
     ctx.beginPath();
@@ -101,6 +103,13 @@ function enemyBullet(B, type, target) {
     ctx.restore();
     ctx.stroke();
     ctx.closePath();
+  };
+  B.calcTTL = function() {
+    if (B.ttl > 0) {
+      B.ttl -= 1;
+    } else {
+      B.killed = true;
+    }
   };
   return B;
 }
@@ -151,16 +160,37 @@ function enemyCharacter(E) {
     }
     E.attack();
     if (!E.inOrbit && E.target == "none") {
-      let ratio =
-        E.speed /
-        (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
-      E.xspeed = ratio * (player.earthX - E.x);
-      E.yspeed = ratio * (player.earthY - E.y);
+      if (
+        E.behaviour != "chase" ||
+        ((Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
+          Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
+          E.behaviour == "chase")
+      ) {
+        E.randomDirCDcounter = 120;
+        E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
+        E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
+        let ratio =
+          E.speed /
+          (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+        E.xspeed = ratio * (player.earthX - E.x);
+        E.yspeed = ratio * (player.earthY - E.y);
 
-      E.x += E.xspeed;
-      E.y += E.yspeed;
-      E.coordX += E.xspeed;
-      E.coordY += E.yspeed;
+        E.x += E.xspeed;
+        E.y += E.yspeed;
+        E.coordX += E.xspeed;
+        E.coordY += E.yspeed;
+      } else {
+        E.randomDirCD();
+        E.angle = Math.atan2(E.randomDirY, E.randomDirX) + Math.PI / 2;
+        let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
+        E.xspeed = ratio * E.randomDirX;
+        E.yspeed = ratio * E.randomDirY;
+
+        E.x += E.xspeed;
+        E.y += E.yspeed;
+        E.coordX += E.xspeed;
+        E.coordY += E.yspeed;
+      }
     } else if (E.inOrbit && E.target == "none") {
       E.orbitAngle -= 0.01;
       E.x += E.speed * Math.cos(E.orbitAngle);
@@ -475,7 +505,7 @@ function enemyCharacter(E) {
     } else if (E.behaviour == "chase") {
       playerList.forEach(p => {
         E.chaseDistance = Math.abs(p.x - E.x) + Math.abs(p.y - E.y);
-        if (E.chaseDistance < 500 * screenratio && E.target == "none") {
+        if (E.chaseDistance < 800 * screenratio && E.target == "none") {
           E.target = p;
         }
       });
@@ -483,10 +513,11 @@ function enemyCharacter(E) {
         E.chaseDistance =
           Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
         E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-        if (E.chaseDistance > 500 * screenratio) {
+        if (E.chaseDistance > 800 * screenratio) {
           E.target = "none";
-          E.angle =
-            Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
+          E.randomDirCDcounter = 120;
+          E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
+          E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
         } else if (E.chaseDistance < 200 * screenratio) {
           E.speed = 0;
           if (!E.attackCD) {
@@ -521,6 +552,15 @@ function enemyCharacter(E) {
     E.piercingCD = true;
     await sleep(cd);
     E.piercingCD = false;
+  };
+  E.randomDirCDcounter = 1;
+  E.randomDirCD = function() {
+    E.randomDirCDcounter -= 1;
+    if (E.randomDirCDcounter === 0) {
+      E.randomDirCDcounter = 120;
+      E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
+      E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
+    }
   };
   return E;
 }
