@@ -484,6 +484,7 @@ var UI = {
       this.gameOverMenu,
       this.youWinMenu
     ];
+    this.cursorIndex = 0;
   },
   menu_render: function(menu) {
     this.upgradesMenu_PARTS.text = "Parts: " + localStorage.PARTS;
@@ -677,7 +678,18 @@ var UI = {
       this.HPpanel.width,
       this.HPpanel.height
     );
-    ctx.drawImage(sprite.UI_cursor, xMousePos - 25, yMousePos - 25, 50, 50); //cursor
+    this.cursorIndex += 0.001 * player.acceleration + 0.02;
+    ctx.save();
+    ctx.translate(xMousePos, yMousePos);
+    ctx.rotate(this.cursorIndex);
+    if (player.leftMouseDown)
+      ctx.drawImage(sprite.UI_cursorFire, -25, -25, 50, 50);
+    //cursor
+    else ctx.drawImage(sprite.UI_cursorNoFire, -25, -25, 50, 50); //cursor
+    ctx.restore();
+    if (this.cursorIndex == 6) {
+      this.cursorIndex = 0;
+    }
 
     if (UI.levelDisplayCheck) {
       ctx.globalAlpha = UI.levelDisplay.opacity;

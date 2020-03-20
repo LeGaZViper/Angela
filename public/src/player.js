@@ -6,26 +6,20 @@ var backgroundParticles = {
     this.x2 = canvas.width / 2;
     this.y2 = canvas.height / 2;
   },
-  update_render: function() {
-    this.x1 += -(player.xspeed + camera.offSetX) / 8;
-    this.y1 += -(player.yspeed + camera.offSetY) / 8;
+  update: function() {
+    this.x1 += -(player.xspeed + camera.offSetX);
+    this.y1 += -(player.yspeed + camera.offSetY);
     this.x2 += -(player.xspeed + camera.offSetX) / 10;
     this.y2 += -(player.yspeed + camera.offSetY) / 10;
-
+  },
+  render: function() {
     ctx.beginPath();
     ctx.drawImage(
-      sprite.UI_stars1,
-      this.x1 - 1500 * screenratio,
-      this.y1 - 1000 * screenratio,
-      3000 * screenratio,
-      2000 * screenratio
-    );
-    ctx.drawImage(
-      sprite.UI_stars2,
-      this.x2 - 1500 * screenratio,
-      this.y2 - 1000 * screenratio,
-      3000 * screenratio,
-      2000 * screenratio
+      sprite.UI_motherboard,
+      this.x1 - 2000 * screenratio,
+      this.y1 - 2000 * screenratio,
+      4000 * screenratio,
+      4000 * screenratio
     );
     ctx.fill();
     ctx.closePath();
@@ -113,6 +107,10 @@ var player = {
     player.hitBoxHeight = (player.height / 3) * 2;
     player.hitBoxX = player.x - player.hitBoxWidth / 2;
     player.hitBoxY = player.y - player.hitBoxHeight / 2;
+    player.animationX = 0;
+    player.animationIndex = 0;
+    player.animationFrames = 12;
+    player.animationFPS = 6;
     if (host || !multiplayer)
       player.sprite = sprite["player_" + ship.name.toLowerCase()];
     else player.sprite = sprite.player_scout2;
@@ -190,6 +188,18 @@ var player = {
     player.particlesHeight = player.acceleration / 100 + 0.1;
   },
   render: () => {
+    player.animationIndex += 1;
+    let nextIndex = Math.floor(
+      60 / (player.animationFPS + (player.acceleration * 2) / 10)
+    );
+    if (player.animationIndex == nextIndex) {
+      player.animationIndex = 0;
+      if (player.animationX < player.widthOnPic * (player.animationFrames - 1))
+        player.animationX += player.widthOnPic;
+      else player.animationX = 0;
+    }
+    if (player.animationIndex > nextIndex) player.animationIndex = 0;
+
     ctx.beginPath();
     ctx.save();
     ctx.translate(player.x, player.y);
@@ -197,8 +207,7 @@ var player = {
       Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2;
     ctx.rotate(player.angle);
     //Normal Scout
-    ctx.globalAlpha = player.opacity[1];
-    ctx.drawImage(
+    /* ctx.drawImage(
       player.sprite,
       0,
       player.heightOnPic,
@@ -208,10 +217,11 @@ var player = {
       player.height / 2 - player.particles[1] * screenratio,
       player.width * player.particlesWidth,
       player.particles[2] * screenratio * player.particlesHeight
-    );
+    ); */
+    ctx.globalAlpha = player.opacity[1] - player.damageOpacity[1];
     ctx.drawImage(
       player.sprite,
-      0,
+      player.animationX,
       0,
       player.widthOnPic,
       player.heightOnPic,
@@ -223,6 +233,7 @@ var player = {
     //Damaged Scout #RED
     if (player.HP[1] > 0) {
       ctx.globalAlpha = player.damageOpacity[1];
+      /*
       ctx.drawImage(
         player.sprite,
         0,
@@ -233,11 +244,11 @@ var player = {
         player.height / 2 - player.particles[1] * screenratio,
         player.width * player.particlesWidth,
         player.particles[2] * screenratio * player.particlesHeight
-      );
+      ); */
       ctx.drawImage(
         player.sprite,
-        0,
-        player.heightOnPic + player.particles[0],
+        player.animationX,
+        player.heightOnPic, //+ player.particles[0],
         player.widthOnPic,
         player.heightOnPic,
         -player.width / 2,
@@ -267,11 +278,11 @@ var player = {
   },
   hitCDstart: async function(which, what) {
     if (which == 1) player.shieldCD = 300;
-    player.damageOpacity[which] = 51 / 100;
-    for (let i = 50; i >= 0; i--) {
+    player.damageOpacity[which] = 101 / 100;
+    for (let i = 100; i >= 0; i--) {
       if (player.damageOpacity[which] == (i + 1) / 100) {
         player.damageOpacity[which] = i / 100;
-        await sleep(20);
+        await sleep(10);
       } else break;
     }
     if (which == 1 && what == "bullet") player.hitCD = false;

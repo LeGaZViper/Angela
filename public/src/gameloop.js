@@ -13,20 +13,23 @@ function gameLoop() {
   //Clearing scene
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    backgroundParticles.update_render();
+    backgroundParticles.update();
+    backgroundParticles.render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
   } else if (levels_handler.level.total == 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    backgroundParticles.update_render();
+    backgroundParticles.update();
+    backgroundParticles.render();
     winTheGame();
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    backgroundParticles.update_render();
     //Game part
     ctx.beginPath();
     camera.update();
     camera.check();
     player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
+    backgroundParticles.update();
+    backgroundParticles.render();
     if (multiplayer) {
       frame = false;
       player2.update();
@@ -37,24 +40,24 @@ function gameLoop() {
       sprite.UI_earth,
       0,
       0,
-      200,
-      200,
-      player.earthX - 100 * screenratio,
-      player.earthY - 100 * screenratio,
-      200 * screenratio,
-      200 * screenratio
+      250,
+      250,
+      player.earthX - 125 * screenratio,
+      player.earthY - 125 * screenratio,
+      250 * screenratio,
+      250 * screenratio
     ); //planet
     ctx.globalAlpha = player.damageOpacity[0];
     ctx.drawImage(
       sprite.UI_earth,
       0,
-      200,
-      200,
-      200,
-      player.earthX - 100 * screenratio,
-      player.earthY - 100 * screenratio,
-      200 * screenratio,
-      200 * screenratio
+      250,
+      250,
+      250,
+      player.earthX - 125 * screenratio,
+      player.earthY - 125 * screenratio,
+      250 * screenratio,
+      250 * screenratio
     ); //damaged planet
     ctx.globalAlpha = 1;
     ctx.strokeStyle = "red";

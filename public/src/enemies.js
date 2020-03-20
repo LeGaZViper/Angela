@@ -52,11 +52,10 @@ function enemyBullet(B, type, target) {
   B.damage = 1;
   B.speed = 15 * screenratio;
   B.color = "#FF0000";
-  console.log(target);
   if (type == "BASIC") {
     if (target == "none") {
-      B.dirx = playerEarthX - B.x;
-      B.diry = playerEarthY - B.y;
+      B.dirx = player.earthX - B.x;
+      B.diry = player.earthY - B.y;
     } else {
       B.dirx = target.x - B.x;
       B.diry = target.y - B.y;
@@ -500,7 +499,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
+        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC", "none"));
       }
     } else if (E.behaviour == "chase") {
       playerList.forEach(p => {

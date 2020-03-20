@@ -26,9 +26,11 @@ var sprite = {
   UI_stars1: new Image(),
   UI_stars2: new Image(),
   UI_earth: new Image(),
-  UI_cursor: new Image(),
+  UI_cursorFire: new Image(),
+  UI_cursorNoFire: new Image(),
   UI_HPpanel: new Image(),
   UI_durationPanel: new Image(),
+  UI_motherboard: new Image(),
   UI_scout: new Image(),
   UI_slug: new Image(),
   UI_shopBG: new Image(),
@@ -51,7 +53,7 @@ var weaponDatabase = {
     height: 25,
     cooldown: 150,
     duration: 0,
-    color: "#00FF00",
+    color: "#DCE6EE",
     status: "DEFAULT"
   },
   DOUBLE: {
@@ -64,7 +66,7 @@ var weaponDatabase = {
     height: 25,
     cooldown: 150,
     duration: 600,
-    color: "#00FF00",
+    color: "#DCE6EE",
     status: "LOCKED"
   },
   SPRAY: {
@@ -77,7 +79,7 @@ var weaponDatabase = {
     height: 25,
     cooldown: 150,
     duration: 600,
-    color: "#00FF00",
+    color: "#DCE6EE",
     status: "LOCKED"
   },
   ROCKET: {
@@ -104,7 +106,7 @@ var weaponDatabase = {
     duration: 600,
     piercing: true,
     hitCD: 500,
-    color: "#00FF00",
+    color: "#DCE6EE",
     status: "LOCKED"
   },
   /* LASER: {
@@ -150,10 +152,10 @@ var weaponDatabase = {
 var defaultShip = {
   name: "SCOUT",
   speed: 10,
-  width: 66,
-  height: 66,
-  widthOnPic: 88,
-  heightOnPic: 88,
+  width: 75,
+  height: 75,
+  widthOnPic: 300,
+  heightOnPic: 300,
   weaponDuration: 0,
   particles: [22, 2, 30, 0, 0.05],
   maxShield: [0, 1],
