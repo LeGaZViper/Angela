@@ -37,6 +37,7 @@ function inicializeGame() {
   UI.levelDisplayCheck = true;
   bulletList = [];
   enemyList = [];
+  enemySpawnList = [];
   enemyBulletList = [];
   randomDropList = [];
   canvas.style.cursor = "none";
