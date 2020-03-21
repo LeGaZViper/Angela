@@ -31,6 +31,7 @@ var sprite = {
   UI_HPpanel: new Image(),
   UI_durationPanel: new Image(),
   UI_motherboard: new Image(),
+  UI_motherboardMap: new Image(),
   UI_scout: new Image(),
   UI_slug: new Image(),
   UI_shopBG: new Image(),

@@ -476,7 +476,7 @@ var UI = {
       height: 200 * screenratio,
       x: 2,
       y: 2,
-      color: ["#193019", "#353535"]
+      color: ["#686C70", "#353535"]
     };
     this.menuList = [
       this.mainMenu,
@@ -709,19 +709,20 @@ var UI = {
       this.minimapLayer.height
     );
     ctx.fillStyle = this.minimapLayer.color[0];
-    ctx.fillRect(
+    ctx.drawImage(
+      sprite.UI_motherboardMap,
       this.minimapLayer.x,
       this.minimapLayer.y,
       this.minimapLayer.width,
       this.minimapLayer.height
     );
-    ctx.fillStyle = "green";
-    ctx.strokeStyle = "green";
+    ctx.fillStyle = "#DCE6EE";
+    ctx.strokeStyle = "#DCE6EE";
     ctx.closePath();
     ctx.beginPath();
     ctx.arc(
-      100 * screenratio,
-      100 * screenratio,
+      101 * screenratio,
+      101 * screenratio,
       5 * screenratio,
       0,
       2 * Math.PI,
@@ -742,8 +743,8 @@ var UI = {
         );
     });
 
-    ctx.fillStyle = "green";
-    ctx.strokeStyle = "green";
+    ctx.fillStyle = "#DCE6EE";
+    ctx.strokeStyle = "#DCE6EE";
     ctx.lineWidth = 1;
     ctx.moveTo(3, player.coordY / (player.spaceSize / (200 * screenratio)));
     ctx.lineTo(
