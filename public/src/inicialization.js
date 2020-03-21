@@ -37,7 +37,6 @@ function inicializeGame() {
   UI.levelDisplayCheck = true;
   bulletList = [];
   enemyList = [];
-  enemySpawnList = [];
   enemyBulletList = [];
   randomDropList = [];
   canvas.style.cursor = "none";
@@ -48,6 +47,7 @@ function inicializeGame() {
     player2.inicialize();
     playerList.push(player2);
   } else {
+    enemySpawnList = [];
     levels_handler.levelCreator();
   }
   spawn();
