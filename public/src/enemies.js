@@ -504,7 +504,11 @@ function enemyCharacter(E) {
     } else if (E.behaviour == "chase") {
       playerList.forEach(p => {
         E.chaseDistance = Math.abs(p.x - E.x) + Math.abs(p.y - E.y);
-        if (E.chaseDistance < 800 * screenratio && E.target == "none") {
+        if (
+          E.chaseDistance < 800 * screenratio &&
+          E.target == "none" &&
+          p.HP[1] > 0
+        ) {
           E.target = p;
         }
       });
@@ -512,8 +516,9 @@ function enemyCharacter(E) {
         E.chaseDistance =
           Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
         E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-        if (E.chaseDistance > 800 * screenratio) {
+        if (E.chaseDistance > 800 * screenratio || E.target.HP[1] == 0) {
           E.target = "none";
+          E.speed = E.defaultSpeed;
           E.randomDirCDcounter = 120;
           E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
           E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);

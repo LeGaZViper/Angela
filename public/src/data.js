@@ -110,8 +110,32 @@ var weaponDatabase = {
     color: "#DCE6EE",
     status: "LOCKED"
   },
-  /* LASER: {
+  SPREADER: {
     index: 5,
+    name: "SPREADER",
+    bullets: 1,
+    damage: 2,
+    speed: 8,
+    width: 14,
+    height: 30,
+    cooldown: 300,
+    duration: 600,
+    piercing: false,
+    status: "LOCKED"
+  },
+  SPREADER_PROJECTILE: {
+    index: 99,
+    name: "SPREADER_PROJECTILE",
+    bullets: 1,
+    damage: 2,
+    speed: 15,
+    width: 7,
+    height: 13,
+    piercing: false,
+    status: "UNAVAILABLE"
+  }
+  /* LASER: {
+    index: 6,
     name: "LASER",
     bullets: 1,
     damage: 4,
@@ -125,30 +149,6 @@ var weaponDatabase = {
     color: "#00FF00",
     status: "LOCKED" 
   },*/
-  SPREADER: {
-    index: 6,
-    name: "SPREADER",
-    bullets: 1,
-    damage: 2,
-    speed: 8,
-    width: 14,
-    height: 30,
-    cooldown: 300,
-    duration: 600,
-    piercing: false,
-    status: "LOCKED"
-  },
-  SPREADER_PROJECTILE: {
-    index: 7,
-    name: "SPREADER_PROJECTILE",
-    bullets: 1,
-    damage: 2,
-    speed: 15,
-    width: 7,
-    height: 13,
-    piercing: false,
-    status: "UNAVAILABLE"
-  }
 };
 var defaultShip = {
   name: "SCOUT",

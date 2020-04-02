@@ -118,6 +118,7 @@ var player = {
     player.leftMouseDown = false;
     player.weapon = weaponDatabase.BASIC;
     player.weaponDuration = 0;
+    player.inWeaponActivation = false;
   },
   update: () => {
     //speed calculation

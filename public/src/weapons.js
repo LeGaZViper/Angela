@@ -12,6 +12,41 @@ function chooseWeapon(name) {
   }
 }
 
+var weaponActivation = {
+  currentIndex: 0,
+  currentWord: "STRING",
+  wordList: [
+    "hello",
+    "hOnza",
+    "PLEASEGIVEMEFOOD",
+    "VERYLONGTEXT",
+    "windowsSUX"
+  ],
+  lives: 3,
+  weaponName: "DOUBLE",
+  checkInput: function(input) {
+    console.log(input);
+    if (input == this.currentWord[this.currentIndex]) {
+      this.currentIndex++;
+      if (this.currentIndex == this.currentWord.length) {
+        console.log("done!", this.weaponName);
+        player.inWeaponActivation = false;
+        this.lives = 3;
+        this.currentIndex = 0;
+        chooseWeapon(this.weaponName);
+      }
+    } else if (this.lives > 0) {
+      this.lives--;
+      console.log("-1 life");
+    } else {
+      console.log("fail!");
+      player.inWeaponActivation = false;
+      this.lives = 3;
+      this.currentIndex = 0;
+    }
+  }
+};
+
 var randomDropList = [];
 function randomDrop(R) {
   R.width = 75 * screenratio;
@@ -111,6 +146,8 @@ function bullet(B, who, numberOfBullets) {
       bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
     }
   } else if (who.weapon.name == "ROCKET") {
+    B.dirx = Math.cos(who.angle - Math.PI / 2);
+    B.diry = Math.sin(who.angle - Math.PI / 2);
     B.sprite = sprite.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150 * screenratio;

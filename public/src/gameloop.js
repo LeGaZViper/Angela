@@ -1,3 +1,4 @@
+//makes sure gameLoop always runs 60 times/s even on higher refresh rate monitors
 function checkRefreshRate() {
   var fpsInterval = 1000 / 60;
   let timeThen = 0;
@@ -9,18 +10,22 @@ function checkRefreshRate() {
   } else return false;
 }
 
+//updates/checks game data and renders graphics
+//split into UI and game sectors
 function gameLoop() {
-  //Clearing scene
+  //menu sector
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     backgroundParticles.update();
     backgroundParticles.render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
+    //getting into menu after win??? -- needs to be worked on
   } else if (levels_handler.level.total == 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     backgroundParticles.update();
     backgroundParticles.render();
     winTheGame();
+    //game sector
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //Game part
@@ -36,6 +41,7 @@ function gameLoop() {
       player2.render();
       sendPlayerData(new playerData());
     }
+    //render of the main objective
     ctx.drawImage(
       sprite.UI_earth,
       0,
@@ -46,7 +52,8 @@ function gameLoop() {
       player.earthY - 125 * screenratio,
       250 * screenratio,
       250 * screenratio
-    ); //planet
+    );
+    //damaged main objective
     ctx.globalAlpha = player.damageOpacity[0];
     ctx.drawImage(
       sprite.UI_earth,
@@ -58,7 +65,8 @@ function gameLoop() {
       player.earthY - 125 * screenratio,
       250 * screenratio,
       250 * screenratio
-    ); //damaged planet
+    );
+    //game space borders
     ctx.globalAlpha = 1;
     ctx.strokeStyle = "red";
     ctx.lineWidth = 5;
@@ -70,6 +78,7 @@ function gameLoop() {
       player.spaceSize
     );
     ctx.closePath();
+    //update & render of player bullets
     bulletList.forEach(b => {
       //bullets - if render check
       if (b.explosive && b.explosion_triggered) b.explosion_render();
@@ -81,6 +90,7 @@ function gameLoop() {
       )
         b.render();
     });
+    //update & render of enemy bullets
     enemyBulletList.forEach(eb => {
       //enemy bullets - render
       let distance =
@@ -109,6 +119,7 @@ function gameLoop() {
         eb.render();
       enemyBulletList = enemyBulletList.filter(check => !check.killed);
     });
+    //check for weapon firing
     player.render();
     if (player.weaponDuration == 0) {
       if (player.weapon.name == "LASER")
@@ -143,11 +154,13 @@ function gameLoop() {
         bulletList = bulletList.filter(check => check.name != "LASER");
       }
     });
+    //update & render for enemies
     enemyList.forEach(e => {
       //enemies
       if (!e.deathAnimation) {
         if (!e.killed) {
           e.update();
+          //render inside of player view/canvas
           if (
             (e.x > 0 && e.x < canvas.width) ||
             (e.y > 0 && e.y < canvas.height)
@@ -169,6 +182,7 @@ function gameLoop() {
             }
           }
         }
+        //check collision with enemies and bullets
         bulletList.forEach(b => {
           //Collision with enemies
           if (collides(e, b)) {
@@ -190,21 +204,33 @@ function gameLoop() {
         enemyList = enemyList.filter(check => !check.killed);
       }
     });
+    //update & render of random drops
     randomDropList.forEach((r, i) => {
       r.update();
       if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
         r.render();
-        playerList.forEach((p, pi) => {
+        playerList.forEach((p, pindex) => {
           if (collides(r, p)) {
             if (p.weapon.name == "LASER" && r.name != "LASER")
               bulletList = bulletList.filter(check => check.name != "LASER");
-            if (pi == 0) chooseWeapon(r.name);
-            randomDropList.splice(i, 1);
+            if (!p.inWeaponActivation) randomDropList.splice(i, 1);
+            if (pindex == 0 && !player.inWeaponActivation) {
+              weaponActivation.currentWord =
+                weaponActivation.wordList[
+                  Math.floor(Math.random() * weaponActivation.wordList.length)
+                ];
+              console.log(
+                `Trying to activate ${r.name} with word ${weaponActivation.currentWord}`
+              );
+              p.inWeaponActivation = true;
+              weaponActivation.weaponName = r.name;
+            }
           }
         });
       }
     });
     UI.game_render();
   }
+  //call for next iteration of gameLoop
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);
 }

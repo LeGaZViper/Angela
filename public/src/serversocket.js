@@ -3,7 +3,8 @@ let frame = false;
 let host = false;
 var roomId;
 try {
-  const socket = io();
+  //var socket = io.connect("http://localhost:3000"); //connect to a chosen server
+  const socket = io(); //hopefuly it's for connecting to a default server
 
   //https://socket.io/docs/rooms-and-namespaces/#Rooms -- important!
 

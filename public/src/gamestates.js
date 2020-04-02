@@ -33,6 +33,7 @@ function getMenu(menu) {
 
 //Lose the game function | used in: gameover
 function loseTheGame() {
+  p.inWeaponActivation = false;
   player.inicialize();
   camera.inicialize();
   resetLocalStorage();
@@ -40,6 +41,7 @@ function loseTheGame() {
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame() {
+  p.inWeaponActivation = false;
   camera.inicialize();
   localStorage.PARTS = parseInt(localStorage.PARTS) + PARTS;
   if (ship.level < 6) ship.level += 1;
