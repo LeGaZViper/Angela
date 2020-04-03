@@ -553,25 +553,25 @@ var UI = {
       50 * screenratio
     );
     //HP bars
-    let x1_player = parseInt(
-      -(player.HP[1] / player.maxHP[1] - 1) * 255
-    ).toString(16);
+    /* let x1_player = parseInt(
+      (1-player.HP[1] / player.maxHP[1]) * 255
+    ).toString(16); */
     let x2_player = parseInt((player.HP[1] / player.maxHP[1]) * 255).toString(
       16
     );
-    if (x1_player.length == 1) x1_player = "0" + x1_player;
+    //if (x1_player.length == 1) x1_player = "0" + x1_player;
     if (x2_player.length == 1) x2_player = "0" + x2_player;
-    this.HPbar_player.color = "#" + x1_player + x2_player + "00";
+    this.HPbar_player.color = "#F1" + x2_player + x2_player;
 
-    let x1_earth = parseInt(
+    /* let x1_earth = parseInt(
       -(player.HP[0] / player.maxHP[0] - 1) * 255
-    ).toString(16);
+    ).toString(16); */
     let x2_earth = parseInt((player.HP[0] / player.maxHP[0]) * 255).toString(
       16
     );
-    if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
+    //if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
     if (x2_earth.length == 1) x2_player = "0" + x2_earth;
-    this.HPbar_earth.color = "#" + x1_earth + x2_earth + "00";
+    this.HPbar_earth.color = "#F1" + x2_earth + x2_earth;
 
     ctx.fillStyle = this.HPbar_player.color;
     ctx.fillRect(

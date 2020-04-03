@@ -517,11 +517,11 @@ function enemyCharacter(E) {
           Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
         E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
         if (E.chaseDistance > 800 * screenratio || E.target.HP[1] == 0) {
+          E.randomDirX = E.target.x - E.x;
+          E.randomDirY = E.target.y - E.y;
           E.target = "none";
           E.speed = E.defaultSpeed;
           E.randomDirCDcounter = 120;
-          E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
-          E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
         } else if (E.chaseDistance < 200 * screenratio) {
           E.speed = 0;
           if (!E.attackCD) {

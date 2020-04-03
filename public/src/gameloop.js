@@ -13,6 +13,7 @@ function checkRefreshRate() {
 //updates/checks game data and renders graphics
 //split into UI and game sectors
 function gameLoop() {
+  ctx.globalAlpha = 1;
   //menu sector
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -230,6 +231,12 @@ function gameLoop() {
       }
     });
     UI.game_render();
+    dialogueList = dialogueList.filter(
+      index => index.ttl > 0 && index.opacity > 0
+    );
+    dialogueList.forEach(dia => {
+      dia.update_render();
+    });
   }
   //call for next iteration of gameLoop
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);

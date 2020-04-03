@@ -35,6 +35,7 @@ function inicializeGame() {
   xMousePos = canvas.width / 2;
   yMousePos = canvas.height / 2;
   UI.levelDisplayCheck = true;
+  dialogueList = [];
   bulletList = [];
   enemyList = [];
   enemyBulletList = [];
