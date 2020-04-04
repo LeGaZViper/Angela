@@ -18,7 +18,7 @@ async function spawn() {
         y: enemySpawnList[i].y * screenratio + player.earthY,
         randomDrop: enemySpawnList[i].randromDrop,
         spawnCD: enemySpawnList[i].spawnCD,
-        ...enemyDatabase[enemySpawnList[i].type]
+        ...enemyDatabase[enemySpawnList[i].type],
       })
     );
     await sleep(enemySpawnList[i].spawnCD);
@@ -28,13 +28,13 @@ async function spawn() {
 let enemySpawnList = [];
 var levels_handler = {
   level: {},
-  levelCreator: function() {
+  levelCreator: function () {
     this.level = levelLayout({});
     let detMatrix = [
       [-1, 0, 0, 1],
       [0, -1, 1, 0],
       [1, 0, 0, 1],
-      [0, 1, 1, 0]
+      [0, 1, 1, 0],
     ];
     for (index in this.level) {
       for (let i = 0; i < this.level[index][0]; i++) {
@@ -56,22 +56,22 @@ var levels_handler = {
               player.spaceSize) /
               2);
         let randomDrop;
-        if (Math.round(Math.random() * 10) == 1) randomDrop = true;
+        if (Math.round(Math.random() * 1) == 1) randomDrop = true;
         else randomDrop = false;
         enemySpawnList.push({
           x: det_x,
           y: det_y,
           type: index,
           randromDrop: randomDrop,
-          spawnCD: this.level[index][1]
+          spawnCD: this.level[index][1],
         });
       }
     }
     this.level.total = enemySpawnList.length;
-    enemySpawnList.sort(function() {
+    enemySpawnList.sort(function () {
       return 0.5 - Math.random();
     });
-  }
+  },
 };
 
 function levelLayout(L) {

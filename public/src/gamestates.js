@@ -33,7 +33,7 @@ function getMenu(menu) {
 
 //Lose the game function | used in: gameover
 function loseTheGame() {
-  p.inWeaponActivation = false;
+  player.inWeaponActivation = false;
   player.inicialize();
   camera.inicialize();
   resetLocalStorage();

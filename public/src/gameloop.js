@@ -80,7 +80,7 @@ function gameLoop() {
     );
     ctx.closePath();
     //update & render of player bullets
-    bulletList.forEach(b => {
+    bulletList.forEach((b) => {
       //bullets - if render check
       if (b.explosive && b.explosion_triggered) b.explosion_render();
       b.update();
@@ -92,7 +92,7 @@ function gameLoop() {
         b.render();
     });
     //update & render of enemy bullets
-    enemyBulletList.forEach(eb => {
+    enemyBulletList.forEach((eb) => {
       //enemy bullets - render
       let distance =
         Math.abs(eb.x - player.earthX) + Math.abs(eb.y - player.earthY);
@@ -118,45 +118,36 @@ function gameLoop() {
         (eb.y > 0 && eb.y < canvas.height)
       )
         eb.render();
-      enemyBulletList = enemyBulletList.filter(check => !check.killed);
+      enemyBulletList = enemyBulletList.filter((check) => !check.killed);
     });
     //check for weapon firing
     player.render();
     if (player.weaponDuration == 0) {
       if (player.weapon.name == "LASER")
-        bulletList = bulletList.filter(check => check.name != "LASER");
+        bulletList = bulletList.filter((check) => check.name != "LASER");
       chooseWeapon("BASIC");
       player.weaponDuration--;
     } else if (player.weaponDuration > 0) player.weaponDuration--;
-    playerList.forEach(p => {
+    playerList.forEach((p) => {
       if (p.leftMouseDown) {
         //shooting
         if (!p.attackCD && p.HP[1] > 0) {
           if (
             p.weapon.name == "LASER" &&
-            bulletList.filter(check => check.name == "LASER").length < 1
+            bulletList.filter((check) => check.name == "LASER").length < 1
           ) {
             bulletList.push(bullet({ x: p.x, y: p.y }, p, p.weapon.bullets));
           } else if (p.weapon.name != "LASER") {
-            bulletList.push(
-              bullet(
-                {
-                  x: p.x,
-                  y: p.y
-                },
-                p,
-                p.weapon.bullets
-              )
-            );
+            bulletList.push(bullet({}, p, p.weapon.bullets));
             p.attackCDstart();
           }
         }
       } else if (p.weapon.name == "LASER") {
-        bulletList = bulletList.filter(check => check.name != "LASER");
+        bulletList = bulletList.filter((check) => check.name != "LASER");
       }
     });
     //update & render for enemies
-    enemyList.forEach(e => {
+    enemyList.forEach((e) => {
       //enemies
       if (!e.deathAnimation) {
         if (!e.killed) {
@@ -184,7 +175,7 @@ function gameLoop() {
           }
         }
         //check collision with enemies and bullets
-        bulletList.forEach(b => {
+        bulletList.forEach((b) => {
           //Collision with enemies
           if (collides(e, b)) {
             if (e.HP > 0) {
@@ -197,12 +188,12 @@ function gameLoop() {
               if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
             }
           }
-          bulletList = bulletList.filter(check => !check.killed);
+          bulletList = bulletList.filter((check) => !check.killed);
           checkDeath(e, b.name);
         });
       } else {
         e.deathAnimation_render();
-        enemyList = enemyList.filter(check => !check.killed);
+        enemyList = enemyList.filter((check) => !check.killed);
       }
     });
     //update & render of random drops
@@ -213,13 +204,14 @@ function gameLoop() {
         playerList.forEach((p, pindex) => {
           if (collides(r, p)) {
             if (p.weapon.name == "LASER" && r.name != "LASER")
-              bulletList = bulletList.filter(check => check.name != "LASER");
+              bulletList = bulletList.filter((check) => check.name != "LASER");
             if (!p.inWeaponActivation) randomDropList.splice(i, 1);
             if (pindex == 0 && !player.inWeaponActivation) {
               weaponActivation.currentWord =
                 weaponActivation.wordList[
                   Math.floor(Math.random() * weaponActivation.wordList.length)
                 ];
+              weaponActivation.currentlyTyped = "";
               console.log(
                 `Trying to activate ${r.name} with word ${weaponActivation.currentWord}`
               );
@@ -232,9 +224,9 @@ function gameLoop() {
     });
     UI.game_render();
     dialogueList = dialogueList.filter(
-      index => index.ttl > 0 && index.opacity > 0
+      (index) => index.ttl > 0 && index.opacity > 0
     );
-    dialogueList.forEach(dia => {
+    dialogueList.forEach((dia) => {
       dia.update_render();
     });
   }

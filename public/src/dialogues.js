@@ -1,15 +1,16 @@
 var dialogueList = [];
-
 class Dialogue {
   constructor(
     startingIndex = 0,
     text = ">This is a very long text that#I just wrote but that's okay#cuz I'm the best.".split(
       ""
-    )
+    ),
+    color = "white"
   ) {
-    dialogueList.forEach(index => {
+    dialogueList.forEach((index) => {
       index.y -= 50 * screenratio;
-      index.opacity -= 0.2;
+      if (index.opacity >= 0.2) index.opacity -= 0.2;
+      else index.opacity = 0;
     });
     this.text = text;
     this.displayText = [""];
@@ -19,9 +20,12 @@ class Dialogue {
     this.opacity = 0.8;
     this.y = canvas.height - 150 * screenratio;
     this.leadingElement = true;
+    this.color = color;
   }
-  update_render = function() {
+  update_render = function () {
     this.ttl--;
+    if (this.ttl < 100 && this.opacity > 0)
+      this.opacity = Math.floor((this.opacity - 0.01) * 100) / 100;
     if (this.text[this.stringIndex] == "#" && this.leadingElement) {
       this.leadingElement = false;
       this.displayText.splice(this.displayText.length - 1, 1);
@@ -30,14 +34,14 @@ class Dialogue {
       this.typingSequence();
     }
     ctx.beginPath();
-    ctx.fillStyle = "white";
+    ctx.fillStyle = this.color;
     ctx.font = 40 * screenratio + "px Consolas";
     ctx.textAlign = "left";
     ctx.globalAlpha = this.opacity;
     ctx.fillText(this.displayText.join(""), 10, this.y);
     ctx.closePath();
   };
-  typingSequence = function() {
+  typingSequence = function () {
     if (this.stringIndex < this.text.length) {
       this.timeToType--;
       if (this.timeToType == 0) {

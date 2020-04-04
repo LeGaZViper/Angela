@@ -15,18 +15,20 @@ function chooseWeapon(name) {
 var weaponActivation = {
   currentIndex: 0,
   currentWord: "STRING",
+  currentlyTyped: "",
   wordList: [
     "hello",
     "hOnza",
     "PLEASEGIVEMEFOOD",
     "VERYLONGTEXT",
-    "windowsSUX"
+    "windowsSUX",
   ],
   lives: 3,
   weaponName: "DOUBLE",
-  checkInput: function(input) {
+  checkInput: function (input) {
     console.log(input);
     if (input == this.currentWord[this.currentIndex]) {
+      this.currentlyTyped += this.currentWord[this.currentIndex];
       this.currentIndex++;
       if (this.currentIndex == this.currentWord.length) {
         console.log("done!", this.weaponName);
@@ -44,7 +46,7 @@ var weaponActivation = {
       this.lives = 3;
       this.currentIndex = 0;
     }
-  }
+  },
 };
 
 var randomDropList = [];
@@ -61,13 +63,13 @@ function randomDrop(R) {
       R.name = weaponDatabase[index].name;
     }
   }
-  R.update = function() {
+  R.update = function () {
     R.x += -player.xspeed - camera.offSetX;
     R.y += -player.yspeed - camera.offSetY;
     R.hitBoxX = R.x - R.hitBoxWidth / 2;
     R.hitBoxY = R.y - R.hitBoxHeight / 2;
   };
-  R.render = function() {
+  R.render = function () {
     ctx.beginPath();
     try {
       ctx.drawImage(
@@ -103,6 +105,8 @@ function randomDrop(R) {
 //bullets
 var bulletList = [];
 function bullet(B, who, numberOfBullets) {
+  B.x = who.x + 25 * screenratio * Math.cos(who.angle - Math.PI / 2);
+  B.y = who.y + 25 * screenratio * Math.sin(who.angle - Math.PI / 2);
   B.ttl = 300;
   B.killed = false;
   B.name = who.weapon.name;
@@ -169,7 +173,7 @@ function bullet(B, who, numberOfBullets) {
   B.hitBoxHeight = (B.height / 3) * 2;
   B.hitBoxX = B.x - B.hitBoxWidth / 2;
   B.hitBoxY = B.y - B.hitBoxHeight / 2;
-  B.update = function() {
+  B.update = function () {
     if (who.weapon.name == "LASER") {
       let hitDetectionX = who.x;
       let hitDetectionY = who.y;
@@ -179,14 +183,14 @@ function bullet(B, who, numberOfBullets) {
       for (let i = 0; i < 200; i++) {
         hitDetectionX += B.dirx * ratio;
         hitDetectionY += B.diry * ratio;
-        enemyList.forEach(e => {
+        enemyList.forEach((e) => {
           if (
             !e.piercingCD &
             collides(e, {
               hitBoxX: hitDetectionX - 3,
               hitBoxY: hitDetectionY - 3,
               hitBoxWidth: 6,
-              hitBoxHeight: 6
+              hitBoxHeight: 6,
             })
           ) {
             e.piercingDamageCDstart();
@@ -210,7 +214,7 @@ function bullet(B, who, numberOfBullets) {
       B.calcTTL();
     }
   };
-  B.render = function() {
+  B.render = function () {
     if (who.weapon.name == "LASER") {
       ctx.beginPath();
       ctx.save();
@@ -249,16 +253,16 @@ function bullet(B, who, numberOfBullets) {
       ctx.closePath();
     }
   };
-  B.explode = function() {
+  B.explode = function () {
     B.explosion_triggered = true;
     B.speed = 0;
-    enemyList.forEach(e => {
+    enemyList.forEach((e) => {
       if (
         collides(e, {
           hitBoxX: B.x - B.explosion_radius / 2,
           hitBoxY: B.y - B.explosion_radius / 2,
           hitBoxWidth: B.explosion_radius,
-          hitBoxHeight: B.explosion_radius
+          hitBoxHeight: B.explosion_radius,
         })
       ) {
         e.HP -= B.damage;
@@ -267,7 +271,7 @@ function bullet(B, who, numberOfBullets) {
       }
     });
   };
-  B.explosion_render = function() {
+  B.explosion_render = function () {
     if (!B.killed) {
       B.explosion_countdown += 1;
       if (B.explosion_countdown % 5 == 0) {
@@ -296,7 +300,7 @@ function bullet(B, who, numberOfBullets) {
       if (B.explosion_index == 11) B.killed = true;
     }
   };
-  B.calcTTL = function() {
+  B.calcTTL = function () {
     if (B.ttl > 0) {
       B.ttl -= 1;
     } else {
