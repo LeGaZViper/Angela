@@ -32,6 +32,7 @@ var sprite = {
   UI_durationPanel: new Image(),
   UI_motherboard: new Image(),
   UI_motherboardMap: new Image(),
+  UI_motherboardFan: new Image(),
   UI_scout: new Image(),
   UI_slug: new Image(),
   UI_shopBG: new Image(),
@@ -39,7 +40,7 @@ var sprite = {
   UI_DOUBLE: new Image(),
   UI_SPRAY: new Image(),
   UI_ROCKET: new Image(),
-  UI_LASER: new Image()
+  UI_LASER: new Image(),
 };
 
 //Default database for ingame weapons | used in: first inicialization
@@ -55,7 +56,7 @@ var weaponDatabase = {
     cooldown: 150,
     duration: 0,
     color: "#DCE6EE",
-    status: "DEFAULT"
+    status: "DEFAULT",
   },
   DOUBLE: {
     index: 1,
@@ -68,7 +69,7 @@ var weaponDatabase = {
     cooldown: 150,
     duration: 600,
     color: "#DCE6EE",
-    status: "LOCKED"
+    status: "LOCKED",
   },
   SPRAY: {
     index: 2,
@@ -81,7 +82,7 @@ var weaponDatabase = {
     cooldown: 150,
     duration: 600,
     color: "#DCE6EE",
-    status: "LOCKED"
+    status: "LOCKED",
   },
   ROCKET: {
     index: 3,
@@ -93,7 +94,7 @@ var weaponDatabase = {
     height: 33,
     cooldown: 300,
     duration: 600,
-    status: "LOCKED"
+    status: "LOCKED",
   },
   GIANT: {
     index: 4,
@@ -108,7 +109,7 @@ var weaponDatabase = {
     piercing: true,
     hitCD: 500,
     color: "#DCE6EE",
-    status: "LOCKED"
+    status: "LOCKED",
   },
   SPREADER: {
     index: 5,
@@ -121,7 +122,7 @@ var weaponDatabase = {
     cooldown: 300,
     duration: 600,
     piercing: false,
-    status: "LOCKED"
+    status: "LOCKED",
   },
   SPREADER_PROJECTILE: {
     index: 99,
@@ -132,8 +133,8 @@ var weaponDatabase = {
     width: 7,
     height: 13,
     piercing: false,
-    status: "UNAVAILABLE"
-  }
+    status: "UNAVAILABLE",
+  },
   /* LASER: {
     index: 6,
     name: "LASER",
@@ -162,7 +163,7 @@ var defaultShip = {
   maxShield: [0, 1],
   maxHP: [10, 5],
   section: 1,
-  level: 1
+  level: 1,
 };
 
 var enemyDatabase;
@@ -181,7 +182,7 @@ function defineEnemyDatabase() {
       HP: 6,
       maxHP: 6,
       PARTS: 15,
-      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     buzz: {
       type: "buzz",
@@ -196,7 +197,7 @@ function defineEnemyDatabase() {
       HP: 6,
       maxHP: 6,
       PARTS: 15,
-      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     tooth: {
       type: "tooth",
@@ -211,7 +212,7 @@ function defineEnemyDatabase() {
       HP: 10,
       maxHP: 10,
       PARTS: 15,
-      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     sharkfin: {
       // 1 - sharkfin
@@ -229,7 +230,7 @@ function defineEnemyDatabase() {
       PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
-      particles: [10, 10 * screenratio, -12 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -12 * screenratio, 0, 0.1],
     },
     goblin: {
       // 2 - goblin
@@ -247,7 +248,7 @@ function defineEnemyDatabase() {
       PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
-      particles: [22, 22 * screenratio, -1 * screenratio, 0, 0.1]
+      particles: [22, 22 * screenratio, -1 * screenratio, 0, 0.1],
     },
     SG40: {
       // 2 - goblin
@@ -263,7 +264,7 @@ function defineEnemyDatabase() {
       HP: 10,
       maxHP: 10,
       PARTS: 10,
-      particles: [0, 0 * screenratio, 0 * screenratio, 0, 0]
+      particles: [0, 0 * screenratio, 0 * screenratio, 0, 0],
     },
     pirateRaider: {
       type: "pirateRaider",
@@ -282,7 +283,7 @@ function defineEnemyDatabase() {
       PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
-      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     pirateMineDropper: {
       type: "pirateMineDropper",
@@ -299,7 +300,7 @@ function defineEnemyDatabase() {
       PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship, 3 : particlesX add, 4 : particlesY add
-      particles: [10, 10 * screenratio, -6 * screenratio, 0, 0.1]
+      particles: [10, 10 * screenratio, -6 * screenratio, 0, 0.1],
     },
     pirateMine: {
       type: "pirateMine",
@@ -316,7 +317,7 @@ function defineEnemyDatabase() {
       PARTS: 0,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
-      particles: [0, 0 * screenratio, 0 * screenratio, 0, 0]
+      particles: [0, 0 * screenratio, 0 * screenratio, 0, 0],
     },
     pirateTiger: {
       type: "pirateTiger",
@@ -333,7 +334,7 @@ function defineEnemyDatabase() {
       PARTS: 0,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
-      particles: [18, 18 * screenratio, -13 * screenratio, 0, 0.1]
+      particles: [18, 18 * screenratio, -13 * screenratio, 0, 0.1],
     },
     pirateVessel: {
       type: "pirateVessel",
@@ -352,7 +353,7 @@ function defineEnemyDatabase() {
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [46, 46 * screenratio, -79 * screenratio, 0, 0.1],
       orbit: true,
-      inOrbit: false
+      inOrbit: false,
     },
     voidDrone: {
       type: "voidDrone",
@@ -369,7 +370,7 @@ function defineEnemyDatabase() {
       PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
-      particles: [0, 0 * screenratio, 0 * screenratio, 0]
+      particles: [0, 0 * screenratio, 0 * screenratio, 0],
     },
     voidChaser: {
       type: "voidChaser",
@@ -386,7 +387,7 @@ function defineEnemyDatabase() {
       PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
-      particles: [0, 0 * screenratio, 0 * screenratio, 0]
+      particles: [0, 0 * screenratio, 0 * screenratio, 0],
     },
     voidSphereFighter: {
       type: "voidSphereFighter",
@@ -406,7 +407,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0],
       animation: true,
       animationFrames: 8,
-      animationFPS: 5
+      animationFPS: 5,
     },
     voidChakram: {
       type: "voidChakram",
@@ -426,7 +427,7 @@ function defineEnemyDatabase() {
       particles: [0, 0 * screenratio, 0 * screenratio, 0],
       animation: true,
       animationFrames: 4,
-      animationFPS: 12
-    }
+      animationFPS: 12,
+    },
   };
 }

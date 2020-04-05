@@ -17,14 +17,12 @@ function gameLoop() {
   //menu sector
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    backgroundParticles.update();
-    backgroundParticles.render();
+    background.update_render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
     //getting into menu after win??? -- needs to be worked on
   } else if (levels_handler.level.total == 0) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    backgroundParticles.update();
-    backgroundParticles.render();
+    background.update_render();
     winTheGame();
     //game sector
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
@@ -34,8 +32,8 @@ function gameLoop() {
     camera.update();
     camera.check();
     player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
-    backgroundParticles.update();
-    backgroundParticles.render();
+    background.update_render();
+    backgroundParticles.update_render();
     if (multiplayer) {
       frame = false;
       player2.update();

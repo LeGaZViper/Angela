@@ -9,7 +9,7 @@ window.onload = () => {
 
 //Sleep function | used in: cooldowns
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 //collision; adjusted for translated objects
@@ -55,29 +55,29 @@ function inicializeGame() {
   }
   spawn();
   camera.inicialize();
-  backgroundParticles.set();
+  background.inicialize();
 }
 
 //Main Inicialization
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 function loadTheGame(callback) {
-  canvas.addEventListener("click", function() {
+  canvas.addEventListener("click", function () {
     UI.click();
   });
-  canvas.addEventListener("mousedown", function() {
+  canvas.addEventListener("mousedown", function () {
     userInput(event, 1);
   });
-  canvas.addEventListener("mouseup", function() {
+  canvas.addEventListener("mouseup", function () {
     userInput(event, 2);
   });
-  canvas.addEventListener("mousemove", function() {
+  canvas.addEventListener("mousemove", function () {
     userInput(event, 0);
   });
-  document.addEventListener("keydown", function() {
+  document.addEventListener("keydown", function () {
     userInput(event, 1);
   });
-  document.addEventListener("keyup", function() {
+  document.addEventListener("keyup", function () {
     userInput(event, 2);
   });
   //Setting path
@@ -97,7 +97,8 @@ function loadTheGame(callback) {
         ".png";
   }
   scale();
-  backgroundParticles.set();
+  background.inicialize();
+  backgroundParticles.inicialize();
   ship = JSON.parse(localStorage.ship);
   camera.inicialize();
   player.inicialize();
@@ -105,7 +106,7 @@ function loadTheGame(callback) {
   defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup
-  $("#canvas").bind("contextmenu", function() {
+  $("#canvas").bind("contextmenu", function () {
     return false;
   });
   callback();

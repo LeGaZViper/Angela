@@ -1,33 +1,5 @@
-var backgroundParticles = {
-  set: function() {
-    this.x1 = canvas.width / 2;
-    this.y1 = canvas.height / 2;
-
-    this.x2 = canvas.width / 2;
-    this.y2 = canvas.height / 2;
-  },
-  update: function() {
-    this.x1 += -(player.xspeed + camera.offSetX);
-    this.y1 += -(player.yspeed + camera.offSetY);
-    this.x2 += -(player.xspeed + camera.offSetX) / 10;
-    this.y2 += -(player.yspeed + camera.offSetY) / 10;
-  },
-  render: function() {
-    ctx.beginPath();
-    ctx.drawImage(
-      sprite.UI_motherboard,
-      this.x1 - 2000 * screenratio,
-      this.y1 - 2000 * screenratio,
-      4000 * screenratio,
-      4000 * screenratio
-    );
-    ctx.fill();
-    ctx.closePath();
-  }
-};
-
 var camera = {
-  inicialize: function() {
+  inicialize: function () {
     this.x = 0;
     this.y = 0;
     this.offSetX = 0;
@@ -39,7 +11,7 @@ var camera = {
     this.offSetStorageX = 0;
     this.offSetStorageY = 0;
   },
-  update: function() {
+  update: function () {
     let point = Math.atan2(
       yMousePos - canvas.height / 2,
       xMousePos - canvas.width / 2
@@ -57,14 +29,14 @@ var camera = {
     this.offSetXNew = this.x - canvas.width / 2;
     this.offSetYNew = this.y - canvas.height / 2;
   },
-  check: function() {
+  check: function () {
     this.offSetX =
       (Math.round((this.offSetXNew - this.offSetXOld) * 10) / 50) * screenratio;
     this.offSetXOld = this.offSetXNew;
     this.offSetY =
       (Math.round((this.offSetYNew - this.offSetYOld) * 10) / 50) * screenratio;
     this.offSetYOld = this.offSetYNew;
-  }
+  },
 };
 
 //player object
@@ -272,12 +244,12 @@ var player = {
   opacity: [1, 1],
   damageOpacity: [0, 0],
   blikacky: false,
-  attackCDstart: async function() {
+  attackCDstart: async function () {
     player.attackCD = true;
     await sleep(player.weapon.cooldown);
     player.attackCD = false;
   },
-  hitCDstart: async function(which, what) {
+  hitCDstart: async function (which, what) {
     if (which == 1) player.shieldCD = 300;
     player.damageOpacity[which] = 101 / 100;
     for (let i = 100; i >= 0; i--) {
@@ -289,7 +261,7 @@ var player = {
     if (which == 1 && what == "bullet") player.hitCD = false;
     else if (which == 1 && what == "collision") player.collisionCD = false;
   },
-  shieldRecharge: function() {
+  shieldRecharge: function () {
     if (player.shieldCD > 0) {
       player.shieldCD--;
     } else if (player.shield[1] < player.maxShield[1]) {
@@ -297,7 +269,7 @@ var player = {
       player.shield[1] += 1;
     }
   },
-  killedCDstart: async function() {
+  killedCDstart: async function () {
     //EXPLOSION
     player.opacity[1] = 0.5;
     player.killedCD = true;
@@ -306,11 +278,11 @@ var player = {
     player.opacity[1] = 1;
     player.killedCD = false;
     player.collisionCD = false;
-  }
+  },
 };
 
 var player2 = {
-  inicialize: function() {
+  inicialize: function () {
     this.x = canvas.width / 2;
     this.y = canvas.height / 2;
     this.xspeed = 0;
@@ -332,12 +304,12 @@ var player2 = {
     if (host) this.sprite = sprite.player_scout2;
     else this.sprite = sprite.player_scout;
   },
-  update: function() {
+  update: function () {
     this.x += this.xspeed - player.xspeed - camera.offSetX;
     this.y += this.yspeed - player.yspeed - camera.offSetY;
     this.particlesHeight = this.speed / 10 + 0.1;
   },
-  render: function() {
+  render: function () {
     ctx.beginPath();
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -367,9 +339,9 @@ var player2 = {
     ctx.restore();
     ctx.closePath();
   },
-  attackCDstart: async function() {
+  attackCDstart: async function () {
     this.attackCD = true;
     await sleep(this.weapon.cooldown);
     this.attackCD = false;
-  }
+  },
 };
