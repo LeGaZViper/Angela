@@ -683,9 +683,9 @@ var UI = {
     ctx.translate(xMousePos, yMousePos);
     ctx.rotate(this.cursorIndex);
     if (player.leftMouseDown)
-      ctx.drawImage(sprite.UI_cursorFire, -25, -25, 60, 60);
+      ctx.drawImage(sprite.UI_cursorFire, -30, -30, 60, 60);
     //cursor
-    else ctx.drawImage(sprite.UI_cursorNoFire, -25, -25, 60, 60); //cursor
+    else ctx.drawImage(sprite.UI_cursorNoFire, -30, -30, 60, 60); //cursor
     ctx.restore();
     if (this.cursorIndex == 6) {
       this.cursorIndex = 0;
