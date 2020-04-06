@@ -32,8 +32,9 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
-  xMousePos = canvas.width / 2;
-  yMousePos = canvas.height / 2;
+  xMousePos =
+    Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
+  yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   UI.levelDisplayCheck = true;
   dialogueList = [];
   bulletList = [];

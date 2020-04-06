@@ -23,7 +23,7 @@ var weaponActivation = {
     "VERYLONGTEXT",
     "windowsSUX",
   ],
-  lives: 3,
+  lives: 2,
   weaponName: "DOUBLE",
   checkInput: function (input) {
     console.log(input);
@@ -43,7 +43,7 @@ var weaponActivation = {
     } else {
       console.log("fail!");
       player.inWeaponActivation = false;
-      this.lives = 3;
+      this.lives = 2;
       this.currentIndex = 0;
     }
   },

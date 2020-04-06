@@ -42,7 +42,7 @@ function gameLoop() {
     }
     //render of the main objective
     ctx.drawImage(
-      sprite.UI_earth,
+      sprite.UI_motherboardAngela,
       0,
       0,
       250,
@@ -55,7 +55,7 @@ function gameLoop() {
     //damaged main objective
     ctx.globalAlpha = player.damageOpacity[0];
     ctx.drawImage(
-      sprite.UI_earth,
+      sprite.UI_motherboardAngela,
       0,
       250,
       250,
