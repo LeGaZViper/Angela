@@ -33,7 +33,7 @@ var weaponActivation = {
       if (this.currentIndex == this.currentWord.length) {
         console.log("done!", this.weaponName);
         player.inWeaponActivation = false;
-        this.lives = 3;
+        this.lives = 2;
         this.currentIndex = 0;
         chooseWeapon(this.weaponName);
       }
