@@ -1,7 +1,7 @@
 var background = {
   inicialize: function () {
     this.x1 = canvas.width / 2;
-    this.y1 = canvas.height / 2;
+    this.y1 = canvas.height / 2 - 50;
   },
   update_render: function () {
     this.x1 += -(player.xspeed + camera.offSetX);
@@ -23,8 +23,8 @@ var backgroundParticles = {
   inicialize: function () {
     this.fan1 = {
       type: "FAN",
-      x: canvas.width / 2 + 645 * screenratio,
-      y: canvas.height / 2 + 1362 * screenratio,
+      x: canvas.width / 2 + 643 * screenratio,
+      y: canvas.height / 2 + 1312 * screenratio,
       widthOnPic: 672,
       heightOnPic: 672,
       width: 672 * screenratio,
@@ -33,8 +33,8 @@ var backgroundParticles = {
     };
     this.fan2 = {
       type: "FAN",
-      x: canvas.width / 2 + 1372 * screenratio,
-      y: canvas.height / 2 + 1369 * screenratio,
+      x: canvas.width / 2 + 1370 * screenratio,
+      y: canvas.height / 2 + 1319 * screenratio,
       widthOnPic: 672,
       heightOnPic: 672,
       width: 672 * screenratio,
