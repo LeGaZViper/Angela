@@ -42,7 +42,7 @@ function inicializeGame() {
   enemyBulletList = [];
   randomDropList = [];
   weaponActivation.currentIndex = 0;
-  weaponActivation.lives = 3;
+  weaponActivation.lives = 2;
   canvas.style.cursor = "none";
   UI.inMenu = false;
   player.inicialize();
