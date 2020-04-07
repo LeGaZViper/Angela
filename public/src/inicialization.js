@@ -54,9 +54,10 @@ function inicializeGame() {
     enemySpawnList = [];
     levels_handler.levelCreator();
   }
+  background.inicialize();
+  backgroundParticles.inicialize();
   spawn();
   camera.inicialize();
-  background.inicialize();
 }
 
 //Main Inicialization

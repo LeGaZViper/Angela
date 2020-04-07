@@ -23,6 +23,7 @@ var backgroundParticles = {
   inicialize: function () {
     this.fan1 = {
       type: "FAN",
+      sprt: sprite.UI_motherboardFan,
       x: canvas.width / 2 + 643 * screenratio,
       y: canvas.height / 2 + 1312 * screenratio,
       widthOnPic: 672,
@@ -30,9 +31,15 @@ var backgroundParticles = {
       width: 672 * screenratio,
       height: 672 * screenratio,
       angle: 0,
+      animationX: 0,
+      animation: function () {
+        this.angle += 0.05;
+        if (this.angle > Math.PI * 2) this.angle = 0;
+      },
     };
     this.fan2 = {
       type: "FAN",
+      sprt: sprite.UI_motherboardFan,
       x: canvas.width / 2 + 1370 * screenratio,
       y: canvas.height / 2 + 1319 * screenratio,
       widthOnPic: 672,
@@ -40,13 +47,42 @@ var backgroundParticles = {
       width: 672 * screenratio,
       height: 672 * screenratio,
       angle: 0,
+      animationX: 0,
+      animation: function () {
+        this.angle += 0.05;
+        if (this.angle > Math.PI * 2) this.angle = 0;
+      },
     };
-    this.particlesList = [this.fan1, this.fan2];
+    this.angela = {
+      type: "ANGELA",
+      sprt: sprite.UI_motherboardAngela,
+      x: canvas.width / 2,
+      y: canvas.height / 2 - 50,
+      widthOnPic: 250,
+      heightOnPic: 250,
+      width: 250 * screenratio,
+      height: 250 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 15,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex == 240) {
+          this.timeIndex = 0;
+        }
+        if (this.timeIndex < 15) {
+          this.animationX =
+            (Math.floor(this.timeIndex / 2) + 1) * this.widthOnPic;
+        } else {
+          this.animationX = 0;
+        }
+      },
+    };
+    this.particlesList = [this.fan1, this.fan2, this.angela];
   },
   update_render: function () {
     this.particlesList.forEach((el) => {
-      if (el.type == "FAN") el.angle += 0.05;
-      if (el.angle > Math.PI * 2) el.angle = 0;
+      el.animation();
       el.x += -(player.xspeed + camera.offSetX);
       el.y += -(player.yspeed + camera.offSetY);
       ctx.beginPath();
@@ -54,8 +90,8 @@ var backgroundParticles = {
       ctx.translate(el.x, el.y);
       ctx.rotate(el.angle);
       ctx.drawImage(
-        sprite.UI_motherboardFan,
-        0,
+        el.sprt,
+        el.animationX,
         0,
         el.widthOnPic,
         el.heightOnPic,
@@ -64,8 +100,25 @@ var backgroundParticles = {
         el.width,
         el.height
       );
+      if (el.type == "ANGELA") {
+        //damaged main objective
+        ctx.globalAlpha = player.damageOpacity[0];
+        ctx.drawImage(
+          el.sprt,
+          el.animationX,
+          el.heightOnPic,
+          el.widthOnPic,
+          el.heightOnPic,
+          -el.width / 2,
+          -el.height / 2,
+          el.width,
+          el.height
+        );
+      }
       ctx.restore();
       ctx.closePath();
     });
+    this.angela.x = player.earthX;
+    this.angela.y = player.earthY;
   },
 };

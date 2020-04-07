@@ -699,7 +699,7 @@ var UI = {
       ctx.fillText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y); //text on screen
       ctx.globalAlpha = 1;
     }
-    ctx.globalAlpha = 0.5;
+    ctx.globalAlpha = 0.7;
     ctx.strokeStyle = this.minimapLayer.color[1];
     ctx.lineWidth = 3;
     ctx.strokeRect(
@@ -735,12 +735,23 @@ var UI = {
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
       if (!e.deathAnimation)
-        ctx.fillRect(
-          e.coordX / (player.spaceSize / (200 * screenratio)) - 2.5,
-          e.coordY / (player.spaceSize / (200 * screenratio)) - 2.5,
-          5,
-          5
-        );
+        if (e.behaviour == "chase") {
+          ctx.save();
+          ctx.translate(
+            e.coordX / (player.spaceSize / (200 * screenratio)),
+            e.coordY / (player.spaceSize / (200 * screenratio))
+          );
+          ctx.rotate(e.angle);
+          ctx.drawImage(sprite.UI_ignore, -3.5, -3.5, 7, 7);
+          ctx.restore();
+        } else {
+          ctx.fillRect(
+            e.coordX / (player.spaceSize / (200 * screenratio)) - 3.5,
+            e.coordY / (player.spaceSize / (200 * screenratio)) - 3.5,
+            7,
+            7
+          );
+        }
     });
 
     ctx.fillStyle = "#DCE6EE";
@@ -782,6 +793,12 @@ var UI = {
         canvas.height / 4
       );
     }
+    dialogueList = dialogueList.filter(
+      (index) => index.ttl > 0 && index.opacity > 0
+    );
+    dialogueList.forEach((dia) => {
+      dia.update_render();
+    });
     ctx.closePath();
   },
   click: function () {

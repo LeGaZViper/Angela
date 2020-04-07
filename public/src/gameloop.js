@@ -40,31 +40,6 @@ function gameLoop() {
       player2.render();
       sendPlayerData(new playerData());
     }
-    //render of the main objective
-    ctx.drawImage(
-      sprite.UI_motherboardAngela,
-      0,
-      0,
-      250,
-      250,
-      player.earthX - 125 * screenratio,
-      player.earthY - 125 * screenratio,
-      250 * screenratio,
-      250 * screenratio
-    );
-    //damaged main objective
-    ctx.globalAlpha = player.damageOpacity[0];
-    ctx.drawImage(
-      sprite.UI_motherboardAngela,
-      0,
-      250,
-      250,
-      250,
-      player.earthX - 125 * screenratio,
-      player.earthY - 125 * screenratio,
-      250 * screenratio,
-      250 * screenratio
-    );
     //game space borders
     ctx.globalAlpha = 1;
     ctx.strokeStyle = "red";
@@ -221,12 +196,6 @@ function gameLoop() {
       }
     });
     UI.game_render();
-    dialogueList = dialogueList.filter(
-      (index) => index.ttl > 0 && index.opacity > 0
-    );
-    dialogueList.forEach((dia) => {
-      dia.update_render();
-    });
   }
   //call for next iteration of gameLoop
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);

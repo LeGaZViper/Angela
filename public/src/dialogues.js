@@ -2,7 +2,7 @@ var dialogueList = [];
 class Dialogue {
   constructor(
     startingIndex = 0,
-    text = ">This is a very long text that#I just wrote but that's okay#cuz I'm the best.".split(
+    text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.".split(
       ""
     ),
     color = "white"

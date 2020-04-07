@@ -13,7 +13,7 @@ async function checkDeath(enemy, bulletName) {
           y: enemy.y,
           randomDrop: false,
           spawnCD: 0,
-          ...enemyDatabase["pirateMine"]
+          ...enemyDatabase["pirateMine"],
         })
       );
     }
@@ -25,7 +25,7 @@ async function checkDeath(enemy, bulletName) {
               x: enemy.x,
               y: enemy.y,
               dirx: Math.cos((Math.PI / 8) * i),
-              diry: Math.sin((Math.PI / 8) * i)
+              diry: Math.sin((Math.PI / 8) * i),
             },
             "SPREADER_PROJECTILE",
             1
@@ -65,7 +65,7 @@ function enemyBullet(B, type, target) {
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
-  B.update = function() {
+  B.update = function () {
     let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
     B.xspeed = ratio * B.dirx;
     B.yspeed = ratio * B.diry;
@@ -76,7 +76,7 @@ function enemyBullet(B, type, target) {
     B.hitBoxY = B.y - B.hitBoxHeight / 2;
     B.calcTTL();
   };
-  B.render = function() {
+  B.render = function () {
     ctx.beginPath();
     ctx.save();
     ctx.translate(B.x, B.y);
@@ -103,7 +103,7 @@ function enemyBullet(B, type, target) {
     ctx.stroke();
     ctx.closePath();
   };
-  B.calcTTL = function() {
+  B.calcTTL = function () {
     if (B.ttl > 0) {
       B.ttl -= 1;
     } else {
@@ -116,7 +116,7 @@ function enemyBullet(B, type, target) {
 var enemyList = [];
 function enemyCharacter(E) {
   E.appearOpacity = 0;
-  E.appear = async function() {
+  E.appear = async function () {
     for (let i = 1; i <= 100; i++) {
       E.appearOpacity = i / 100;
       await sleep(10);
@@ -148,7 +148,7 @@ function enemyCharacter(E) {
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   }
-  E.update = function() {
+  E.update = function () {
     if (E.appearOpacity == 0) E.appear();
     if (E.speed != 0 && E.particlesHeight < 1) {
       E.particlesWidth += E.particles[3];
@@ -212,7 +212,7 @@ function enemyCharacter(E) {
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
-  E.render = function() {
+  E.render = function () {
     let x1 = parseInt(-(E.HP / E.maxHP - 1) * 255).toString(16);
     let x2 = parseInt((E.HP / E.maxHP) * 255).toString(16);
     if (x1.length == 1) x1 = "0" + x1;
@@ -424,7 +424,7 @@ function enemyCharacter(E) {
     ctx.stroke();
     ctx.closePath();
   };
-  E.deathAnimation_render = function() {
+  E.deathAnimation_render = function () {
     E.x += -player.xspeed - camera.offSetX; //So that explosions won't move with the player
     E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
@@ -466,7 +466,7 @@ function enemyCharacter(E) {
   E.attackCD = false;
   E.piercingCD = false;
   E.opacity = 0;
-  E.attack = function() {
+  E.attack = function () {
     E.distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
     if (E.behaviour == "orbit") {
       if (E.distance < 500 * screenratio && !E.inOrbit) {
@@ -493,7 +493,7 @@ function enemyCharacter(E) {
         checkDeath(E, "BASIC");
       }
     } else if (E.behaviour == "ignore") {
-      if (E.distance < 140 * screenratio && !E.arrival) {
+      if (E.distance < 240 * screenratio && !E.arrival) {
         E.speed = 0;
         E.arrival = true;
         E.attackCDstart();
@@ -502,7 +502,7 @@ function enemyCharacter(E) {
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC", "none"));
       }
     } else if (E.behaviour == "chase") {
-      playerList.forEach(p => {
+      playerList.forEach((p) => {
         E.chaseDistance = Math.abs(p.x - E.x) + Math.abs(p.y - E.y);
         if (
           E.chaseDistance < 800 * screenratio &&
@@ -536,12 +536,12 @@ function enemyCharacter(E) {
       }
     }
   };
-  E.attackCDstart = async function() {
+  E.attackCDstart = async function () {
     E.attackCD = true;
     await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
-  E.hitCDstart = async function() {
+  E.hitCDstart = async function () {
     E.opacity = 0.51;
     for (let i = 50; i >= 0; i--) {
       if (E.opacity != (i + 1) / 100) {
@@ -552,13 +552,13 @@ function enemyCharacter(E) {
       }
     }
   };
-  E.piercingDamageCDstart = async function(cd) {
+  E.piercingDamageCDstart = async function (cd) {
     E.piercingCD = true;
     await sleep(cd);
     E.piercingCD = false;
   };
   E.randomDirCDcounter = 1;
-  E.randomDirCD = function() {
+  E.randomDirCD = function () {
     E.randomDirCDcounter -= 1;
     if (E.randomDirCDcounter === 0) {
       E.randomDirCDcounter = 120;
