@@ -28,6 +28,7 @@ var sprite = {
   UI_HPpanel: new Image(),
   UI_durationPanel: new Image(),
   UI_motherboard: new Image(),
+  UI_motherboardRay: new Image(),
   UI_motherboardAngela: new Image(),
   UI_motherboardMap: new Image(),
   UI_motherboardFan: new Image(),

@@ -2,11 +2,31 @@ var background = {
   inicialize: function () {
     this.x1 = canvas.width / 2;
     this.y1 = canvas.height / 2 - 50;
+    this.x2 = canvas.width / 2 - 2000 * screenratio;
+    this.y2 = canvas.height / 2 - 2000 * screenratio;
+    this.timeIndex = 0;
   },
   update_render: function () {
+    this.timeIndex++;
+    if (this.timeIndex == 0) {
+      this.y2 = player.earthY - 2000 * screenratio;
+      this.x2 = player.earthX - 2000 * screenratio;
+    } else {
+      this.x2 += -(player.xspeed + camera.offSetX);
+      this.y2 += 20 * screenratio - (player.yspeed + camera.offSetY);
+      ctx.drawImage(
+        sprite.UI_motherboardRay,
+        this.x2,
+        this.y2,
+        4000 * screenratio,
+        87 * screenratio
+      );
+    }
+    if (this.y2 > player.earthY + (2000 * screenratio - 87 * screenratio)) {
+      this.timeIndex = -1;
+    }
     this.x1 += -(player.xspeed + camera.offSetX);
     this.y1 += -(player.yspeed + camera.offSetY);
-    ctx.beginPath();
     ctx.drawImage(
       sprite.UI_motherboard,
       this.x1 - 2000 * screenratio,
@@ -14,8 +34,6 @@ var background = {
       4000 * screenratio,
       4000 * screenratio
     );
-    ctx.fill();
-    ctx.closePath();
   },
 };
 
