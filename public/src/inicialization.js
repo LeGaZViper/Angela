@@ -42,10 +42,10 @@ function inicializeGame() {
   enemyBulletList = [];
   randomDropList = [];
   weaponActivation.currentIndex = 0;
-  weaponActivation.lives = 2;
+  weaponActivation.lives = 3;
   canvas.style.cursor = "none";
   UI.inMenu = false;
-  player.inicialize();
+  player.inicialize(0, 50);
   playerList = [player];
   if (multiplayer) {
     player2.inicialize();
@@ -99,11 +99,11 @@ function loadTheGame(callback) {
         ".png";
   }
   scale();
+  ship = JSON.parse(localStorage.ship);
+  player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();
-  ship = JSON.parse(localStorage.ship);
   camera.inicialize();
-  player.inicialize();
   if (multiplayer) player2.inicialize();
   defineEnemyDatabase();
   UI.inicialize();

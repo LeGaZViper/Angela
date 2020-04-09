@@ -1,5 +1,4 @@
 //Check for total of enemies on the map | used in: win condition
-var PARTS = 0;
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     enemy.deathAnimation = true;
@@ -42,7 +41,6 @@ async function checkDeath(enemy, bulletName) {
     } else if (enemy.type != "pirateMine") {
       levels_handler.level.total -= 1;
     }
-    PARTS += enemy.PARTS;
   }
 }
 var enemyBulletList = [];
@@ -213,11 +211,9 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
   E.render = function () {
-    let x1 = parseInt(-(E.HP / E.maxHP - 1) * 255).toString(16);
-    let x2 = parseInt((E.HP / E.maxHP) * 255).toString(16);
-    if (x1.length == 1) x1 = "0" + x1;
-    if (x2.length == 1) x2 = "0" + x2;
-    let x = "#" + x1 + x2 + "00";
+    let colorHPbar_1 = parseInt(-(E.HP / E.maxHP - 1) * 255).toString(16);
+    if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
+    let colorHPbar = "#F1" + colorHPbar_1 + colorHPbar_1;
     if (E.animation) {
       E.animationIndex += 1;
       if (E.animationIndex == 60 / E.animationFPS) {
@@ -415,7 +411,7 @@ function enemyCharacter(E) {
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = "#606060";
     ctx.fillRect(E.x - 15, E.y - 25, 30, 5);
-    ctx.fillStyle = x;
+    ctx.fillStyle = colorHPbar;
     ctx.fillRect(E.x - 15, E.y - 25, (E.HP / E.maxHP) * 30, 5);
     ctx.strokeStyle = "#000000";
     ctx.globalAlpha = 1;

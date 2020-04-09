@@ -1,7 +1,7 @@
 var background = {
   inicialize: function () {
-    this.x1 = canvas.width / 2;
-    this.y1 = canvas.height / 2 - 50;
+    this.x1 = player.earthX;
+    this.y1 = player.earthY;
     this.x2 = canvas.width / 2 - 2000 * screenratio;
     this.y2 = canvas.height / 2 - 2000 * screenratio;
     this.timeIndex = 0;
@@ -13,7 +13,7 @@ var background = {
       this.x2 = player.earthX - 2000 * screenratio;
     } else {
       this.x2 += -(player.xspeed + camera.offSetX);
-      this.y2 += 20 * screenratio - (player.yspeed + camera.offSetY);
+      this.y2 += 15 * screenratio - (player.yspeed + camera.offSetY);
       ctx.drawImage(
         sprite.UI_motherboardRay,
         this.x2,
@@ -42,8 +42,8 @@ var backgroundParticles = {
     this.fan1 = {
       type: "FAN",
       sprt: sprite.UI_motherboardFan,
-      x: canvas.width / 2 + 643 * screenratio,
-      y: canvas.height / 2 + 1312 * screenratio,
+      x: player.earthX + 640 * screenratio,
+      y: player.earthY + 1360 * screenratio,
       widthOnPic: 672,
       heightOnPic: 672,
       width: 672 * screenratio,
@@ -58,8 +58,8 @@ var backgroundParticles = {
     this.fan2 = {
       type: "FAN",
       sprt: sprite.UI_motherboardFan,
-      x: canvas.width / 2 + 1370 * screenratio,
-      y: canvas.height / 2 + 1319 * screenratio,
+      x: player.earthX + 1370 * screenratio,
+      y: player.earthY + 1365 * screenratio,
       widthOnPic: 672,
       heightOnPic: 672,
       width: 672 * screenratio,
@@ -74,8 +74,8 @@ var backgroundParticles = {
     this.angela = {
       type: "ANGELA",
       sprt: sprite.UI_motherboardAngela,
-      x: canvas.width / 2,
-      y: canvas.height / 2 - 50,
+      x: player.earthX,
+      y: player.earthY,
       widthOnPic: 250,
       heightOnPic: 250,
       width: 250 * screenratio,

@@ -6,7 +6,6 @@ function chooseWeapon(name) {
       player.weaponDuration =
         player.weapon.duration +
         (player.weapon.duration * ship.weaponDuration) / 5;
-      saveLocalStorage();
       break;
     }
   }
@@ -14,7 +13,7 @@ function chooseWeapon(name) {
 
 var weaponActivation = {
   currentIndex: 0,
-  currentWord: "STRING",
+  currentWord: "",
   currentlyTyped: "",
   wordList: [
     "hello",
@@ -23,28 +22,69 @@ var weaponActivation = {
     "VERYLONGTEXT",
     "windowsSUX",
   ],
-  lives: 2,
+  lives: 3,
   weaponName: "DOUBLE",
+  failTimeIndex: 0,
   checkInput: function (input) {
-    console.log(input);
-    if (input == this.currentWord[this.currentIndex]) {
-      this.currentlyTyped += this.currentWord[this.currentIndex];
-      this.currentIndex++;
-      if (this.currentIndex == this.currentWord.length) {
-        console.log("done!", this.weaponName);
-        player.inWeaponActivation = false;
-        this.lives = 2;
-        this.currentIndex = 0;
-        chooseWeapon(this.weaponName);
+    if (this.failTimeIndex < 1) {
+      if (input == this.currentWord[this.currentIndex]) {
+        this.currentlyTyped += this.currentWord[this.currentIndex];
+        this.currentIndex++;
+        if (this.currentIndex == this.currentWord.length) {
+          player.inWeaponActivation = false;
+          this.lives = 3;
+          this.currentIndex = 0;
+          chooseWeapon(this.weaponName);
+        }
+      } else if (this.lives > 1) {
+        this.lives--;
+        this.failTimeIndex = 40;
+      } else {
+        this.lives--;
+        this.failTimeIndex = 120;
       }
-    } else if (this.lives > 0) {
-      this.lives--;
-      console.log("-1 life");
-    } else {
-      console.log("fail!");
-      player.inWeaponActivation = false;
-      this.lives = 2;
-      this.currentIndex = 0;
+    }
+  },
+  render_update: function () {
+    if (this.lives > 0) {
+      ctx.textAlign = "left";
+      ctx.font = 60 * screenratio + "px Consolas";
+      ctx.fillStyle = "red";
+      let width = ctx.measureText(this.currentWord).width;
+      ctx.fillText(
+        this.currentWord,
+        canvas.width / 2 - width / 2,
+        canvas.height / 4
+      );
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "white";
+      ctx.fillText(
+        this.currentlyTyped,
+        canvas.width / 2 - width / 2,
+        canvas.height / 4
+      );
+      ctx.textAlign = "center";
+      ctx.font = 50 * screenratio + "px Consolas";
+      ctx.fillText(`Lives: ${this.lives}`, canvas.width / 2, canvas.height / 6);
+    }
+    if (this.failTimeIndex > 0) {
+      this.failTimeIndex--;
+      if (this.lives > 0) {
+        ctx.fillStyle = "red";
+        ctx.globalAlpha = this.failTimeIndex / 120;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+      } else if (this.failTimeIndex == 1) {
+        player.inWeaponActivation = false;
+        this.lives = 3;
+        this.currentIndex = 0;
+      } else {
+        ctx.textAlign = "center";
+        ctx.fillStyle = "red";
+        ctx.font = 70 * screenratio + "px Consolas";
+        ctx.globalAlpha = 1;
+        ctx.fillText(`FAIL`, canvas.width / 2, canvas.height / 4);
+      }
     }
   },
 };

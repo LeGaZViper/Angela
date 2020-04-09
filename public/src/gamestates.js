@@ -25,7 +25,6 @@ function continueTheGame() {
 }
 
 function getMenu(menu) {
-  PARTS = 0;
   canvas.style.cursor = "auto";
   UI.inMenu = true;
   UI.currentMenu = menu;
@@ -34,16 +33,20 @@ function getMenu(menu) {
 //Lose the game function | used in: gameover
 function loseTheGame() {
   player.inWeaponActivation = false;
-  player.inicialize();
+  player.inicialize(0, 50);
   camera.inicialize();
+  background.inicialize();
+  backgroundParticles.inicialize();
   resetLocalStorage();
   getMenu(2);
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheGame() {
-  p.inWeaponActivation = false;
+  player.inWeaponActivation = false;
+  player.inicialize(0, 50);
   camera.inicialize();
-  localStorage.PARTS = parseInt(localStorage.PARTS) + PARTS;
+  background.inicialize();
+  backgroundParticles.inicialize();
   if (ship.level < 6) ship.level += 1;
   else {
     ship.level = 1;
@@ -58,7 +61,6 @@ function saveLocalStorage() {
 }
 
 function resetLocalStorage() {
-  localStorage.ship = JSON.stringify(defaultShip);
-  ship = defaultShip;
-  localStorage.PARTS = 0;
+  ship = new DefaultShip();
+  localStorage.ship = JSON.stringify(ship);
 }

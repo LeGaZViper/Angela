@@ -151,20 +151,23 @@ var weaponDatabase = {
     status: "LOCKED" 
   },*/
 };
-var defaultShip = {
-  name: "SCOUT",
-  speed: 10,
-  width: 75,
-  height: 75,
-  widthOnPic: 300,
-  heightOnPic: 300,
-  weaponDuration: 0,
-  particles: [22, 2, 30, 0, 0.05],
-  maxShield: [0, 1],
-  maxHP: [10, 5],
-  section: 1,
-  level: 1,
-};
+
+class DefaultShip {
+  constructor() {
+    this.name = "SCOUT";
+    this.speed = 10;
+    this.width = 75;
+    this.height = 75;
+    this.widthOnPic = 300;
+    this.heightOnPic = 300;
+    this.weaponDuration = 0;
+    this.particles = [22, 2, 30, 0, 0.05];
+    this.maxShield = [0, 1];
+    this.maxHP = [10, 5];
+    this.section = 1;
+    this.level = 1;
+  }
+}
 
 var enemyDatabase;
 function defineEnemyDatabase() {
@@ -181,7 +184,6 @@ function defineEnemyDatabase() {
       speed: 0 * screenratio,
       HP: 6,
       maxHP: 6,
-      PARTS: 15,
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     buzz: {
@@ -196,7 +198,6 @@ function defineEnemyDatabase() {
       speed: 2 * screenratio,
       HP: 6,
       maxHP: 6,
-      PARTS: 15,
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     tooth: {
@@ -211,7 +212,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 10,
       maxHP: 10,
-      PARTS: 15,
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
     },
     sharkfin: {
@@ -227,7 +227,6 @@ function defineEnemyDatabase() {
       speed: 3 * screenratio,
       HP: 3,
       maxHP: 3,
-      PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [10, 10 * screenratio, -12 * screenratio, 0, 0.1],
@@ -245,7 +244,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 10,
       maxHP: 10,
-      PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [22, 22 * screenratio, -1 * screenratio, 0, 0.1],
@@ -263,7 +261,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 10,
       maxHP: 10,
-      PARTS: 10,
       particles: [0, 0 * screenratio, 0 * screenratio, 0, 0],
     },
     pirateRaider: {
@@ -280,7 +277,6 @@ function defineEnemyDatabase() {
       defaultSpeed: 5 * screenratio,
       HP: 5,
       maxHP: 5,
-      PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
@@ -297,7 +293,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 15,
       maxHP: 15,
-      PARTS: 10,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship, 3 : particlesX add, 4 : particlesY add
       particles: [10, 10 * screenratio, -6 * screenratio, 0, 0.1],
@@ -314,7 +309,6 @@ function defineEnemyDatabase() {
       speed: 0.5 * screenratio,
       HP: 5,
       maxHP: 5,
-      PARTS: 0,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [0, 0 * screenratio, 0 * screenratio, 0, 0],
@@ -331,7 +325,6 @@ function defineEnemyDatabase() {
       speed: 2 * screenratio,
       HP: 5,
       maxHP: 5,
-      PARTS: 0,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [18, 18 * screenratio, -13 * screenratio, 0, 0.1],
@@ -348,7 +341,6 @@ function defineEnemyDatabase() {
       speed: 3 * screenratio,
       HP: 50,
       maxHP: 50,
-      PARTS: 0,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : heightOnCanvas, 2 : distance from ship
       particles: [46, 46 * screenratio, -79 * screenratio, 0, 0.1],
@@ -367,7 +359,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 2,
       maxHP: 2,
-      PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
       particles: [0, 0 * screenratio, 0 * screenratio, 0],
@@ -384,7 +375,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 7,
       maxHP: 7,
-      PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
       particles: [0, 0 * screenratio, 0 * screenratio, 0],
@@ -401,7 +391,6 @@ function defineEnemyDatabase() {
       speed: 1 * screenratio,
       HP: 20,
       maxHP: 20,
-      PARTS: 15,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
       particles: [0, 0 * screenratio, 0 * screenratio, 0],
@@ -421,7 +410,6 @@ function defineEnemyDatabase() {
       speed: 0.5 * screenratio,
       HP: 50,
       maxHP: 50,
-      PARTS: 50,
       //Custom thruster fire parameters
       //0 : heightOnPic, 1 : widthOnCanvas, 2 : YdistanceFromShip, 3 : heightOnCanvas
       particles: [0, 0 * screenratio, 0 * screenratio, 0],

@@ -43,16 +43,19 @@ var camera = {
 var ship;
 var playerList = [];
 var player = {
-  inicialize: () => {
+  inicialize: (starterX, starterY) => {
+    // in order to change player default pos one needs to change player.coord, player.earth, player.future accordingly
+    player.starterPosX = starterX * screenratio;
+    player.starterPosY = starterY * screenratio;
     player.spaceSize = 4000 * screenratio;
     player.x = canvas.width / 2;
     player.y = canvas.height / 2;
-    player.coordX = player.spaceSize / 2;
-    player.coordY = player.spaceSize / 2;
-    player.earthX = canvas.width / 2;
-    player.earthY = canvas.height / 2 - 50;
-    player.futureX = 0;
-    player.futureY = 0;
+    player.coordX = player.spaceSize / 2 + player.starterPosX;
+    player.coordY = player.spaceSize / 2 + player.starterPosY;
+    player.earthX = canvas.width / 2 - player.starterPosX;
+    player.earthY = canvas.height / 2 - player.starterPosY;
+    player.futureX = player.starterPosX;
+    player.futureY = player.starterPosY;
     player.acceleration = 0;
     player.speed = 0;
     player.xspeed = 0;
@@ -179,18 +182,6 @@ var player = {
     player.angle =
       Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2;
     ctx.rotate(player.angle);
-    //Normal Scout
-    /* ctx.drawImage(
-      player.sprite,
-      0,
-      player.heightOnPic,
-      player.widthOnPic,
-      player.particles[0],
-      (-player.width / 2) * player.particlesWidth,
-      player.height / 2 - player.particles[1] * screenratio,
-      player.width * player.particlesWidth,
-      player.particles[2] * screenratio * player.particlesHeight
-    ); */
     ctx.globalAlpha = player.opacity[1] - player.damageOpacity[1];
     ctx.drawImage(
       player.sprite,
@@ -206,18 +197,6 @@ var player = {
     //Damaged Scout #RED
     if (player.HP[1] > 0) {
       ctx.globalAlpha = player.damageOpacity[1];
-      /*
-      ctx.drawImage(
-        player.sprite,
-        0,
-        2 * player.heightOnPic + player.particles[0],
-        player.widthOnPic,
-        player.particles[0],
-        (-player.width / 2) * player.particlesWidth,
-        player.height / 2 - player.particles[1] * screenratio,
-        player.width * player.particlesWidth,
-        player.particles[2] * screenratio * player.particlesHeight
-      ); */
       ctx.drawImage(
         player.sprite,
         player.animationX,

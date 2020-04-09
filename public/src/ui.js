@@ -29,315 +29,13 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 - 150 * screenratio,
       y: canvas.height / 2 - 10 * screenratio,
-      text: "UPGRADES",
+      text: "MULTIPLAYER",
       textSize: 30 * screenratio,
-      button: "UPGRADES",
-      opacity: 1,
+      button: "MULTIPLAYER",
+      opacity: 0.5,
       color: ["grey", "black", "white"],
     };
     this.mainMenu = [this.mainMenu_b0, this.mainMenu_b1, this.mainMenu_b2];
-
-    this.upgradesMenu_PARTS = {
-      width: 250 * screenratio,
-      height: 75 * screenratio,
-      x: canvas.width / 2 + 200 * screenratio,
-      y: canvas.height / 2 - 370 * screenratio,
-      textSize: 30 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "black"],
-    };
-    this.upgradesMenu_b0 = {
-      width: 300 * screenratio,
-      height: 60 * screenratio,
-      x: canvas.width / 2 + 150 * screenratio,
-      y: canvas.height / 2 + 300 * screenratio,
-      text: "CONTINUE",
-      textSize: 30 * screenratio,
-      button: "CONTINUE",
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    //Ship
-    this.upgradesMenu_b1 = {
-      width: 264 * screenratio,
-      height: 264 * screenratio,
-      x: canvas.width / 2 + 150 * screenratio,
-      y: canvas.height / 2 - 150 * screenratio,
-      sprite: sprite.UI_scout,
-      color: ["grey", "black", "white"],
-      opacity: 1,
-    };
-
-    this.upgradesMenu_b2 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 - 195 * screenratio,
-      upgrade: ship.maxShield[1] - defaultShip.maxShield[1],
-      maxUpgrade: 5,
-      button: "maxShield",
-      text: 40,
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_b3 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 - 130 * screenratio,
-      upgrade: ship.maxHP[1] - defaultShip.maxHP[1],
-      maxUpgrade: 5,
-      button: "maxHP",
-      text: 0,
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_b4 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 - 66 * screenratio,
-      upgrade: ship.speed - defaultShip.speed,
-      maxUpgrade: 10,
-      button: "speed",
-      text: 0,
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_b5 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 - 1 * screenratio,
-      upgrade: player.weaponDuration - defaultShip.weaponDuration,
-      maxUpgrade: 5,
-      button: "weaponDuration",
-      text: 0,
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_b6 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 + 64 * screenratio,
-      upgrade: 0,
-      maxUpgrade: 0,
-      button: "E.SHIELDS",
-      text: "TBA",
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_b7 = {
-      width: 100 * screenratio,
-      height: 36 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 + 129 * screenratio,
-      upgrade: 0,
-      maxUpgrade: 0,
-      button: "E.WEAPONS",
-      text: "TBA",
-      textSize: 20 * screenratio,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-
-    this.upgradesMenu_t0 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 390 * screenratio,
-      y: canvas.height / 2 - 195 * screenratio,
-      text: "Shield",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t1 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 370 * screenratio,
-      y: canvas.height / 2 - 129 * screenratio,
-      text: "Health",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t2 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 390 * screenratio,
-      y: canvas.height / 2 - 65 * screenratio,
-      text: "Speed",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t3 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 390 * screenratio,
-      y: canvas.height / 2 - 1 * screenratio,
-      text: "W. Duration",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t4 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 390 * screenratio,
-      y: canvas.height / 2 + 64 * screenratio,
-      text: "E. Shields",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t5 = {
-      width: 75 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 390 * screenratio,
-      y: canvas.height / 2 + 129 * screenratio,
-      text: "E. Weapons",
-      textSize: 30 * screenratio,
-      textOnly: true,
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.upgradesMenu_t6 = {
-      width: 0 * screenratio,
-      height: 0 * screenratio,
-      x: canvas.width / 2,
-      y: canvas.height / 2 + 250 * screenratio,
-      opacity: 0,
-      text: "Insufficient parts!",
-      textOnly: true,
-      cooldown: 3000,
-      textSize: 35 * screenratio,
-      color: ["red", "red", "red"],
-    };
-
-    this.upgradesMenu_sl0 = {
-      width:
-        ((this.upgradesMenu_b2.upgrade * 190) /
-          this.upgradesMenu_b2.maxUpgrade) *
-        screenratio,
-      height: 35 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 - 194 * screenratio,
-      slider: "maxShield",
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-    this.upgradesMenu_sl1 = {
-      width:
-        ((this.upgradesMenu_b3.upgrade * 190) /
-          this.upgradesMenu_b3.maxUpgrade) *
-        screenratio,
-      height: 35 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 - 129 * screenratio,
-      slider: "maxHP",
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-    this.upgradesMenu_sl2 = {
-      width:
-        ((this.upgradesMenu_b4.upgrade * 190) /
-          this.upgradesMenu_b4.maxUpgrade) *
-        screenratio,
-      height: 35 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 - 65 * screenratio,
-      slider: "speed",
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-    this.upgradesMenu_sl3 = {
-      width:
-        ((this.upgradesMenu_b5.upgrade * 190) /
-          this.upgradesMenu_b5.maxUpgrade) *
-        screenratio,
-      height: 35 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 - 1 * screenratio,
-      slider: "weaponDuration",
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-    this.upgradesMenu_sl4 = {
-      width:
-        ((this.upgradesMenu_b6.upgrade * 190) /
-          this.upgradesMenu_b6.maxUpgrade) *
-        screenratio,
-      height: 35 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 + 65 * screenratio,
-      slider: true,
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-    this.upgradesMenu_sl5 = {
-      width: 190 * screenratio,
-      height: 38 * screenratio,
-      x: canvas.width / 2 - 217 * screenratio,
-      y: canvas.height / 2 + 130 * screenratio,
-      slider: true,
-      opacity: 1,
-      color: ["green", "green", "green"],
-    };
-
-    this.upgradesMenuWindow = {
-      width: 1000 * screenratio,
-      height: 800 * screenratio,
-      x: canvas.width / 2 - 500 * screenratio,
-      y: canvas.height / 2 - 400 * screenratio,
-      opacity: 0,
-      color: ["grey", "black", "white"],
-      sprite: sprite.UI_shopBG,
-    };
-    this.upgradesMenu = [
-      this.upgradesMenuWindow,
-      this.upgradesMenu_PARTS,
-      this.upgradesMenu_b0,
-      this.upgradesMenu_b1,
-      this.upgradesMenu_b2,
-      this.upgradesMenu_b3,
-      this.upgradesMenu_b4,
-      this.upgradesMenu_b5,
-      this.upgradesMenu_b6,
-      this.upgradesMenu_b7,
-      this.upgradesMenu_t0,
-      this.upgradesMenu_t1,
-      this.upgradesMenu_t2,
-      this.upgradesMenu_t3,
-      this.upgradesMenu_t4,
-      this.upgradesMenu_t5,
-      this.upgradesMenu_t6,
-      this.upgradesMenu_sl0,
-      this.upgradesMenu_sl1,
-      this.upgradesMenu_sl2,
-      this.upgradesMenu_sl3,
-      this.upgradesMenu_sl4,
-      this.upgradesMenu_sl5,
-    ];
-    this.upgradesMenu_sliders = [
-      this.upgradesMenu_sl0,
-      this.upgradesMenu_sl1,
-      this.upgradesMenu_sl2,
-      this.upgradesMenu_sl3,
-      this.upgradesMenu_sl4,
-      this.upgradesMenu_sl5,
-    ];
 
     this.gameOverMenuWindow = {
       width: 550 * screenratio,
@@ -347,7 +45,7 @@ var UI = {
       text: "GAME OVER",
       textSize: 30 * screenratio,
       opacity: 1,
-      color: ["#4C4C4C", "black", "black"],
+      color: ["#4C4C4C", "black", "white"],
     };
     this.gameOverMenu_b0 = {
       width: 250 * screenratio,
@@ -358,7 +56,7 @@ var UI = {
       textSize: 30 * screenratio,
       button: "RESTART",
       opacity: 1,
-      color: ["grey", "black", "black"],
+      color: ["grey", "black", "white"],
     };
     this.gameOverMenu_b1 = {
       width: 250 * screenratio,
@@ -369,7 +67,7 @@ var UI = {
       textSize: 30 * screenratio,
       button: "BACK",
       opacity: 1,
-      color: ["grey", "black", "black"],
+      color: ["grey", "black", "white"],
     };
     this.gameOverMenu = [
       this.gameOverMenuWindow,
@@ -385,7 +83,7 @@ var UI = {
       text: "YOU WIN!",
       textSize: 30 * screenratio,
       opacity: 1,
-      color: ["#4C4C4C", "black", "black"],
+      color: ["#4C4C4C", "black", "white"],
     };
     this.youWinMenu_b0 = {
       width: 250 * screenratio,
@@ -396,7 +94,7 @@ var UI = {
       textSize: 30 * screenratio,
       button: "UPGRADES",
       opacity: 1,
-      color: ["grey", "black", "black"],
+      color: ["grey", "black", "white"],
     };
     this.youWinMenu_b1 = {
       width: 250 * screenratio,
@@ -407,7 +105,7 @@ var UI = {
       textSize: 30 * screenratio,
       button: "CONTINUE",
       opacity: 1,
-      color: ["grey", "black", "black"],
+      color: ["grey", "black", "white"],
     };
     this.youWinMenu = [
       this.youWinMenuWindow,
@@ -480,14 +178,13 @@ var UI = {
     };
     this.menuList = [
       this.mainMenu,
-      this.upgradesMenu,
+      this.multiplayerMenu,
       this.gameOverMenu,
       this.youWinMenu,
     ];
     this.cursorIndex = 0;
   },
   menu_render: function (menu) {
-    this.upgradesMenu_PARTS.text = "Parts: " + localStorage.PARTS;
     this.hover();
     if (ship.section > 1 || ship.level > 1) {
       this.mainMenu_b1.opacity = 1;
@@ -776,22 +473,7 @@ var UI = {
       5
     );
     if (player.inWeaponActivation) {
-      ctx.textAlign = "left";
-      ctx.font = 60 * screenratio + "px Consolas";
-      ctx.fillStyle = "white";
-      let width = ctx.measureText(weaponActivation.currentWord).width;
-      ctx.fillText(
-        weaponActivation.currentWord,
-        canvas.width / 2 - width / 2,
-        canvas.height / 4
-      );
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = "red";
-      ctx.fillText(
-        weaponActivation.currentlyTyped,
-        canvas.width / 2 - width / 2,
-        canvas.height / 4
-      );
+      weaponActivation.render_update();
     }
     dialogueList = dialogueList.filter(
       (index) => index.ttl > 0 && index.opacity > 0
@@ -825,58 +507,7 @@ var UI = {
         }
       });
     } else if (this.currentMenu == 1 && this.inMenu) {
-      this.upgradesMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          if (index.button == "CONTINUE") {
-            if (ship.section > 1 || ship.level > 1) {
-              continueTheGame();
-            }
-          } else {
-            if (
-              parseInt(localStorage.PARTS) >= index.text &&
-              index.maxUpgrade > index.upgrade
-            ) {
-              UI.upgradesMenu_t6.opacity = 0;
-              localStorage.PARTS = parseInt(localStorage.PARTS) - index.text;
-              index.upgrade++;
-              if (index.button == "maxHP" || index.button == "maxShield") {
-                ship[index.button][1] += 1;
-                this.upgradesMenu_sliders.forEach((slider) => {
-                  if (slider.slider == index.button) {
-                    slider.width =
-                      (((ship[index.button][1] - defaultShip[index.button][1]) *
-                        190) /
-                        index.maxUpgrade) *
-                      screenratio;
-                  }
-                });
-              } else {
-                ship[index.button] += 1;
-                this.upgradesMenu_sliders.forEach((slider) => {
-                  if (slider.slider == index.button) {
-                    slider.width =
-                      (((ship[index.button] - defaultShip[index.button]) *
-                        190) /
-                        index.maxUpgrade) *
-                      screenratio;
-                  }
-                });
-              }
-              saveLocalStorage();
-            } else if (parseInt(localStorage.PARTS) < index.text) {
-              this.cooldown(UI.upgradesMenu_t6);
-            }
-          }
-        }
-      });
+      //multiplayer
     } else if (this.currentMenu == 2 && this.inMenu) {
       this.gameOverMenu.forEach((index) => {
         if (
@@ -946,35 +577,7 @@ var UI = {
         }
       });
     } else if (this.currentMenu == 1) {
-      this.upgradesMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          index.color[0] = this.UIColors.hoverFill;
-          index.color[1] = this.UIColors.hoverStroke;
-          index.color[2] = this.UIColors.hoverFontFill;
-        } else if (index.slider == undefined) {
-          if (index.text == "Insufficient parts!") {
-            index.color[0] = "red";
-            index.color[1] = "black";
-            index.color[2] = "red";
-          } else {
-            index.color[0] = this.UIColors.fill;
-            index.color[1] = this.UIColors.stroke;
-            index.color[2] = this.UIColors.fontFill;
-          }
-        } else {
-          index.color[0] = this.UIColors.sliderFill;
-          index.color[1] = this.UIColors.sliderStroke;
-          index.color[2] = this.UIColors.slider;
-        }
-      });
+      //multiplayer
     } else if (this.currentMenu == 2) {
       this.gameOverMenu.forEach((index) => {
         if (
