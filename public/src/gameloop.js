@@ -189,6 +189,7 @@ function gameLoop() {
                 `Trying to activate ${r.name} with word ${weaponActivation.currentWord}`
               );
               p.inWeaponActivation = true;
+              weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
               weaponActivation.weaponName = r.name;
             }
           }

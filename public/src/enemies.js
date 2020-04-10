@@ -211,9 +211,9 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
   E.render = function () {
-    let colorHPbar_1 = parseInt(-(E.HP / E.maxHP - 1) * 255).toString(16);
-    if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
-    let colorHPbar = "#F1" + colorHPbar_1 + colorHPbar_1;
+    //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
+    //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
+    let colorHPbar = "red";
     if (E.animation) {
       E.animationIndex += 1;
       if (E.animationIndex == 60 / E.animationFPS) {
