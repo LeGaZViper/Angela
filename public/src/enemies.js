@@ -120,7 +120,6 @@ function enemyCharacter(E) {
       await sleep(10);
     }
   };
-  E.animation = false;
   E.attackCDvalue = 2000;
   E.coordX = player.spaceSize / 2 + E.x - player.earthX;
   E.coordY = player.spaceSize / 2 + E.y - player.earthY;
@@ -211,9 +210,6 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
   E.render = function () {
-    //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
-    //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
-    let colorHPbar = "red";
     if (E.animation) {
       E.animationIndex += 1;
       if (E.animationIndex == 60 / E.animationFPS) {
@@ -408,15 +404,18 @@ function enemyCharacter(E) {
       }
       ctx.restore();
     }
-    ctx.globalAlpha = 0.4;
+    //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
+    //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
+    let colorHPbar = "white";
+    ctx.globalAlpha = 0.8;
     ctx.fillStyle = "#606060";
-    ctx.fillRect(E.x - 15, E.y - 25, 30, 5);
+    ctx.fillRect(E.x - 15, E.y + E.height / 2, 30, 5);
     ctx.fillStyle = colorHPbar;
-    ctx.fillRect(E.x - 15, E.y - 25, (E.HP / E.maxHP) * 30, 5);
+    ctx.fillRect(E.x - 15, E.y + E.height / 2, (E.HP / E.maxHP) * 30, 5);
     ctx.strokeStyle = "#000000";
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1;
-    ctx.strokeRect(E.x - 15, E.y - 25, 30, 5);
+    ctx.strokeRect(E.x - 15, E.y + E.height / 2, 30, 5);
     ctx.stroke();
     ctx.closePath();
   };

@@ -1,5 +1,6 @@
 //List of spritemaps (might use only one in the final version) | used in: rendering
 var sprite = {
+  enemy_cube: new Image(),
   enemy_goblin: new Image(),
   enemy_tooth: new Image(),
   enemy_buzz: new Image(),
@@ -185,6 +186,24 @@ function defineEnemyDatabase() {
       HP: 6,
       maxHP: 6,
       particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
+    },
+    cube: {
+      type: "cube",
+      chaseDistance: Infinity,
+      behaviour: "chase",
+      sprite: sprite.enemy_cube,
+      widthOnPic: 300,
+      heightOnPic: 300,
+      width: 60 * screenratio,
+      height: 60 * screenratio,
+      speed: 5 * screenratio,
+      defaultSpeed: 5 * screenratio,
+      HP: 6,
+      maxHP: 6,
+      particles: [0, 0, 0, 0, 0],
+      animation: true,
+      animationFrames: 5,
+      animationFPS: 12,
     },
     buzz: {
       type: "buzz",

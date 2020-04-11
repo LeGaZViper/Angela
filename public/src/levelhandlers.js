@@ -77,7 +77,7 @@ var levels_handler = {
 function levelLayout(L) {
   if (ship.section == 1) {
     //  L.pirateRaider = [25 + ship.level, 500];
-    L.pirateRaider = [5 + ship.level, 1];
+    L.cube = [5 + ship.level, 1];
     L.pirateTiger = [1, 1];
     L.test = [5, 1];
     if (ship.level > 2) {
