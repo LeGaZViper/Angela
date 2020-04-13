@@ -23,17 +23,21 @@ async function userInput(event, which) {
     } else if (event.which == 3) rightMouseDown = false;
     else if (event.which == 122) {
       if (!document.fullscreenElement) {
-        canvas.requestFullscreen().catch(err => {
+        canvas.requestFullscreen().catch((err) => {
           console.log(err);
         });
       } else document.exitFullscreen();
-    } else if (player.inWeaponActivation && event.which != 16) {
+    } else if (
+      player.inWeaponActivation &&
+      event.which != 16 &&
+      event.which != 20
+    ) {
       weaponActivation.checkInput(event.key);
     }
   }
 }
 
-document.onfullscreenchange = function() {
+document.onfullscreenchange = function () {
   scale();
   UI.inicialize();
 };

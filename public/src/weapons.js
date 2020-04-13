@@ -36,9 +36,6 @@ var weaponActivation = {
         this.currentlyTyped += this.currentWord[this.currentIndex];
         this.currentIndex++;
         if (this.currentIndex == this.currentWord.length) {
-          player.inWeaponActivation = false;
-          this.lives = 3;
-          this.currentIndex = 0;
           this.successTimeIndex = 120;
           chooseWeapon(this.weaponName);
         }
@@ -57,7 +54,7 @@ var weaponActivation = {
       this.failTimeIndex = 120;
       this.lives = 0;
     }
-    if (this.lives > 0) {
+    if (this.lives > 0 && this.successTimeIndex == 0) {
       ctx.globalAlpha = 1;
       ctx.textAlign = "center";
       ctx.font = 50 * screenratio + "px Consolas";
@@ -132,6 +129,20 @@ var weaponActivation = {
   },
   success_render: function () {
     this.successTimeIndex--;
+    ctx.fillStyle = "white";
+    ctx.globalAlpha = this.successTimeIndex / (2 * this.defaultTimerIndex);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    ctx.font = 70 * screenratio + "px Consolas";
+    ctx.globalAlpha = 1;
+    ctx.fillText(`SUCCESS`, canvas.width / 2, canvas.height / 4);
+    if (this.successTimeIndex == 0) {
+      player.inWeaponActivation = false;
+      this.lives = 3;
+      this.currentIndex = 0;
+    }
   },
 };
 

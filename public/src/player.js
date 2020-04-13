@@ -84,8 +84,8 @@ var player = {
     player.hitBoxY = player.y - player.hitBoxHeight / 2;
     player.animationX = 0;
     player.animationIndex = 0;
-    player.animationFrames = 12;
-    player.animationFPS = 6;
+    player.animationFrames = 9;
+    player.animationFPS = 5;
     if (host || !multiplayer)
       player.sprite = sprite["player_" + ship.name.toLowerCase()];
     else player.sprite = sprite.player_scout2;
