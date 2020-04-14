@@ -375,7 +375,12 @@ var UI = {
       this.HPpanel.width,
       this.HPpanel.height
     );
-    this.cursorIndex += 0.001 * player.acceleration + 0.02;
+    this.cursorIndex +=
+      0.001 *
+        Math.sqrt(
+          Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)
+        ) +
+      0.02;
     ctx.save();
     ctx.translate(xMousePos, yMousePos);
     ctx.rotate(this.cursorIndex);

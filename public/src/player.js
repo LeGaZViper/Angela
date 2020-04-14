@@ -17,13 +17,11 @@ var camera = {
       xMousePos - canvas.width / 2
     );
     let distance =
-      (2 *
-        (Math.sqrt(
-          Math.pow(xMousePos - canvas.width / 2, 2) +
-            Math.pow(yMousePos - canvas.height / 2, 2)
-        ) *
-          player.acceleration)) /
-      100;
+      2 *
+      Math.sqrt(
+        Math.pow(xMousePos - canvas.width / 2, 2) +
+          Math.pow(yMousePos - canvas.height / 2, 2)
+      );
     this.x = distance * Math.cos(point) + canvas.width / 2;
     this.y = distance * Math.sin(point) + canvas.height / 2;
     this.offSetXNew = this.x - canvas.width / 2;
@@ -56,7 +54,8 @@ var player = {
     player.earthY = canvas.height / 2 - player.starterPosY;
     player.futureX = player.starterPosX;
     player.futureY = player.starterPosY;
-    player.acceleration = 0;
+    player.accelerationX = 0;
+    player.accelerationY = 0;
     player.speed = 0;
     player.xspeed = 0;
     player.yspeed = 0;
@@ -101,24 +100,43 @@ var player = {
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
-    if (distance > 300 * screenratio) {
-      if (player.acceleration < 100 && !rightMouseDown)
-        if (player.acceleration <= 97) player.acceleration += 3;
-        else player.acceleration += 1;
-    } else if (distance < 170 * screenratio && player.acceleration > 0) {
-      if (player.acceleration >= 3) player.acceleration -= 3;
-      else player.acceleration -= 1;
-    } else if (distance < 300 * screenratio && distance > 170 * screenratio) {
-      if (player.acceleration < 50) player.acceleration += 1;
-      else if (player.acceleration > 0) player.acceleration -= 1;
-    }
-
     if (!player.collisionCD) player.shieldRecharge();
-    if (rightMouseDown && player.acceleration > 0) {
-      if (player.acceleration >= 3) player.acceleration -= 3;
-      else player.acceleration -= 1;
+
+    if (!rightMouseDown) {
+      var speedIndexX = xMousePos - player.x > 0 ? 1 : -1;
+      var speedIndexY = yMousePos - player.y > 0 ? 1 : -1;
     }
-    player.speed = ((ship.speed * player.acceleration) / 100) * screenratio;
+    if (distance < 150 * screenratio && !rightMouseDown) {
+      if (player.accelerationX > 0) {
+        player.accelerationX += -1;
+      } else if (player.accelerationX < 0) {
+        player.accelerationX += 1;
+      }
+      if (player.accelerationY > 0) {
+        player.accelerationY += -1;
+      } else if (player.accelerationY < 0) {
+        player.accelerationY += 1;
+      }
+    } else if (!rightMouseDown) {
+      if (player.accelerationX * speedIndexX < 95)
+        player.accelerationX += 5 * speedIndexX;
+      else player.accelerationX = 100 * speedIndexX;
+      if (player.accelerationY * speedIndexY < 95)
+        player.accelerationY += 5 * speedIndexY;
+      else player.accelerationY = 100 * speedIndexY;
+    } else {
+      if (player.accelerationX > 0) {
+        player.accelerationX += -0.5;
+      } else if (player.accelerationX < 0) {
+        player.accelerationX += 0.5;
+      }
+      if (player.accelerationY > 0) {
+        player.accelerationY += -0.5;
+      } else if (player.accelerationY < 0) {
+        player.accelerationY += 0.5;
+      }
+    }
+    player.speed = ship.speed * screenratio;
     let ratio =
       player.speed /
       (Math.abs(xMousePos - canvas.width / 2) +
@@ -133,8 +151,13 @@ var player = {
       player.killedCDstart();
     } else if (!isNaN(ratio)) {
       //player positioner
-      player.xspeed = ratio * (xMousePos - player.x);
-      player.yspeed = ratio * (yMousePos - player.y);
+      if (!rightMouseDown) {
+        player.previousDirX = Math.abs(ratio * (xMousePos - player.x));
+        player.previousDirY = Math.abs(ratio * (yMousePos - player.y));
+      }
+      player.xspeed = (player.previousDirX * player.accelerationX) / 100;
+      player.yspeed = (player.previousDirY * player.accelerationY) / 100;
+      console.log(player.xspeed, player.yspeed);
       player.futureX += player.xspeed;
       player.futureY += player.yspeed;
       if (
@@ -153,20 +176,26 @@ var player = {
         player.speed = 0;
         player.xspeed = 0;
         player.yspeed = 0;
+        player.accelerationX = 0;
+        player.accelerationY = 0;
       }
     }
     player.earthX -= camera.offSetX;
     player.earthY -= camera.offSetY;
     player.x -= camera.offSetX;
     player.y -= camera.offSetY;
-
-    //New thruster sprite control
-    player.particlesHeight = player.acceleration / 100 + 0.1;
   },
   render: () => {
     player.animationIndex += 1;
     let nextIndex = Math.floor(
-      60 / (player.animationFPS + (player.acceleration * 2) / 10)
+      60 /
+        (player.animationFPS +
+          (Math.sqrt(
+            Math.pow(player.accelerationX, 2) +
+              Math.pow(player.accelerationY, 2)
+          ) *
+            2) /
+            10)
     );
     if (player.animationIndex == nextIndex) {
       player.animationIndex = 0;
