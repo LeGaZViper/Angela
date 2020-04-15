@@ -137,7 +137,11 @@ function gameLoop() {
               collides(e, player) &&
               player.HP[1] > 0
             ) {
-              //player colision
+              //player collision
+              if (e.HP > 0) {
+                e.HP--;
+                e.hitCDstart();
+              } else e.killed = true;
               if (player.shield[1] > 0) player.shield[1] -= 1;
               else player.HP[1] -= 1;
               player.collisionCD = true;

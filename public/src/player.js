@@ -117,6 +117,17 @@ var player = {
       } else if (player.accelerationY < 0) {
         player.accelerationY += 1;
       }
+    } else if (
+      distance >= 150 * screenratio &&
+      distance <= 200 * screenratio &&
+      !rightMouseDown
+    ) {
+      if (player.accelerationX * speedIndexX < 48)
+        player.accelerationX += 2 * speedIndexX;
+      else player.accelerationX = 50 * speedIndexX;
+      if (player.accelerationY * speedIndexY < 48)
+        player.accelerationY += 2 * speedIndexY;
+      else player.accelerationY = 50 * speedIndexY;
     } else if (!rightMouseDown) {
       if (player.accelerationX * speedIndexX < 95)
         player.accelerationX += 5 * speedIndexX;
@@ -126,14 +137,14 @@ var player = {
       else player.accelerationY = 100 * speedIndexY;
     } else {
       if (player.accelerationX > 0) {
-        player.accelerationX += -0.5;
+        player.accelerationX = 100;
       } else if (player.accelerationX < 0) {
-        player.accelerationX += 0.5;
+        player.accelerationX = -100;
       }
       if (player.accelerationY > 0) {
-        player.accelerationY += -0.5;
+        player.accelerationY = 100;
       } else if (player.accelerationY < 0) {
-        player.accelerationY += 0.5;
+        player.accelerationY = -100;
       }
     }
     player.speed = ship.speed * screenratio;
@@ -157,7 +168,6 @@ var player = {
       }
       player.xspeed = (player.previousDirX * player.accelerationX) / 100;
       player.yspeed = (player.previousDirY * player.accelerationY) / 100;
-      console.log(player.xspeed, player.yspeed);
       player.futureX += player.xspeed;
       player.futureY += player.yspeed;
       if (
@@ -186,16 +196,12 @@ var player = {
     player.y -= camera.offSetY;
   },
   render: () => {
+    console.log(Math.abs(player.xspeed) + Math.abs(player.yspeed));
     player.animationIndex += 1;
     let nextIndex = Math.floor(
       60 /
         (player.animationFPS +
-          (Math.sqrt(
-            Math.pow(player.accelerationX, 2) +
-              Math.pow(player.accelerationY, 2)
-          ) *
-            2) /
-            10)
+          (Math.abs(player.xspeed) + Math.abs(player.yspeed)) * 3)
     );
     if (player.animationIndex == nextIndex) {
       player.animationIndex = 0;
