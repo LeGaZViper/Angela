@@ -154,45 +154,41 @@ function randomDrop(R) {
   R.hitBoxHeight = (R.height / 3) * 2;
   R.hitBoxX = R.x - R.hitBoxWidth / 2;
   R.hitBoxY = R.y - R.hitBoxHeight / 2;
-  let choose = Math.floor(Math.random() * 5) + 1;
-  for (let index in weaponDatabase) {
-    if (choose == weaponDatabase[index].index) {
-      R.name = weaponDatabase[index].name;
-    }
-  }
+  R.animationX = 0;
+  R.animationIndex = 0;
+  R.timeIndex = 0;
   R.update = function () {
     R.x += -player.xspeed - camera.offSetX;
     R.y += -player.yspeed - camera.offSetY;
     R.hitBoxX = R.x - R.hitBoxWidth / 2;
     R.hitBoxY = R.y - R.hitBoxHeight / 2;
+    R.timeIndex++;
+    R.animationIndex++;
+
+    if (R.timeIndex == 200) {
+      R.timeIndex = 0;
+      R.animationIndex = 0;
+    }
+    if (R.timeIndex < 50 && R.animationIndex == 10) {
+      R.animationX += 150;
+      R.animationIndex = 0;
+    } else if (R.timeIndex >= 50) {
+      R.animationX = 0;
+    }
   };
   R.render = function () {
     ctx.beginPath();
-    try {
-      ctx.drawImage(
-        sprite["UI_" + R.name],
-        0,
-        100,
-        100,
-        100,
-        R.x - R.width / 2,
-        R.y - R.height / 2,
-        R.width,
-        R.height
-      );
-    } catch (error) {
-      ctx.drawImage(
-        sprite["UI_" + "DOUBLE"],
-        0,
-        100,
-        100,
-        100,
-        R.x - R.width / 2,
-        R.y - R.height / 2,
-        R.width,
-        R.height
-      );
-    }
+    ctx.drawImage(
+      sprite.UI_drop,
+      R.animationX,
+      0,
+      150,
+      150,
+      R.x - R.width / 2,
+      R.y - R.height / 2,
+      R.width,
+      R.height
+    );
     ctx.stroke();
     ctx.closePath();
   };

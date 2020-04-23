@@ -37,11 +37,7 @@ var sprite = {
   UI_scout: new Image(),
   UI_slug: new Image(),
   UI_shopBG: new Image(),
-  UI_BASIC: new Image(),
-  UI_DOUBLE: new Image(),
-  UI_SPRAY: new Image(),
-  UI_ROCKET: new Image(),
-  UI_LASER: new Image(),
+  UI_drop: new Image(),
 };
 
 //Default database for ingame weapons | used in: first inicialization

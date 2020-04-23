@@ -135,7 +135,7 @@ var player = {
       if (player.accelerationY * speedIndexY < 95)
         player.accelerationY += 5 * speedIndexY;
       else player.accelerationY = 100 * speedIndexY;
-    } else {
+    } /* else {
       if (player.accelerationX > 0) {
         player.accelerationX = 100;
       } else if (player.accelerationX < 0) {
@@ -146,7 +146,7 @@ var player = {
       } else if (player.accelerationY < 0) {
         player.accelerationY = -100;
       }
-    }
+    } */
     player.speed = ship.speed * screenratio;
     let ratio =
       player.speed /
