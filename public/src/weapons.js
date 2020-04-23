@@ -41,7 +41,7 @@ var weaponActivation = {
         }
       } else if (this.lives > 1) {
         this.lives--;
-        this.failTimeIndex = 30;
+        this.failTimeIndex = 20;
       } else {
         this.lives--;
         this.failTimeIndex = 120;
@@ -220,6 +220,7 @@ function bullet(B, who, numberOfBullets) {
   B.color = who.weapon.color;
   B.hitCD = who.weapon.hitCD;
   B.opacity = 1;
+  B.sprite = who.weapon.sprite;
   if (who.weapon.name == "BASIC") {
     B.dirx = Math.cos(who.angle - Math.PI / 2);
     B.diry = Math.sin(who.angle - Math.PI / 2);
@@ -251,7 +252,6 @@ function bullet(B, who, numberOfBullets) {
   } else if (who.weapon.name == "ROCKET") {
     B.dirx = Math.cos(who.angle - Math.PI / 2);
     B.diry = Math.sin(who.angle - Math.PI / 2);
-    B.sprite = sprite.projectile_rocket;
     B.explosive = true;
     B.explosion_radius = 150 * screenratio;
     B.explosion_triggered = false;
@@ -266,7 +266,6 @@ function bullet(B, who, numberOfBullets) {
     B.diry = Math.sin(who.angle - Math.PI / 2);
     B.sprite = sprite.projectile_spread;
   } else if (who.weapon.name == "SPREADER_PROJECTILE") {
-    B.sprite = sprite.projectile_spreadProjectile;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -331,7 +330,7 @@ function bullet(B, who, numberOfBullets) {
       ctx.translate(B.x, B.y);
       ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2);
       ctx.globalAlpha = B.opacity;
-      if (B.color == undefined) {
+      if (B.sprite != undefined) {
         ctx.drawImage(
           B.sprite,
           0,

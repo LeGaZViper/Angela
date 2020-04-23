@@ -324,39 +324,14 @@ var UI = {
 
     //Panels
     if (player.weapon.name != "BASIC") {
-      ctx.fillStyle = "#00FF00";
-      ctx.drawImage(
-        this.duration_panel.sprite,
-        this.duration_panel.x,
-        this.duration_panel.y,
-        this.duration_panel.width,
-        this.duration_panel.height
+      ctx.fillStyle = "black";
+      ctx.fillRect(
+        canvas.width - 155 * screenratio,
+        canvas.height - 30 * screenratio,
+        120 * screenratio,
+        20 * screenratio
       );
-      try {
-        ctx.drawImage(
-          sprite["UI_" + player.weapon.name],
-          0,
-          100,
-          100,
-          100,
-          this.duration_panel.x + 40 * screenratio,
-          this.duration_panel.y + 15 * screenratio,
-          40 * screenratio,
-          40 * screenratio
-        );
-      } catch (err) {
-        ctx.drawImage(
-          sprite["UI_DOUBLE"],
-          0,
-          100,
-          100,
-          100,
-          this.duration_panel.x + 40 * screenratio,
-          this.duration_panel.y + 15 * screenratio,
-          40 * screenratio,
-          40 * screenratio
-        );
-      }
+      ctx.fillStyle = "#DCE6EE";
       ctx.fillRect(
         canvas.width - 155 * screenratio,
         canvas.height - 25 * screenratio,
@@ -366,6 +341,13 @@ var UI = {
           120 *
           screenratio,
         15 * screenratio
+      );
+      ctx.drawImage(
+        this.duration_panel.sprite,
+        this.duration_panel.x,
+        this.duration_panel.y,
+        this.duration_panel.width,
+        this.duration_panel.height
       );
     }
     ctx.drawImage(

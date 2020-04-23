@@ -1,10 +1,10 @@
 var dialogueList = [];
 class Dialogue {
   constructor(
-    startingIndex = 0,
     text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.".split(
       ""
     ),
+    startingIndex = 0,
     color = "white"
   ) {
     dialogueList.forEach((index) => {
@@ -29,7 +29,7 @@ class Dialogue {
     if (this.text[this.stringIndex] == "#" && this.leadingElement) {
       this.leadingElement = false;
       this.displayText.splice(this.displayText.length - 1, 1);
-      dialogueList.push(new Dialogue(this.stringIndex + 1, this.text));
+      dialogueList.push(new Dialogue(this.text, this.stringIndex + 1));
     } else if (this.leadingElement) {
       this.typingSequence();
     }
@@ -53,12 +53,7 @@ class Dialogue {
     } else {
       this.timeToType--;
       if (this.timeToType == 0) {
-        this.timeToType = 30;
-        if (this.displayText[this.displayText.length - 1] == "|") {
-          this.displayText.splice(this.displayText.length - 1, 1);
-        } else {
-          this.displayText.push("|");
-        }
+        this.displayText.splice(this.displayText.length - 1, 1);
       }
     }
   };

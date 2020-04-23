@@ -49,8 +49,9 @@ function enemyBullet(B, type, target) {
   B.killed = false;
   B.damage = 1;
   B.speed = 15 * screenratio;
-  B.color = "#FF0000";
+  B.opacity = 1;
   if (type == "BASIC") {
+    B.sprite = sprite.projectile_enemyBASIC;
     if (target == "none") {
       B.dirx = player.earthX - B.x;
       B.diry = player.earthY - B.y;
@@ -58,8 +59,8 @@ function enemyBullet(B, type, target) {
       B.dirx = target.x - B.x;
       B.diry = target.y - B.y;
     }
-    B.width = 4 * screenratio;
-    B.height = 25 * screenratio;
+    B.width = 5 * screenratio;
+    B.height = 50 * screenratio;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -80,13 +81,13 @@ function enemyBullet(B, type, target) {
     ctx.translate(B.x, B.y);
     ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2);
     ctx.globalAlpha = B.opacity;
-    if (B.color == undefined) {
+    if (B.sprite != undefined) {
       ctx.drawImage(
         B.sprite,
         0,
         0,
-        B.width,
-        B.height,
+        B.width / screenratio,
+        B.height / screenratio,
         -B.width / 2,
         -B.height / 2,
         B.width,

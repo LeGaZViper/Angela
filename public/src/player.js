@@ -135,18 +135,18 @@ var player = {
       if (player.accelerationY * speedIndexY < 95)
         player.accelerationY += 5 * speedIndexY;
       else player.accelerationY = 100 * speedIndexY;
-    } /* else {
+    } else {
       if (player.accelerationX > 0) {
-        player.accelerationX = 100;
+        player.accelerationX -= 0.5;
       } else if (player.accelerationX < 0) {
-        player.accelerationX = -100;
+        player.accelerationX += 0.5;
       }
       if (player.accelerationY > 0) {
-        player.accelerationY = 100;
+        player.accelerationY -= 0.5;
       } else if (player.accelerationY < 0) {
-        player.accelerationY = -100;
+        player.accelerationY += 0.5;
       }
-    } */
+    }
     player.speed = ship.speed * screenratio;
     let ratio =
       player.speed /
@@ -196,7 +196,6 @@ var player = {
     player.y -= camera.offSetY;
   },
   render: () => {
-    console.log(Math.abs(player.xspeed) + Math.abs(player.yspeed));
     player.animationIndex += 1;
     let nextIndex = Math.floor(
       60 /
