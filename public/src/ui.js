@@ -570,6 +570,7 @@ var UI = {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;
+          } else if (index.button == "MULTIPLAYER") {
           } else if (index.button != "CONTINUE") {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;

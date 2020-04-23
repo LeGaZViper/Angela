@@ -157,6 +157,12 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
+  let choose = Math.floor(Math.random() * 5) + 1;
+  for (let index in weaponDatabase) {
+    if (choose == weaponDatabase[index].index) {
+      R.name = weaponDatabase[index].name;
+    }
+  }
   R.update = function () {
     R.x += -player.xspeed - camera.offSetX;
     R.y += -player.yspeed - camera.offSetY;
