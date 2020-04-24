@@ -2,9 +2,6 @@
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     enemy.deathAnimation = true;
-    if (enemy.randomDrop) {
-      randomDropList.push(randomDrop({ x: enemy.x, y: enemy.y }));
-    }
     if (enemy.type == "pirateMineDropper" && enemy.distance > 40) {
       enemyList.push(
         enemyCharacter({
@@ -425,37 +422,34 @@ function enemyCharacter(E) {
     E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
       E.deathAnimation_countdown += 1;
-      if (E.deathAnimation_countdown % 5 == 0) {
-        let distance =
-          Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
+      if (E.deathAnimation_countdown % 7 == 0) {
         E.deathAnimation_angle = Math.random() * 2 * Math.PI;
         E.deathAnimation_index += 1;
-        if (
-          E.deathAnimation_index == 1 &&
-          E.type == "pirateMinedropper" &&
-          distance >= 40
-        )
-          enemyList.push(enemyCharacter({ x: E.x, y: E.y }, "pirateMine"));
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(E.x, E.y);
-      ctx.rotate(E.deathAnimation_angle);
+      //ctx.rotate(E.deathAnimation_angle);
       ctx.drawImage(
-        sprite.projectile_explosion,
-        0,
-        150 * E.deathAnimation_index,
-        150,
-        150,
-        -(E.width + 20) / 2,
-        -(E.width + 20) / 2,
-        E.width + 20,
-        E.width + 20
+        E.sprite,
+        E.widthOnPic * E.deathAnimation_index,
+        2 * E.heightOnPic,
+        E.widthOnPic,
+        E.heightOnPic,
+        -E.width / 2,
+        -E.height / 2,
+        E.width,
+        E.height
       );
       ctx.restore();
       ctx.stroke();
       ctx.closePath();
-      if (E.deathAnimation_index == 11) E.killed = true;
+      if (E.deathAnimation_index == E.deathAnimationFrames) {
+        E.killed = true;
+        if (E.randomDrop) {
+          randomDropList.push(randomDrop({ x: E.x, y: E.y }));
+        }
+      }
     }
   };
   //Cooldowns

@@ -163,8 +163,8 @@ class DefaultShip {
     this.speed = 10;
     this.width = 75;
     this.height = 75;
-    this.widthOnPic = 300;
-    this.heightOnPic = 300;
+    this.widthOnPic = 150;
+    this.heightOnPic = 150;
     this.weaponDuration = 0;
     this.particles = [22, 2, 30, 0, 0.05];
     this.maxShield = [0, 1];
@@ -196,8 +196,8 @@ function defineEnemyDatabase() {
       chaseDistance: Infinity,
       behaviour: "chase",
       sprite: sprite.enemy_cube,
-      widthOnPic: 300,
-      heightOnPic: 300,
+      widthOnPic: 75,
+      heightOnPic: 75,
       width: 60 * screenratio,
       height: 60 * screenratio,
       speed: 5 * screenratio,
@@ -208,6 +208,7 @@ function defineEnemyDatabase() {
       animation: true,
       animationFrames: 5,
       animationFPS: 12,
+      deathAnimationFrames: 9,
     },
     buzz: {
       type: "buzz",
