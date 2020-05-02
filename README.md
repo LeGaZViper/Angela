@@ -7,9 +7,11 @@ This simple game is about defending a motherboard from hostiles. Nothing special
 ![alt text](banner.png)
 
 Written in: JavaScript
+
 Platform: PC Browser (IE not welcomed)
+
 Libraries: JQuerry
+
 Software:
-VS Code
-Blender
-Paint.net
+
+VS Code, Blender, Paint.net
