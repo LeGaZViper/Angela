@@ -76,7 +76,7 @@ var levels_handler = {
 
 function levelLayout(L) {
   if (ship.section == 1) {
-    //L.smallCube = [5 + ship.level, 1];
+    L.smallCube = [5 + ship.level, 1];
     L.largeCube = [1 + ship.level, 1];
     //L.test = [5, 1];
   }
