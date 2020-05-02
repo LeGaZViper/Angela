@@ -2,16 +2,30 @@
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     enemy.deathAnimation = true;
-    if (enemy.type == "pirateMineDropper" && enemy.distance > 40) {
-      enemyList.push(
-        enemyCharacter({
-          x: enemy.x,
-          y: enemy.y,
-          randomDrop: false,
-          spawnCD: 0,
-          ...enemyDatabase["pirateMine"],
-        })
-      );
+    if (enemy.cache != undefined) {
+      for (let i = 0; i < enemy.cache[1]; i++) {
+        enemyList.push(
+          enemyCharacter({
+            randomDirCDcounter: 120,
+            x:
+              enemy.x +
+              Math.cos((2 * Math.PI) / enemy.cache[1]) *
+                (i + 1) *
+                20 *
+                (Math.random() >= 0.5 ? 1 : -1),
+            y:
+              enemy.y +
+              Math.sin((2 * Math.PI) / enemy.cache[1]) *
+                (i + 1) *
+                20 *
+                (Math.random() >= 0.5 ? 1 : -1),
+            randomDrop: false,
+            spawnCD: 0,
+            ...enemyDatabase[enemy.cache[0]],
+          })
+        );
+        levels_handler.level.total += 1;
+      }
     }
     if (bulletName == "SPREADER" && bulletList.length < 300) {
       for (let i = 0; i < 16; i++) {
@@ -29,13 +43,8 @@ async function checkDeath(enemy, bulletName) {
         );
       }
     }
-    if (
-      levels_handler.level.total == 1 &&
-      enemy.sprite != sprite.enemy_pirateMine
-    ) {
+    if (levels_handler.level.total == 1 && enemy.cache == undefined) {
       await sleep(2000);
-      levels_handler.level.total -= 1;
-    } else if (enemy.type != "pirateMine") {
       levels_handler.level.total -= 1;
     }
   }
@@ -274,134 +283,6 @@ function enemyCharacter(E) {
       E.height
     );
     ctx.restore();
-    if (E.type == "pirateVessel") {
-      ctx.save();
-      ctx.globalAlpha = E.appearOpacity;
-      if (!E.inOrbit) {
-        E.cannon1X =
-          -(32 * screenratio) *
-            Math.cos(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
-            ) +
-          E.x;
-        E.cannon1Y =
-          -(32 * screenratio) *
-            Math.sin(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
-            ) +
-          E.y;
-        E.cannon2X =
-          35 *
-            screenratio *
-            Math.cos(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
-            ) +
-          E.x;
-        E.cannon2Y =
-          35 *
-            screenratio *
-            Math.sin(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI
-            ) +
-          E.y;
-        ctx.translate(E.cannon1X, E.cannon1Y);
-        ctx.rotate(
-          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) +
-            Math.PI / 2
-        );
-        ctx.drawImage(
-          sprite.enemy_pirateVesselturret,
-          0,
-          0,
-          24,
-          36,
-          -12 * screenratio,
-          -26 * screenratio,
-          24 * screenratio,
-          36 * screenratio
-        );
-        ctx.restore();
-        ctx.save();
-        ctx.translate(E.cannon2X, E.cannon2Y);
-        ctx.rotate(
-          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) -
-            Math.PI / 2
-        );
-        ctx.drawImage(
-          sprite.enemy_pirateVesselturret,
-          0,
-          0,
-          24,
-          36,
-          -12 * screenratio,
-          -26 * screenratio,
-          24 * screenratio,
-          36 * screenratio
-        );
-      } else {
-        E.cannon1X =
-          -(32 * screenratio) *
-            Math.cos(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
-            ) +
-          E.x;
-        E.cannon1Y =
-          -(32 * screenratio) *
-            Math.sin(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
-            ) +
-          E.y;
-        E.cannon2X =
-          35 *
-            screenratio *
-            Math.cos(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
-            ) +
-          E.x;
-        E.cannon2Y =
-          35 *
-            screenratio *
-            Math.sin(
-              Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI / 2
-            ) +
-          E.y;
-        ctx.translate(E.cannon1X, E.cannon1Y);
-        ctx.rotate(
-          Math.atan2(player.earthY - E.cannon1Y, player.earthX - E.cannon1X) +
-            Math.PI / 2
-        );
-        ctx.drawImage(
-          sprite.enemy_pirateVesselturret,
-          0,
-          0,
-          24,
-          36,
-          -12 * screenratio,
-          -26 * screenratio,
-          24 * screenratio,
-          36 * screenratio
-        );
-        ctx.restore();
-        ctx.save();
-        ctx.translate(E.cannon2X, E.cannon2Y);
-        ctx.rotate(
-          Math.atan2(player.earthY - E.cannon2Y, player.earthX - E.cannon2X) +
-            Math.PI / 2
-        );
-        ctx.drawImage(
-          sprite.enemy_pirateVesselturret,
-          0,
-          0,
-          24,
-          36,
-          -12 * screenratio,
-          -26 * screenratio,
-          24 * screenratio,
-          36 * screenratio
-        );
-      }
-      ctx.restore();
-    }
     //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
     //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
     let colorHPbar = "white";
@@ -465,16 +346,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
-        if (E.type == "pirateVessel") {
-          if (Math.random() < 0.5)
-            enemyBulletList.push(
-              enemyBullet({ x: E.cannon1X, y: E.cannon1Y }, "BASIC")
-            );
-          else
-            enemyBulletList.push(
-              enemyBullet({ x: E.cannon2X, y: E.cannon2Y }, "BASIC")
-            );
-        } else enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
+        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
       }
     } else if (E.behaviour == "mine") {
       if (E.distance < 40 * screenratio && E.HP > 0) {
@@ -531,6 +403,7 @@ function enemyCharacter(E) {
     await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
+  E.attackCDstart();
   E.hitCDstart = async function () {
     E.opacity = 0.51;
     for (let i = 50; i >= 0; i--) {
