@@ -12,6 +12,4 @@ Platform: PC Browser (IE not welcomed)
 
 Libraries: JQuerry
 
-Software:
-
-VS Code, Blender, Paint.net
+Software: VS Code, Blender, Paint.net
