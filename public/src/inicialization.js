@@ -36,6 +36,8 @@ function inicializeGame() {
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   UI.levelDisplayCheck = true;
+  levelTimer = 0;
+  dialogueData = defaultDialogueData;
   dialogueList = [];
   bulletList = [];
   enemyList = [];
@@ -104,7 +106,6 @@ function loadTheGame(callback) {
   backgroundParticles.inicialize();
   camera.inicialize();
   if (multiplayer) player2.inicialize();
-  defineEnemyDatabase();
   UI.inicialize();
   //Disabling rightclick popup
   $("#canvas").bind("contextmenu", function () {

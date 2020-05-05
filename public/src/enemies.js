@@ -127,6 +127,10 @@ function enemyCharacter(E) {
       await sleep(10);
     }
   };
+  E.width *= screenratio;
+  E.height *= screenratio;
+  E.speed *= screenratio;
+  E.defaultSpeed *= screenratio;
   E.attackCDvalue = 2000;
   E.coordX = player.spaceSize / 2 + E.x - player.earthX;
   E.coordY = player.spaceSize / 2 + E.y - player.earthY;

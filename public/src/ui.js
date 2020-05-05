@@ -88,17 +88,6 @@ var UI = {
     this.youWinMenu_b0 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: canvas.width / 2 - 265 * screenratio,
-      y: canvas.height / 2 + 40 * screenratio,
-      text: "UPGRADES",
-      textSize: 30 * screenratio,
-      button: "UPGRADES",
-      opacity: 1,
-      color: ["grey", "black", "white"],
-    };
-    this.youWinMenu_b1 = {
-      width: 250 * screenratio,
-      height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
       text: "CONTINUE",
@@ -107,11 +96,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.youWinMenu = [
-      this.youWinMenuWindow,
-      this.youWinMenu_b0,
-      this.youWinMenu_b1,
-    ];
+    this.youWinMenu = [this.youWinMenuWindow, this.youWinMenu_b0];
 
     this.levelDisplay = {
       x: canvas.width / 2,
@@ -468,6 +453,7 @@ var UI = {
     dialogueList.forEach((dia) => {
       dia.update_render();
     });
+    dialogueHandler();
     ctx.closePath();
   },
   click: function () {

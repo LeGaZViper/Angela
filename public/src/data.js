@@ -1,5 +1,5 @@
 //List of spritemaps (might use only one in the final version) | used in: rendering
-var sprite = {
+const sprite = {
   enemy_smallCube: new Image(),
   enemy_largeCube: new Image(),
   enemy_buzz: new Image(),
@@ -25,7 +25,7 @@ var sprite = {
 };
 
 //Default database for ingame weapons | used in: first inicialization
-var weaponDatabase = {
+const weaponDatabase = {
   BASIC: {
     index: 0,
     sprite: sprite.projectile_BASIC,
@@ -122,21 +122,21 @@ var weaponDatabase = {
     piercing: false,
     status: "UNAVAILABLE",
   },
-  /* LASER: {
+  LASER: {
     index: 6,
     name: "LASER",
     bullets: 1,
-    damage: 4,
+    damage: 1,
     speed: 0,
     width: 1,
     height: 1,
-    cooldown: 2000,
+    cooldown: 1,
     duration: 600,
     piercing: true,
     hitCD: 200,
-    color: "#00FF00",
-    status: "LOCKED" 
-  },*/
+    color: "#DCE6EE",
+    status: "LOCKED",
+  },
 };
 
 class DefaultShip {
@@ -156,59 +156,63 @@ class DefaultShip {
   }
 }
 
-var enemyDatabase;
-function defineEnemyDatabase() {
-  enemyDatabase = {
-    test: {
-      type: "buzz",
-      behaviour: "ignore",
-      sprite: sprite.enemy_buzz,
-      widthOnPic: 56,
-      heightOnPic: 62,
-      //Ingame stats
-      width: 45 * screenratio,
-      height: 50 * screenratio,
-      speed: 0 * screenratio,
-      HP: 6,
-      maxHP: 6,
-      particles: [10, 10 * screenratio, -1 * screenratio, 0, 0.1],
-    },
-    smallCube: {
-      type: "smallCube",
-      chaseDistance: Infinity,
-      behaviour: "chase",
-      sprite: sprite.enemy_smallCube,
-      widthOnPic: 75,
-      heightOnPic: 75,
-      width: 60 * screenratio,
-      height: 60 * screenratio,
-      speed: 5 * screenratio,
-      defaultSpeed: 5 * screenratio,
-      HP: 6,
-      maxHP: 6,
-      particles: [0, 0, 0, 0, 0],
-      animation: true,
-      animationFrames: 5,
-      animationFPS: 12,
-      deathAnimationFrames: 9,
-    },
-    largeCube: {
-      type: "largeCube",
-      behaviour: "ignore",
-      sprite: sprite.enemy_largeCube,
-      cache: ["smallCube", 3],
-      widthOnPic: 150,
-      heightOnPic: 150,
-      width: 150 * screenratio,
-      height: 150 * screenratio,
-      speed: 2 * screenratio,
-      HP: 10,
-      maxHP: 10,
-      particles: [0, 0, 0, 0, 0],
-      animation: true,
-      animationFrames: 5,
-      animationFPS: 12,
-      deathAnimationFrames: 9,
-    },
-  };
-}
+/*
+ENEMY IDEAS:
+  ball
+  cell
+*/
+
+const enemyDatabase = {
+  test: {
+    type: "buzz",
+    behaviour: "ignore",
+    sprite: sprite.enemy_buzz,
+    widthOnPic: 56,
+    heightOnPic: 62,
+    //Ingame stats
+    width: 45,
+    height: 50,
+    speed: 0,
+    HP: 6,
+    maxHP: 6,
+    particles: [10, 10, -1, 0, 0.1],
+  },
+  smallCube: {
+    type: "smallCube",
+    chaseDistance: Infinity,
+    behaviour: "chase",
+    sprite: sprite.enemy_smallCube,
+    widthOnPic: 75,
+    heightOnPic: 75,
+    width: 60,
+    height: 60,
+    speed: 5,
+    defaultSpeed: 5,
+    HP: 6,
+    maxHP: 6,
+    particles: [0, 0, 0, 0, 0],
+    animation: true,
+    animationFrames: 5,
+    animationFPS: 12,
+    deathAnimationFrames: 9,
+  },
+  largeCube: {
+    type: "largeCube",
+    behaviour: "ignore",
+    sprite: sprite.enemy_largeCube,
+    cache: ["smallCube", 3],
+    widthOnPic: 150,
+    heightOnPic: 150,
+    width: 150,
+    height: 150,
+    speed: 2,
+    defaultSpeed: 2,
+    HP: 10,
+    maxHP: 10,
+    particles: [0, 0, 0, 0, 0],
+    animation: true,
+    animationFrames: 5,
+    animationFPS: 12,
+    deathAnimationFrames: 9,
+  },
+};

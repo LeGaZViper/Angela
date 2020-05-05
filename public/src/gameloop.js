@@ -1,6 +1,6 @@
 //makes sure gameLoop always runs 60 times/s even on higher refresh rate monitors
 function checkRefreshRate() {
-  var fpsInterval = 1000 / 60;
+  let fpsInterval = 1000 / 60;
   let timeThen = 0;
   let timeNow = Date.now();
   let dif = timeNow - timeThen;
@@ -12,6 +12,7 @@ function checkRefreshRate() {
 
 //updates/checks game data and renders graphics
 //split into UI and game sectors
+var levelTimer = 0;
 function gameLoop() {
   ctx.globalAlpha = 1;
   //menu sector
@@ -26,6 +27,7 @@ function gameLoop() {
     winTheGame();
     //game sector
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
+    levelTimer++;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //Game part
     ctx.beginPath();
@@ -96,8 +98,6 @@ function gameLoop() {
     //check for weapon firing
     player.render();
     if (player.weaponDuration == 0) {
-      if (player.weapon.name == "LASER")
-        bulletList = bulletList.filter((check) => check.name != "LASER");
       chooseWeapon("BASIC");
       player.weaponDuration--;
     } else if (player.weaponDuration > 0) player.weaponDuration--;
@@ -105,18 +105,9 @@ function gameLoop() {
       if (p.leftMouseDown) {
         //shooting
         if (!p.attackCD && p.HP[1] > 0) {
-          if (
-            p.weapon.name == "LASER" &&
-            bulletList.filter((check) => check.name == "LASER").length < 1
-          ) {
-            bulletList.push(bullet({ x: p.x, y: p.y }, p, p.weapon.bullets));
-          } else if (p.weapon.name != "LASER") {
-            bulletList.push(bullet({}, p, p.weapon.bullets));
-            p.attackCDstart();
-          }
+          bulletList.push(bullet({}, p, p.weapon.bullets));
+          p.attackCDstart();
         }
-      } else if (p.weapon.name == "LASER") {
-        bulletList = bulletList.filter((check) => check.name != "LASER");
       }
     });
     //update & render for enemies
@@ -165,7 +156,6 @@ function gameLoop() {
               if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
             }
           }
-          bulletList = bulletList.filter((check) => !check.killed);
           checkDeath(e, b.name);
         });
       } else {
@@ -173,6 +163,7 @@ function gameLoop() {
         enemyList = enemyList.filter((check) => !check.killed);
       }
     });
+    bulletList = bulletList.filter((check) => !check.killed);
     //update & render of random drops
     randomDropList.forEach((r, i) => {
       r.update();
@@ -180,8 +171,6 @@ function gameLoop() {
         r.render();
         playerList.forEach((p, pindex) => {
           if (collides(r, p)) {
-            if (p.weapon.name == "LASER" && r.name != "LASER")
-              bulletList = bulletList.filter((check) => check.name != "LASER");
             if (!p.inWeaponActivation) randomDropList.splice(i, 1);
             if (pindex == 0 && !player.inWeaponActivation) {
               weaponActivation.currentWord =

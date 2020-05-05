@@ -1,9 +1,7 @@
 var dialogueList = [];
 class Dialogue {
   constructor(
-    text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.".split(
-      ""
-    ),
+    text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.",
     startingIndex = 0,
     color = "white"
   ) {
@@ -12,7 +10,8 @@ class Dialogue {
       if (index.opacity >= 0.2) index.opacity -= 0.2;
       else index.opacity = 0;
     });
-    this.text = text;
+    if (startingIndex == 0) this.text = text.split("");
+    else this.text = text;
     this.displayText = [""];
     this.stringIndex = startingIndex;
     this.ttl = 420;
@@ -57,4 +56,26 @@ class Dialogue {
       }
     }
   };
+}
+
+const defaultDialogueData = {
+  level_1: {
+    text: ["A>This is a test of#your penis.#Thanks."],
+    triggerType: ["timer"],
+    triggerIndex: [1],
+  },
+};
+
+var dialogueData;
+function dialogueHandler() {
+  let dialogueLevel = dialogueData["level_" + ship.level];
+  for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
+    if (dialogueLevel.triggerType[i] == "timer") {
+      if (dialogueLevel.triggerIndex[i] == levelTimer)
+        dialogueList.push(new Dialogue(dialogueLevel.text.splice(i, 1)[0]));
+    } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
+      if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
+        dialogueList.push(new Dialogue(dialogueLevel.text.splice(i, 1)[0]));
+    }
+  }
 }

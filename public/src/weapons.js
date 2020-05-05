@@ -157,7 +157,7 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 5) + 1;
+  let choose = Math.floor(Math.random() * 6) + 1;
   for (let index in weaponDatabase) {
     if (choose == weaponDatabase[index].index) {
       R.name = weaponDatabase[index].name;
@@ -208,8 +208,8 @@ function bullet(B, who, numberOfBullets) {
   B.y = who.y + 25 * screenratio * Math.sin(who.angle - Math.PI / 2);
   B.ttl = 300;
   B.killed = false;
-  B.name = who.weapon.name;
   B.damage = who.weapon.damage;
+  B.name = who.weapon.name + "";
   B.speed =
     who.weapon.speed * screenratio +
     Math.abs(who.xspeed) +
@@ -266,13 +266,15 @@ function bullet(B, who, numberOfBullets) {
     B.diry = Math.sin(who.angle - Math.PI / 2);
     B.sprite = sprite.projectile_spread;
   } else if (who.weapon.name == "SPREADER_PROJECTILE") {
+  } else if ((who.weapon.name = "LASER")) {
+    B.ttl = 0;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
   B.hitBoxX = B.x - B.hitBoxWidth / 2;
   B.hitBoxY = B.y - B.hitBoxHeight / 2;
   B.update = function () {
-    if (who.weapon.name == "LASER") {
+    if (B.name == "LASER") {
       let hitDetectionX = who.x;
       let hitDetectionY = who.y;
       B.dirx = Math.cos(who.angle - Math.PI / 2);
@@ -294,7 +296,7 @@ function bullet(B, who, numberOfBullets) {
             e.piercingDamageCDstart();
             e.HP -= B.damage;
             e.hitCDstart();
-            checkDeath(e, "LASER");
+            checkDeath(e, B.name);
           }
         });
       }
@@ -309,11 +311,11 @@ function bullet(B, who, numberOfBullets) {
       B.y += B.yspeed - player.yspeed - camera.offSetY;
       B.hitBoxX = B.x - B.hitBoxWidth / 2;
       B.hitBoxY = B.y - B.hitBoxHeight / 2;
-      B.calcTTL();
     }
+    B.calcTTL();
   };
   B.render = function () {
-    if (who.weapon.name == "LASER") {
+    if (B.name == "LASER") {
       ctx.beginPath();
       ctx.save();
       ctx.globalAlpha = 1;
