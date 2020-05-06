@@ -2,8 +2,8 @@ var dialogueList = [];
 class Dialogue {
   constructor(
     text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.",
-    startingIndex = 0,
-    color = "white"
+    color = "white",
+    startingIndex = 0
   ) {
     dialogueList.forEach((index) => {
       index.y -= 50 * screenratio;
@@ -28,7 +28,9 @@ class Dialogue {
     if (this.text[this.stringIndex] == "#" && this.leadingElement) {
       this.leadingElement = false;
       this.displayText.splice(this.displayText.length - 1, 1);
-      dialogueList.push(new Dialogue(this.text, this.stringIndex + 1));
+      dialogueList.push(
+        new Dialogue(this.text, this.color, this.stringIndex + 1)
+      );
     } else if (this.leadingElement) {
       this.typingSequence();
     }
@@ -60,22 +62,40 @@ class Dialogue {
 
 const defaultDialogueData = {
   level_1: {
-    text: ["A>This is a test of#your penis.#Thanks."],
-    triggerType: ["timer"],
-    triggerIndex: [1],
+    text: [
+      "INTRUDERS DETECTED.#DEFENCES ONLINE.#TASK: PROTECT THE CORE.",
+      "A>More of them are coming.#Brace yourself, Defender.",
+    ],
+    color: ["yellow", "white"],
+    triggerType: ["timer", "wave"],
+    triggerIndex: [240, 1],
   },
 };
+
+function pushDialogue(index) {
+  let dialogueLevel = dialogueData["level_" + ship.level];
+  dialogueList.push(
+    new Dialogue(
+      dialogueLevel.text.splice(index, 1)[0],
+      dialogueLevel.color.splice(index, 1)[0]
+    )
+  );
+  dialogueLevel.triggerType.splice(index, 1);
+  dialogueLevel.triggerIndex.splice(index, 1);
+}
 
 var dialogueData;
 function dialogueHandler() {
   let dialogueLevel = dialogueData["level_" + ship.level];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
     if (dialogueLevel.triggerType[i] == "timer") {
-      if (dialogueLevel.triggerIndex[i] == levelTimer)
-        dialogueList.push(new Dialogue(dialogueLevel.text.splice(i, 1)[0]));
+      if (dialogueLevel.triggerIndex[i] == levelTimer) pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
-        dialogueList.push(new Dialogue(dialogueLevel.text.splice(i, 1)[0]));
+        pushDialogue(i);
+    } else if (dialogueLevel.triggerType[i] == "wave") {
+      if (dialogueLevel.triggerIndex[i] == levels_handler.level.waves)
+        pushDialogue(i);
     }
   }
 }

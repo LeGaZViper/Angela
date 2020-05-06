@@ -80,7 +80,7 @@ var UI = {
       height: 250 * screenratio,
       x: canvas.width / 2 - 275 * screenratio,
       y: canvas.height / 2 - 150 * screenratio,
-      text: "YOU WIN!",
+      text: "Level completed!",
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["#4C4C4C", "black", "white"],

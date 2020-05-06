@@ -7,7 +7,8 @@ function checkRefreshRate() {
   if (dif > fpsInterval) {
     timeThen = timeNow - (dif % fpsInterval);
     return true;
-  } else return false;
+  }
+  return false;
 }
 
 //updates/checks game data and renders graphics
@@ -22,9 +23,15 @@ function gameLoop() {
     UI.menu_render(UI.menuList[UI.currentMenu]);
     //getting into menu after win??? -- needs to be worked on
   } else if (levels_handler.level.total == 0) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    background.update_render();
-    winTheGame();
+    if (levels_handler.level.waves > 0) {
+      levels_handler.level.waves--;
+      levels_handler.levelCreator();
+      spawn();
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      background.update_render();
+      winTheGame();
+    }
     //game sector
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {
     levelTimer++;
