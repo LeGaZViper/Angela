@@ -587,7 +587,8 @@ var UI = {
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         } else {
-          if (index.text != "YOU WIN!") index.color[0] = this.UIColors.fill;
+          if (index.text != "Level completed!")
+            index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }
