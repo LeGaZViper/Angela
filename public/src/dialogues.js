@@ -17,7 +17,7 @@ class Dialogue {
     this.ttl = 420;
     this.timeToType = 1;
     this.opacity = 0.8;
-    this.y = canvas.height - 150 * screenratio;
+    this.y = canvas.height - 120 * screenratio;
     this.leadingElement = true;
     this.color = color;
   }
@@ -36,7 +36,7 @@ class Dialogue {
     }
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.font = 40 * screenratio + "px Consolas";
+    ctx.font = 28 * screenratio + "px Consolas";
     ctx.textAlign = "left";
     ctx.globalAlpha = this.opacity;
     ctx.fillText(this.displayText.join(""), 10, this.y);
@@ -64,7 +64,7 @@ const defaultDialogueData = {
   level_1: {
     text: [
       "INTRUDERS DETECTED.#DEFENCES ONLINE.#TASK: PROTECT THE CORE.",
-      "A>More of them are coming.#Brace yourself, Defender.",
+      "A>More of them are coming.#Brace yourself,Defender.",
     ],
     color: ["yellow", "white"],
     triggerType: ["timer", "wave"],

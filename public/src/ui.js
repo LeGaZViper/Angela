@@ -450,6 +450,25 @@ var UI = {
     dialogueList = dialogueList.filter(
       (index) => index.ttl > 0 && index.opacity > 0
     );
+    if (dialogueList.length > 0) {
+      ctx.fillStyle = "black";
+      ctx.globalAlpha = 0.3;
+      ctx.fillRect(
+        0,
+        canvas.height - 446 * screenratio,
+        410 * screenratio,
+        350 * screenratio
+      );
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "grey";
+      ctx.globalAlpha = 0.15;
+      ctx.strokeRect(
+        0,
+        canvas.height - 446 * screenratio,
+        410 * screenratio,
+        350 * screenratio
+      );
+    }
     dialogueList.forEach((dia) => {
       dia.update_render();
     });
