@@ -157,6 +157,7 @@ function gameLoop() {
               if (b.explosive && !b.explosion_triggered) b.explode();
               else if ((!b.piercing || !e.piercingCD) && !b.explosive) {
                 e.HP -= b.damage;
+                damageNumberList.push(new DamageNumber(b.damage, e.x, e.y));
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;
               }
@@ -194,6 +195,12 @@ function gameLoop() {
             }
           }
         });
+      }
+    });
+    damageNumberList.forEach((num, index) => {
+      num.update_render();
+      if (num.ttl <= 0) {
+        damageNumberList.splice(index, 1);
       }
     });
     UI.game_render();

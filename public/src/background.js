@@ -51,7 +51,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       animation: function () {
-        this.angle += 0.05;
+        this.angle += 0.03;
         if (this.angle > Math.PI * 2) this.angle = 0;
       },
     };
@@ -67,7 +67,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       animation: function () {
-        this.angle += 0.05;
+        this.angle += 0.03;
         if (this.angle > Math.PI * 2) this.angle = 0;
       },
     };

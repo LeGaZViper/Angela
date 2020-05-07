@@ -111,10 +111,10 @@ var UI = {
       stroke: "#333333",
       fontFill: "white",
       fontStroke: "black",
-      hoverFill: "red",
-      hoverStroke: "red",
+      hoverFill: "#5C7CFF",
+      hoverStroke: "#B2B5FF",
       hoverFontFill: "white",
-      hoverFontStroke: "red",
+      hoverFontStroke: "#B2B5FF",
       selectedFill: "grey",
       selectedStroke: "white",
       selectedFontFill: "white",
@@ -128,22 +128,24 @@ var UI = {
     this.HPpanel = {
       width: 250 * screenratio,
       height: 96 * screenratio,
-      x: 0,
-      y: canvas.height - 96 * screenratio,
+      x: canvas.width - 250 * screenratio,
+      y: 0,
       sprite: sprite.UI_HPpanel,
     };
 
     this.dangerLight_0 = {
+      //Earth_hp
       width: 10 * screenratio,
       height: 10 * screenratio,
-      x: 10 * screenratio,
-      y: canvas.height - 31 * screenratio,
+      x: canvas.width - 20 * screenratio,
+      y: 20 * screenratio,
     };
     this.dangerLight_1 = {
+      //Player_hp
       width: 10 * screenratio,
       height: 10 * screenratio,
-      x: 10 * screenratio,
-      y: canvas.height - 61 * screenratio,
+      x: canvas.width - 20 * screenratio,
+      y: 50 * screenratio,
     };
 
     this.duration_panel = {
@@ -159,7 +161,7 @@ var UI = {
       height: 200 * screenratio,
       x: 2,
       y: 2,
-      color: ["#686C70", "#353535"],
+      color: ["#686C70", "#1D1D1D"],
     };
     this.menuList = [
       this.mainMenu,
@@ -229,8 +231,8 @@ var UI = {
     ctx.beginPath();
     ctx.fillStyle = "#0A0A0A";
     ctx.fillRect(
-      10 * screenratio,
-      canvas.height - 70 * screenratio,
+      canvas.width - 210 * screenratio,
+      20 * screenratio,
       190 * screenratio,
       50 * screenratio
     );
@@ -257,33 +259,34 @@ var UI = {
 
     ctx.fillStyle = this.HPbar_player.color;
     ctx.fillRect(
-      35 * screenratio,
-      canvas.height - 66 * screenratio,
+      canvas.width - 155 * screenratio,
+      51 * screenratio,
       (player.HP[1] / player.maxHP[1]) *
         ((player.maxHP[1] * 120) / (player.maxHP[1] + player.maxShield[1])) *
         screenratio,
-      15 * screenratio
+      16 * screenratio
     );
     ctx.fillStyle = "#008FFF";
     ctx.fillRect(
-      35 * screenratio +
+      canvas.width -
+        155 * screenratio +
         (player.HP[1] / player.maxHP[1]) *
           ((player.maxHP[1] * 120) / (player.maxHP[1] + player.maxShield[1])) *
           screenratio,
-      canvas.height - 66 * screenratio,
+      51 * screenratio,
       (player.shield[1] / player.maxShield[1]) *
         ((player.maxShield[1] * 120) /
           (player.maxHP[1] + player.maxShield[1])) *
         screenratio,
-      15 * screenratio
+      16 * screenratio
     );
 
     ctx.fillStyle = this.HPbar_earth.color;
     ctx.fillRect(
-      35 * screenratio,
-      canvas.height - 36 * screenratio,
+      canvas.width - 195 * screenratio,
+      21 * screenratio,
       (player.HP[0] / player.maxHP[0]) * 160 * screenratio,
-      15 * screenratio
+      16 * screenratio
     );
     //Danger light
     ctx.fillStyle = "black";
@@ -348,6 +351,7 @@ var UI = {
           Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)
         ) +
       0.02;
+    ctx.globalAlpha = 1;
     ctx.save();
     ctx.translate(xMousePos, yMousePos);
     ctx.rotate(this.cursorIndex);
@@ -369,15 +373,6 @@ var UI = {
       ctx.globalAlpha = 1;
     }
     ctx.globalAlpha = 0.7;
-    ctx.strokeStyle = this.minimapLayer.color[1];
-    ctx.lineWidth = 3;
-    ctx.strokeRect(
-      this.minimapLayer.x,
-      this.minimapLayer.y,
-      this.minimapLayer.width,
-      this.minimapLayer.height
-    );
-    ctx.fillStyle = this.minimapLayer.color[0];
     ctx.drawImage(
       sprite.UI_motherboardMap,
       this.minimapLayer.x,
@@ -385,21 +380,14 @@ var UI = {
       this.minimapLayer.width,
       this.minimapLayer.height
     );
-    ctx.fillStyle = "#DCE6EE";
-    ctx.strokeStyle = "#DCE6EE";
-    ctx.closePath();
-    ctx.beginPath();
-    ctx.arc(
-      101 * screenratio,
-      101 * screenratio,
-      5 * screenratio,
-      0,
-      2 * Math.PI,
-      false
+    ctx.strokeStyle = this.minimapLayer.color[1];
+    ctx.lineWidth = 6;
+    ctx.strokeRect(
+      this.minimapLayer.x,
+      this.minimapLayer.y,
+      this.minimapLayer.width,
+      this.minimapLayer.height
     );
-    ctx.fill();
-    ctx.closePath();
-    ctx.beginPath();
 
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
@@ -424,7 +412,7 @@ var UI = {
     });
 
     ctx.fillStyle = "#DCE6EE";
-    ctx.strokeStyle = "#DCE6EE";
+    ctx.strokeStyle = "#5C7CFF";
     ctx.lineWidth = 1;
     ctx.moveTo(3, player.coordY / (player.spaceSize / (200 * screenratio)));
     ctx.lineTo(
@@ -451,28 +439,38 @@ var UI = {
       (index) => index.ttl > 0 && index.opacity > 0
     );
     if (dialogueList.length > 0) {
-      ctx.fillStyle = "black";
-      ctx.globalAlpha = 0.3;
-      ctx.fillRect(
+      ctx.globalAlpha = 0.8;
+      ctx.drawImage(
+        sprite.UI_dialogueBG,
         0,
-        canvas.height - 446 * screenratio,
-        410 * screenratio,
-        350 * screenratio
+        canvas.height - 170 * screenratio,
+        500 * screenratio,
+        170 * screenratio
       );
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "grey";
-      ctx.globalAlpha = 0.15;
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = "#1D1D1D";
+      ctx.globalAlpha = 0.8;
       ctx.strokeRect(
-        0,
-        canvas.height - 446 * screenratio,
-        410 * screenratio,
-        350 * screenratio
+        -5,
+        canvas.height - 170 * screenratio,
+        505 * screenratio,
+        175 * screenratio
       );
     }
     dialogueList.forEach((dia) => {
       dia.update_render();
     });
     dialogueHandler();
+    if (dialogueList.length > 0) {
+      ctx.globalAlpha = 0.8;
+      ctx.drawImage(
+        sprite.UI_dialogueBGgrill,
+        0,
+        canvas.height - 170 * screenratio,
+        500 * screenratio,
+        170 * screenratio
+      );
+    }
     ctx.closePath();
   },
   click: function () {

@@ -435,3 +435,26 @@ function enemyCharacter(E) {
   };
   return E;
 }
+
+var damageNumberList = [];
+class DamageNumber {
+  constructor(amount, x, y) {
+    this.text = amount;
+    this.x =
+      x + Math.floor(Math.random() * 10 * (Math.random() > 0.5 ? 1 : -1));
+    this.y =
+      y + Math.floor(Math.random() * 10 * (Math.random() > 0.5 ? 1 : -1));
+    this.ttl = 80;
+  }
+  update_render() {
+    this.x += 0.5;
+    this.y -= 0.5;
+    this.x += -(player.xspeed + camera.offSetX);
+    this.y += -(player.yspeed + camera.offSetY);
+    this.ttl--;
+    ctx.fillStyle = "#B2B5FF";
+    ctx.globalAlpha = 0.6;
+    ctx.font = 20 * screenratio + "px FFFFORWA";
+    ctx.fillText(this.text, this.x, this.y);
+  }
+}

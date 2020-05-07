@@ -222,9 +222,11 @@ function bullet(B, who, numberOfBullets) {
   B.opacity = 1;
   B.sprite = who.weapon.sprite;
   if (who.weapon.name == "BASIC") {
+    B.damage = Math.floor(B.damage * Math.random()) + 1;
     B.dirx = Math.cos(who.angle - Math.PI / 2);
     B.diry = Math.sin(who.angle - Math.PI / 2);
   } else if (who.weapon.name == "DOUBLE") {
+    B.damage = Math.floor(B.damage * Math.random()) + 1;
     if (numberOfBullets == 2) {
       B.dirx = Math.cos(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
       B.diry = Math.sin(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
@@ -236,6 +238,7 @@ function bullet(B, who, numberOfBullets) {
       bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
     }
   } else if (who.weapon.name == "SPRAY") {
+    B.damage = Math.floor(B.damage * Math.random()) + 1;
     if (numberOfBullets == 3) {
       B.dirx = Math.cos(who.angle - Math.PI / 2);
       B.diry = Math.sin(who.angle - Math.PI / 2);
@@ -279,7 +282,7 @@ function bullet(B, who, numberOfBullets) {
       let hitDetectionY = who.y;
       B.dirx = Math.cos(who.angle - Math.PI / 2);
       B.diry = Math.sin(who.angle - Math.PI / 2);
-      let ratio = 6 / (Math.abs(B.dirx) + Math.abs(B.diry));
+      let ratio = 9 / (Math.abs(B.dirx) + Math.abs(B.diry));
       for (let i = 0; i < 200; i++) {
         hitDetectionX += B.dirx * ratio;
         hitDetectionY += B.diry * ratio;
@@ -293,7 +296,8 @@ function bullet(B, who, numberOfBullets) {
               hitBoxHeight: 6,
             })
           ) {
-            e.piercingDamageCDstart();
+            e.piercingDamageCDstart(B.hitCD);
+            damageNumberList.push(new DamageNumber(B.damage, e.x, e.y));
             e.HP -= B.damage;
             e.hitCDstart();
             checkDeath(e, B.name);
