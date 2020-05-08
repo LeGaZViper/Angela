@@ -441,9 +441,9 @@ class DamageNumber {
   constructor(amount, x, y) {
     this.text = amount;
     this.x =
-      x + Math.floor(Math.random() * 10 * (Math.random() > 0.5 ? 1 : -1));
+      x + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
     this.y =
-      y + Math.floor(Math.random() * 10 * (Math.random() > 0.5 ? 1 : -1));
+      y + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
     this.ttl = 80;
   }
   update_render() {
@@ -454,7 +454,10 @@ class DamageNumber {
     this.ttl--;
     ctx.fillStyle = "#B2B5FF";
     ctx.globalAlpha = 0.6;
-    ctx.font = 20 * screenratio + "px FFFFORWA";
+    ctx.font = 23 * screenratio + "px FFFFORWA";
     ctx.fillText(this.text, this.x, this.y);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.strokeText(this.text, this.x, this.y);
   }
 }
