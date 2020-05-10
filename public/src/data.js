@@ -21,6 +21,7 @@ const sprite = {
   UI_motherboardRay: new Image(),
   UI_motherboardAngela: new Image(),
   UI_motherboardMap: new Image(),
+  UI_motherboardMapgrill: new Image(),
   UI_motherboardFan: new Image(),
   UI_ignore: new Image(),
   UI_drop: new Image(),
@@ -151,7 +152,7 @@ class DefaultShip {
     this.heightOnPic = 150;
     this.weaponDuration = 0;
     this.particles = [22, 2, 30, 0, 0.05];
-    this.maxShield = [0, 1];
+    this.maxShield = [10, 5];
     this.maxHP = [10, 5];
     this.section = 1;
     this.level = 1;

@@ -46,6 +46,8 @@ async function checkDeath(enemy, bulletName) {
     if (levels_handler.level.total == 1 && enemy.cache == undefined) {
       await sleep(2000);
       levels_handler.level.total -= 1;
+    } else {
+      levels_handler.level.total -= 1;
     }
   }
 }
@@ -355,7 +357,13 @@ function enemyCharacter(E) {
     } else if (E.behaviour == "mine") {
       if (E.distance < 40 * screenratio && E.HP > 0) {
         E.HP = 0;
-        player.HP[0] -= 2;
+        if (player.shield[0] >= 2) player.shield[0] -= 2;
+        else if (player.shield[0] == 1) {
+          player.shield[0] -= 1;
+          player.HP[0] -= 1;
+        } else {
+          player.HP[0] -= 2;
+        }
         checkDeath(E, "BASIC");
       }
     } else if (E.behaviour == "ignore") {
@@ -444,17 +452,17 @@ class DamageNumber {
       x + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
     this.y =
       y + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
-    this.ttl = 80;
+    this.ttl = 60;
   }
   update_render() {
-    this.x += 0.5;
-    this.y -= 0.5;
+    this.x += 1;
+    this.y -= 1;
     this.x += -(player.xspeed + camera.offSetX);
     this.y += -(player.yspeed + camera.offSetY);
     this.ttl--;
-    ctx.fillStyle = "#B2B5FF";
+    ctx.fillStyle = "#8C95FF";
     ctx.globalAlpha = 0.6;
-    ctx.font = 23 * screenratio + "px FFFFORWA";
+    ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.fillText(this.text, this.x, this.y);
     ctx.lineWidth = 2;
     ctx.strokeStyle = "black";

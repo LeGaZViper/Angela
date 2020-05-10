@@ -88,7 +88,7 @@ function levelLayout(L) {
       L.waves = 2;
       L.startTime = 3000;
       L.smallCube = [1, 1, 2];
-      L.largeCube = [1 + ship.level, 1, 1];
+      L.largeCube = [0 + ship.level, 1, 2];
     }
     //L.test = [5, 1];
   }

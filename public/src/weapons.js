@@ -90,7 +90,7 @@ var weaponActivation = {
         canvas.width / 2 - width / 2,
         canvas.height / 4
       );
-      ctx.fillStyle = "white";
+      ctx.fillStyle = "#8C95FF";
       ctx.fillText(
         this.currentlyTyped,
         canvas.width / 2 - width / 2,
@@ -325,7 +325,10 @@ function bullet(B, who, numberOfBullets) {
       ctx.globalAlpha = 1;
       ctx.strokeStyle = B.color;
       ctx.lineWidth = 6 * screenratio;
-      ctx.moveTo(who.x, who.y);
+      ctx.moveTo(
+        who.x + Math.cos(who.angle - Math.PI / 2) * 20 * screenratio,
+        who.y + Math.sin(who.angle - Math.PI / 2) * 20 * screenratio
+      );
       ctx.lineTo(B.x, B.y);
       ctx.stroke();
       ctx.restore();

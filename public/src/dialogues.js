@@ -16,7 +16,7 @@ class Dialogue {
     this.stringIndex = startingIndex;
     this.ttl = 420;
     this.timeToType = 1;
-    this.opacity = 0.8;
+    this.opacity = 1;
     this.y = canvas.height - 25 * screenratio;
     this.leadingElement = true;
     this.color = color;
@@ -36,7 +36,7 @@ class Dialogue {
     }
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.font = 30 * screenratio + "px Consolas";
+    ctx.font = 28 * screenratio + "px Consolas";
     ctx.textAlign = "left";
     ctx.globalAlpha = this.opacity;
     ctx.fillText(this.displayText.join(""), 10, this.y);

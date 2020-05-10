@@ -100,7 +100,7 @@ var player = {
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
-    if (!player.collisionCD) player.shieldRecharge();
+    player.shieldRecharge();
 
     if (!rightMouseDown) {
       var speedIndexX = xMousePos - player.x > 0 ? 1 : -1;
@@ -249,7 +249,7 @@ var player = {
     ctx.closePath();
   },
 
-  shieldCD: 0,
+  shieldCD: [0, 0],
   attackCD: false,
   hitCD: false,
   collisionCD: false,
@@ -263,22 +263,29 @@ var player = {
     player.attackCD = false;
   },
   hitCDstart: async function (which, what) {
-    if (which == 1) player.shieldCD = 300;
+    if (which == 1) player.shieldCD[1] = 300;
+    else player.shieldCD[0] = 300;
     player.damageOpacity[which] = 101 / 100;
     for (let i = 100; i >= 0; i--) {
       if (player.damageOpacity[which] == (i + 1) / 100) {
         player.damageOpacity[which] = i / 100;
-        await sleep(10);
+        await sleep(5);
       } else break;
     }
     if (which == 1 && what == "bullet") player.hitCD = false;
     else if (which == 1 && what == "collision") player.collisionCD = false;
   },
   shieldRecharge: function () {
-    if (player.shieldCD > 0) {
-      player.shieldCD--;
+    if (player.shieldCD[0] > 0) {
+      player.shieldCD[0]--;
+    } else if (player.shield[0] < player.maxShield[0]) {
+      player.shieldCD[0] = 120;
+      player.shield[0] += 1;
+    }
+    if (player.shieldCD[1] > 0) {
+      player.shieldCD[1]--;
     } else if (player.shield[1] < player.maxShield[1]) {
-      player.shieldCD = 60;
+      player.shieldCD[1] = 60;
       player.shield[1] += 1;
     }
   },

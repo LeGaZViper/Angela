@@ -229,6 +229,7 @@ var UI = {
   game_render: function () {
     //UI
     ctx.beginPath();
+    ctx.globalAlpha = 1;
     ctx.fillStyle = "#0A0A0A";
     ctx.fillRect(
       canvas.width - 210 * screenratio,
@@ -266,7 +267,7 @@ var UI = {
         screenratio,
       16 * screenratio
     );
-    ctx.fillStyle = "#008FFF";
+    ctx.fillStyle = "#5C7CFF";
     ctx.fillRect(
       canvas.width -
         155 * screenratio +
@@ -285,7 +286,23 @@ var UI = {
     ctx.fillRect(
       canvas.width - 195 * screenratio,
       21 * screenratio,
-      (player.HP[0] / player.maxHP[0]) * 160 * screenratio,
+      (player.HP[0] / player.maxHP[0]) *
+        ((player.maxHP[0] * 160) / (player.maxHP[0] + player.maxShield[0])) *
+        screenratio,
+      16 * screenratio
+    );
+    ctx.fillStyle = "#5C7CFF";
+    ctx.fillRect(
+      canvas.width -
+        195 * screenratio +
+        (player.HP[0] / player.maxHP[0]) *
+          ((player.maxHP[0] * 160) / (player.maxHP[0] + player.maxShield[0])) *
+          screenratio,
+      21 * screenratio,
+      (player.shield[0] / player.maxShield[0]) *
+        ((player.maxShield[0] * 160) /
+          (player.maxHP[0] + player.maxShield[0])) *
+        screenratio,
       16 * screenratio
     );
     //Danger light
@@ -319,7 +336,7 @@ var UI = {
         120 * screenratio,
         20 * screenratio
       );
-      ctx.fillStyle = "#DCE6EE";
+      ctx.fillStyle = "#5C7CFF";
       ctx.fillRect(
         canvas.width - 155 * screenratio,
         canvas.height - 25 * screenratio,
@@ -372,7 +389,7 @@ var UI = {
       ctx.fillText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y); //text on screen
       ctx.globalAlpha = 1;
     }
-    ctx.globalAlpha = 0.7;
+    ctx.globalAlpha = 1;
     ctx.drawImage(
       sprite.UI_motherboardMap,
       this.minimapLayer.x,
@@ -388,7 +405,13 @@ var UI = {
       this.minimapLayer.width,
       this.minimapLayer.height
     );
-
+    ctx.drawImage(
+      sprite.UI_motherboardMapgrill,
+      this.minimapLayer.x,
+      this.minimapLayer.y,
+      this.minimapLayer.width,
+      this.minimapLayer.height
+    );
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
       if (!e.deathAnimation)
@@ -439,7 +462,7 @@ var UI = {
       (index) => index.ttl > 0 && index.opacity > 0
     );
     if (dialogueList.length > 0) {
-      ctx.globalAlpha = 0.8;
+      ctx.globalAlpha = 1;
       ctx.drawImage(
         sprite.UI_dialogueBG,
         0,
@@ -447,22 +470,13 @@ var UI = {
         500 * screenratio,
         170 * screenratio
       );
-      ctx.lineWidth = 10;
-      ctx.strokeStyle = "#1D1D1D";
-      ctx.globalAlpha = 0.8;
-      ctx.strokeRect(
-        -5,
-        canvas.height - 170 * screenratio,
-        505 * screenratio,
-        175 * screenratio
-      );
     }
     dialogueList.forEach((dia) => {
       dia.update_render();
     });
     dialogueHandler();
     if (dialogueList.length > 0) {
-      ctx.globalAlpha = 0.8;
+      ctx.globalAlpha = 1;
       ctx.drawImage(
         sprite.UI_dialogueBGgrill,
         0,

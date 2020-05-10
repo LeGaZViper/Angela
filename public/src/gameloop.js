@@ -90,7 +90,8 @@ function gameLoop() {
         player.hitCD = true;
         player.hitCDstart(1, "bullet");
       } else if (distance < 20) {
-        player.HP[0] -= eb.damage;
+        if (player.shield[0] > 0) player.shield[0] -= eb.damage;
+        else player.HP[0] -= eb.damage;
         eb.killed = true;
         player.hitCDstart(0, "bullet");
       }
