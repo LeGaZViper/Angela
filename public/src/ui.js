@@ -29,13 +29,139 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 - 150 * screenratio,
       y: canvas.height / 2 - 10 * screenratio,
-      text: "MULTIPLAYER",
+      text: "OPTIONS",
       textSize: 30 * screenratio,
-      button: "MULTIPLAYER",
-      opacity: 0.5,
+      button: "OPTIONS",
+      opacity: 1,
       color: ["grey", "black", "white"],
     };
     this.mainMenu = [this.mainMenu_b0, this.mainMenu_b1, this.mainMenu_b2];
+    this.optionsMenu_box0 = {
+      width: 300 * screenratio,
+      height: 70 * screenratio,
+      x: canvas.width / 2 - 150 * screenratio,
+      y: canvas.height / 2 - 150 * screenratio,
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_box1 = {
+      width: 300 * screenratio,
+      height: 70 * screenratio,
+      x: canvas.width / 2 - 150 * screenratio,
+      y: canvas.height / 2 - 67 * screenratio,
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_t0 = {
+      width: 0 * screenratio,
+      height: 0 * screenratio,
+      x: canvas.width / 2 - 50 * screenratio,
+      y: canvas.height / 2 - 110 * screenratio,
+      text: "SOUND:",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_t1 = {
+      width: 0 * screenratio,
+      height: 0 * screenratio,
+      x: canvas.width / 2 - 50 * screenratio,
+      y: canvas.height / 2 - 30 * screenratio,
+      text: "MUSIC:",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_t2 = {
+      width: 0 * screenratio,
+      height: 0 * screenratio,
+      x: canvas.width / 2 + 50 * screenratio,
+      y: canvas.height / 2 - 110 * screenratio,
+      text: ship.soundMultiplier,
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_t3 = {
+      width: 0 * screenratio,
+      height: 0 * screenratio,
+      x: canvas.width / 2 + 50 * screenratio,
+      y: canvas.height / 2 - 30 * screenratio,
+      text: ship.musicMultiplier,
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b0 = {
+      width: 25 * screenratio,
+      height: 25 * screenratio,
+      x: canvas.width / 2 + 100 * screenratio,
+      y: canvas.height / 2 - 145 * screenratio,
+      text: "🡅",
+      button: "sound",
+      textSize: 20 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b1 = {
+      width: 25 * screenratio,
+      height: 25 * screenratio,
+      x: canvas.width / 2 + 100 * screenratio,
+      y: canvas.height / 2 - 110 * screenratio,
+      text: "🡇",
+      button: "sound",
+      textSize: 20 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b2 = {
+      width: 25 * screenratio,
+      height: 25 * screenratio,
+      x: canvas.width / 2 + 100 * screenratio,
+      y: canvas.height / 2 - 62 * screenratio,
+      text: "🡅",
+      button: "music",
+      textSize: 20 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b3 = {
+      width: 25 * screenratio,
+      height: 25 * screenratio,
+      x: canvas.width / 2 + 100 * screenratio,
+      y: canvas.height / 2 - 27 * screenratio,
+      text: "🡇",
+      button: "music",
+      textSize: 20 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b4 = {
+      width: 250 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 125 * screenratio,
+      y: canvas.height / 2 + 25 * screenratio,
+      text: "BACK",
+      button: "BACK",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu = [
+      this.optionsMenu_box0,
+      this.optionsMenu_box1,
+      this.optionsMenu_t0,
+      this.optionsMenu_t1,
+      this.optionsMenu_t2,
+      this.optionsMenu_t3,
+      this.optionsMenu_b0,
+      this.optionsMenu_b1,
+      this.optionsMenu_b2,
+      this.optionsMenu_b3,
+      this.optionsMenu_b4,
+    ];
 
     this.gameOverMenuWindow = {
       width: 550 * screenratio,
@@ -165,7 +291,7 @@ var UI = {
     };
     this.menuList = [
       this.mainMenu,
-      this.multiplayerMenu,
+      this.optionsMenu,
       this.gameOverMenu,
       this.youWinMenu,
     ];
@@ -385,6 +511,12 @@ var UI = {
       ctx.globalAlpha = UI.levelDisplay.opacity;
       ctx.textAlign = "center";
       ctx.font = UI.levelDisplay.textSize + "px FFFFORWA";
+      ctx.strokeStyle = "black";
+      ctx.strokeText(
+        UI.levelDisplay.text,
+        UI.levelDisplay.x,
+        UI.levelDisplay.y
+      );
       ctx.fillStyle = UI.levelDisplay.color;
       ctx.fillText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y); //text on screen
       ctx.globalAlpha = 1;
@@ -461,30 +593,10 @@ var UI = {
     dialogueList = dialogueList.filter(
       (index) => index.ttl > 0 && index.opacity > 0
     );
-    if (dialogueList.length > 0) {
-      ctx.globalAlpha = 1;
-      ctx.drawImage(
-        sprite.UI_dialogueBG,
-        0,
-        canvas.height - 170 * screenratio,
-        500 * screenratio,
-        170 * screenratio
-      );
-    }
     dialogueList.forEach((dia) => {
       dia.update_render();
     });
     dialogueHandler();
-    if (dialogueList.length > 0) {
-      ctx.globalAlpha = 1;
-      ctx.drawImage(
-        sprite.UI_dialogueBGgrill,
-        0,
-        canvas.height - 170 * screenratio,
-        500 * screenratio,
-        170 * screenratio
-      );
-    }
     ctx.closePath();
   },
   click: function () {
@@ -505,13 +617,49 @@ var UI = {
             if (ship.section > 1 || ship.level > 1) {
               continueTheGame();
             }
-          } else if (index.button == "UPGRADES") {
+          } else if (index.button == "OPTIONS") {
             this.currentMenu = 1;
           }
         }
       });
     } else if (this.currentMenu == 1 && this.inMenu) {
-      //multiplayer
+      this.optionsMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          if (index.button == "BACK") {
+            this.currentMenu = 0;
+          }
+          if (index.button == "sound") {
+            if (index.text == "🡅" && ship.soundMultiplier < 10) {
+              ship.soundMultiplier++;
+            } else if (index.text == "🡇" && ship.soundMultiplier > 0) {
+              ship.soundMultiplier--;
+            }
+            gameAudio.setVolume();
+            gameAudio.BASIC.load();
+            gameAudio.BASIC.play();
+            this.optionsMenu_t2.text = ship.soundMultiplier;
+          } else if (index.button == "music") {
+            if (index.text == "🡅" && ship.musicMultiplier < 10) {
+              ship.musicMultiplier++;
+            } else if (index.text == "🡇" && ship.soundMultiplier > 0) {
+              ship.musicMultiplier--;
+            }
+            gameAudio.setVolume();
+            gameAudio.BASIC.load();
+            gameAudio.BASIC.play();
+            this.optionsMenu_t3.text = ship.musicMultiplier;
+          }
+          saveLocalStorage();
+        }
+      });
     } else if (this.currentMenu == 2 && this.inMenu) {
       this.gameOverMenu.forEach((index) => {
         if (
@@ -569,7 +717,6 @@ var UI = {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;
-          } else if (index.button == "MULTIPLAYER") {
           } else if (index.button != "CONTINUE") {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
@@ -582,7 +729,25 @@ var UI = {
         }
       });
     } else if (this.currentMenu == 1) {
-      //multiplayer
+      this.optionsMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
     } else if (this.currentMenu == 2) {
       this.gameOverMenu.forEach((index) => {
         if (

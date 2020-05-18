@@ -61,6 +61,6 @@ function saveLocalStorage() {
 }
 
 function resetLocalStorage() {
-  ship = new DefaultShip();
+  ship = new DefaultSetup();
   localStorage.ship = JSON.stringify(ship);
 }

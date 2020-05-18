@@ -15,8 +15,6 @@ const sprite = {
   UI_cursorNoFire: new Image(),
   UI_HPpanel: new Image(),
   UI_durationPanel: new Image(),
-  UI_dialogueBG: new Image(),
-  UI_dialogueBGgrill: new Image(),
   UI_motherboard: new Image(),
   UI_motherboardRay: new Image(),
   UI_motherboardAngela: new Image(),
@@ -38,7 +36,7 @@ const weaponDatabase = {
     speed: 15,
     width: 5,
     height: 50,
-    cooldown: 150,
+    cooldown: 200,
     duration: 0,
     color: "#5C7CFF",
     status: "DEFAULT",
@@ -142,7 +140,7 @@ const weaponDatabase = {
   },
 };
 
-class DefaultShip {
+class DefaultSetup {
   constructor() {
     this.name = "SCOUT";
     this.speed = 10;
@@ -156,6 +154,8 @@ class DefaultShip {
     this.maxHP = [10, 5];
     this.section = 1;
     this.level = 1;
+    this.musicMultiplier = 5;
+    this.soundMultiplier = 5;
   }
 }
 

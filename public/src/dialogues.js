@@ -3,13 +3,9 @@ class Dialogue {
   constructor(
     text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.",
     color = "white",
-    startingIndex = 0
+    startingIndex = 0,
+    part = 0
   ) {
-    dialogueList.forEach((index) => {
-      index.y -= 30 * screenratio;
-      if (index.opacity >= 0.2) index.opacity -= 0.2;
-      else index.opacity = 0;
-    });
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
     this.displayText = [""];
@@ -17,45 +13,40 @@ class Dialogue {
     this.ttl = 420;
     this.timeToType = 1;
     this.opacity = 1;
-    this.y = canvas.height - 25 * screenratio;
-    this.leadingElement = true;
+    this.y = canvas.height / 2 + 200 * screenratio + 35 * part;
+    this.leadingRow = true;
     this.color = color;
+    this.part = part;
   }
   update_render = function () {
     this.ttl--;
     if (this.ttl < 100 && this.opacity > 0)
       this.opacity = Math.floor((this.opacity - 0.01) * 100) / 100;
-    if (this.text[this.stringIndex] == "#" && this.leadingElement) {
-      this.leadingElement = false;
-      this.displayText.splice(this.displayText.length - 1, 1);
+    if (this.text[this.stringIndex] == "#" && this.leadingRow) {
+      this.leadingRow = false;
       dialogueList.push(
-        new Dialogue(this.text, this.color, this.stringIndex + 1)
+        new Dialogue(this.text, this.color, this.stringIndex + 1, ++this.part)
       );
-    } else if (this.leadingElement) {
+    } else if (this.leadingRow) {
       this.typingSequence();
     }
     ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.font = 28 * screenratio + "px Consolas";
-    ctx.textAlign = "left";
+
+    ctx.font = 20 * screenratio + "px FFFFORWA";
+    ctx.textAlign = "center";
     ctx.globalAlpha = this.opacity;
-    ctx.fillText(this.displayText.join(""), 10, this.y);
+    ctx.strokeStyle = "black";
+    ctx.strokeText(this.displayText.join(""), canvas.width / 2, this.y);
+    ctx.fillStyle = this.color;
+    ctx.fillText(this.displayText.join(""), canvas.width / 2, this.y);
     ctx.closePath();
   };
   typingSequence = function () {
-    if (this.stringIndex < this.text.length) {
-      this.timeToType--;
-      if (this.timeToType == 0) {
-        this.displayText[this.stringIndex] = this.text[this.stringIndex];
-        this.displayText.push("|");
-        this.timeToType = 5;
-        this.stringIndex++;
-      }
-    } else {
-      this.timeToType--;
-      if (this.timeToType == 0) {
-        this.displayText.splice(this.displayText.length - 1, 1);
-      }
+    this.timeToType--;
+    if (this.timeToType == 0) {
+      this.displayText.push(this.text[this.stringIndex]);
+      this.timeToType = 5;
+      this.stringIndex++;
     }
   };
 }
@@ -67,13 +58,15 @@ const defaultDialogueData = {
       "A>More of them are coming.#Brace yourself, Defender.",
     ],
     color: ["yellow", "white"],
-    triggerType: ["timer", "wave"],
-    triggerIndex: [240, 1],
+    triggerType: ["timer", "splice"], //timer - level timer, wave - start of a wave, splice - goes right after a specific dialogue
+    triggerIndex: [240, "I"],
   },
 };
 
+var splicedText = "";
 function pushDialogue(index) {
   let dialogueLevel = dialogueData["level_" + ship.level];
+  splicedText = dialogueLevel.text[index];
   dialogueList.push(
     new Dialogue(
       dialogueLevel.text.splice(index, 1)[0],
@@ -96,6 +89,13 @@ function dialogueHandler() {
     } else if (dialogueLevel.triggerType[i] == "wave") {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.waves)
         pushDialogue(i);
+    } else if (
+      dialogueLevel.triggerType[i] == "splice" &&
+      dialogueList.length == 0
+    ) {
+      if (splicedText.charAt(0) == dialogueLevel.triggerIndex) {
+        pushDialogue(i);
+      }
     }
   }
 }

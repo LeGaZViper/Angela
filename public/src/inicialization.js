@@ -106,6 +106,7 @@ function loadTheGame(callback) {
   background.inicialize();
   backgroundParticles.inicialize();
   camera.inicialize();
+  gameAudio.setVolume();
   if (multiplayer) player2.inicialize();
   UI.inicialize();
   //Disabling rightclick popup

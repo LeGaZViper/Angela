@@ -113,6 +113,8 @@ function gameLoop() {
       if (p.leftMouseDown) {
         //shooting
         if (!p.attackCD && p.HP[1] > 0) {
+          gameAudio.BASIC.load();
+          gameAudio.BASIC.play();
           bulletList.push(bullet({}, p, p.weapon.bullets));
           p.attackCDstart();
         }
@@ -154,10 +156,12 @@ function gameLoop() {
         bulletList.forEach((b) => {
           //Collision with enemies
           if (collides(e, b)) {
-            if (e.HP > 0) {
+            if (e.HP > 0 && !b.killed) {
               if (b.explosive && !b.explosion_triggered) b.explode();
               else if ((!b.piercing || !e.piercingCD) && !b.explosive) {
                 e.HP -= b.damage;
+                gameAudio.enemy_hit.load();
+                gameAudio.enemy_hit.play();
                 damageNumberList.push(new DamageNumber(b.damage, e.x, e.y));
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;

@@ -1,6 +1,8 @@
 //Check for total of enemies on the map | used in: win condition
 async function checkDeath(enemy, bulletName) {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
+    gameAudio.enemy_death.load();
+    gameAudio.enemy_death.play();
     enemy.deathAnimation = true;
     if (enemy.cache != undefined) {
       for (let i = 0; i < enemy.cache[1]; i++) {
@@ -309,14 +311,14 @@ function enemyCharacter(E) {
     E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
       E.deathAnimation_countdown += 1;
-      if (E.deathAnimation_countdown % 7 == 0) {
+      if (E.deathAnimation_countdown % 3 == 0) {
         E.deathAnimation_angle = Math.random() * 2 * Math.PI;
         E.deathAnimation_index += 1;
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(E.x, E.y);
-      //ctx.rotate(E.deathAnimation_angle);
+      ctx.rotate(E.deathAnimation_angle);
       ctx.drawImage(
         E.sprite,
         E.widthOnPic * E.deathAnimation_index,
