@@ -30,6 +30,7 @@ async function spawn() {
 
 let enemySpawnList = [];
 var levels_handler = {
+  waveCounter: 1,
   level: {},
   levelCreator: function () {
     let detMatrix = [
@@ -42,7 +43,7 @@ var levels_handler = {
       if (
         index != "waves" &&
         index != "startTime" &&
-        this.level[index][2] == this.level.waves
+        this.level[index][2] == this.waveCounter
       ) {
         for (let i = 0; i < this.level[index][0]; i++) {
           let randomPosArray = detMatrix[Math.floor(Math.random() * 4)];
@@ -87,7 +88,7 @@ function levelLayout(L) {
     if (ship.level == 1) {
       L.waves = 2;
       L.startTime = 3000;
-      L.smallCube = [1, 1, 2];
+      L.smallCube = [1, 1, 1];
       L.largeCube = [0 + ship.level, 1, 2];
     }
     //L.test = [5, 1];

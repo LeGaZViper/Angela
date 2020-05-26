@@ -23,8 +23,8 @@ function gameLoop() {
     UI.menu_render(UI.menuList[UI.currentMenu]);
     //getting into menu after win??? -- needs to be worked on
   } else if (levels_handler.level.total == 0) {
-    if (levels_handler.level.waves > 0) {
-      levels_handler.level.waves--;
+    if (levels_handler.level.waves >= levels_handler.waveCounter) {
+      levels_handler.waveCounter++;
       levels_handler.levelCreator();
       spawn();
     } else {

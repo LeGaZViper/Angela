@@ -8,9 +8,14 @@ class Dialogue {
   ) {
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
+    if (color == "white") {
+      this.sound = gameAudio.typing_angela;
+    } else {
+      this.sound = gameAudio.typing_system;
+    }
     this.displayText = [""];
     this.stringIndex = startingIndex;
-    this.ttl = 420;
+    this.ttl = 400;
     this.timeToType = 1;
     this.opacity = 1;
     this.y = canvas.height / 2 + 200 * screenratio + 35 * part;
@@ -21,17 +26,16 @@ class Dialogue {
   update_render = function () {
     this.ttl--;
     if (this.ttl < 100 && this.opacity > 0)
-      this.opacity = Math.floor((this.opacity - 0.01) * 100) / 100;
+      this.opacity = Math.floor((this.opacity - 0.02) * 100) / 100;
     if (this.text[this.stringIndex] == "#" && this.leadingRow) {
       this.leadingRow = false;
       dialogueList.push(
         new Dialogue(this.text, this.color, this.stringIndex + 1, ++this.part)
       );
-    } else if (this.leadingRow) {
+    } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
     }
     ctx.beginPath();
-
     ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
     ctx.globalAlpha = this.opacity;
@@ -44,6 +48,8 @@ class Dialogue {
   typingSequence = function () {
     this.timeToType--;
     if (this.timeToType == 0) {
+      this.sound.load();
+      this.sound.play();
       this.displayText.push(this.text[this.stringIndex]);
       this.timeToType = 5;
       this.stringIndex++;
@@ -87,7 +93,7 @@ function dialogueHandler() {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
         pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "wave") {
-      if (dialogueLevel.triggerIndex[i] == levels_handler.level.waves)
+      if (dialogueLevel.triggerIndex[i] == levels_handler.waveCounter)
         pushDialogue(i);
     } else if (
       dialogueLevel.triggerType[i] == "splice" &&

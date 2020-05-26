@@ -53,6 +53,7 @@ function inicializeGame() {
     playerList.push(player2);
   } else {
     enemySpawnList = [];
+    levels_handler.waveCounter = 1;
     levels_handler.level = levelLayout({});
     levels_handler.levelCreator();
   }
