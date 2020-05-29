@@ -354,6 +354,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
+        gameAudio.enemy_bullet.play();
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
       }
     } else if (E.behaviour == "mine") {
@@ -375,6 +376,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
+        gameAudio.enemy_bullet.play();
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC", "none"));
       }
     } else if (E.behaviour == "chase") {
@@ -402,6 +404,7 @@ function enemyCharacter(E) {
           E.speed = 0;
           if (!E.attackCD) {
             E.attackCDstart();
+            gameAudio.enemy_bullet.play();
             enemyBulletList.push(
               enemyBullet({ x: E.x, y: E.y }, "BASIC", E.target)
             );

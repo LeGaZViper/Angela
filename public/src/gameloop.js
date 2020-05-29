@@ -86,6 +86,8 @@ function gameLoop() {
       ) {
         if (player.shield[1] > 0) player.shield[1] -= eb.damage;
         else player.HP[1] -= eb.damage;
+        gameAudio.player_hit.load();
+        gameAudio.player_hit.play();
         eb.killed = true;
         player.hitCD = true;
         player.hitCDstart(1, "bullet");
@@ -113,8 +115,8 @@ function gameLoop() {
       if (p.leftMouseDown) {
         //shooting
         if (!p.attackCD && p.HP[1] > 0) {
-          gameAudio.BASIC.load();
-          gameAudio.BASIC.play();
+          gameAudio.player_BASIC.load();
+          gameAudio.player_BASIC.play();
           bulletList.push(bullet({}, p, p.weapon.bullets));
           p.attackCDstart();
         }
@@ -146,6 +148,8 @@ function gameLoop() {
               if (player.shield[1] > 0) player.shield[1] -= 1;
               else player.HP[1] -= 1;
               player.collisionCD = true;
+              gameAudio.player_hit.load();
+              gameAudio.player_hit.play();
               if (player.HP[1] > 0) {
                 player.hitCDstart(1, "collision");
               }

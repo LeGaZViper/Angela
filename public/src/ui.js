@@ -643,8 +643,8 @@ var UI = {
               ship.soundMultiplier--;
             }
             gameAudio.setVolume();
-            gameAudio.BASIC.load();
-            gameAudio.BASIC.play();
+            gameAudio.player_BASIC.load();
+            gameAudio.player_BASIC.play();
             this.optionsMenu_t2.text = ship.soundMultiplier;
           } else if (index.button == "music") {
             if (index.text == "🡅" && ship.musicMultiplier < 10) {
@@ -653,8 +653,8 @@ var UI = {
               ship.musicMultiplier--;
             }
             gameAudio.setVolume();
-            gameAudio.BASIC.load();
-            gameAudio.BASIC.play();
+            gameAudio.player_BASIC.load();
+            gameAudio.player_BASIC.play();
             this.optionsMenu_t3.text = ship.musicMultiplier;
           }
           saveLocalStorage();
