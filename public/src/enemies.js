@@ -23,7 +23,7 @@ async function checkDeath(enemy, bulletName) {
                 (Math.random() >= 0.5 ? 1 : -1),
             randomDrop: false,
             spawnCD: 0,
-            ...enemyDatabase[enemy.cache[0]],
+            ...EnemyData[enemy.cache[0]],
           })
         );
         levels_handler.level.total += 1;

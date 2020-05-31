@@ -37,7 +37,6 @@ function inicializeGame() {
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   UI.levelDisplayCheck = true;
   levelTimer = 0;
-  dialogueData = defaultDialogueData;
   dialogueList = [];
   bulletList = [];
   enemyList = [];

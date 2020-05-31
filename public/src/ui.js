@@ -216,9 +216,9 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "CONTINUE",
+      text: "BACK TO MENU",
       textSize: 30 * screenratio,
-      button: "CONTINUE",
+      button: "BACKTOMENU",
       opacity: 1,
       color: ["grey", "black", "white"],
     };
@@ -299,7 +299,7 @@ var UI = {
   },
   menu_render: function (menu) {
     this.hover();
-    if (ship.section > 1 || ship.level > 1) {
+    if (ship.level > 0) {
       this.mainMenu_b1.opacity = 1;
     } else {
       this.mainMenu_b1.opacity = 0.5;
@@ -614,7 +614,7 @@ var UI = {
           if (index.button == "NEW GAME") {
             startTheGame();
           } else if (index.button == "CONTINUE") {
-            if (ship.section > 1 || ship.level > 1) {
+            if (ship.level > 0) {
               continueTheGame();
             }
           } else if (index.button == "OPTIONS") {
@@ -689,10 +689,8 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
-          if (index.button == "UPGRADES") {
-            this.currentMenu = 1;
-          } else if (index.button == "CONTINUE") {
-            continueTheGame();
+          if (index.button == "BACKTOMENU") {
+            this.currentMenu = 0;
           }
         }
       });
@@ -710,10 +708,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
-          if (
-            index.button == "CONTINUE" &&
-            (ship.section > 1 || ship.level > 1)
-          ) {
+          if (index.button == "CONTINUE" && ship.level > 0) {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;

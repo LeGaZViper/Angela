@@ -1,7 +1,7 @@
 //Start the game function | used in: main menu
 function startTheGame() {
   //Reset Progress
-  if (ship.section > 1 || ship.level > 1) {
+  if (ship.level > 0) {
     if (
       confirm(
         "Are you sure you want to start a new game?\nYour current progress will reset!"
@@ -41,19 +41,25 @@ function loseTheGame() {
   getMenu(2);
 }
 //Win the game function | used in: gameloop ~ all enemies dead
-function winTheGame() {
+function winTheLevel() {
   player.inWeaponActivation = false;
-  player.inicialize(0, 50);
-  camera.inicialize();
-  background.inicialize();
-  backgroundParticles.inicialize();
-  if (ship.level < 6) ship.level += 1;
-  else {
-    ship.level = 1;
-    ship.section += 1;
-  }
+  ship.level += 1;
   saveLocalStorage();
-  getMenu(3);
+  weaponActivation.inicialize();
+  randomDropList = [];
+  dialogueList = [];
+  textIndex = NaN;
+  levelTimer = 0;
+  enemySpawnList = [];
+  nextLevel();
+}
+
+function nextLevel() {
+  UI.levelDisplayCheck = true;
+  levels_handler.waveCounter = 1;
+  levels_handler.level = levelLayout({});
+  levels_handler.levelCreator();
+  spawn();
 }
 
 function saveLocalStorage() {

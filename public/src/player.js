@@ -90,7 +90,7 @@ var player = {
     else player.sprite = sprite.player_scout2;
 
     player.leftMouseDown = false;
-    player.weapon = weaponDatabase.BASIC;
+    player.weapon = WeaponData.BASIC;
     player.weaponDuration = 0;
     player.inWeaponActivation = false;
   },
@@ -317,7 +317,7 @@ var player2 = {
     this.particlesWidth = 1;
     this.particlesHeight = 0.2;
     this.leftMouseDown = false;
-    this.weapon = weaponDatabase.BASIC;
+    this.weapon = WeaponData.BASIC;
     this.maxHP = ship.maxHP;
     this.HP = [this.maxHP[0], this.maxHP[1]];
     this.attackCD = false;

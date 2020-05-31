@@ -1,11 +1,6 @@
 var dialogueList = [];
 class Dialogue {
-  constructor(
-    text = "A:>This is a very long text that#I just wrote but that's okay#cuz I'm the best.",
-    color = "white",
-    startingIndex = 0,
-    part = 0
-  ) {
+  constructor(text, color, startingIndex = 0, part = 0) {
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
     if (color == "white") {
@@ -57,35 +52,17 @@ class Dialogue {
   };
 }
 
-const defaultDialogueData = {
-  level_1: {
-    text: [
-      "INTRUDERS DETECTED.#DEFENCES ONLINE.#TASK: PROTECT THE CORE.",
-      "A>More of them are coming.#Brace yourself, Defender.",
-    ],
-    color: ["yellow", "white"],
-    triggerType: ["timer", "splice"], //timer - level timer, wave - start of a wave, splice - goes right after a specific dialogue
-    triggerIndex: [240, "I"],
-  },
-};
-
-var splicedText = "";
+var textIndex;
 function pushDialogue(index) {
-  let dialogueLevel = dialogueData["level_" + ship.level];
-  splicedText = dialogueLevel.text[index];
+  let dialogueLevel = DialogueData["level_" + ship.level];
+  textIndex = index;
   dialogueList.push(
-    new Dialogue(
-      dialogueLevel.text.splice(index, 1)[0],
-      dialogueLevel.color.splice(index, 1)[0]
-    )
+    new Dialogue(dialogueLevel.text[index], dialogueLevel.color[index])
   );
-  dialogueLevel.triggerType.splice(index, 1);
-  dialogueLevel.triggerIndex.splice(index, 1);
 }
 
-var dialogueData;
 function dialogueHandler() {
-  let dialogueLevel = dialogueData["level_" + ship.level];
+  let dialogueLevel = DialogueData["level_" + ship.level];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
     if (dialogueLevel.triggerType[i] == "timer") {
       if (dialogueLevel.triggerIndex[i] == levelTimer) pushDialogue(i);
@@ -96,10 +73,10 @@ function dialogueHandler() {
       if (dialogueLevel.triggerIndex[i] == levels_handler.waveCounter)
         pushDialogue(i);
     } else if (
-      dialogueLevel.triggerType[i] == "splice" &&
+      dialogueLevel.triggerType[i] == "after" &&
       dialogueList.length == 0
     ) {
-      if (splicedText.charAt(0) == dialogueLevel.triggerIndex) {
+      if (dialogueLevel.triggerIndex[i] == textIndex) {
         pushDialogue(i);
       }
     }

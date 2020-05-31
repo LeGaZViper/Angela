@@ -1,7 +1,8 @@
 //spawner of enemies
 async function spawn() {
   if (levelTimer == 0) {
-    UI.levelDisplay.text = ship.section + "-" + ship.level;
+    UI.levelDisplay.text =
+      Math.floor(ship.level / 3) + 1 + "-" + ((ship.level % 3) + 1);
     for (let i = 1; i <= 400; i++) {
       if (i <= 100) {
         UI.levelDisplay.opacity = i / 100;
@@ -20,7 +21,7 @@ async function spawn() {
         y: enemySpawnList[i].y * screenratio + player.earthY,
         randomDrop: enemySpawnList[i].randromDrop,
         spawnCD: enemySpawnList[i].spawnCD,
-        ...enemyDatabase[enemySpawnList[i].type],
+        ...EnemyData[enemySpawnList[i].type],
       })
     );
     await sleep(enemySpawnList[i].spawnCD);
@@ -84,14 +85,15 @@ var levels_handler = {
 };
 
 function levelLayout(L) {
-  if (ship.section == 1) {
-    if (ship.level == 1) {
-      L.waves = 2;
-      L.startTime = 3000;
-      L.smallCube = [1, 1, 1];
-      L.largeCube = [0 + ship.level, 1, 2];
-    }
-    //L.test = [5, 1];
+  if (ship.level == 0) {
+    L.waves = 1;
+    L.startTime = 3000;
+    L.smallCube = [1, 1, 1];
+  } else if (ship.level == 1) {
+    L.waves = 1;
+    L.startTime = 0;
+    L.largeCube = [1, 1, 1];
   }
+  //L.test = [5, 1];
   return L;
 }

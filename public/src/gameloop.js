@@ -28,9 +28,7 @@ function gameLoop() {
       levels_handler.levelCreator();
       spawn();
     } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      background.update_render();
-      winTheGame();
+      winTheLevel();
     }
     //game sector
   } else if ((!multiplayer || frame) && (multiplayer || !frame)) {

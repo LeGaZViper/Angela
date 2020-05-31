@@ -1,8 +1,8 @@
 //Weapon choosing function | used in weapons
 function chooseWeapon(name) {
-  for (var index in weaponDatabase) {
-    if (weaponDatabase[index].name == name) {
-      player.weapon = weaponDatabase[index];
+  for (var index in WeaponData) {
+    if (WeaponData[index].name == name) {
+      player.weapon = WeaponData[index];
       player.weaponDuration =
         player.weapon.duration +
         (player.weapon.duration * ship.weaponDuration) / 5;
@@ -158,9 +158,9 @@ function randomDrop(R) {
   R.animationIndex = 0;
   R.timeIndex = 0;
   let choose = Math.floor(Math.random() * 6) + 1;
-  for (let index in weaponDatabase) {
-    if (choose == weaponDatabase[index].index) {
-      R.name = weaponDatabase[index].name;
+  for (let index in WeaponData) {
+    if (choose == WeaponData[index].index) {
+      R.name = WeaponData[index].name;
     }
   }
   R.update = function () {

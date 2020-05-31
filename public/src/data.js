@@ -25,8 +25,27 @@ const sprite = {
   UI_drop: new Image(),
 };
 
+const DialogueData = {
+  level_0: {
+    text: [
+      "INTRUDERS DETECTED.#DEFENCES ONLINE.#TASK: PROTECT THE CORE.",
+      "A>More of them are coming.#Brace yourself, Defender.",
+      "Testing biach",
+    ],
+    color: ["yellow", "white", "white"],
+    triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 1],
+  },
+  level_1: {
+    text: ["Testing level 1", "More testing.", "Testing biach"],
+    color: ["yellow", "white", "white"],
+    triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 1],
+  },
+};
+
 //Default database for ingame weapons | used in: first inicialization
-const weaponDatabase = {
+const WeaponData = {
   BASIC: {
     index: 0,
     sprite: sprite.projectile_BASIC,
@@ -152,8 +171,7 @@ class DefaultSetup {
     this.particles = [22, 2, 30, 0, 0.05];
     this.maxShield = [10, 5];
     this.maxHP = [10, 5];
-    this.section = 1;
-    this.level = 1;
+    this.level = 0;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
   }
@@ -165,7 +183,7 @@ ENEMY IDEAS:
   cell
 */
 
-const enemyDatabase = {
+const EnemyData = {
   test: {
     type: "buzz",
     behaviour: "ignore",
