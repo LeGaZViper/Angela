@@ -252,9 +252,9 @@ var UI = {
     this.HPbar_player = { color: "" };
     this.HPbar_earth = { color: "" };
     this.HPpanel = {
-      width: 250 * screenratio,
+      width: 260 * screenratio,
       height: 96 * screenratio,
-      x: canvas.width - 250 * screenratio,
+      x: canvas.width - 260 * screenratio,
       y: 0,
       sprite: sprite.UI_HPpanel,
     };
@@ -487,6 +487,13 @@ var UI = {
       this.HPpanel.y,
       this.HPpanel.width,
       this.HPpanel.height
+    );
+    ctx.fillStyle = "#5C7CFF";
+    ctx.font = 13 * screenratio + "px FFFFORWA";
+    ctx.fillText(
+      player.shipLives + "x",
+      canvas.width - 195 * screenratio,
+      67 * screenratio
     );
     this.cursorIndex +=
       0.001 *

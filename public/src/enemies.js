@@ -1,5 +1,5 @@
 //Check for total of enemies on the map | used in: win condition
-async function checkDeath(enemy, bulletName) {
+async function checkDeath(enemy, bulletType = "none") {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
     gameAudio.enemy_death.load();
     gameAudio.enemy_death.play();
@@ -29,7 +29,7 @@ async function checkDeath(enemy, bulletName) {
         levels_handler.level.total += 1;
       }
     }
-    if (bulletName == "SPREADER" && bulletList.length < 300) {
+    if (bulletType == "SPREADER" && bulletList.length < 300) {
       for (let i = 0; i < 16; i++) {
         bulletList.push(
           bullet(
@@ -57,10 +57,11 @@ var enemyBulletList = [];
 function enemyBullet(B, type, target) {
   B.ttl = 300;
   B.killed = false;
-  B.damage = 1;
   B.speed = 15 * screenratio;
   B.opacity = 1;
   if (type == "BASIC") {
+    B.damage = 20;
+    B.speed = 15 * screenratio;
     B.sprite = sprite.projectile_enemyBASIC;
     if (target == "none") {
       B.dirx = player.earthX - B.x;
@@ -71,6 +72,19 @@ function enemyBullet(B, type, target) {
     }
     B.width = 5 * screenratio;
     B.height = 50 * screenratio;
+  } else if (type == "MINIBASIC") {
+    B.damage = 10;
+    B.speed = 10 * screenratio;
+    B.sprite = sprite.projectile_enemyBASIC;
+    if (target == "none") {
+      B.dirx = player.earthX - B.x;
+      B.diry = player.earthY - B.y;
+    } else {
+      B.dirx = target.x - B.x;
+      B.diry = target.y - B.y;
+    }
+    B.width = 4 * screenratio;
+    B.height = 25 * screenratio;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -135,7 +149,6 @@ function enemyCharacter(E) {
   E.height *= screenratio;
   E.speed *= screenratio;
   E.defaultSpeed *= screenratio;
-  E.attackCDvalue = 2000;
   E.coordX = player.spaceSize / 2 + E.x - player.earthX;
   E.coordY = player.spaceSize / 2 + E.y - player.earthY;
   E.deathAnimation = false;
@@ -172,12 +185,15 @@ function enemyCharacter(E) {
     E.attack();
     if (!E.inOrbit && E.target == "none") {
       if (
-        E.behaviour != "chase" ||
+        (E.behaviour != "chase" && E.behaviour != "spawn") ||
         ((Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
           Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
-          E.behaviour == "chase")
+          (E.behaviour == "chase" || E.behaviour == "spawn"))
       ) {
         E.randomDirCDcounter = 120;
+        if (E.behaviour == "spawn") {
+          E.randomDirCDCounter = 300;
+        }
         E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
         E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
         let ratio =
@@ -225,7 +241,7 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
   E.render = function () {
-    if (E.animation) {
+    if (E.animation && !E.spawning) {
       E.animationIndex += 1;
       if (E.animationIndex == 60 / E.animationFPS) {
         E.animationIndex = 0;
@@ -354,8 +370,9 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
+        gameAudio.enemy_bullet.load();
         gameAudio.enemy_bullet.play();
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC"));
+        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, E.bulletType));
       }
     } else if (E.behaviour == "mine") {
       if (E.distance < 40 * screenratio && E.HP > 0) {
@@ -367,7 +384,7 @@ function enemyCharacter(E) {
         } else {
           player.HP[0] -= 2;
         }
-        checkDeath(E, "BASIC");
+        checkDeath(E);
       }
     } else if (E.behaviour == "ignore") {
       if (E.distance < 240 * screenratio && !E.arrival) {
@@ -376,8 +393,11 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
+        gameAudio.enemy_bullet.load();
         gameAudio.enemy_bullet.play();
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, "BASIC", "none"));
+        enemyBulletList.push(
+          enemyBullet({ x: E.x, y: E.y }, E.bulletType, "none")
+        );
       }
     } else if (E.behaviour == "chase") {
       playerList.forEach((p) => {
@@ -404,14 +424,48 @@ function enemyCharacter(E) {
           E.speed = 0;
           if (!E.attackCD) {
             E.attackCDstart();
+            gameAudio.enemy_bullet.load();
             gameAudio.enemy_bullet.play();
             enemyBulletList.push(
-              enemyBullet({ x: E.x, y: E.y }, "BASIC", E.target)
+              enemyBullet({ x: E.x, y: E.y }, E.bulletType, E.target)
             );
           }
         } else {
           E.speed = E.defaultSpeed;
         }
+      }
+    } else if (E.behaviour == "spawn") {
+      if (E.spawning) E.spawnSummonTick();
+      E.chaseDistance = Math.abs(player.x - E.x) + Math.abs(player.y - E.y);
+      if (E.chaseDistance < 500 * screenratio && !E.spawning && !E.attackCD) {
+        E.spawning = true;
+        E.speed = 0;
+        E.attackCDstart();
+      } else {
+        E.speed = E.defaultSpeed;
+      }
+    }
+  };
+  E.spawnSummonTick = function () {
+    E.spawnAnimationIndex += 1;
+    if (E.spawnAnimationIndex == 60 / E.spawnAnimationFPS) {
+      E.spawnAnimationIndex = 0;
+      if (E.animationX < E.widthOnPic * (E.spawnAnimationFrames - 1))
+        E.animationX += E.widthOnPic;
+      else {
+        E.spawning = false;
+        enemyList.push(
+          enemyCharacter({
+            randomDirCDcounter: 120,
+            x: E.x,
+            y: E.y,
+            randomDrop: false,
+            spawnCD: 0,
+            ...EnemyData[E.bulletType],
+          })
+        );
+        levels_handler.level.total += 1;
+        E.animationX = 0;
       }
     }
   };

@@ -43,6 +43,7 @@ var playerList = [];
 var player = {
   inicialize: (starterX, starterY) => {
     // in order to change player default pos one needs to change player.coord, player.earth, player.future accordingly
+    player.shipLives = 3;
     player.starterPosX = starterX * screenratio;
     player.starterPosY = starterY * screenratio;
     player.spaceSize = 4000 * screenratio;
@@ -152,7 +153,7 @@ var player = {
       player.speed /
       (Math.abs(xMousePos - canvas.width / 2) +
         Math.abs(yMousePos - canvas.height / 2));
-    if (player.HP[0] <= 0) {
+    if (player.HP[0] <= 0 || player.shipLives == 0) {
       player.speed = 0;
       player.xspeed = 0;
       player.yspeed = 0;
@@ -290,7 +291,7 @@ var player = {
     }
   },
   killedCDstart: async function () {
-    //EXPLOSION
+    player.shipLives--;
     player.opacity[1] = 0.5;
     player.killedCD = true;
     await sleep(5000);

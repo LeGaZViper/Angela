@@ -88,7 +88,7 @@ function levelLayout(L) {
   if (ship.level == 0) {
     L.waves = 1;
     L.startTime = 3000;
-    L.smallCube = [1, 1, 1];
+    L.mail = [1, 1, 1];
   } else if (ship.level == 1) {
     L.waves = 1;
     L.startTime = 0;

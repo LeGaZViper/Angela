@@ -3,6 +3,8 @@ const sprite = {
   enemy_smallCube: new Image(),
   enemy_largeCube: new Image(),
   enemy_buzz: new Image(),
+  enemy_mail: new Image(),
+  enemy_miniArrow: new Image(),
   player_scout: new Image(),
   player_scout2: new Image(),
   projectile_ROCKET: new Image(),
@@ -169,8 +171,8 @@ class DefaultSetup {
     this.heightOnPic = 150;
     this.weaponDuration = 0;
     this.particles = [22, 2, 30, 0, 0.05];
-    this.maxShield = [10, 5];
-    this.maxHP = [10, 5];
+    this.maxShield = [100, 50];
+    this.maxHP = [100, 50];
     this.level = 0;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
@@ -191,6 +193,8 @@ const EnemyData = {
     widthOnPic: 56,
     heightOnPic: 62,
     //Ingame stats
+    attackCDvalue: 2000,
+    bulletType: "BASIC",
     width: 45,
     height: 50,
     speed: 0,
@@ -205,6 +209,8 @@ const EnemyData = {
     sprite: sprite.enemy_smallCube,
     widthOnPic: 75,
     heightOnPic: 75,
+    attackCDvalue: 2000,
+    bulletType: "BASIC",
     width: 60,
     height: 60,
     speed: 5,
@@ -217,6 +223,45 @@ const EnemyData = {
     animationFPS: 12,
     deathAnimationFrames: 9,
   },
+  mail: {
+    type: "mail",
+    behaviour: "spawn",
+    sprite: sprite.enemy_mail,
+    widthOnPic: 90,
+    heightOnPic: 90,
+    attackCDvalue: 5000,
+    bulletType: "miniArrow",
+    width: 90,
+    height: 90,
+    speed: 3,
+    defaultSpeed: 3,
+    HP: 12,
+    maxHP: 12,
+    particles: [0, 0, 0, 0, 0],
+    animation: false,
+    spawnAnimationFrames: 5,
+    spawnAnimationFPS: 6,
+    spawnAnimationIndex: 0,
+    deathAnimationFrames: 0,
+  },
+  miniArrow: {
+    type: "miniArrow",
+    behaviour: "chase",
+    sprite: sprite.enemy_miniArrow,
+    widthOnPic: 40,
+    heightOnPic: 40,
+    attackCDvalue: 2000,
+    bulletType: "MINIBASIC",
+    width: 40,
+    height: 40,
+    speed: 5,
+    defaultSpeed: 5,
+    HP: 3,
+    maxHP: 3,
+    particles: [0, 0, 0, 0, 0],
+    animation: false,
+    deathAnimationFrames: 0,
+  },
   largeCube: {
     type: "largeCube",
     behaviour: "ignore",
@@ -224,6 +269,8 @@ const EnemyData = {
     cache: ["smallCube", 3],
     widthOnPic: 150,
     heightOnPic: 150,
+    attackCDvalue: 2000,
+    bulletType: "BASIC",
     width: 150,
     height: 150,
     speed: 2,
