@@ -206,7 +206,7 @@ var UI = {
       height: 250 * screenratio,
       x: canvas.width / 2 - 275 * screenratio,
       y: canvas.height / 2 - 150 * screenratio,
-      text: "Level completed!",
+      text: "GAME COMPLETED!",
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["#4C4C4C", "black", "white"],
@@ -223,6 +223,45 @@ var UI = {
       color: ["grey", "black", "white"],
     };
     this.youWinMenu = [this.youWinMenuWindow, this.youWinMenu_b0];
+
+    this.pauseMenuWindow = {
+      width: 550 * screenratio,
+      height: 250 * screenratio,
+      x: canvas.width / 2 - 275 * screenratio,
+      y: canvas.height / 2 - 150 * screenratio,
+      text: "GAME PAUSED.",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["#4C4C4C", "black", "white"],
+    };
+    this.pauseMenu_b0 = {
+      width: 250 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 265 * screenratio,
+      y: canvas.height / 2 + 40 * screenratio,
+      text: "BACK TO MENU",
+      textSize: 30 * screenratio,
+      button: "BACKTOMENU",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.pauseMenu_b1 = {
+      width: 250 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 + 15 * screenratio,
+      y: canvas.height / 2 + 40 * screenratio,
+      text: "RESUME",
+      textSize: 30 * screenratio,
+      button: "RESUME",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.pauseMenu = [
+      this.pauseMenuWindow,
+      this.pauseMenu_b0,
+      this.pauseMenu_b1,
+    ];
 
     this.levelDisplay = {
       x: canvas.width / 2,
@@ -294,6 +333,7 @@ var UI = {
       this.optionsMenu,
       this.gameOverMenu,
       this.youWinMenu,
+      this.pauseMenu,
     ];
     this.cursorIndex = 0;
   },
@@ -488,8 +528,9 @@ var UI = {
       this.HPpanel.width,
       this.HPpanel.height
     );
-    ctx.fillStyle = "#5C7CFF";
     ctx.font = 13 * screenratio + "px FFFFORWA";
+    ctx.strokeStyle = "#5C7CFF";
+    ctx.fillStyle = "white";
     ctx.fillText(
       player.shipLives + "x",
       canvas.width - 195 * screenratio,
@@ -701,6 +742,30 @@ var UI = {
           }
         }
       });
+    } else if (this.currentMenu == 4 && this.inMenu) {
+      this.pauseMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          if (index.button == "BACKTOMENU") {
+            this.currentMenu = 0;
+            player.inWeaponActivation = false;
+            player.inicialize(0, 50);
+            camera.inicialize();
+            background.inicialize();
+            backgroundParticles.inicialize();
+          } else if (index.button == "RESUME") {
+            canvas.style.cursor = "none";
+            UI.inMenu = false;
+          }
+        }
+      });
     }
   },
   hover: function () {
@@ -785,8 +850,28 @@ var UI = {
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         } else {
-          if (index.text != "Level completed!")
+          if (index.text != "GAME COMPLETED!")
             index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
+    } else if (this.currentMenu == 4) {
+      this.pauseMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          if (index.text != "GAME PAUSED.") index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }

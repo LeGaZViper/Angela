@@ -19,9 +19,8 @@ function gameLoop() {
   //menu sector
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    background.update_render();
+    if (UI.currentMenu != 4) background.update_render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
-    //getting into menu after win??? -- needs to be worked on
   } else if (levels_handler.level.total == 0) {
     if (levels_handler.level.waves >= levels_handler.waveCounter) {
       levels_handler.waveCounter++;
@@ -117,6 +116,18 @@ function gameLoop() {
           gameAudio.player_BASIC.play();
           bulletList.push(bullet({}, p, p.weapon.bullets));
           p.attackCDstart();
+          for (let i = 0; i < player.companions; i++) {
+            bulletList.push(
+              bullet(
+                {
+                  x: player.companionsX[i],
+                  y: player.companionsY[i],
+                  companion: true,
+                },
+                p
+              )
+            );
+          }
         }
       }
     });

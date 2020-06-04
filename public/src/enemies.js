@@ -253,8 +253,8 @@ function enemyCharacter(E) {
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
-    if (!E.inOrbit) ctx.rotate(E.angle);
-    else
+    if (!E.inOrbit && E.type != "mail") ctx.rotate(E.angle);
+    else if (E.type != "mail")
       ctx.rotate(
         Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
       );
@@ -287,7 +287,7 @@ function enemyCharacter(E) {
     ctx.drawImage(
       E.sprite,
       0 + E.animationX,
-      2 * E.heightOnPic + E.particles[0] + 3,
+      2 * E.heightOnPic + E.particles[0],
       E.widthOnPic,
       E.particles[0],
       -E.width / 2,
@@ -298,7 +298,7 @@ function enemyCharacter(E) {
     ctx.drawImage(
       E.sprite,
       0 + E.animationX,
-      E.heightOnPic + E.particles[0] + 2,
+      E.heightOnPic + E.particles[0],
       E.widthOnPic,
       E.heightOnPic,
       -E.width / 2,
@@ -327,14 +327,15 @@ function enemyCharacter(E) {
     E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
       E.deathAnimation_countdown += 1;
-      if (E.deathAnimation_countdown % 3 == 0) {
+      if (E.deathAnimation_countdown % E.deathAnimationFPS == 0) {
         E.deathAnimation_angle = Math.random() * 2 * Math.PI;
         E.deathAnimation_index += 1;
       }
       ctx.beginPath();
       ctx.save();
       ctx.translate(E.x, E.y);
-      ctx.rotate(E.deathAnimation_angle);
+      if (E.type == "smallCube" || E.type == "largeCube")
+        ctx.rotate(E.deathAnimation_angle);
       ctx.drawImage(
         E.sprite,
         E.widthOnPic * E.deathAnimation_index,
@@ -476,8 +477,8 @@ function enemyCharacter(E) {
   };
   E.attackCDstart();
   E.hitCDstart = async function () {
-    E.opacity = 0.51;
-    for (let i = 50; i >= 0; i--) {
+    E.opacity = 0.71;
+    for (let i = 70; i >= 0; i--) {
       if (E.opacity != (i + 1) / 100) {
         break;
       } else {

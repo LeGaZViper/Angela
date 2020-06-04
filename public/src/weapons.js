@@ -204,18 +204,20 @@ function randomDrop(R) {
 //bullets
 var bulletList = [];
 function bullet(B, who, numberOfBullets) {
-  B.x = who.x + 25 * screenratio * Math.cos(who.angle - Math.PI / 2);
-  B.y = who.y + 25 * screenratio * Math.sin(who.angle - Math.PI / 2);
+  if (B.x == undefined) {
+    B.x = who.x + 25 * screenratio * Math.cos(who.angle - Math.PI / 2);
+    B.y = who.y + 25 * screenratio * Math.sin(who.angle - Math.PI / 2);
+  }
   B.ttl = 300;
   B.killed = false;
-  B.damage = who.weapon.damage;
-  B.name = who.weapon.name + "";
+  B.damage = who.weapon.damage * (B.companion ? 0.5 : 1);
+  B.name = who.weapon.name;
   B.speed =
     who.weapon.speed * screenratio +
     Math.abs(who.xspeed) +
     Math.abs(who.yspeed);
-  B.width = who.weapon.width * screenratio;
-  B.height = who.weapon.height * screenratio;
+  B.width = who.weapon.width * screenratio * (B.companion ? 0.5 : 1);
+  B.height = who.weapon.height * screenratio * (B.companion ? 0.5 : 1);
   B.piercing = who.weapon.piercing;
   B.color = who.weapon.color;
   B.hitCD = who.weapon.hitCD;
@@ -270,6 +272,8 @@ function bullet(B, who, numberOfBullets) {
     B.sprite = sprite.projectile_spread;
   } else if (who.weapon.name == "SPREADER_PROJECTILE") {
   } else if ((who.weapon.name = "LASER")) {
+    B.shootingPointX = B.x;
+    B.shootingPointY = B.y;
     B.ttl = 0;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
@@ -278,8 +282,8 @@ function bullet(B, who, numberOfBullets) {
   B.hitBoxY = B.y - B.hitBoxHeight / 2;
   B.update = function () {
     if (B.name == "LASER") {
-      let hitDetectionX = who.x;
-      let hitDetectionY = who.y;
+      let hitDetectionX = B.x;
+      let hitDetectionY = B.y;
       B.dirx = Math.cos(who.angle - Math.PI / 2);
       B.diry = Math.sin(who.angle - Math.PI / 2);
       let ratio = 9 / (Math.abs(B.dirx) + Math.abs(B.diry));
@@ -326,8 +330,8 @@ function bullet(B, who, numberOfBullets) {
       ctx.strokeStyle = B.color;
       ctx.lineWidth = 6 * screenratio;
       ctx.moveTo(
-        who.x + Math.cos(who.angle - Math.PI / 2) * 20 * screenratio,
-        who.y + Math.sin(who.angle - Math.PI / 2) * 20 * screenratio
+        B.shootingPointX + Math.cos(who.angle - Math.PI / 2) * 20 * screenratio,
+        B.shootingPointY + Math.sin(who.angle - Math.PI / 2) * 20 * screenratio
       );
       ctx.lineTo(B.x, B.y);
       ctx.stroke();

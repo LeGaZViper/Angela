@@ -27,6 +27,8 @@ async function userInput(event, which) {
           console.log(err);
         });
       } else document.exitFullscreen();
+    } else if (event.which == 27 && !UI.inMenu) {
+      getMenu(4);
     } else if (
       player.inWeaponActivation &&
       event.which != 16 &&

@@ -7,6 +7,7 @@ const sprite = {
   enemy_miniArrow: new Image(),
   player_scout: new Image(),
   player_scout2: new Image(),
+  player_companion: new Image(),
   projectile_ROCKET: new Image(),
   projectile_BASIC: new Image(),
   projectile_enemyBASIC: new Image(),
@@ -174,6 +175,7 @@ class DefaultSetup {
     this.maxShield = [100, 50];
     this.maxHP = [100, 50];
     this.level = 0;
+    this.companions = 0;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
   }
@@ -221,6 +223,7 @@ const EnemyData = {
     animation: true,
     animationFrames: 5,
     animationFPS: 12,
+    deathAnimationFPS: 60 / 20,
     deathAnimationFrames: 9,
   },
   mail: {
@@ -242,7 +245,8 @@ const EnemyData = {
     spawnAnimationFrames: 5,
     spawnAnimationFPS: 6,
     spawnAnimationIndex: 0,
-    deathAnimationFrames: 0,
+    deathAnimationFPS: 60 / 10,
+    deathAnimationFrames: 6,
   },
   miniArrow: {
     type: "miniArrow",
@@ -259,8 +263,11 @@ const EnemyData = {
     HP: 3,
     maxHP: 3,
     particles: [0, 0, 0, 0, 0],
-    animation: false,
-    deathAnimationFrames: 0,
+    animation: true,
+    animationFrames: 9,
+    animationFPS: 10,
+    deathAnimationFPS: 60 / 10,
+    deathAnimationFrames: 3,
   },
   largeCube: {
     type: "largeCube",
@@ -281,6 +288,7 @@ const EnemyData = {
     animation: true,
     animationFrames: 5,
     animationFPS: 12,
+    deathAnimationFPS: 60 / 20,
     deathAnimationFrames: 9,
   },
 };

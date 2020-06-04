@@ -8,8 +8,6 @@ var camera = {
     this.offSetYNew = 0;
     this.offSetXOld = 0;
     this.offSetYOld = 0;
-    this.offSetStorageX = 0;
-    this.offSetStorageY = 0;
   },
   update: function () {
     let point = Math.atan2(
@@ -94,6 +92,12 @@ var player = {
     player.weapon = WeaponData.BASIC;
     player.weaponDuration = 0;
     player.inWeaponActivation = false;
+    player.companions = ship.companions;
+    player.companionsX = [0, 0, 0];
+    player.companionsY = [0, 0, 0];
+    if (player.companions == 1) player.companionsIndex = [0, 0, 0];
+    else if (player.companions == 2) player.companionsIndex = [0, 180, 0];
+    else player.companionsIndex = [0, 120, 240];
   },
   update: () => {
     //speed calculation
@@ -195,6 +199,24 @@ var player = {
     player.earthY -= camera.offSetY;
     player.x -= camera.offSetX;
     player.y -= camera.offSetY;
+
+    player.companionsIndex.forEach((_random, i) => {
+      player.companionsIndex[i]++;
+      if (player.companionsIndex[i] == 360) player.companionsIndex[i] = 0;
+    });
+
+    for (let i = 0; i < player.companions; i++) {
+      player.companionsX[i] =
+        player.x +
+        50 *
+          screenratio *
+          Math.cos((player.companionsIndex[i] / 180) * Math.PI);
+      player.companionsY[i] =
+        player.y +
+        50 *
+          screenratio *
+          Math.sin((player.companionsIndex[i] / 180) * Math.PI);
+    }
   },
   render: () => {
     player.animationIndex += 1;
@@ -245,8 +267,15 @@ var player = {
       );
     }
     ctx.restore();
-    ctx.stroke();
     ctx.globalAlpha = 1;
+    for (let i = 0; i < player.companions; i++) {
+      ctx.save();
+      ctx.translate(player.companionsX[i], player.companionsY[i]);
+      ctx.rotate(player.angle);
+      ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
+      ctx.restore();
+    }
+    ctx.stroke();
     ctx.closePath();
   },
 
