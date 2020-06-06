@@ -300,7 +300,7 @@ function bullet(B, who, numberOfBullets) {
               hitBoxHeight: 6,
             })
           ) {
-            e.piercingDamageCDstart(B.hitCD);
+            e.piercingDamageCDstart(B.hitCD / (player.companions + 1));
             damageNumberList.push(new DamageNumber(B.damage, e.x, e.y));
             e.HP -= B.damage;
             e.hitCDstart();

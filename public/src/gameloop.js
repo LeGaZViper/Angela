@@ -112,8 +112,12 @@ function gameLoop() {
       if (p.leftMouseDown) {
         //shooting
         if (!p.attackCD && p.HP[1] > 0) {
-          gameAudio.player_BASIC.load();
-          gameAudio.player_BASIC.play();
+          try {
+            gameAudio["player_" + p.weapon.name].load();
+            gameAudio["player_" + p.weapon.name].play();
+          } catch (err) {
+            console.error("Missing an audio file.");
+          }
           bulletList.push(bullet({}, p, p.weapon.bullets));
           p.attackCDstart();
           for (let i = 0; i < player.companions; i++) {

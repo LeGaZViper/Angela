@@ -161,6 +161,7 @@ function enemyCharacter(E) {
   E.animationIndex = 0;
   E.counter = 0;
   E.arrival = false;
+  E.acceleration = 100;
   E.particlesWidth = 1;
   E.particlesHeight = 0.2;
   E.target = "none";
@@ -230,8 +231,9 @@ function enemyCharacter(E) {
 
       E.xspeed = ratio * (E.target.x - E.x);
       E.yspeed = ratio * (E.target.y - E.y);
-      E.x += E.xspeed;
-      E.y += E.yspeed;
+
+      E.x += (E.xspeed * E.acceleration) / 100;
+      E.y += (E.yspeed * E.acceleration) / 100;
       E.coordX += E.xspeed;
       E.coordY += E.yspeed;
     }
@@ -416,13 +418,16 @@ function enemyCharacter(E) {
           Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
         E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
         if (E.chaseDistance > 900 * screenratio || E.target.HP[1] == 0) {
+          if (E.acceleration <= 99) E.acceleration += 1;
+          else E.acceleration = 100;
           E.randomDirX = E.target.x - E.x;
           E.randomDirY = E.target.y - E.y;
           E.target = "none";
           E.speed = E.defaultSpeed;
           E.randomDirCDcounter = 120;
         } else if (E.chaseDistance < 650 * screenratio) {
-          E.speed = 0;
+          if (E.acceleration >= 1) E.acceleration -= 1;
+          else E.acceleration = 0;
           if (!E.attackCD) {
             E.attackCDstart();
             gameAudio.enemy_bullet.load();
@@ -434,6 +439,9 @@ function enemyCharacter(E) {
         } else {
           E.speed = E.defaultSpeed;
         }
+      } else {
+        if (E.acceleration <= 99) E.acceleration += 1;
+        else E.acceleration = 100;
       }
     } else if (E.behaviour == "spawn") {
       if (E.spawning) E.spawnSummonTick();

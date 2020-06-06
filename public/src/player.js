@@ -107,56 +107,44 @@ var player = {
     );
     player.shieldRecharge();
 
-    if (!rightMouseDown) {
-      var speedIndexX = xMousePos - player.x > 0 ? 1 : -1;
-      var speedIndexY = yMousePos - player.y > 0 ? 1 : -1;
-    }
     if (distance < 150 * screenratio && !rightMouseDown) {
       if (player.accelerationX > 0) {
-        player.accelerationX += -1;
-      } else if (player.accelerationX < 0) {
+        player.accelerationX -= 1;
+      }
+      if (player.accelerationY > 0) {
+        player.accelerationY -= 1;
+      }
+    } else if (distance >= 150 && distance <= 200 && !rightMouseDown) {
+      if (player.accelerationX < 100) {
         player.accelerationX += 1;
       }
-      if (player.accelerationY > 0) {
-        player.accelerationY += -1;
-      } else if (player.accelerationY < 0) {
+      if (player.accelerationY < 100) {
         player.accelerationY += 1;
       }
-    } else if (
-      distance >= 150 * screenratio &&
-      distance <= 200 * screenratio &&
-      !rightMouseDown
-    ) {
-      if (player.accelerationX * speedIndexX < 48)
-        player.accelerationX += 2 * speedIndexX;
-      else player.accelerationX = 50 * speedIndexX;
-      if (player.accelerationY * speedIndexY < 48)
-        player.accelerationY += 2 * speedIndexY;
-      else player.accelerationY = 50 * speedIndexY;
     } else if (!rightMouseDown) {
-      if (player.accelerationX * speedIndexX < 95)
-        player.accelerationX += 5 * speedIndexX;
-      else player.accelerationX = 100 * speedIndexX;
-      if (player.accelerationY * speedIndexY < 95)
-        player.accelerationY += 5 * speedIndexY;
-      else player.accelerationY = 100 * speedIndexY;
-    } else {
-      if (player.accelerationX > 0) {
-        player.accelerationX -= 0.5;
-      } else if (player.accelerationX < 0) {
-        player.accelerationX += 0.5;
+      if (player.accelerationX < 100) {
+        player.accelerationX += 2;
       }
-      if (player.accelerationY > 0) {
-        player.accelerationY -= 0.5;
-      } else if (player.accelerationY < 0) {
-        player.accelerationY += 0.5;
+      if (player.accelerationY < 100) {
+        player.accelerationY += 2;
       }
     }
+    if (player.accelerationX > 100) player.accelerationX = 100;
+    if (player.accelerationY > 100) player.accelerationY = 100;
+
     player.speed = ship.speed * screenratio;
-    let ratio =
-      player.speed /
-      (Math.abs(xMousePos - canvas.width / 2) +
-        Math.abs(yMousePos - canvas.height / 2));
+    if (!rightMouseDown) {
+      player.ratio =
+        player.speed /
+        (Math.abs(xMousePos - canvas.width / 2) +
+          Math.abs(yMousePos - canvas.height / 2));
+      player.lastRatioX = xMousePos - player.x;
+      player.lastRatioY = yMousePos - player.y;
+    }
+    player.targetxspeed =
+      (player.ratio * player.lastRatioX * player.accelerationX) / 100;
+    player.targetyspeed =
+      (player.ratio * player.lastRatioY * player.accelerationY) / 100;
     if (player.HP[0] <= 0 || player.shipLives == 0) {
       player.speed = 0;
       player.xspeed = 0;
@@ -165,14 +153,31 @@ var player = {
       loseTheGame();
     } else if (player.HP[1] <= 0 && !player.killedCD) {
       player.killedCDstart();
-    } else if (!isNaN(ratio)) {
+    } else if (!isNaN(player.ratio)) {
       //player positioner
-      if (!rightMouseDown) {
-        player.previousDirX = Math.abs(ratio * (xMousePos - player.x));
-        player.previousDirY = Math.abs(ratio * (yMousePos - player.y));
+      if (
+        Math.abs(player.xspeed) >= Math.abs(player.targetxspeed) &&
+        (player.xspeed >= 0 ? 1 : -1) == (player.targetxspeed >= 0 ? 1 : -1)
+      ) {
+        player.xspeed = player.targetxspeed;
+      } else {
+        player.xspeed +=
+          0.3 *
+          (player.targetxspeed >= 0 ? 1 : -1) *
+          (player.accelerationX / 100);
       }
-      player.xspeed = (player.previousDirX * player.accelerationX) / 100;
-      player.yspeed = (player.previousDirY * player.accelerationY) / 100;
+      if (
+        Math.abs(player.yspeed) >= Math.abs(player.targetyspeed) &&
+        (player.yspeed >= 0 ? 1 : -1) == (player.targetyspeed >= 0 ? 1 : -1)
+      ) {
+        player.yspeed = player.targetyspeed;
+      } else {
+        player.yspeed +=
+          0.3 *
+          (player.targetyspeed >= 0 ? 1 : -1) *
+          (player.accelerationY / 100);
+      }
+
       player.futureX += player.xspeed;
       player.futureY += player.yspeed;
       if (
@@ -191,8 +196,6 @@ var player = {
         player.speed = 0;
         player.xspeed = 0;
         player.yspeed = 0;
-        player.accelerationX = 0;
-        player.accelerationY = 0;
       }
     }
     player.earthX -= camera.offSetX;
@@ -220,11 +223,13 @@ var player = {
   },
   render: () => {
     player.animationIndex += 1;
-    let nextIndex = Math.floor(
-      60 /
-        (player.animationFPS +
-          (Math.abs(player.xspeed) + Math.abs(player.yspeed)) * 3)
+    let nextIndex = Math.round(
+      60 / ((60 * (player.accelerationX + player.accelerationY)) / 200)
     );
+
+    if (nextIndex == 0) nextIndex = 1;
+    if (nextIndex == Infinity) nextIndex = 60 / player.animationFPS;
+
     if (player.animationIndex == nextIndex) {
       player.animationIndex = 0;
       if (player.animationX < player.widthOnPic * (player.animationFrames - 1))
