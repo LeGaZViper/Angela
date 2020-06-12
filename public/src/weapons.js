@@ -157,7 +157,7 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 6) + 1;
+  let choose = Math.floor(Math.random() * 7) + 1;
   for (let index in WeaponData) {
     if (choose == WeaponData[index].index) {
       R.name = WeaponData[index].name;
@@ -222,6 +222,16 @@ function bullet(B, who, numberOfBullets) {
   B.color = who.weapon.color;
   B.hitCD = who.weapon.hitCD;
   B.opacity = 1;
+  B.animation = who.weapon.animation;
+  B.rotationAnimation = who.weapon.rotationAnimation;
+  B.rotationAngle = 0;
+  if (B.animation) {
+    B.animationFrames = who.weapon.animationFrames;
+    B.animationUpdate = who.weapon.animationUpdate;
+  }
+  B.animationX = 0;
+  B.animationIndex = 0;
+  B.animationAngle = 0;
   B.sprite = who.weapon.sprite;
   if (who.weapon.name == "BASIC") {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
@@ -271,10 +281,14 @@ function bullet(B, who, numberOfBullets) {
     B.diry = Math.sin(who.angle - Math.PI / 2);
     B.sprite = sprite.projectile_spread;
   } else if (who.weapon.name == "SPREADER_PROJECTILE") {
-  } else if ((who.weapon.name = "LASER")) {
+  } else if (who.weapon.name == "LASER") {
     B.shootingPointX = B.x;
     B.shootingPointY = B.y;
     B.ttl = 0;
+  } else if (who.weapon.name == "CHAKRAM") {
+    B.damage = Math.floor(B.damage * Math.random()) + 1;
+    B.dirx = Math.cos(who.angle - Math.PI / 2);
+    B.diry = Math.sin(who.angle - Math.PI / 2);
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -311,6 +325,27 @@ function bullet(B, who, numberOfBullets) {
       B.x = hitDetectionX;
       B.y = hitDetectionY;
     } else {
+      if (B.rotationAnimation) {
+        B.rotationAngle += (20 / 180) * Math.PI;
+        if (B.rotationAngle > 2 * Math.PI) {
+          B.rotationAngle = 0;
+          if (B.name == "CHAKRAM" && B.speed > 0) {
+            B.damage = Math.floor(B.damage * Math.random()) + 1;
+            B.speed -= 1;
+          }
+          if (B.speed < 0) {
+            B.speed = 0;
+          }
+        }
+      }
+      if (B.animation) {
+        B.animationIndex++;
+        if (B.animationIndex % B.animationUpdate == 0) {
+          B.animationIndex = 0;
+          B.animationX++;
+        }
+        if (B.animationX == B.animationFrames) B.animationX = 0;
+      }
       let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
       B.xspeed = ratio * B.dirx;
       B.yspeed = ratio * B.diry;
@@ -341,12 +376,12 @@ function bullet(B, who, numberOfBullets) {
       ctx.beginPath();
       ctx.save();
       ctx.translate(B.x, B.y);
-      ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2);
+      ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2 + B.rotationAngle);
       ctx.globalAlpha = B.opacity;
       if (B.sprite != undefined) {
         ctx.drawImage(
           B.sprite,
-          0,
+          0 + (B.width / screenratio) * B.animationX,
           0,
           B.width / screenratio,
           B.height / screenratio,

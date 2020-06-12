@@ -184,6 +184,12 @@ function gameLoop() {
                 if (!b.piercing) b.killed = true;
               }
               if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
+              if (b.name == "CHAKRAM" && b.speed > 0) {
+                b.speed -= 4;
+              }
+              if (b.speed < 0) {
+                b.speed = 0;
+              }
             }
           }
           checkDeath(e, b.name);
