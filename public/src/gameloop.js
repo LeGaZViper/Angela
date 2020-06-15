@@ -106,8 +106,8 @@ function gameLoop() {
         (eb.y > 0 && eb.y < canvas.height)
       )
         eb.render();
-      enemyBulletList = enemyBulletList.filter((check) => !check.killed);
     });
+    enemyBulletList = enemyBulletList.filter((check) => !check.killed);
     //check for weapon firing
     player.render();
     if (player.weaponDuration == 0) {
