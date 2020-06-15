@@ -255,8 +255,8 @@ function enemyCharacter(E) {
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
-    if (!E.inOrbit && E.type != "mail") ctx.rotate(E.angle);
-    else if (E.type != "mail")
+    if (!E.inOrbit && E.type != "mail" && E.type != "star") ctx.rotate(E.angle);
+    else if (E.type != "mail" && E.type != "star")
       ctx.rotate(
         Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
       );
@@ -354,6 +354,7 @@ function enemyCharacter(E) {
       ctx.closePath();
       if (E.deathAnimation_index == E.deathAnimationFrames) {
         E.killed = true;
+        E.deathAnimation = false;
         if (E.randomDrop) {
           randomDropList.push(randomDrop({ x: E.x, y: E.y }));
         }
@@ -445,37 +446,58 @@ function enemyCharacter(E) {
       }
     } else if (E.behaviour == "spawn") {
       if (E.spawning) E.spawnSummonTick();
-      E.chaseDistance = Math.abs(player.x - E.x) + Math.abs(player.y - E.y);
-      if (E.chaseDistance < 500 * screenratio && !E.spawning && !E.attackCD) {
+      E.spawnDistance = Math.abs(player.x - E.x) + Math.abs(player.y - E.y);
+      if (E.spawnDistance < 450 * screenratio && !E.spawning && !E.attackCD) {
         E.spawning = true;
-        E.speed = 0;
+        if (E.type == "mail") E.speed = 0;
         E.attackCDstart();
       } else {
         E.speed = E.defaultSpeed;
       }
+    } else if (E.behaviour == "collide") {
+      E.target = player;
+      E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
     }
   };
   E.spawnSummonTick = function () {
-    E.spawnAnimationIndex += 1;
-    if (E.spawnAnimationIndex == 60 / E.spawnAnimationFPS) {
-      E.spawnAnimationIndex = 0;
-      if (E.animationX < E.widthOnPic * (E.spawnAnimationFrames - 1))
-        E.animationX += E.widthOnPic;
-      else {
-        E.spawning = false;
+    if (E.type == "mail") {
+      E.spawnAnimationIndex += 1;
+      if (E.spawnAnimationIndex == 60 / E.spawnAnimationFPS) {
+        E.spawnAnimationIndex = 0;
+        if (E.animationX < E.widthOnPic * (E.spawnAnimationFrames - 1))
+          E.animationX += E.widthOnPic;
+        else {
+          E.spawning = false;
+          enemyList.push(
+            enemyCharacter({
+              randomDirCDcounter: 120,
+              x: E.x,
+              y: E.y,
+              randomDrop: false,
+              spawnCD: 0,
+              ...EnemyData[E.bulletType],
+            })
+          );
+          levels_handler.level.total += 1;
+          E.animationX = 0;
+        }
+      }
+    } else if (E.type == "star") {
+      for (let i = 0; i < 7; i++) {
+        let angle = (Math.PI / 4) * i;
         enemyList.push(
           enemyCharacter({
             randomDirCDcounter: 120,
-            x: E.x,
-            y: E.y,
+            x: E.x + Math.cos(angle) * 100 * screenratio,
+            y: E.y + Math.sin(angle) * 100 * screenratio,
             randomDrop: false,
             spawnCD: 0,
             ...EnemyData[E.bulletType],
           })
         );
         levels_handler.level.total += 1;
-        E.animationX = 0;
       }
+      E.spawning = false;
     }
   };
   E.attackCDstart = async function () {

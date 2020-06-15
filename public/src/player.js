@@ -314,13 +314,13 @@ var player = {
     if (player.shieldCD[0] > 0) {
       player.shieldCD[0]--;
     } else if (player.shield[0] < player.maxShield[0]) {
-      player.shieldCD[0] = 120;
+      player.shieldCD[0] = 12;
       player.shield[0] += 1;
     }
     if (player.shieldCD[1] > 0) {
       player.shieldCD[1]--;
     } else if (player.shield[1] < player.maxShield[1]) {
-      player.shieldCD[1] = 60;
+      player.shieldCD[1] = 6;
       player.shield[1] += 1;
     }
   },

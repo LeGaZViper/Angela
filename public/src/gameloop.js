@@ -81,16 +81,22 @@ function gameLoop() {
         !player.hitCD &&
         !player.collisionCD
       ) {
-        if (player.shield[1] > 0) player.shield[1] -= eb.damage;
-        else player.HP[1] -= eb.damage;
+        if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
+        else {
+          player.HP[1] += -(eb.damage - player.shield[1]);
+          player.shield[1] = 0;
+        }
         gameAudio.player_hit.load();
         gameAudio.player_hit.play();
         eb.killed = true;
         player.hitCD = true;
         player.hitCDstart(1, "bullet");
       } else if (distance < 20) {
-        if (player.shield[0] > 0) player.shield[0] -= eb.damage;
-        else player.HP[0] -= eb.damage;
+        if (player.shield[0] >= eb.damage) player.shield[0] -= eb.damage;
+        else {
+          player.HP[0] += -(eb.damage - player.shield[0]);
+          player.shield[0] = 0;
+        }
         eb.killed = true;
         player.hitCDstart(0, "bullet");
       }
@@ -154,12 +160,16 @@ function gameLoop() {
               player.HP[1] > 0
             ) {
               //player collision
-              if (e.HP > 0) {
+              if (e.HP > 1) {
                 e.HP--;
                 e.hitCDstart();
               } else e.killed = true;
-              if (player.shield[1] > 0) player.shield[1] -= 1;
-              else player.HP[1] -= 1;
+              if (player.shield[1] >= e.collisionDamage)
+                player.shield[1] -= e.collisionDamage;
+              else {
+                player.HP[1] += -(e.collisionDamage - player.shield[1]);
+                player.shield[1] = 0;
+              }
               player.collisionCD = true;
               gameAudio.player_hit.load();
               gameAudio.player_hit.play();
@@ -174,6 +184,16 @@ function gameLoop() {
           //Collision with enemies
           if (collides(e, b)) {
             if (e.HP > 0 && !b.killed) {
+              if (
+                e.behaviour == "spawn" &&
+                !e.spawning &&
+                !e.attackCD &&
+                e.HP > b.damage
+              ) {
+                e.spawning = true;
+                if (e.type == "mail") e.speed = 0;
+                e.attackCDstart();
+              }
               if (b.explosive && !b.explosion_triggered) b.explode();
               else if ((!b.piercing || !e.piercingCD) && !b.explosive) {
                 e.HP -= b.damage;
@@ -196,9 +216,9 @@ function gameLoop() {
         });
       } else {
         e.deathAnimation_render();
-        enemyList = enemyList.filter((check) => !check.killed);
       }
     });
+    enemyList = enemyList.filter((check) => !check.killed);
     bulletList = bulletList.filter((check) => !check.killed);
     //update & render of random drops
     randomDropList.forEach((r, i) => {
