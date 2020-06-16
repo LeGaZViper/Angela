@@ -69,11 +69,6 @@ var player = {
     player.maxShield = ship.maxShield;
     player.shield = [ship.maxShield[0], ship.maxShield[1]];
     player.angle = 0;
-    //particle parameters
-    //0 = heightOnPic, 1 = yDistanceFromShip, 2 = heightOnCanvas, 3 = particlesX add, 4 = particlesY add
-    player.particles = ship.particles;
-    player.particlesWidth = 1;
-    player.particlesHeight = 0.2;
 
     player.hitBoxWidth = (player.width / 3) * 2;
     player.hitBoxHeight = (player.height / 3) * 2;
@@ -85,7 +80,6 @@ var player = {
     player.animationFPS = 5;
     player.sprite = sprite.player_scout;
 
-    player.leftMouseDown = false;
     player.weapon = WeaponData.BASIC;
     player.weaponDuration = 0;
     player.inWeaponActivation = false;
@@ -258,7 +252,7 @@ var player = {
       ctx.drawImage(
         player.sprite,
         player.animationX,
-        player.heightOnPic, //+ player.particles[0],
+        player.heightOnPic,
         player.widthOnPic,
         player.heightOnPic,
         -player.width / 2,
@@ -287,24 +281,24 @@ var player = {
   killedCD: false,
   opacity: [1, 1],
   damageOpacity: [0, 0],
-  blikacky: false,
   attackCDstart: async function () {
     player.attackCD = true;
     await sleep(player.weapon.cooldown);
     player.attackCD = false;
   },
-  hitCDstart: async function (which, what) {
-    if (which == 1) player.shieldCD[1] = 300;
+  hitCDstart: async function (playerEntity, event) {
+    if (playerEntity == 1) player.shieldCD[1] = 300;
     else player.shieldCD[0] = 300;
-    player.damageOpacity[which] = 101 / 100;
+    player.damageOpacity[playerEntity] = 101 / 100;
     for (let i = 100; i >= 0; i--) {
-      if (player.damageOpacity[which] == (i + 1) / 100) {
-        player.damageOpacity[which] = i / 100;
+      if (player.damageOpacity[playerEntity] == (i + 1) / 100) {
+        player.damageOpacity[playerEntity] = i / 100;
         await sleep(5);
       } else break;
     }
-    if (which == 1 && what == "bullet") player.hitCD = false;
-    else if (which == 1 && what == "collision") player.collisionCD = false;
+    if (playerEntity == 1 && event == "bullet") player.hitCD = false;
+    else if (playerEntity == 1 && event == "collision")
+      player.collisionCD = false;
   },
   shieldRecharge: function () {
     if (player.shieldCD[0] > 0) {

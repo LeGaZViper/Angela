@@ -207,7 +207,6 @@ class DefaultSetup {
     this.widthOnPic = 150;
     this.heightOnPic = 150;
     this.weaponDuration = 0;
-    this.particles = [22, 2, 30, 0, 0.05];
     this.maxShield = [100, 50];
     this.maxHP = [100, 50];
     this.level = 0;

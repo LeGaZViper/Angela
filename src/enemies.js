@@ -45,9 +45,9 @@ async function checkDeath(enemy, bulletType = "none") {
         );
       }
     }
-    if (levels_handler.level.total == 1 && enemy.cache == undefined) {
+    if (levels_handler.level.total == 1) {
       await sleep(2000);
-      levels_handler.level.total -= 1;
+      if (levels_handler.level.total == 1) levels_handler.level.total -= 1;
     } else {
       levels_handler.level.total -= 1;
     }
@@ -159,11 +159,8 @@ function enemyCharacter(E) {
   E.animationX = 0;
   E.animationY = 0;
   E.animationIndex = 0;
-  E.counter = 0;
   E.arrival = false;
   E.acceleration = 100;
-  E.particlesWidth = 1;
-  E.particlesHeight = 0.2;
   E.target = "none";
   E.orbitAngle =
     Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
@@ -175,70 +172,62 @@ function enemyCharacter(E) {
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   }
   E.update = function () {
-    if (E.appearOpacity == 0) E.appear();
-    if (E.speed != 0 && E.particlesHeight < 1) {
-      E.particlesWidth += E.particles[3];
-      E.particlesHeight += E.particles[4];
-    } else if (E.speed == 0 && E.particlesHeight > 0.2) {
-      E.particlesWidth -= E.particles[3];
-      E.particlesHeight -= E.particles[4];
-    }
-    E.attack();
-    if (!E.inOrbit && E.target == "none") {
-      if (
-        (E.behaviour != "chase" && E.behaviour != "spawn") ||
-        ((Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
-          Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
-          (E.behaviour == "chase" || E.behaviour == "spawn"))
-      ) {
-        E.randomDirCDcounter = 120;
-        if (E.behaviour == "spawn") {
-          E.randomDirCDCounter = 300;
-        }
-        E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
-        E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
+    E.checkBehaviour();
+    if (
+      Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
+      Math.abs(E.y - player.earthY) > player.spaceSize / 2
+    ) {
+      //check for miss position
+      E.randomDirCDCounter = 300;
+      E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
+      E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
+      let ratio =
+        E.speed /
+        (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+      E.xspeed = ratio * (player.earthX - E.x);
+      E.yspeed = ratio * (player.earthY - E.y);
+    } else {
+      if (E.behaviour == "ignore") {
         let ratio =
           E.speed /
           (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
         E.xspeed = ratio * (player.earthX - E.x);
         E.yspeed = ratio * (player.earthY - E.y);
+      } else if (E.behaviour == "orbit") {
+        if (E.inOrbit) {
+          E.orbitAngle -= 0.01;
 
-        E.x += E.xspeed;
-        E.y += E.yspeed;
-        E.coordX += E.xspeed;
-        E.coordY += E.yspeed;
-      } else {
+          E.xspeed = E.speed * Math.cos(E.orbitAngle);
+          E.yspeed = E.speed * Math.sin(E.orbitAngle);
+        } else {
+          let ratio =
+            E.speed /
+            (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+          E.xspeed = ratio * (player.earthX - E.x);
+          E.yspeed = ratio * (player.earthY - E.y);
+        }
+      } else if (
+        E.behaviour == "spawn" ||
+        (E.target == "none" && E.behaviour == "chase")
+      ) {
         E.randomDirCD();
         E.angle = Math.atan2(E.randomDirY, E.randomDirX) + Math.PI / 2;
         let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
         E.xspeed = ratio * E.randomDirX;
         E.yspeed = ratio * E.randomDirY;
-
-        E.x += E.xspeed;
-        E.y += E.yspeed;
-        E.coordX += E.xspeed;
-        E.coordY += E.yspeed;
+      } else {
+        E.randomDirCDcounter = 300;
+        let ratio =
+          E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
+        E.xspeed = (ratio * (E.target.x - E.x) * E.acceleration) / 100;
+        E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
       }
-    } else if (E.inOrbit && E.target == "none") {
-      E.orbitAngle -= 0.01;
-      E.x += E.speed * Math.cos(E.orbitAngle);
-      E.y += E.speed * Math.sin(E.orbitAngle);
-      E.coordX += E.xspeed;
-      E.coordY += E.yspeed;
-    } else {
-      let ratio =
-        E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
-
-      E.xspeed = ratio * (E.target.x - E.x);
-      E.yspeed = ratio * (E.target.y - E.y);
-
-      E.x += (E.xspeed * E.acceleration) / 100;
-      E.y += (E.yspeed * E.acceleration) / 100;
-      E.coordX += E.xspeed;
-      E.coordY += E.yspeed;
     }
-    E.x += -player.xspeed - camera.offSetX;
-    E.y += -player.yspeed - camera.offSetY;
+
+    E.x += E.xspeed - player.xspeed - camera.offSetX;
+    E.y += E.yspeed - player.yspeed - camera.offSetY;
+    E.coordX += E.xspeed;
+    E.coordY += E.yspeed;
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
@@ -365,7 +354,7 @@ function enemyCharacter(E) {
   E.attackCD = false;
   E.piercingCD = false;
   E.opacity = 0;
-  E.attack = function () {
+  E.checkBehaviour = function () {
     E.distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
     if (E.behaviour == "orbit") {
       if (E.distance < 500 * screenratio && !E.inOrbit) {
@@ -524,11 +513,12 @@ function enemyCharacter(E) {
   E.randomDirCD = function () {
     E.randomDirCDcounter -= 1;
     if (E.randomDirCDcounter === 0) {
-      E.randomDirCDcounter = 120;
+      E.randomDirCDcounter = 300;
       E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
       E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
     }
   };
+  if (E.appearOpacity == 0) E.appear();
   return E;
 }
 

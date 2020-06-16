@@ -203,92 +203,96 @@ function randomDrop(R) {
 
 //bullets
 var bulletList = [];
-function bullet(B, who, numberOfBullets) {
-  if (B.x == undefined) {
-    B.x = who.x + 25 * screenratio * Math.cos(who.angle - Math.PI / 2);
-    B.y = who.y + 25 * screenratio * Math.sin(who.angle - Math.PI / 2);
+function bullet(B, numberOfBullets) {
+  if (B.companion == undefined) {
+    B.x = player.x + 25 * screenratio * Math.cos(player.angle - Math.PI / 2);
+    B.y = player.y + 25 * screenratio * Math.sin(player.angle - Math.PI / 2);
   }
   B.ttl = 300;
   B.killed = false;
-  B.damage = who.weapon.damage * (B.companion ? 0.5 : 1);
-  B.name = who.weapon.name;
+  B.damage = player.weapon.damage * (B.companion ? 0.5 : 1);
+  B.name = player.weapon.name;
   B.speed =
-    who.weapon.speed * screenratio +
-    Math.abs(who.xspeed) +
-    Math.abs(who.yspeed);
-  B.width = who.weapon.width * screenratio * (B.companion ? 0.5 : 1);
-  B.height = who.weapon.height * screenratio * (B.companion ? 0.5 : 1);
-  B.piercing = who.weapon.piercing;
-  B.color = who.weapon.color;
-  B.hitCD = who.weapon.hitCD;
+    player.weapon.speed * screenratio +
+    Math.abs(player.xspeed) +
+    Math.abs(player.yspeed);
+  B.width = player.weapon.width * screenratio * (B.companion ? 0.5 : 1);
+  B.height = player.weapon.height * screenratio * (B.companion ? 0.5 : 1);
+  B.piercing = player.weapon.piercing;
+  B.color = player.weapon.color;
+  B.hitCD = player.weapon.hitCD;
   B.opacity = 1;
-  B.animation = who.weapon.animation;
-  B.rotationAnimation = who.weapon.rotationAnimation;
+  B.animation = player.weapon.animation;
+  B.rotationAnimation = player.weapon.rotationAnimation;
   B.rotationAngle = 0;
   if (B.animation) {
-    B.animationFrames = who.weapon.animationFrames;
-    B.animationUpdate = who.weapon.animationUpdate;
+    B.animationFrames = player.weapon.animationFrames;
+    B.animationUpdate = player.weapon.animationUpdate;
   }
   B.animationX = 0;
   B.animationIndex = 0;
   B.animationAngle = 0;
-  B.sprite = who.weapon.sprite;
-  if (who.weapon.name == "BASIC") {
+  B.sprite = player.weapon.sprite;
+  if (player.weapon.name == "BASIC") {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
-    B.dirx = Math.cos(who.angle - Math.PI / 2);
-    B.diry = Math.sin(who.angle - Math.PI / 2);
-  } else if (who.weapon.name == "DOUBLE") {
+    B.dirx = Math.cos(player.angle - Math.PI / 2);
+    B.diry = Math.sin(player.angle - Math.PI / 2);
+  } else if (player.weapon.name == "DOUBLE") {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
     if (numberOfBullets == 2) {
-      B.dirx = Math.cos(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
-      B.diry = Math.sin(who.angle - Math.PI / 2 + (1 / 180) * Math.PI);
+      B.dirx = Math.cos(player.angle - Math.PI / 2 + (1 / 180) * Math.PI);
+      B.diry = Math.sin(player.angle - Math.PI / 2 + (1 / 180) * Math.PI);
     } else if (numberOfBullets == 1) {
-      B.dirx = Math.cos(who.angle - Math.PI / 2 - (1 / 180) * Math.PI);
-      B.diry = Math.sin(who.angle - Math.PI / 2 - (1 / 180) * Math.PI);
+      B.dirx = Math.cos(player.angle - Math.PI / 2 - (1 / 180) * Math.PI);
+      B.diry = Math.sin(player.angle - Math.PI / 2 - (1 / 180) * Math.PI);
     }
     if (numberOfBullets > 1) {
-      bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
+      bulletList.push(
+        bullet({ x: player.x, y: player.y }, numberOfBullets - 1)
+      );
     }
-  } else if (who.weapon.name == "SPRAY") {
+  } else if (player.weapon.name == "SPRAY") {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
     if (numberOfBullets == 3) {
-      B.dirx = Math.cos(who.angle - Math.PI / 2);
-      B.diry = Math.sin(who.angle - Math.PI / 2);
+      B.dirx = Math.cos(player.angle - Math.PI / 2);
+      B.diry = Math.sin(player.angle - Math.PI / 2);
     } else if (numberOfBullets == 2) {
-      B.dirx = Math.cos(who.angle - Math.PI / 2 + (3 / 180) * Math.PI);
-      B.diry = Math.sin(who.angle - Math.PI / 2 + (3 / 180) * Math.PI);
+      B.dirx = Math.cos(player.angle - Math.PI / 2 + (3 / 180) * Math.PI);
+      B.diry = Math.sin(player.angle - Math.PI / 2 + (3 / 180) * Math.PI);
     } else if (numberOfBullets == 1) {
-      B.dirx = Math.cos(who.angle - Math.PI / 2 - (3 / 180) * Math.PI);
-      B.diry = Math.sin(who.angle - Math.PI / 2 - (3 / 180) * Math.PI);
+      B.dirx = Math.cos(player.angle - Math.PI / 2 - (3 / 180) * Math.PI);
+      B.diry = Math.sin(player.angle - Math.PI / 2 - (3 / 180) * Math.PI);
     }
     if (numberOfBullets > 1) {
-      bulletList.push(bullet({ x: who.x, y: who.y }, who, numberOfBullets - 1));
+      bulletList.push(
+        bullet({ x: player.x, y: player.y }, numberOfBullets - 1)
+      );
     }
-  } else if (who.weapon.name == "ROCKET") {
-    B.dirx = Math.cos(who.angle - Math.PI / 2);
-    B.diry = Math.sin(who.angle - Math.PI / 2);
+  } else if (player.weapon.name == "ROCKET") {
+    B.dirx = Math.cos(player.angle - Math.PI / 2);
+    B.diry = Math.sin(player.angle - Math.PI / 2);
     B.explosive = true;
     B.explosion_radius = 150 * screenratio;
     B.explosion_triggered = false;
     B.explosion_countdown = 0;
     B.explosion_index = 0;
     B.explosion_angle = Math.random() * 2 * Math.PI;
-  } else if (who.weapon.name == "GIANT") {
-    B.dirx = Math.cos(who.angle - Math.PI / 2);
-    B.diry = Math.sin(who.angle - Math.PI / 2);
-  } else if (who.weapon.name == "SPREADER") {
-    B.dirx = Math.cos(who.angle - Math.PI / 2);
-    B.diry = Math.sin(who.angle - Math.PI / 2);
+  } else if (player.weapon.name == "GIANT") {
+    B.dirx = Math.cos(player.angle - Math.PI / 2);
+    B.diry = Math.sin(player.angle - Math.PI / 2);
+  } else if (player.weapon.name == "SPREADER") {
+    B.dirx = Math.cos(player.angle - Math.PI / 2);
+    B.diry = Math.sin(player.angle - Math.PI / 2);
     B.sprite = sprite.projectile_spread;
-  } else if (who.weapon.name == "SPREADER_PROJECTILE") {
-  } else if (who.weapon.name == "LASER") {
+  } else if (player.weapon.name == "SPREADER_PROJECTILE") {
+  } else if (player.weapon.name == "LASER") {
     B.shootingPointX = B.x;
     B.shootingPointY = B.y;
     B.ttl = 0;
-  } else if (who.weapon.name == "CHAKRAM") {
+  } else if (player.weapon.name == "CHAKRAM") {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
-    B.dirx = Math.cos(who.angle - Math.PI / 2);
-    B.diry = Math.sin(who.angle - Math.PI / 2);
+    B.dirx = Math.cos(player.angle - Math.PI / 2);
+    B.diry = Math.sin(player.angle - Math.PI / 2);
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -298,8 +302,8 @@ function bullet(B, who, numberOfBullets) {
     if (B.name == "LASER") {
       let hitDetectionX = B.x;
       let hitDetectionY = B.y;
-      B.dirx = Math.cos(who.angle - Math.PI / 2);
-      B.diry = Math.sin(who.angle - Math.PI / 2);
+      B.dirx = Math.cos(player.angle - Math.PI / 2);
+      B.diry = Math.sin(player.angle - Math.PI / 2);
       let ratio = 9 / (Math.abs(B.dirx) + Math.abs(B.diry));
       for (let i = 0; i < 200; i++) {
         hitDetectionX += B.dirx * ratio;
@@ -365,8 +369,10 @@ function bullet(B, who, numberOfBullets) {
       ctx.strokeStyle = B.color;
       ctx.lineWidth = 6 * screenratio;
       ctx.moveTo(
-        B.shootingPointX + Math.cos(who.angle - Math.PI / 2) * 20 * screenratio,
-        B.shootingPointY + Math.sin(who.angle - Math.PI / 2) * 20 * screenratio
+        B.shootingPointX +
+          Math.cos(player.angle - Math.PI / 2) * 20 * screenratio,
+        B.shootingPointY +
+          Math.sin(player.angle - Math.PI / 2) * 20 * screenratio
       );
       ctx.lineTo(B.x, B.y);
       ctx.stroke();

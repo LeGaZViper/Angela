@@ -117,18 +117,15 @@ function gameLoop() {
         } catch (err) {
           console.error("Missing an audio file.");
         }
-        bulletList.push(bullet({}, player, player.weapon.bullets));
+        bulletList.push(bullet({}, player.weapon.bullets));
         player.attackCDstart();
         for (let i = 0; i < player.companions; i++) {
           bulletList.push(
-            bullet(
-              {
-                x: player.companionsX[i],
-                y: player.companionsY[i],
-                companion: true,
-              },
-              player
-            )
+            bullet({
+              x: player.companionsX[i],
+              y: player.companionsY[i],
+              companion: true,
+            })
           );
         }
       }
@@ -155,7 +152,10 @@ function gameLoop() {
               if (e.HP > 1) {
                 e.HP--;
                 e.hitCDstart();
-              } else e.killed = true;
+              } else {
+                e.killed = true;
+                checkDeath(e);
+              }
               if (player.shield[1] >= e.collisionDamage)
                 player.shield[1] -= e.collisionDamage;
               else {

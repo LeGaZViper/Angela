@@ -2,20 +2,20 @@ var xMousePos;
 var yMousePos;
 var leftMouseDown = false;
 var rightMouseDown = false;
-async function userInput(event, which) {
+async function userInput(event, eventValue) {
   //mouse movement
-  if (which == 0) {
+  if (eventValue == 0) {
     xMousePos =
       Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
     yMousePos =
       Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
     //press down
-  } else if (which == 1) {
+  } else if (eventValue == 1) {
     if (event.which == 1) {
       leftMouseDown = true;
     } else if (event.which == 3) rightMouseDown = true;
     //release
-  } else if (which == 2) {
+  } else if (eventValue == 2) {
     if (event.which == 1) {
       leftMouseDown = false;
     } else if (event.which == 3) rightMouseDown = false;
