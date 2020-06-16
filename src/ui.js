@@ -352,7 +352,7 @@ var UI = {
       ) {
         ctx.fillStyle = index.color[0];
         ctx.strokeStyle = index.color[1];
-        if (index.textSize != undefined) ctx.lineWidth = 6;
+        if (index.textSize != undefined) ctx.lineWidth = 6 * screenratio;
         ctx.globalAlpha = index.opacity;
         if (index.sprite == undefined && index.textOnly == undefined) {
           ctx.strokeRect(index.x, index.y, index.width, index.height);
