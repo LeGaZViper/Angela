@@ -121,11 +121,14 @@ function gameLoop() {
         player.attackCDstart();
         for (let i = 0; i < player.companions; i++) {
           bulletList.push(
-            bullet({
-              x: player.companionsX[i],
-              y: player.companionsY[i],
-              companion: true,
-            })
+            bullet(
+              {
+                x: player.companionsX[i],
+                y: player.companionsY[i],
+                companion: true,
+              },
+              player.weapon.bullets
+            )
           );
         }
       }

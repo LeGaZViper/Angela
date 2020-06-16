@@ -204,13 +204,13 @@ function randomDrop(R) {
 //bullets
 var bulletList = [];
 function bullet(B, numberOfBullets) {
-  if (B.companion == undefined) {
+  if (B.x == undefined) {
     B.x = player.x + 25 * screenratio * Math.cos(player.angle - Math.PI / 2);
     B.y = player.y + 25 * screenratio * Math.sin(player.angle - Math.PI / 2);
   }
   B.ttl = 300;
   B.killed = false;
-  B.damage = player.weapon.damage * (B.companion ? 0.5 : 1);
+  B.damage = Math.round(player.weapon.damage * (B.companion ? 0.5 : 1));
   B.name = player.weapon.name;
   B.speed =
     player.weapon.speed * screenratio +
@@ -248,7 +248,7 @@ function bullet(B, numberOfBullets) {
     }
     if (numberOfBullets > 1) {
       bulletList.push(
-        bullet({ x: player.x, y: player.y }, numberOfBullets - 1)
+        bullet({ x: B.x, y: B.y, companion: B.companion }, numberOfBullets - 1)
       );
     }
   } else if (player.weapon.name == "SPRAY") {
@@ -265,7 +265,7 @@ function bullet(B, numberOfBullets) {
     }
     if (numberOfBullets > 1) {
       bulletList.push(
-        bullet({ x: player.x, y: player.y }, numberOfBullets - 1)
+        bullet({ x: B.x, y: B.y, companion: B.companion }, numberOfBullets - 1)
       );
     }
   } else if (player.weapon.name == "ROCKET") {
