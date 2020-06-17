@@ -80,8 +80,7 @@ function gameLoop() {
           player.HP[1] += -(eb.damage - player.shield[1]);
           player.shield[1] = 0;
         }
-        gameAudio.player_hit.load();
-        gameAudio.player_hit.play();
+        gameAudio.playSound("player_hit");
         eb.killed = true;
         player.hitCD = true;
         player.hitCDstart(1, "bullet");
@@ -111,11 +110,21 @@ function gameLoop() {
     if (leftMouseDown) {
       //shooting
       if (!player.attackCD && player.HP[1] > 0) {
-        try {
-          gameAudio["player_" + player.weapon.name].load();
-          gameAudio["player_" + player.weapon.name].play();
-        } catch (err) {
-          console.error("Missing an audio file.");
+        if (player.weapon.name != "LASER") {
+          try {
+            gameAudio.playSound("player_" + player.weapon.name);
+          } catch (err) {
+            console.error("Missing an audio file.");
+          }
+        } else if (
+          player.laser_firing == false ||
+          player.laser_firing == undefined
+        ) {
+          player.laser_firing = true;
+          gameAudio.playSound("player_LASER_start");
+        } else {
+          gameAudio.player_LASER_loop.loop = true;
+          gameAudio.player_LASER_loop.play();
         }
         bulletList.push(bullet({}, player.weapon.bullets));
         player.attackCDstart();
@@ -132,6 +141,9 @@ function gameLoop() {
           );
         }
       }
+    } else if (!gameAudio.player_LASER_loop.paused) {
+      gameAudio.player_LASER_loop.pause();
+      player.laser_firing = false;
     }
     //update & render for enemies
     enemyList.forEach((e) => {
@@ -166,8 +178,7 @@ function gameLoop() {
                 player.shield[1] = 0;
               }
               player.collisionCD = true;
-              gameAudio.player_hit.load();
-              gameAudio.player_hit.play();
+              gameAudio.playSound("player_hit");
               if (player.HP[1] > 0) {
                 player.hitCDstart(1, "collision");
               }
@@ -192,8 +203,7 @@ function gameLoop() {
               if (b.explosive && !b.explosion_triggered) b.explode();
               else if ((!b.piercing || !e.piercingCD) && !b.explosive) {
                 e.HP -= b.damage;
-                gameAudio.enemy_hit.load();
-                gameAudio.enemy_hit.play();
+                gameAudio.playSound("enemy_hit");
                 damageNumberList.push(new DamageNumber(b.damage, e.x, e.y));
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;
@@ -221,8 +231,9 @@ function gameLoop() {
       if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
         r.render();
         if (collides(r, player)) {
-          if (!player.inWeaponActivation) randomDropList.splice(i, 1);
-          if (pindex == 0 && !player.inWeaponActivation) {
+          if (!player.inWeaponActivation) {
+            gameAudio.playSound("player_getDrop");
+            randomDropList.splice(i, 1);
             weaponActivation.currentWord =
               weaponActivation.wordList[
                 Math.floor(Math.random() * weaponActivation.wordList.length)
@@ -231,7 +242,7 @@ function gameLoop() {
             console.log(
               `Trying to activate ${r.name} with word ${weaponActivation.currentWord}`
             );
-            p.inWeaponActivation = true;
+            player.inWeaponActivation = true;
             weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
             weaponActivation.weaponName = r.name;
           }

@@ -1,8 +1,7 @@
 //Check for total of enemies on the map | used in: win condition
 async function checkDeath(enemy, bulletType = "none") {
   if (enemy.HP <= 0 && !enemy.deathAnimation) {
-    gameAudio.enemy_death.load();
-    gameAudio.enemy_death.play();
+    gameAudio.playSound("enemy_death");
     enemy.deathAnimation = true;
     if (enemy.cache != undefined) {
       for (let i = 0; i < enemy.cache[1]; i++) {
@@ -363,8 +362,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
-        gameAudio.enemy_bullet.load();
-        gameAudio.enemy_bullet.play();
+        gameAudio.playSound("enemy_bullet");
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, E.bulletType));
       }
     } else if (E.behaviour == "mine") {
@@ -386,8 +384,7 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
-        gameAudio.enemy_bullet.load();
-        gameAudio.enemy_bullet.play();
+        gameAudio.playSound("enemy_bullet");
         enemyBulletList.push(
           enemyBullet({ x: E.x, y: E.y }, E.bulletType, "none")
         );
@@ -418,8 +415,7 @@ function enemyCharacter(E) {
           else E.acceleration = 0;
           if (!E.attackCD) {
             E.attackCDstart();
-            gameAudio.enemy_bullet.load();
-            gameAudio.enemy_bullet.play();
+            gameAudio.playSound("enemy_bullet");
             enemyBulletList.push(
               enemyBullet({ x: E.x, y: E.y }, E.bulletType, E.target)
             );

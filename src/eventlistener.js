@@ -26,6 +26,10 @@ async function userInput(event, eventValue) {
         });
       } else document.exitFullscreen();
     } else if (event.which == 27 && !UI.inMenu) {
+      if (!gameAudio.player_LASER_loop.paused) {
+        gameAudio.player_LASER_loop.pause();
+        player.laser_firing = false;
+      }
       getMenu(4);
     } else if (
       player.inWeaponActivation &&

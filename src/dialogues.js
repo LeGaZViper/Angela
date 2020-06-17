@@ -3,17 +3,12 @@ class Dialogue {
   constructor(text, color, startingIndex = 0, part = 0) {
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
-    if (color == "white") {
-      this.sound = gameAudio.typing_angela;
-    } else {
-      this.sound = gameAudio.typing_system;
-    }
     this.displayText = [""];
     this.stringIndex = startingIndex;
     this.ttl = 400;
     this.timeToType = 1;
     this.opacity = 1;
-    this.y = canvas.height / 2 + 200 * screenratio + 35 * part;
+    this.y = canvas.height / 2 + 200 * screenratio + 35 * part * screenratio;
     this.leadingRow = true;
     this.color = color;
     this.part = part;
@@ -43,8 +38,11 @@ class Dialogue {
   typingSequence = function () {
     this.timeToType--;
     if (this.timeToType == 0) {
-      this.sound.load();
-      this.sound.play();
+      if (this.color == "white") {
+        gameAudio.playSound("typing_angela");
+      } else {
+        gameAudio.playSound("typing_system");
+      }
       this.displayText.push(this.text[this.stringIndex]);
       this.timeToType = 5;
       this.stringIndex++;
