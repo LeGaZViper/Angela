@@ -13,3 +13,7 @@ Platform: PC Browser (IE not welcomed)
 Libraries: JQuerry
 
 Software: VS Code, Blender, Paint.net
+
+Sound effects by: Kenney Vleugels (https://kenney.nl/)
+
+Music by: Chris Zabriskie (http://chriszabriskie.com/)
