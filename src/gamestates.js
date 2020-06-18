@@ -26,8 +26,9 @@ function getMenu(menu) {
 
 //Lose the game function | used in: gameover
 function loseTheGame() {
-  if (!gameAudio.player_LASER_loop.paused) {
-    gameAudio.player_LASER_loop.pause();
+  gameAudio.stopMusic();
+  if (!this.player_LASER_loop.paused) {
+    this.player_LASER_loop.pause();
     player.laser_firing = false;
   }
   player.inWeaponActivation = false;
@@ -40,6 +41,7 @@ function loseTheGame() {
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheLevel() {
+  gameAudio.stopMusic();
   player.inWeaponActivation = false;
   ship.level += 1;
   if (ship.level % 3 == 0) {
@@ -57,6 +59,7 @@ function winTheLevel() {
 }
 
 function nextLevel() {
+  gameAudio.playMusic();
   UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
   levels_handler.level = levelLayout({});

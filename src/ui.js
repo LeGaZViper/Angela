@@ -753,6 +753,7 @@ var UI = {
         ) {
           if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
+            gameAudio.stopMusic();
             player.inWeaponActivation = false;
             player.inicialize(0, 50);
             camera.inicialize();

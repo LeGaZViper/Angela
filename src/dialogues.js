@@ -1,11 +1,11 @@
 var dialogueList = [];
 class Dialogue {
-  constructor(text, color, startingIndex = 0, part = 0) {
+  constructor(text, color, ttl, startingIndex = 0, part = 0) {
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
     this.displayText = [""];
     this.stringIndex = startingIndex;
-    this.ttl = 400;
+    this.ttl = ttl;
     this.timeToType = 1;
     this.opacity = 1;
     this.y = canvas.height / 2 + 200 * screenratio + 35 * part * screenratio;
@@ -14,13 +14,19 @@ class Dialogue {
     this.part = part;
   }
   update_render = function () {
-    this.ttl--;
-    if (this.ttl < 100 && this.opacity > 0)
+    if (!this.leadingRow || this.text.length < this.stringIndex) this.ttl--;
+    if (this.ttl < 100 && this.ttl > 1 && this.opacity > 0)
       this.opacity = Math.floor((this.opacity - 0.02) * 100) / 100;
     if (this.text[this.stringIndex] == "#" && this.leadingRow) {
       this.leadingRow = false;
       dialogueList.push(
-        new Dialogue(this.text, this.color, this.stringIndex + 1, ++this.part)
+        new Dialogue(
+          this.text,
+          this.color,
+          this.ttl,
+          this.stringIndex + 1,
+          ++this.part
+        )
       );
     } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
@@ -55,7 +61,11 @@ function pushDialogue(index) {
   let dialogueLevel = DialogueData["level_" + ship.level];
   textIndex = index;
   dialogueList.push(
-    new Dialogue(dialogueLevel.text[index], dialogueLevel.color[index])
+    new Dialogue(
+      dialogueLevel.text[index],
+      dialogueLevel.color[index],
+      dialogueLevel.ttl[index]
+    )
   );
 }
 

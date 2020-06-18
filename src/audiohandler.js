@@ -10,22 +10,42 @@ const gameAudio = {
   enemy_bullet: new Audio("./audio/enemy_bullet.ogg"),
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_angela: new Audio("./audio/typing_angela.ogg"),
+  music_level_0: new Audio("./audio/music_level_0.ogg"),
+  currentMusic: null,
   setVolume: function () {
-    gameAudio.player_BASIC.volume = 0.05 * ship.soundMultiplier;
-    gameAudio.player_CHAKRAM.volume = 0.06 * ship.soundMultiplier;
-    gameAudio.player_LASER_start.volume = 0.03 * ship.soundMultiplier;
-    gameAudio.player_LASER_loop.volume = 0.01 * ship.soundMultiplier;
-    gameAudio.player_getDrop.volume = 0.01 * ship.soundMultiplier;
-    gameAudio.player_hit.volume = 0.1 * ship.soundMultiplier;
-    gameAudio.enemy_hit.volume = 0.05 * ship.soundMultiplier;
-    gameAudio.enemy_death.volume = 0.05 * ship.soundMultiplier;
-    gameAudio.enemy_bullet.volume = 0.02 * ship.soundMultiplier;
-    gameAudio.typing_system.volume = 0.01 * ship.soundMultiplier;
-    gameAudio.typing_angela.volume = 0.01 * ship.soundMultiplier;
+    this.player_BASIC.volume = 0.05 * ship.soundMultiplier;
+    this.player_CHAKRAM.volume = 0.06 * ship.soundMultiplier;
+    this.player_LASER_start.volume = 0.03 * ship.soundMultiplier;
+    this.player_LASER_loop.volume = 0.01 * ship.soundMultiplier;
+    this.player_getDrop.volume = 0.01 * ship.soundMultiplier;
+    this.player_hit.volume = 0.1 * ship.soundMultiplier;
+    this.enemy_hit.volume = 0.05 * ship.soundMultiplier;
+    this.enemy_death.volume = 0.05 * ship.soundMultiplier;
+    this.enemy_bullet.volume = 0.02 * ship.soundMultiplier;
+    this.typing_system.volume = 0.01 * ship.soundMultiplier;
+    this.typing_angela.volume = 0.01 * ship.soundMultiplier;
+    this.music_level_0.volume = 0.01 * ship.musicMultiplier;
   },
   playSound: function (sound) {
-    let copyAudio = gameAudio[sound].cloneNode();
-    copyAudio.volume = gameAudio[sound].volume;
+    let copyAudio = this[sound].cloneNode();
+    copyAudio.volume = this[sound].volume;
     copyAudio.play();
+  },
+  playMusic: function () {
+    try {
+      this.currentMusic = this["music_level_" + ship.level].cloneNode();
+      this.currentMusic.volume = this["music_level_" + ship.level].volume;
+    } catch (er) {
+      this.currentMusic = this["music_level_0"].cloneNode();
+      this.currentMusic.volume = this["music_level_0"].volume;
+    }
+
+    this.currentMusic.loop = true;
+    this.currentMusic.play();
+  },
+  stopMusic: function () {
+    if (!this.currentMusic.paused && this.currentMusic != null) {
+      this.currentMusic.pause();
+    }
   },
 };

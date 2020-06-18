@@ -243,24 +243,19 @@ function enemyCharacter(E) {
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
-    if (!E.inOrbit && E.type != "mail" && E.type != "star") ctx.rotate(E.angle);
-    else if (E.type != "mail" && E.type != "star")
+    if (
+      !E.inOrbit &&
+      E.type != "mail" &&
+      E.type != "star" &&
+      E.type != "corruptedCloud"
+    )
+      ctx.rotate(E.angle);
+    else if (E.type != "mail" && E.type != "star" && E.type != "corruptedCloud")
       ctx.rotate(
         Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
       );
     //normal enemy ship
     ctx.globalAlpha = E.appearOpacity;
-    ctx.drawImage(
-      E.sprite,
-      0 + E.animationX,
-      E.heightOnPic + 1,
-      E.widthOnPic,
-      E.particles[0],
-      -E.width / 2,
-      E.height / 2 + E.particles[2],
-      E.width * E.particlesWidth,
-      E.particles[1] * E.particlesHeight
-    );
     ctx.drawImage(
       E.sprite,
       0 + E.animationX,
@@ -277,18 +272,7 @@ function enemyCharacter(E) {
     ctx.drawImage(
       E.sprite,
       0 + E.animationX,
-      2 * E.heightOnPic + E.particles[0],
-      E.widthOnPic,
-      E.particles[0],
-      -E.width / 2,
-      E.height / 2 + E.particles[2],
-      E.width * E.particlesWidth,
-      E.particles[1] * E.particlesHeight
-    );
-    ctx.drawImage(
-      E.sprite,
-      0 + E.animationX,
-      E.heightOnPic + E.particles[0],
+      E.heightOnPic,
       E.widthOnPic,
       E.heightOnPic,
       -E.width / 2,
