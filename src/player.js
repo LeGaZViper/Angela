@@ -176,6 +176,14 @@ var player = {
       ) {
         player.coordX += player.xspeed;
         player.coordY += player.yspeed;
+        player.hitBoxWidth = Math.abs(
+          (player.width / 3) * 2 * Math.pow(Math.cos(player.angle), 2) +
+            (player.height / 3) * 2 * Math.pow(Math.sin(player.angle), 2)
+        );
+        player.hitBoxHeight = Math.abs(
+          (player.width / 3) * 2 * Math.pow(Math.sin(player.angle), 2) +
+            (player.height / 3) * 2 * Math.pow(Math.cos(player.angle), 2)
+        );
         player.hitBoxX = player.x - player.hitBoxWidth / 2;
         player.hitBoxY = player.y - player.hitBoxHeight / 2;
         player.earthX -= player.xspeed;
@@ -293,7 +301,7 @@ var player = {
     for (let i = 100; i >= 0; i--) {
       if (player.damageOpacity[playerEntity] == (i + 1) / 100) {
         player.damageOpacity[playerEntity] = i / 100;
-        await sleep(5);
+        await sleep(3);
       } else break;
     }
     if (playerEntity == 1 && event == "bullet") player.hitCD = false;

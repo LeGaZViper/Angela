@@ -211,6 +211,7 @@ function bullet(B, numberOfBullets) {
   B.ttl = 300;
   B.killed = false;
   B.damage = Math.round(player.weapon.damage * (B.companion ? 0.5 : 1));
+  B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
   B.name = player.weapon.name;
   B.speed =
     player.weapon.speed * screenratio +
@@ -354,6 +355,14 @@ function bullet(B, numberOfBullets) {
       B.xspeed = ratio * B.dirx;
       B.yspeed = ratio * B.diry;
 
+      B.hitBoxWidth = Math.abs(
+        (B.width / 3) * 2 * Math.pow(Math.cos(B.angle), 2) +
+          (B.height / 3) * 2 * Math.pow(Math.sin(B.angle), 2)
+      );
+      B.hitBoxHeight = Math.abs(
+        (B.width / 3) * 2 * Math.pow(Math.sin(B.angle), 2) +
+          (B.height / 3) * 2 * Math.pow(Math.cos(B.angle), 2)
+      );
       B.x += B.xspeed - player.xspeed - camera.offSetX;
       B.y += B.yspeed - player.yspeed - camera.offSetY;
       B.hitBoxX = B.x - B.hitBoxWidth / 2;
@@ -382,7 +391,8 @@ function bullet(B, numberOfBullets) {
       ctx.beginPath();
       ctx.save();
       ctx.translate(B.x, B.y);
-      ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2 + B.rotationAngle);
+      B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2 + B.rotationAngle;
+      ctx.rotate(B.angle);
       ctx.globalAlpha = B.opacity;
       if (B.sprite != undefined) {
         ctx.drawImage(

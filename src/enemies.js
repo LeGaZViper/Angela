@@ -54,6 +54,7 @@ async function checkDeath(enemy, bulletType = "none") {
 }
 var enemyBulletList = [];
 function enemyBullet(B, type, target) {
+  gameAudio.playSound("enemy_bullet");
   B.ttl = 300;
   B.killed = false;
   B.speed = 15 * screenratio;
@@ -164,6 +165,9 @@ function enemyCharacter(E) {
   E.orbitAngle =
     Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
   E.angle = Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
+  if (E.turrets > 0) {
+    E.turretAttackCD = [false, false, false, false];
+  }
   if (E.hitBoxWidth == undefined) {
     E.hitBoxWidth = (E.width / 3) * 2;
     E.hitBoxHeight = (E.height / 3) * 2;
@@ -227,6 +231,14 @@ function enemyCharacter(E) {
     E.y += E.yspeed - player.yspeed - camera.offSetY;
     E.coordX += E.xspeed;
     E.coordY += E.yspeed;
+    E.hitBoxWidth = Math.abs(
+      (E.width / 3) * 2 * Math.pow(Math.cos(E.angle), 2) +
+        (E.height / 3) * 2 * Math.pow(Math.sin(E.angle), 2)
+    );
+    E.hitBoxHeight = Math.abs(
+      (E.width / 3) * 2 * Math.pow(Math.sin(E.angle), 2) +
+        (E.height / 3) * 2 * Math.pow(Math.cos(E.angle), 2)
+    );
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
   };
@@ -281,18 +293,61 @@ function enemyCharacter(E) {
       E.height
     );
     ctx.restore();
+    if (E.turrets > 0) {
+      for (let i = 0; i < E.turrets; i++) {
+        ctx.save();
+        ctx.translate(
+          E.x +
+            E.turretDist[i] *
+              Math.cos(E.angle + (Math.PI / 2) * i) *
+              screenratio,
+          E.y +
+            E.turretDist[i] *
+              Math.sin(E.angle + (Math.PI / 2) * i) *
+              screenratio
+        );
+        ctx.rotate(E.turretAngle[i]);
+        ctx.drawImage(
+          E.turretSprite,
+          0,
+          0,
+          E.turretWidthOnPic,
+          E.turretHeightOnPic,
+          -E.turretWidthOnPic / 2,
+          -E.turretHeightOnPic / 2,
+          E.turretWidthOnPic,
+          E.turretHeightOnPic
+        );
+        ctx.restore();
+      }
+    }
     //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
     //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
     let colorHPbar = "white";
     ctx.globalAlpha = 0.8;
     ctx.fillStyle = "#606060";
-    ctx.fillRect(E.x - 15, E.y + E.height / 2, 30, 5);
+    ctx.fillRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      E.height / 3 > 30 ? E.height / 3 : 30,
+      5
+    );
     ctx.fillStyle = colorHPbar;
-    ctx.fillRect(E.x - 15, E.y + E.height / 2, (E.HP / E.maxHP) * 30, 5);
+    ctx.fillRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      (E.HP / E.maxHP) * (E.height / 3 > 30 ? E.height / 3 : 30),
+      5
+    );
     ctx.strokeStyle = "#000000";
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1;
-    ctx.strokeRect(E.x - 15, E.y + E.height / 2, 30, 5);
+    ctx.strokeRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      E.height / 3 > 30 ? E.height / 3 : 30,
+      5
+    );
     ctx.stroke();
     ctx.closePath();
   };
@@ -338,7 +393,9 @@ function enemyCharacter(E) {
   E.piercingCD = false;
   E.opacity = 0;
   E.checkBehaviour = function () {
-    E.distance = Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y);
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
     if (E.behaviour == "orbit") {
       if (E.distance < 500 * screenratio && !E.inOrbit) {
         E.inOrbit = true;
@@ -346,7 +403,6 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
-        gameAudio.playSound("enemy_bullet");
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, E.bulletType));
       }
     } else if (E.behaviour == "mine") {
@@ -368,25 +424,53 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
-        gameAudio.playSound("enemy_bullet");
         enemyBulletList.push(
           enemyBullet({ x: E.x, y: E.y }, E.bulletType, "none")
         );
       }
+      if (E.turrets > 0) {
+        for (let i = E.turrets - 1; i >= 0; i--) {
+          let ex =
+            E.x +
+            E.turretDist[i] *
+              Math.cos(E.angle + (Math.PI / 2) * i) *
+              screenratio;
+          let ey =
+            E.y +
+            E.turretDist[i] *
+              Math.sin(E.angle + (Math.PI / 2) * i) *
+              screenratio;
+          let turretDistance = Math.sqrt(
+            Math.pow(player.x - ex, 2) + Math.pow(player.y - ey, 2)
+          );
+          if (turretDistance < 650 * screenratio) {
+            E.turretAngle[i] =
+              Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
+            if (!E.turretAttackCD[i]) {
+              E.turretAttackCDstart(i);
+              enemyBulletList.push(
+                enemyBullet({ x: ex, y: ey }, E.bulletType, player)
+              );
+            }
+          } else {
+            E.turretAngle[i] = E.angle;
+          }
+        }
+      }
     } else if (E.behaviour == "chase") {
-      E.chaseDistance = Math.abs(player.x - E.x) + Math.abs(player.y - E.y);
+      E.playerDistance = Math.sqrt(
+        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+      );
       if (
-        E.chaseDistance < 800 * screenratio &&
+        E.playerDistance < 800 * screenratio &&
         E.target == "none" &&
         player.HP[1] > 0
       ) {
         E.target = player;
       }
       if (E.target != "none") {
-        E.chaseDistance =
-          Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y);
         E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-        if (E.chaseDistance > 900 * screenratio || E.target.HP[1] == 0) {
+        if (E.playerDistance > 900 * screenratio || E.target.HP[1] == 0) {
           if (E.acceleration <= 99) E.acceleration += 1;
           else E.acceleration = 100;
           E.randomDirX = E.target.x - E.x;
@@ -394,12 +478,11 @@ function enemyCharacter(E) {
           E.target = "none";
           E.speed = E.defaultSpeed;
           E.randomDirCDcounter = 120;
-        } else if (E.chaseDistance < 650 * screenratio) {
+        } else if (E.playerDistance < 650 * screenratio) {
           if (E.acceleration >= 1) E.acceleration -= 1;
           else E.acceleration = 0;
           if (!E.attackCD) {
             E.attackCDstart();
-            gameAudio.playSound("enemy_bullet");
             enemyBulletList.push(
               enemyBullet({ x: E.x, y: E.y }, E.bulletType, E.target)
             );
@@ -413,7 +496,9 @@ function enemyCharacter(E) {
       }
     } else if (E.behaviour == "spawn") {
       if (E.spawning) E.spawnSummonTick();
-      E.spawnDistance = Math.abs(player.x - E.x) + Math.abs(player.y - E.y);
+      E.spawnDistance = Math.sqrt(
+        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+      );
       if (E.spawnDistance < 450 * screenratio && !E.spawning && !E.attackCD) {
         E.spawning = true;
         if (E.type == "mail") E.speed = 0;
@@ -472,6 +557,14 @@ function enemyCharacter(E) {
     await sleep(E.attackCDvalue);
     E.attackCD = false;
   };
+  E.turretAttackCDstart = async function (i) {
+    E.turretAttackCD[i] = true;
+    await sleep(E.attackCDvalue);
+    E.turretAttackCD[i] = false;
+  };
+  for (let i = 0; i < E.turrets; i++) {
+    E.turretAttackCDstart(i);
+  }
   E.attackCDstart();
   E.hitCDstart = async function () {
     E.opacity = 0.71;
