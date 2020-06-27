@@ -41,7 +41,7 @@ var backgroundParticles = {
   inicialize: function () {
     this.fan1 = {
       type: "FAN",
-      sprt: sprite.UI_motherboardFan,
+      sprite: sprite.UI_motherboardFan,
       x: player.earthX + 640 * screenratio,
       y: player.earthY + 1360 * screenratio,
       widthOnPic: 672,
@@ -57,7 +57,7 @@ var backgroundParticles = {
     };
     this.fan2 = {
       type: "FAN",
-      sprt: sprite.UI_motherboardFan,
+      sprite: sprite.UI_motherboardFan,
       x: player.earthX + 1370 * screenratio,
       y: player.earthY + 1365 * screenratio,
       widthOnPic: 672,
@@ -73,7 +73,7 @@ var backgroundParticles = {
     };
     this.angela = {
       type: "ANGELA",
-      sprt: sprite.UI_motherboardAngela,
+      sprite: sprite.UI_motherboardAngela,
       x: player.earthX,
       y: player.earthY,
       widthOnPic: 250,
@@ -108,7 +108,7 @@ var backgroundParticles = {
       ctx.translate(el.x, el.y);
       ctx.rotate(el.angle);
       ctx.drawImage(
-        el.sprt,
+        el.sprite,
         el.animationX,
         0,
         el.widthOnPic,
@@ -122,7 +122,7 @@ var backgroundParticles = {
         //damaged main objective
         ctx.globalAlpha = player.damageOpacity[0];
         ctx.drawImage(
-          el.sprt,
+          el.sprite,
           el.animationX,
           el.heightOnPic,
           el.widthOnPic,
@@ -138,5 +138,53 @@ var backgroundParticles = {
     });
     this.angela.x = player.earthX;
     this.angela.y = player.earthY;
+  },
+};
+
+var environment = {
+  inicialize: function () {
+    this.light = {
+      sprite: sprite.UI_visibility,
+      type: "LIGHT",
+      widthOnPic: 960,
+      heightOnPic: 540,
+      activated: true,
+      index: -1,
+    };
+    this.warning = {
+      sprite: sprite.UI_warning,
+      type: "WARNING",
+      widthOnPic: 960,
+      heightOnPic: 540,
+      activated: false,
+      index: 0,
+    };
+    this.envi_list = [this.light, this.warning];
+  },
+  update_render: function () {
+    this.envi_list.forEach((el) => {
+      if (el.type == "WARNING") {
+        if (el.index > 0) {
+          el.index--;
+          ctx.globalAlpha = (1 / 30) * el.index;
+        } else el.activated = false;
+      }
+      if (el.activated)
+        ctx.drawImage(
+          el.sprite,
+          0,
+          0,
+          el.widthOnPic,
+          el.heightOnPic,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+    });
+  },
+  warning_activation: function () {
+    this.warning.activated = true;
+    this.warning.index = 30;
   },
 };

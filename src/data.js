@@ -29,6 +29,8 @@ const sprite = {
   UI_motherboardMap: new Image(),
   UI_motherboardMapgrill: new Image(),
   UI_motherboardFan: new Image(),
+  UI_visibility: new Image(),
+  UI_warning: new Image(),
   UI_ignore: new Image(),
   UI_drop: new Image(),
 };

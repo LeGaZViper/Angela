@@ -43,6 +43,9 @@ const gameAudio = {
     this.currentMusic.loop = true;
     this.currentMusic.play();
   },
+  resumeMusic: function () {
+    this.currentMusic.play();
+  },
   stopMusic: function () {
     if (!this.currentMusic.paused && this.currentMusic != null) {
       this.currentMusic.pause();

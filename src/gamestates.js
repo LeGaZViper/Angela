@@ -27,15 +27,16 @@ function getMenu(menu) {
 //Lose the game function | used in: gameover
 function loseTheGame() {
   gameAudio.stopMusic();
-  if (!this.player_LASER_loop.paused) {
-    this.player_LASER_loop.pause();
-    player.laser_firing = false;
+  if (!gameAudio.player_LASER_loop.paused) {
+    gameAudio.player_LASER_loop.pause();
+    player.LASER_firing = false;
   }
   player.inWeaponActivation = false;
   player.inicialize(0, 50);
   camera.inicialize();
   background.inicialize();
   backgroundParticles.inicialize();
+  environment.inicialize();
   resetLocalStorage();
   getMenu(2);
 }

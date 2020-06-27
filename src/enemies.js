@@ -67,8 +67,8 @@ function enemyBullet(B, type, target) {
       B.dirx = player.earthX - B.x;
       B.diry = player.earthY - B.y;
     } else {
-      B.dirx = target.x - B.x;
-      B.diry = target.y - B.y;
+      B.dirx = target.x + target.xspeed * 10 - B.x;
+      B.diry = target.y + target.yspeed * 10 - B.y;
     }
     B.width = 5 * screenratio;
     B.height = 50 * screenratio;
@@ -80,8 +80,8 @@ function enemyBullet(B, type, target) {
       B.dirx = player.earthX - B.x;
       B.diry = player.earthY - B.y;
     } else {
-      B.dirx = target.x - B.x;
-      B.diry = target.y - B.y;
+      B.dirx = target.x + target.xspeed * 20 - B.x;
+      B.diry = target.y + target.yspeed * 20 - B.y;
     }
     B.width = 4 * screenratio;
     B.height = 25 * screenratio;

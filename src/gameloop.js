@@ -64,6 +64,7 @@ function gameLoop() {
       )
         b.render();
     });
+    environment.update_render();
     //update & render of enemy bullets
     enemyBulletList.forEach((eb) => {
       //enemy bullets - render
@@ -91,6 +92,7 @@ function gameLoop() {
           player.shield[0] = 0;
         }
         eb.killed = true;
+        environment.warning_activation();
         player.hitCDstart(0, "bullet");
       }
       eb.update();
@@ -117,10 +119,10 @@ function gameLoop() {
             console.error("Missing an audio file.");
           }
         } else if (
-          player.laser_firing == false ||
-          player.laser_firing == undefined
+          player.LASER_firing == false ||
+          player.LASER_firing == undefined
         ) {
-          player.laser_firing = true;
+          player.LASER_firing = true;
           gameAudio.playSound("player_LASER_start");
         } else {
           gameAudio.player_LASER_loop.loop = true;
@@ -143,7 +145,7 @@ function gameLoop() {
       }
     } else if (!gameAudio.player_LASER_loop.paused) {
       gameAudio.player_LASER_loop.pause();
-      player.laser_firing = false;
+      player.LASER_firing = false;
     }
     //update & render for enemies
     enemyList.forEach((e) => {

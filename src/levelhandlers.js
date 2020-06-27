@@ -65,7 +65,7 @@ var levels_handler = {
                 player.spaceSize) /
                 2);
           let randomDrop;
-          if (Math.round(Math.random() * 1) == 1) randomDrop = true;
+          if (Math.round(Math.random() * 1) < 2) randomDrop = true;
           else randomDrop = false;
           enemySpawnList.push({
             x: det_x,

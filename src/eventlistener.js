@@ -28,8 +28,9 @@ async function userInput(event, eventValue) {
     } else if (event.which == 27 && !UI.inMenu) {
       if (!gameAudio.player_LASER_loop.paused) {
         gameAudio.player_LASER_loop.pause();
-        player.laser_firing = false;
+        player.LASER_firing = false;
       }
+      gameAudio.stopMusic();
       getMenu(4);
     } else if (
       player.inWeaponActivation &&

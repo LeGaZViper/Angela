@@ -53,6 +53,7 @@ function inicializeGame() {
   levels_handler.levelCreator();
   background.inicialize();
   backgroundParticles.inicialize();
+  environment.inicialize();
   spawn();
   camera.inicialize();
 }
@@ -100,6 +101,7 @@ function loadTheGame(callback) {
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();
+  environment.inicialize();
   camera.inicialize();
   gameAudio.setVolume();
   UI.inicialize();
