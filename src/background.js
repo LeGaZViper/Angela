@@ -51,7 +51,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       animation: function () {
-        this.angle += 0.03;
+        this.angle += 0.02;
         if (this.angle > Math.PI * 2) this.angle = 0;
       },
     };
@@ -67,14 +67,14 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       animation: function () {
-        this.angle += 0.03;
+        this.angle += 0.02;
         if (this.angle > Math.PI * 2) this.angle = 0;
       },
     };
     this.angela = {
       type: "ANGELA",
       sprite: sprite.UI_motherboardAngela,
-      x: player.earthX,
+      x: player.earthX + 2,
       y: player.earthY,
       widthOnPic: 250,
       heightOnPic: 250,
@@ -136,8 +136,6 @@ var backgroundParticles = {
       ctx.restore();
       ctx.closePath();
     });
-    this.angela.x = player.earthX;
-    this.angela.y = player.earthY;
   },
 };
 
@@ -163,6 +161,7 @@ var environment = {
   },
   update_render: function () {
     this.envi_list.forEach((el) => {
+      ctx.globalAlpha = 0.7;
       if (el.type == "WARNING") {
         if (el.index > 0) {
           el.index--;

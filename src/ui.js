@@ -189,9 +189,9 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "BACK",
+      text: "MENU",
       textSize: 30 * screenratio,
-      button: "BACK",
+      button: "BACKTOMENU",
       opacity: 1,
       color: ["grey", "black", "white"],
     };
@@ -216,7 +216,7 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "BACK TO MENU",
+      text: "MENU",
       textSize: 30 * screenratio,
       button: "BACKTOMENU",
       opacity: 1,
@@ -239,7 +239,7 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 - 265 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "BACK TO MENU",
+      text: "MENU",
       textSize: 30 * screenratio,
       button: "BACKTOMENU",
       opacity: 1,
@@ -585,13 +585,6 @@ var UI = {
       this.minimapLayer.width,
       this.minimapLayer.height
     );
-    ctx.drawImage(
-      sprite.UI_motherboardMapgrill,
-      this.minimapLayer.x,
-      this.minimapLayer.y,
-      this.minimapLayer.width,
-      this.minimapLayer.height
-    );
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
       if (!e.deathAnimation)
@@ -717,7 +710,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
-          if (index.button == "BACK") {
+          if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
           } else if (index.button == "RESTART") {
             startTheGame();

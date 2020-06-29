@@ -137,7 +137,11 @@ var weaponActivation = {
     ctx.fillStyle = "white";
     ctx.font = 70 * screenratio + "px Consolas";
     ctx.globalAlpha = 1;
-    ctx.fillText(`SUCCESS`, canvas.width / 2, canvas.height / 4);
+    ctx.fillText(
+      `SUCCESS: ${this.weaponName}`,
+      canvas.width / 2,
+      canvas.height / 4
+    );
     if (this.successTimeIndex == 0) {
       player.inWeaponActivation = false;
       this.lives = 3;

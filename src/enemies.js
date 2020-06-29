@@ -60,7 +60,7 @@ function enemyBullet(B, type, target) {
   B.speed = 15 * screenratio;
   B.opacity = 1;
   if (type == "BASIC") {
-    B.damage = 20;
+    B.damage = 10;
     B.speed = 15 * screenratio;
     B.sprite = sprite.projectile_enemyBASIC;
     if (target == "none") {
@@ -73,7 +73,7 @@ function enemyBullet(B, type, target) {
     B.width = 5 * screenratio;
     B.height = 50 * screenratio;
   } else if (type == "MINIBASIC") {
-    B.damage = 10;
+    B.damage = 5;
     B.speed = 10 * screenratio;
     B.sprite = sprite.projectile_enemyBASIC;
     if (target == "none") {
@@ -85,6 +85,20 @@ function enemyBullet(B, type, target) {
     }
     B.width = 4 * screenratio;
     B.height = 25 * screenratio;
+  } else if (type == "CLOUD") {
+    B.damage = 2;
+    B.speed = 7 * screenratio;
+    B.ttl = 100;
+    B.sprite = sprite.projectile_enemyCLOUD;
+    if (target == "none") {
+      B.dirx = player.earthX - B.x;
+      B.diry = player.earthY - B.y;
+    } else {
+      B.dirx = target.x + target.xspeed * 20 - B.x;
+      B.diry = target.y + target.yspeed * 20 - B.y;
+    }
+    B.width = 13 * screenratio;
+    B.height = 45 * screenratio;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;

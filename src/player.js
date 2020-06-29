@@ -299,9 +299,11 @@ var player = {
     else player.shieldCD[0] = 300;
     player.damageOpacity[playerEntity] = 101 / 100;
     for (let i = 100; i >= 0; i--) {
+      if (playerEntity == 1 && event == "bullet" && i == 50)
+        player.hitCD = false;
       if (player.damageOpacity[playerEntity] == (i + 1) / 100) {
         player.damageOpacity[playerEntity] = i / 100;
-        await sleep(3);
+        await sleep(1);
       } else break;
     }
     if (playerEntity == 1 && event == "bullet") player.hitCD = false;

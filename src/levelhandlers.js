@@ -89,6 +89,7 @@ function levelLayout(L) {
     L.waves = 1;
     L.startTime = 2;
     L.carrier = [1, 1, 1];
+    L.corruptedCloud = [1, 1, 1];
     L.smallCube = [1, 1, 1];
   } else if (ship.level == 1) {
     L.waves = 1;
