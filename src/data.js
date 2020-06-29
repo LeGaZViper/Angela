@@ -38,10 +38,10 @@ const sprite = {
 const DialogueData = {
   level_0: {
     text: [
-      "INTRUDERS DETECTED.#DEFENCES ONLINE.",
-      "YOUR TASK IS TO PROTECT THE C",
-      "SHUT UP, YOU MONSTER!",
-      "Testing biach",
+      "Placeholder text 1",
+      "Placeholder text 2",
+      "Placeholder text instant 1",
+      "Placeholder text 3",
     ],
     color: ["yellow", "yellow", "white", "white"],
     triggerType: ["timer", "after", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
@@ -49,7 +49,7 @@ const DialogueData = {
     ttl: [400, 1, 400, 400],
   },
   level_1: {
-    text: ["Testing level 1", "More testing.", "Testing biach"],
+    text: ["Placeholder text 1", "Placeholder text 2", "Placeholder text 3"],
     color: ["yellow", "white", "white"],
     triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1],

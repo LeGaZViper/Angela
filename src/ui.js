@@ -696,7 +696,7 @@ var UI = {
           } else if (index.button == "music") {
             if (index.text == "🡅" && ship.musicMultiplier < 10) {
               ship.musicMultiplier++;
-            } else if (index.text == "🡇" && ship.soundMultiplier > 0) {
+            } else if (index.text == "🡇" && ship.musicMultiplier > 0) {
               ship.musicMultiplier--;
             }
             gameAudio.setVolume();
