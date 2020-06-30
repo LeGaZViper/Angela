@@ -98,14 +98,14 @@ var player = {
     );
     player.shieldRecharge();
 
-    if (distance < 150 * screenratio && !rightMouseDown) {
+    if (distance < 250 * screenratio && !rightMouseDown) {
       if (player.accelerationX > 0) {
         player.accelerationX -= 1;
       }
       if (player.accelerationY > 0) {
         player.accelerationY -= 1;
       }
-    } else if (distance >= 150 && distance <= 200 && !rightMouseDown) {
+    } else if (distance >= 250 && distance <= 300 && !rightMouseDown) {
       if (player.accelerationX < 100) {
         player.accelerationX += 1;
       }

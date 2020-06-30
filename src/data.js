@@ -15,6 +15,7 @@ const sprite = {
   projectile_ROCKET: new Image(),
   projectile_BASIC: new Image(),
   projectile_CHAKRAM: new Image(),
+  projectile_NEON: new Image(),
   projectile_enemyBASIC: new Image(),
   projectile_enemyCLOUD: new Image(),
   projectile_SPREAD: new Image(),
@@ -192,6 +193,7 @@ const WeaponData = {
     name: "CHAKRAM",
     animation: false,
     rotationAnimation: true,
+    rotationSpeed: 20,
     bullets: 1,
     damage: 2,
     speed: 10,
@@ -201,7 +203,24 @@ const WeaponData = {
     duration: 600,
     piercing: true,
     hitCD: 200,
-    color: "#B2B5FF",
+    status: "LOCKED",
+  },
+  NEONTHROWER: {
+    index: 8,
+    sprite: sprite.projectile_NEON,
+    name: "NEONTHROWER",
+    animation: false,
+    rotationAnimation: true,
+    rotationSpeed: 10,
+    bullets: 1,
+    damage: 4,
+    speed: 7,
+    width: 50,
+    height: 50,
+    cooldown: 25,
+    duration: 600,
+    piercing: true,
+    hitCD: 200,
     status: "LOCKED",
   },
 };
@@ -209,7 +228,7 @@ const WeaponData = {
 class DefaultSetup {
   constructor() {
     this.name = "SCOUT";
-    this.speed = 10;
+    this.speed = 12;
     this.width = 75;
     this.height = 75;
     this.widthOnPic = 150;
@@ -413,9 +432,7 @@ const EnemyData = {
     HP: 50,
     maxHP: 50,
     animation: false,
-    animationFrames: 4,
-    animationFPS: 6,
     deathAnimationFPS: 8,
-    deathAnimationFrames: 4,
+    deathAnimationFrames: 5,
   },
 };

@@ -230,6 +230,7 @@ function bullet(B, numberOfBullets) {
   B.animation = player.weapon.animation;
   B.rotationAnimation = player.weapon.rotationAnimation;
   B.rotationAngle = 0;
+  B.rotationSpeed = player.weapon.rotationSpeed;
   if (B.animation) {
     B.animationFrames = player.weapon.animationFrames;
     B.animationUpdate = player.weapon.animationUpdate;
@@ -298,6 +299,15 @@ function bullet(B, numberOfBullets) {
     B.damage = Math.floor(B.damage * Math.random()) + 1;
     B.dirx = Math.cos(player.angle - Math.PI / 2);
     B.diry = Math.sin(player.angle - Math.PI / 2);
+  } else if (player.weapon.name == "NEONTHROWER") {
+    B.ttl = 70;
+    B.damage = Math.floor(B.damage * Math.random()) + 1;
+    B.dirx = Math.cos(
+      player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
+    );
+    B.diry = Math.sin(
+      player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
+    );
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -335,7 +345,7 @@ function bullet(B, numberOfBullets) {
       B.y = hitDetectionY;
     } else {
       if (B.rotationAnimation) {
-        B.rotationAngle += (20 / 180) * Math.PI;
+        B.rotationAngle += (B.rotationSpeed / 180) * Math.PI;
         if (B.rotationAngle > 2 * Math.PI) {
           B.rotationAngle = 0;
           if (B.name == "CHAKRAM" && B.speed > 0) {

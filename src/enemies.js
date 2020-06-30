@@ -321,10 +321,23 @@ function enemyCharacter(E) {
               screenratio
         );
         ctx.rotate(E.turretAngle[i]);
+        ctx.globalAlpha = E.appearOpacity;
         ctx.drawImage(
           E.turretSprite,
           0,
           0,
+          E.turretWidthOnPic,
+          E.turretHeightOnPic,
+          -E.turretWidthOnPic / 2,
+          -E.turretHeightOnPic / 2,
+          E.turretWidthOnPic,
+          E.turretHeightOnPic
+        );
+        ctx.globalAlpha = E.opacity;
+        ctx.drawImage(
+          E.turretSprite,
+          0,
+          E.turretHeightOnPic,
           E.turretWidthOnPic,
           E.turretHeightOnPic,
           -E.turretWidthOnPic / 2,
@@ -379,6 +392,7 @@ function enemyCharacter(E) {
       ctx.translate(E.x, E.y);
       if (E.type == "smallCube" || E.type == "largeCube")
         ctx.rotate(E.deathAnimation_angle);
+      else ctx.rotate(E.angle);
       ctx.drawImage(
         E.sprite,
         E.widthOnPic * E.deathAnimation_index,
