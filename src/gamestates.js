@@ -46,8 +46,8 @@ function winTheLevel() {
   player.inWeaponActivation = false;
   ship.level += 1;
   if (ship.level % 3 == 0) {
-    player.companions++;
     ship.companions++;
+    player.setCompanions(ship.companions);
   }
   saveLocalStorage();
   weaponActivation.inicialize();

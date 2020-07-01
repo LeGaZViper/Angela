@@ -86,9 +86,11 @@ var player = {
     player.companions = ship.companions;
     player.companionsX = [0, 0, 0];
     player.companionsY = [0, 0, 0];
-    if (player.companions == 1) player.companionsIndex = [0, 0, 0];
-    else if (player.companions == 2) player.companionsIndex = [0, 180, 0];
-    else player.companionsIndex = [0, 120, 240];
+    player.companionsIndex = [
+      0,
+      360 / player.companions,
+      (2 * 360) / player.companions,
+    ];
   },
   update: () => {
     //speed calculation
@@ -333,5 +335,9 @@ var player = {
     player.opacity[1] = 1;
     player.killedCD = false;
     player.collisionCD = false;
+  },
+  setCompanions: function (c) {
+    player.companions = c;
+    player.companionsIndex = [0, 360 / c, (2 * 360) / c];
   },
 };
