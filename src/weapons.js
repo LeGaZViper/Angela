@@ -161,7 +161,7 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 7) + 1;
+  let choose = Math.floor(Math.random() * 8) + 1;
   for (let index in WeaponData) {
     if (choose == WeaponData[index].index) {
       R.name = WeaponData[index].name;

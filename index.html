@@ -43,6 +43,12 @@
     <link type="text/css" rel="stylesheet" href="./css.css" />
   </head>
   <body>
+    <div id="loading">Loading...</div>
     <canvas id="canvas"></canvas>
   </body>
+  <script>
+    $(document).ready(function () {
+      document.getElementById("loading").style.display = "none";
+    });
+  </script>
 </html>
