@@ -17,8 +17,8 @@ var levelTimer = 0;
 function gameLoop() {
   ctx.globalAlpha = 1;
   //menu sector
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (UI.inMenu) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (UI.currentMenu != 4) background.update_render();
     environment.update_render();
     UI.menu_render(UI.menuList[UI.currentMenu]);
@@ -32,6 +32,7 @@ function gameLoop() {
     }
     //game sector
   } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     levelTimer++;
     //Game part
     ctx.beginPath();
