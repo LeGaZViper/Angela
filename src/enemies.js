@@ -225,6 +225,7 @@ function enemyCharacter(E) {
         }
       } else if (
         E.behaviour == "spawn" ||
+        E.behaviour == "loot" ||
         (E.target == "none" && E.behaviour == "chase")
       ) {
         E.randomDirCD();
@@ -379,7 +380,7 @@ function enemyCharacter(E) {
     ctx.closePath();
   };
   E.deathAnimation_render = function () {
-    E.x += -player.xspeed - camera.offSetX; //So that explosions won't move with the player
+    E.x += -player.xspeed - camera.offSetX; //So that sprite won't move with the player
     E.y += -player.yspeed - camera.offSetY;
     if (!E.killed) {
       E.deathAnimation_countdown += 1;

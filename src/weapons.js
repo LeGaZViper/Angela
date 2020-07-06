@@ -83,7 +83,7 @@ var weaponActivation = {
 
       ctx.textAlign = "left";
       ctx.font = `bold ${60 * screenratio}px Consolas`;
-      ctx.fillStyle = "red";
+      ctx.fillStyle = "#FFFD07";
       let width = ctx.measureText(this.currentWord).width;
       ctx.fillText(
         this.currentWord,
@@ -122,7 +122,7 @@ var weaponActivation = {
       ctx.globalAlpha = 1;
       ctx.textAlign = "center";
       ctx.fillStyle = "red";
-      ctx.font = 70 * screenratio + "px Consolas";
+      ctx.font = 30 * screenratio + "px FFFFORWA";
       ctx.globalAlpha = 1;
       ctx.fillText(`FAIL`, canvas.width / 2, canvas.height / 4);
     }
@@ -135,7 +135,7 @@ var weaponActivation = {
     ctx.globalAlpha = 1;
     ctx.textAlign = "center";
     ctx.fillStyle = "white";
-    ctx.font = 70 * screenratio + "px Consolas";
+    ctx.font = 30 * screenratio + "px FFFFORWA";
     ctx.globalAlpha = 1;
     ctx.fillText(
       `SUCCESS: ${this.weaponName}`,
@@ -209,8 +209,8 @@ function randomDrop(R) {
 var bulletList = [];
 function bullet(B, numberOfBullets) {
   if (B.x == undefined) {
-    B.x = player.x + 25 * screenratio * Math.cos(player.angle - Math.PI / 2);
-    B.y = player.y + 25 * screenratio * Math.sin(player.angle - Math.PI / 2);
+    B.x = player.x + 8 * screenratio * Math.cos(player.angle - Math.PI / 2);
+    B.y = player.y + 8 * screenratio * Math.sin(player.angle - Math.PI / 2);
   }
   B.ttl = 300;
   B.killed = false;

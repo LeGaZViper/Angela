@@ -322,10 +322,11 @@ var UI = {
     };
 
     this.minimapLayer = {
-      width: 200 * screenratio,
-      height: 200 * screenratio,
-      x: 2,
-      y: 2,
+      width: 206 * screenratio,
+      height: 206 * screenratio,
+      x: -3 * screenratio,
+      y: -3 * screenratio,
+      lineWidth: 6 * screenratio,
       color: ["#686C70", "#1D1D1D"],
     };
     this.menuList = [
@@ -536,6 +537,7 @@ var UI = {
       canvas.width - 195 * screenratio,
       67 * screenratio
     );
+    //cursor
     this.cursorIndex +=
       0.001 *
         Math.sqrt(
@@ -546,10 +548,8 @@ var UI = {
     ctx.save();
     ctx.translate(xMousePos, yMousePos);
     ctx.rotate(this.cursorIndex);
-    if (player.leftMouseDown)
-      ctx.drawImage(sprite.UI_cursorFire, -30, -30, 60, 60);
-    //cursor
-    else ctx.drawImage(sprite.UI_cursorNoFire, -30, -30, 60, 60); //cursor
+    if (leftMouseDown) ctx.drawImage(sprite.UI_cursorFire, -30, -30, 60, 60);
+    else ctx.drawImage(sprite.UI_cursorNoFire, -30, -30, 60, 60);
     ctx.restore();
     if (this.cursorIndex == 6) {
       this.cursorIndex = 0;
@@ -577,25 +577,17 @@ var UI = {
       this.minimapLayer.width,
       this.minimapLayer.height
     );
-    ctx.strokeStyle = this.minimapLayer.color[1];
-    ctx.lineWidth = 6;
-    ctx.strokeRect(
-      this.minimapLayer.x,
-      this.minimapLayer.y,
-      this.minimapLayer.width,
-      this.minimapLayer.height
-    );
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
       if (!e.deathAnimation)
-        if (e.behaviour == "chase") {
+        if (e.behaviour != "orbit") {
           ctx.save();
           ctx.translate(
             e.coordX / (player.spaceSize / (200 * screenratio)),
             e.coordY / (player.spaceSize / (200 * screenratio))
           );
           ctx.rotate(e.angle);
-          ctx.drawImage(sprite.UI_ignore, -3.5, -3.5, 7, 7);
+          ctx.drawImage(sprite["UI_" + e.behaviour], -3.5, -3.5, 7, 7);
           ctx.restore();
         } else {
           ctx.fillRect(
@@ -627,6 +619,14 @@ var UI = {
       player.coordY / (player.spaceSize / (200 * screenratio)) - 2.5,
       5,
       5
+    );
+    ctx.strokeStyle = this.minimapLayer.color[1];
+    ctx.lineWidth = this.minimapLayer.lineWidth * screenratio;
+    ctx.strokeRect(
+      this.minimapLayer.x,
+      this.minimapLayer.y,
+      this.minimapLayer.width,
+      this.minimapLayer.height
     );
     if (player.inWeaponActivation) {
       weaponActivation.render_update();

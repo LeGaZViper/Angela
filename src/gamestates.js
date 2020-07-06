@@ -45,6 +45,9 @@ function winTheLevel() {
   gameAudio.stopMusic();
   player.inWeaponActivation = false;
   ship.level += 1;
+  player.HP = player.maxHP;
+  player.shield = player.maxShield;
+  player.shipLives = 3;
   if (ship.level % 3 == 0) {
     ship.companions++;
     player.setCompanions(ship.companions);
@@ -73,6 +76,10 @@ function saveLocalStorage() {
 }
 
 function resetLocalStorage() {
+  let sound = ship.soundMultiplier;
+  let music = ship.musicMultiplier;
   ship = new DefaultSetup();
+  ship.soundMultiplier = sound;
+  ship.musicMultiplier = music;
   localStorage.ship = JSON.stringify(ship);
 }

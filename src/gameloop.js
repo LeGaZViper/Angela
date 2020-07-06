@@ -1,4 +1,4 @@
-//makes sure gameLoop always runs 60 times/s even on higher refresh rate monitors
+//makes sure gameLoop always runs 60 times per second even on higher refresh rate monitors
 function checkRefreshRate() {
   let fpsInterval = 1000 / 60;
   let timeThen = 0;
@@ -43,9 +43,9 @@ function gameLoop() {
     backgroundParticles.update_render();
     //game space borders
     ctx.globalAlpha = 1;
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "#5C7CFF";
     ctx.lineWidth = 5;
-    ctx.globalAlpha = 0.5;
+    ctx.globalAlpha = 0.7;
     ctx.strokeRect(
       player.earthX - player.spaceSize / 2,
       player.earthY - player.spaceSize / 2,
@@ -171,7 +171,7 @@ function gameLoop() {
                 e.HP--;
                 e.hitCDstart();
               } else {
-                e.killed = true;
+                e.HP = 0;
                 checkDeath(e);
               }
               if (player.shield[1] >= e.collisionDamage)
@@ -260,6 +260,6 @@ function gameLoop() {
     });
     UI.game_render();
   }
-  //call for next iteration of gameLoop
+  //call for the next iteration of gameLoop
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);
 }

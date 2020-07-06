@@ -19,7 +19,6 @@ async function spawn() {
       enemyCharacter({
         x: enemySpawnList[i].x * screenratio + player.earthX,
         y: enemySpawnList[i].y * screenratio + player.earthY,
-        randomDrop: enemySpawnList[i].randromDrop,
         spawnCD: enemySpawnList[i].spawnCD,
         ...EnemyData[enemySpawnList[i].type],
       })
@@ -64,14 +63,10 @@ var levels_handler = {
                 Math.random() *
                 player.spaceSize) /
                 2);
-          let randomDrop;
-          if (Math.round(Math.random() * 1) < 2) randomDrop = true;
-          else randomDrop = false;
           enemySpawnList.push({
             x: det_x,
             y: det_y,
             type: index,
-            randromDrop: randomDrop,
             spawnCD: this.level[index][1],
           });
         }
@@ -88,7 +83,8 @@ function levelLayout(L) {
   if (ship.level == 0) {
     L.waves = 1;
     L.startTime = 2;
-    L.icosphere = [1, 1, 1];
+    L.looterCube = [1, 1, 1];
+    L.cube = [1, 1, 1];
   } else if (ship.level == 1) {
     L.waves = 1;
     L.startTime = 0;
