@@ -59,7 +59,7 @@ var backgroundParticles = {
       type: "FAN",
       sprite: sprite.UI_motherboardFan,
       x: player.earthX + 1370 * screenratio,
-      y: player.earthY + 1365 * screenratio,
+      y: player.earthY + 1370 * screenratio,
       widthOnPic: 672,
       heightOnPic: 672,
       width: 672 * screenratio,
@@ -69,6 +69,98 @@ var backgroundParticles = {
       animation: function () {
         this.angle += 0.02;
         if (this.angle > Math.PI * 2) this.angle = 0;
+      },
+    };
+    this.GPUFan1 = {
+      type: "GPUFAN",
+      sprite: sprite.UI_motherboardGPUFan,
+      x: player.earthX - 1600 * screenratio,
+      y: player.earthY - 1550 * screenratio,
+      widthOnPic: 36,
+      heightOnPic: 630,
+      width: 36 * screenratio,
+      height: 630 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex % 10 == 0) {
+          this.animationX += this.widthOnPic;
+        }
+        if (this.timeIndex == 50) {
+          this.animationX = 0;
+          this.timeIndex = 0;
+        }
+      },
+    };
+    this.GPUFan2 = {
+      type: "GPUFAN",
+      sprite: sprite.UI_motherboardGPUFan,
+      x: player.earthX - 1600 * screenratio,
+      y: player.earthY - 780 * screenratio,
+      widthOnPic: 36,
+      heightOnPic: 630,
+      width: 36 * screenratio,
+      height: 630 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex % 10 == 0) {
+          this.animationX += this.widthOnPic;
+        }
+        if (this.timeIndex == 50) {
+          this.animationX = 0;
+          this.timeIndex = 0;
+        }
+      },
+    };
+    this.GPUFan3 = {
+      type: "GPUFAN",
+      sprite: sprite.UI_motherboardGPUFan,
+      x: player.earthX - 1150 * screenratio,
+      y: player.earthY - 1550 * screenratio,
+      widthOnPic: 36,
+      heightOnPic: 630,
+      width: 36 * screenratio,
+      height: 630 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex % 10 == 0) {
+          this.animationX += this.widthOnPic;
+        }
+        if (this.timeIndex == 50) {
+          this.animationX = 0;
+          this.timeIndex = 0;
+        }
+      },
+    };
+    this.GPUFan4 = {
+      type: "GPUFAN",
+      sprite: sprite.UI_motherboardGPUFan,
+      x: player.earthX - 1150 * screenratio,
+      y: player.earthY - 780 * screenratio,
+      widthOnPic: 36,
+      heightOnPic: 630,
+      width: 36 * screenratio,
+      height: 630 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex % 10 == 0) {
+          this.animationX += this.widthOnPic;
+        }
+        if (this.timeIndex == 50) {
+          this.animationX = 0;
+          this.timeIndex = 0;
+        }
       },
     };
     this.angela = {
@@ -96,7 +188,15 @@ var backgroundParticles = {
         }
       },
     };
-    this.particlesList = [this.fan1, this.fan2, this.angela];
+    this.particlesList = [
+      this.fan1,
+      this.fan2,
+      this.GPUFan1,
+      this.GPUFan2,
+      this.GPUFan3,
+      this.GPUFan4,
+      this.angela,
+    ];
   },
   update_render: function () {
     this.particlesList.forEach((el) => {

@@ -517,6 +517,8 @@ function enemyCharacter(E) {
             );
           }
         } else {
+          if (E.acceleration <= 99) E.acceleration += 1;
+          else E.acceleration = 100;
           E.speed = E.defaultSpeed;
         }
       } else {

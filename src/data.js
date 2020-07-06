@@ -31,6 +31,7 @@ const sprite = {
   UI_motherboardAngela: new Image(),
   UI_motherboardMap: new Image(),
   UI_motherboardFan: new Image(),
+  UI_motherboardGPUFan: new Image(),
   UI_visibility: new Image(),
   UI_warning: new Image(),
   UI_chase: new Image(),
