@@ -260,6 +260,12 @@ function gameLoop() {
     });
     UI.game_render();
   }
+  let loading = document.getElementById("loading");
+  if (loading.style.display != "none") {
+    $(document).ready(function () {
+      loading.style.display = "none";
+    });
+  }
   //call for the next iteration of gameLoop
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);
 }
