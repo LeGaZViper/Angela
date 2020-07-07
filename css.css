@@ -18,6 +18,11 @@ body {
   src: url("./FFFFORWA.TTF");
 }
 
+@font-face {
+  font-family: "Glitch";
+  src: url("./Glitch.ttf");
+}
+
 #loading {
   z-index: 1;
   width: 100%;

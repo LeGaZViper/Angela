@@ -691,11 +691,11 @@ var UI = {
           } else if (index.button == "music") {
             if (index.text == "🡅" && ship.musicMultiplier < 10) {
               ship.musicMultiplier++;
+              gameAudio.changeVolumeOfMusic();
             } else if (index.text == "🡇" && ship.musicMultiplier > 0) {
               ship.musicMultiplier--;
+              gameAudio.changeVolumeOfMusic();
             }
-            gameAudio.setVolume();
-            gameAudio.playSound("player_BASIC");
             this.optionsMenu_t3.text = ship.musicMultiplier;
           }
           saveLocalStorage();

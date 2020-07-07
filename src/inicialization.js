@@ -32,7 +32,7 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
-  gameAudio.playMusic();
+  gameAudio.playMusic("music_level_" + ship.level);
   xMousePos =
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));

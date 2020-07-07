@@ -11,6 +11,7 @@ const gameAudio = {
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_angela: new Audio("./audio/typing_angela.ogg"),
   music_level_0: new Audio("./audio/music_level_0.ogg"),
+  music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   setVolume: function () {
     this.player_BASIC.volume = 0.05 * ship.soundMultiplier;
@@ -24,22 +25,22 @@ const gameAudio = {
     this.enemy_bullet.volume = 0.02 * ship.soundMultiplier;
     this.typing_system.volume = 0.01 * ship.soundMultiplier;
     this.typing_angela.volume = 0.01 * ship.soundMultiplier;
-    this.music_level_0.volume = 0.01 * ship.musicMultiplier;
+    this.music_level_0.volume = 0.03 * ship.musicMultiplier;
+    this.music_menu.volume = 0.05 * ship.musicMultiplier;
   },
   playSound: function (sound) {
     let copyAudio = this[sound].cloneNode();
     copyAudio.volume = this[sound].volume;
     copyAudio.play();
   },
-  playMusic: function () {
+  playMusic: function (music) {
     try {
-      this.currentMusic = this["music_level_" + ship.level].cloneNode();
-      this.currentMusic.volume = this["music_level_" + ship.level].volume;
+      this.currentMusic = this[music].cloneNode();
+      this.currentMusic.volume = this[music].volume;
     } catch (er) {
       this.currentMusic = this["music_level_0"].cloneNode();
       this.currentMusic.volume = this["music_level_0"].volume;
     }
-
     this.currentMusic.loop = true;
     this.currentMusic.play();
   },
@@ -50,5 +51,8 @@ const gameAudio = {
     if (!this.currentMusic.paused && this.currentMusic != null) {
       this.currentMusic.pause();
     }
+  },
+  changeVolumeOfMusic: function () {
+    this.currentMusic.volume = 0.01 * ship.musicMultiplier;
   },
 };
