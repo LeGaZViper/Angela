@@ -587,7 +587,9 @@ var UI = {
             e.coordY / (player.spaceSize / (200 * screenratio))
           );
           ctx.rotate(e.angle);
-          ctx.drawImage(sprite["UI_" + e.behaviour], -3.5, -3.5, 7, 7);
+          if (e.behaviour != "collide")
+            ctx.drawImage(sprite["UI_" + e.behaviour], -3.5, -3.5, 7, 7);
+          else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
           ctx.restore();
         } else {
           ctx.fillRect(

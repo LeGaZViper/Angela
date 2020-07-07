@@ -69,8 +69,10 @@ function gameLoop() {
     //update & render of enemy bullets
     enemyBulletList.forEach((eb) => {
       //enemy bullets - render
-      let distance =
-        Math.abs(eb.x - player.earthX) + Math.abs(eb.y - player.earthY);
+      let distance = Math.sqrt(
+        Math.pow(eb.x - player.earthX, 2) + Math.pow(eb.y - player.earthY, 2)
+      );
+
       if (
         collides(eb, player) &&
         player.HP[1] > 0 &&
@@ -86,7 +88,7 @@ function gameLoop() {
         eb.killed = true;
         player.hitCD = true;
         player.hitCDstart(1, "bullet");
-      } else if (distance < 20) {
+      } else if (distance < 20 && eb.target == "none") {
         if (player.shield[0] >= eb.damage) player.shield[0] -= eb.damage;
         else {
           player.HP[0] += -(eb.damage - player.shield[0]);

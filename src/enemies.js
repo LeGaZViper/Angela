@@ -56,6 +56,7 @@ var enemyBulletList = [];
 function enemyBullet(B, type, target) {
   gameAudio.playSound("enemy_bullet");
   B.ttl = 300;
+  B.target = target;
   B.killed = false;
   B.speed = 15 * screenratio;
   B.opacity = 1;
@@ -270,14 +271,8 @@ function enemyCharacter(E) {
     ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
-    if (
-      !E.inOrbit &&
-      E.type != "mail" &&
-      E.type != "star" &&
-      E.type != "corruptedCloud"
-    )
-      ctx.rotate(E.angle);
-    else if (E.type != "mail" && E.type != "star" && E.type != "corruptedCloud")
+    if (!E.inOrbit && E.rotation) ctx.rotate(E.angle);
+    else if (E.rotation)
       ctx.rotate(
         Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
       );
