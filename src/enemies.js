@@ -53,53 +53,24 @@ async function checkDeath(enemy, bulletType = "none") {
   }
 }
 var enemyBulletList = [];
-function enemyBullet(B, type, target) {
-  gameAudio.playSound("enemy_bullet");
+function enemyBullet(B, target = "none") {
+  try {
+    gameAudio.playSound(B.sound);
+  } catch (err) {
+    console.log("Unable to find sound file for " + B.type);
+  }
   B.ttl = 300;
   B.target = target;
   B.killed = false;
-  B.speed = 15 * screenratio;
   B.opacity = 1;
-  if (type == "BASIC") {
-    B.damage = 10;
-    B.speed = 15 * screenratio;
-    B.sprite = sprite.projectile_enemyBASIC;
-    if (target == "none") {
-      B.dirx = player.earthX - B.x;
-      B.diry = player.earthY - B.y;
-    } else {
-      B.dirx = target.x + target.xspeed * 10 - B.x;
-      B.diry = target.y + target.yspeed * 10 - B.y;
-    }
-    B.width = 5 * screenratio;
-    B.height = 50 * screenratio;
-  } else if (type == "MINIBASIC") {
-    B.damage = 5;
-    B.speed = 10 * screenratio;
-    B.sprite = sprite.projectile_enemyBASIC;
-    if (target == "none") {
-      B.dirx = player.earthX - B.x;
-      B.diry = player.earthY - B.y;
-    } else {
-      B.dirx = target.x + target.xspeed * 20 - B.x;
-      B.diry = target.y + target.yspeed * 20 - B.y;
-    }
-    B.width = 4 * screenratio;
-    B.height = 25 * screenratio;
-  } else if (type == "CLOUD") {
-    B.damage = 2;
-    B.speed = 7 * screenratio;
-    B.ttl = 100;
-    B.sprite = sprite.projectile_enemyCLOUD;
-    if (target == "none") {
-      B.dirx = player.earthX - B.x;
-      B.diry = player.earthY - B.y;
-    } else {
-      B.dirx = target.x + target.xspeed * 20 - B.x;
-      B.diry = target.y + target.yspeed * 20 - B.y;
-    }
-    B.width = 13 * screenratio;
-    B.height = 45 * screenratio;
+  B.width = B.widthOnPic * screenratio;
+  B.height = B.heightOnPic * screenratio;
+  if (target == "none") {
+    B.dirx = player.earthX - B.x;
+    B.diry = player.earthY - B.y;
+  } else {
+    B.dirx = target.x + target.xspeed * 20 - B.x;
+    B.diry = target.y + target.yspeed * 20 - B.y;
   }
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
@@ -120,23 +91,17 @@ function enemyBullet(B, type, target) {
     ctx.translate(B.x, B.y);
     ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2);
     ctx.globalAlpha = B.opacity;
-    if (B.sprite != undefined) {
-      ctx.drawImage(
-        B.sprite,
-        0,
-        0,
-        B.width / screenratio,
-        B.height / screenratio,
-        -B.width / 2,
-        -B.height / 2,
-        B.width,
-        B.height
-      );
-    } else {
-      ctx.fillStyle = B.color;
-      ctx.fillRect(-B.width / 2, -B.height / 2, B.width, B.height);
-      ctx.fill();
-    }
+    ctx.drawImage(
+      B.sprite,
+      0,
+      0,
+      B.widthOnPic,
+      B.heightOnPic,
+      -B.width / 2,
+      -B.height / 2,
+      B.width,
+      B.height
+    );
     ctx.restore();
     ctx.stroke();
     ctx.closePath();
@@ -347,33 +312,32 @@ function enemyCharacter(E) {
     }
     //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
     //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
-    if (E.maxHP > E.HP) {
-      let colorHPbar = "white";
-      ctx.globalAlpha = 0.8;
-      ctx.fillStyle = "#606060";
-      ctx.fillRect(
-        E.x - 15,
-        E.y + E.height / 2,
-        E.height / 3 > 30 ? E.height / 3 : 30,
-        5
-      );
-      ctx.fillStyle = colorHPbar;
-      ctx.fillRect(
-        E.x - 15,
-        E.y + E.height / 2,
-        (E.HP / E.maxHP) * (E.height / 3 > 30 ? E.height / 3 : 30),
-        5
-      );
-      ctx.strokeStyle = "#000000";
-      ctx.globalAlpha = 1;
-      ctx.lineWidth = 1;
-      ctx.strokeRect(
-        E.x - 15,
-        E.y + E.height / 2,
-        E.height / 3 > 30 ? E.height / 3 : 30,
-        5
-      );
-    }
+    let colorHPbar = "white";
+    ctx.globalAlpha = 0.8;
+    ctx.fillStyle = "#606060";
+    ctx.fillRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      E.height / 3 > 30 ? E.height / 3 : 30,
+      5
+    );
+    ctx.fillStyle = colorHPbar;
+    ctx.fillRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      (E.HP / E.maxHP) * (E.height / 3 > 30 ? E.height / 3 : 30),
+      5
+    );
+    ctx.strokeStyle = "#000000";
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(
+      E.x - 15,
+      E.y + E.height / 2,
+      E.height / 3 > 30 ? E.height / 3 : 30,
+      5
+    );
+
     ctx.stroke();
     ctx.closePath();
   };
@@ -430,7 +394,9 @@ function enemyCharacter(E) {
         E.attackCDstart();
       } else if (E.inOrbit && !E.attackCD) {
         E.attackCDstart();
-        enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, E.bulletType));
+        enemyBulletList.push(
+          enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
+        );
       }
     } else if (E.behaviour == "mine") {
       E.distance = Math.sqrt(
@@ -458,7 +424,7 @@ function enemyCharacter(E) {
       } else if (E.arrival && !E.attackCD) {
         E.attackCDstart();
         enemyBulletList.push(
-          enemyBullet({ x: E.x, y: E.y }, E.bulletType, "none")
+          enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
         );
       }
       if (E.turrets > 0) {
@@ -482,7 +448,10 @@ function enemyCharacter(E) {
             if (!E.turretAttackCD[i]) {
               E.turretAttackCDstart(i);
               enemyBulletList.push(
-                enemyBullet({ x: ex, y: ey }, E.bulletType, player)
+                enemyBullet(
+                  { x: ex, y: ey, ...enemyWeaponData[E.turretBulletType] },
+                  player
+                )
               );
             }
           } else {
@@ -517,7 +486,10 @@ function enemyCharacter(E) {
           if (!E.attackCD) {
             E.attackCDstart();
             enemyBulletList.push(
-              enemyBullet({ x: E.x, y: E.y }, E.bulletType, E.target)
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                player
+              )
             );
           }
         } else {

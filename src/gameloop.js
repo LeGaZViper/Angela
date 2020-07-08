@@ -60,7 +60,10 @@ function gameLoop() {
       if (b.explosive && b.explosion_triggered) b.explosion_render();
       b.update();
       if (
-        (b.x > 0 && b.x < canvas.width && b.y > 0 && b.y < canvas.height) ||
+        (b.x > -50 &&
+          b.x < canvas.width + 50 &&
+          b.y > -50 &&
+          b.y < canvas.height + 50) ||
         b.name == "LASER"
       )
         b.render();
@@ -99,7 +102,12 @@ function gameLoop() {
         player.hitCDstart(0, "bullet");
       }
       eb.update();
-      if (eb.x > 0 && eb.x < canvas.width && eb.y > 0 && eb.y < canvas.height)
+      if (
+        eb.x > -50 &&
+        eb.x < canvas.width + 50 &&
+        eb.y > -50 &&
+        eb.y < canvas.height + 50
+      )
         eb.render();
     });
     enemyBulletList = enemyBulletList.filter((check) => !check.killed);
@@ -114,7 +122,7 @@ function gameLoop() {
       if (!player.attackCD && player.HP[1] > 0) {
         if (player.weapon.name != "LASER") {
           try {
-            gameAudio.playSound("player_" + player.weapon.name);
+            gameAudio.playSound(player.weapon.sound);
           } catch (err) {
             console.error("Missing an audio file.");
           }
@@ -128,7 +136,7 @@ function gameLoop() {
           gameAudio.player_LASER_loop.loop = true;
           gameAudio.player_LASER_loop.play();
         }
-        bulletList.push(bullet({}, player.weapon.bullets));
+        bulletList.push(bullet({ ...player.weapon }, player.weapon.bullets));
         player.attackCDstart();
         for (let i = 0; i < player.companions; i++) {
           bulletList.push(
@@ -137,6 +145,7 @@ function gameLoop() {
                 x: player.companionsX[i],
                 y: player.companionsY[i],
                 companion: true,
+                ...player.weapon,
               },
               player.weapon.bullets
             )
@@ -154,7 +163,12 @@ function gameLoop() {
         if (!e.killed) {
           e.update();
           //render inside of player view/canvas
-          if (e.x > 0 && e.x < canvas.width && e.y > 0 && e.y < canvas.height) {
+          if (
+            e.x > -100 &&
+            e.x < canvas.width + 100 &&
+            e.y > -100 &&
+            e.y < canvas.height + 100
+          ) {
             e.render();
             if (
               !player.collisionCD &&
@@ -227,7 +241,12 @@ function gameLoop() {
     //update & render of random drops
     randomDropList.forEach((r, i) => {
       r.update();
-      if ((r.x > 0 && r.x < canvas.width) || (r.y > 0 && r.y < canvas.height)) {
+      if (
+        r.x > -50 &&
+        r.x < canvas.width + 50 &&
+        r.y > -50 &&
+        r.y < canvas.height + 50
+      ) {
         r.render();
         if (collides(r, player)) {
           if (!player.inWeaponActivation) {

@@ -507,11 +507,7 @@ var UI = {
       ctx.fillRect(
         canvas.width - 155 * screenratio,
         canvas.height - 25 * screenratio,
-        (player.weaponDuration /
-          (player.weapon.duration +
-            (player.weapon.duration * ship.weaponDuration) / 5)) *
-          120 *
-          screenratio,
+        (player.weaponDuration / player.weapon.duration) * 120 * screenratio,
         15 * screenratio
       );
       ctx.drawImage(
