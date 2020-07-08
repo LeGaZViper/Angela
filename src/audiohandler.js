@@ -10,6 +10,7 @@ const gameAudio = {
   enemy_bullet: new Audio("./audio/enemy_bullet.ogg"),
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_angela: new Audio("./audio/typing_angela.ogg"),
+  typing_angela_2: new Audio("./audio/typing_angela_2.ogg"),
   music_level_0: new Audio("./audio/music_level_0.ogg"),
   music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
@@ -25,6 +26,7 @@ const gameAudio = {
     this.enemy_bullet.volume = 0.02 * ship.soundMultiplier;
     this.typing_system.volume = 0.01 * ship.soundMultiplier;
     this.typing_angela.volume = 0.01 * ship.soundMultiplier;
+    this.typing_angela_2.volume = 0.01 * ship.soundMultiplier;
     this.music_level_0.volume = 0.03 * ship.musicMultiplier;
     this.music_menu.volume = 0.05 * ship.musicMultiplier;
   },
@@ -52,7 +54,7 @@ const gameAudio = {
       this.currentMusic.pause();
     }
   },
-  changeVolumeOfMusic: function () {
-    this.currentMusic.volume = 0.01 * ship.musicMultiplier;
+  changeVolumeOfMusic: function (value) {
+    this.currentMusic.volume = value * ship.musicMultiplier;
   },
 };

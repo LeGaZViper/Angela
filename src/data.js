@@ -46,8 +46,8 @@ const DialogueData = {
     text: [
       "Placeholder text 0",
       "Placeholder text 1",
-      "Placeholder text instant 3",
-      "Placeholder text 4",
+      "Placeholder text instant 2",
+      "Placeholder text 3",
     ],
     color: ["yellow", "yellow", "white", "white"],
     triggerType: ["timer", "after", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
@@ -258,8 +258,8 @@ const EnemyData = {
     deathAnimationFPS: 3,
     deathAnimationFrames: 9,
   },
-  looterCube: {
-    type: "looterCube",
+  lootCube: {
+    type: "lootCube",
     chaseDistance: Infinity,
     behaviour: "loot",
     sprite: sprite.enemy_looterCube,

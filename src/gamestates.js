@@ -37,16 +37,14 @@ function loseTheGame() {
   background.inicialize();
   backgroundParticles.inicialize();
   environment.inicialize();
-  resetLocalStorage();
   getMenu(2);
 }
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheLevel() {
-  gameAudio.stopMusic();
   player.inWeaponActivation = false;
   ship.level += 1;
-  player.HP = player.maxHP;
-  player.shield = player.maxShield;
+  player.HP = [player.maxHP[0], player.maxHP[1]];
+  player.shield = [ship.maxShield[0], ship.maxShield[1]];
   player.shipLives = 3;
   if (ship.level % 3 == 0) {
     ship.companions++;
@@ -63,7 +61,7 @@ function winTheLevel() {
 }
 
 function nextLevel() {
-  gameAudio.playMusic();
+  //gameAudio.playMusic();
   UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
   levels_handler.level = levelLayout({});

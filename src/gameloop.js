@@ -60,8 +60,7 @@ function gameLoop() {
       if (b.explosive && b.explosion_triggered) b.explosion_render();
       b.update();
       if (
-        (b.x > 0 && b.x < canvas.width) ||
-        (b.y > 0 && b.y < canvas.height) ||
+        (b.x > 0 && b.x < canvas.width && b.y > 0 && b.y < canvas.height) ||
         b.name == "LASER"
       )
         b.render();
@@ -70,7 +69,7 @@ function gameLoop() {
     enemyBulletList.forEach((eb) => {
       //enemy bullets - render
       if (eb.target == "none") {
-        let distance = Math.sqrt(
+        var distance = Math.sqrt(
           Math.pow(eb.x - player.earthX, 2) + Math.pow(eb.y - player.earthY, 2)
         );
       }
@@ -100,10 +99,7 @@ function gameLoop() {
         player.hitCDstart(0, "bullet");
       }
       eb.update();
-      if (
-        (eb.x > 0 && eb.x < canvas.width) ||
-        (eb.y > 0 && eb.y < canvas.height)
-      )
+      if (eb.x > 0 && eb.x < canvas.width && eb.y > 0 && eb.y < canvas.height)
         eb.render();
     });
     enemyBulletList = enemyBulletList.filter((check) => !check.killed);
@@ -158,10 +154,7 @@ function gameLoop() {
         if (!e.killed) {
           e.update();
           //render inside of player view/canvas
-          if (
-            (e.x > 0 && e.x < canvas.width) ||
-            (e.y > 0 && e.y < canvas.height)
-          ) {
+          if (e.x > 0 && e.x < canvas.width && e.y > 0 && e.y < canvas.height) {
             e.render();
             if (
               !player.collisionCD &&

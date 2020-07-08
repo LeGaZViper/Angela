@@ -32,7 +32,8 @@ class Dialogue {
       this.typingSequence();
     }
     ctx.beginPath();
-    ctx.font = 20 * screenratio + "px FFFFORWA";
+    if (this.color == "grey") ctx.font = 40 * screenratio + "px Glitch";
+    else ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
     ctx.globalAlpha = this.opacity;
     ctx.strokeStyle = "black";
@@ -46,6 +47,8 @@ class Dialogue {
     if (this.timeToType == 0) {
       if (this.color == "white") {
         gameAudio.playSound("typing_angela");
+      } else if (this.color == "grey") {
+        gameAudio.playSound("typing_angela_2");
       } else {
         gameAudio.playSound("typing_system");
       }

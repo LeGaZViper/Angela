@@ -91,6 +91,13 @@ var player = {
       360 / player.companions,
       (2 * 360) / player.companions,
     ];
+    player.shieldCD = [0, 0];
+    player.attackCD = false;
+    player.hitCD = false;
+    player.collisionCD = false;
+    player.killedCD = false;
+    player.opacity = [1, 1];
+    player.damageOpacity = [0, 0];
   },
   update: () => {
     //speed calculation
@@ -144,6 +151,7 @@ var player = {
       player.yspeed = 0;
       loseTheGame();
     } else if (player.HP[1] <= 0 && !player.killedCD) {
+      player.killedCD = true;
       player.killedCDstart();
     } else if (!isNaN(player.ratio)) {
       //player positioner
@@ -283,14 +291,6 @@ var player = {
     ctx.stroke();
     ctx.closePath();
   },
-
-  shieldCD: [0, 0],
-  attackCD: false,
-  hitCD: false,
-  collisionCD: false,
-  killedCD: false,
-  opacity: [1, 1],
-  damageOpacity: [0, 0],
   attackCDstart: async function () {
     player.attackCD = true;
     await sleep(player.weapon.cooldown);
@@ -329,7 +329,6 @@ var player = {
   killedCDstart: async function () {
     player.shipLives--;
     player.opacity[1] = 0.5;
-    player.killedCD = true;
     await sleep(5000);
     player.HP[1] = player.maxHP[1];
     player.opacity[1] = 1;

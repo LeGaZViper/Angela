@@ -83,14 +83,13 @@ function levelLayout(L) {
   if (ship.level == 0) {
     L.waves = 1;
     L.startTime = 2;
-    L.looterCube = [3, 1, 1];
-    L.cube = [100, 1, 1];
+    L.lootCube = [2, 1, 1];
+    L.cube = [5, 1, 1];
     L.carrier = [2, 1, 1];
-    L.star = [2, 1, 1];
   } else if (ship.level == 1) {
     L.waves = 1;
     L.startTime = 0;
-    L.largeCube = [1, 1, 1];
+    L.cube = [10, 1, 1];
   }
   //L.test = [5, 1];
   return L;

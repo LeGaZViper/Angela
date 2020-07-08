@@ -178,9 +178,9 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 - 265 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "RESTART",
+      text: "RETRY",
       textSize: 30 * screenratio,
-      button: "RESTART",
+      button: "RETRY",
       opacity: 1,
       color: ["grey", "black", "white"],
     };
@@ -587,6 +587,7 @@ var UI = {
             e.coordY / (player.spaceSize / (200 * screenratio))
           );
           ctx.rotate(e.angle);
+
           if (e.behaviour != "collide")
             ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
           else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
@@ -633,13 +634,17 @@ var UI = {
     if (player.inWeaponActivation) {
       weaponActivation.render_update();
     }
-    dialogueList = dialogueList.filter(
-      (index) => index.ttl > 0 && index.opacity > 0
-    );
-    dialogueList.forEach((dia) => {
-      dia.update_render();
-    });
     dialogueHandler();
+    if (dialogueList.length > 0) {
+      gameAudio.changeVolumeOfMusic(0.01);
+      dialogueList = dialogueList.filter(
+        (index) => index.ttl > 0 && index.opacity > 0
+      );
+      dialogueList.forEach((dia) => {
+        dia.update_render();
+      });
+    } else gameAudio.changeVolumeOfMusic(0.03);
+
     ctx.closePath();
   },
   click: function () {
@@ -691,10 +696,10 @@ var UI = {
           } else if (index.button == "music") {
             if (index.text == "🡅" && ship.musicMultiplier < 10) {
               ship.musicMultiplier++;
-              gameAudio.changeVolumeOfMusic();
+              gameAudio.changeVolumeOfMusic(0.03);
             } else if (index.text == "🡇" && ship.musicMultiplier > 0) {
               ship.musicMultiplier--;
-              gameAudio.changeVolumeOfMusic();
+              gameAudio.changeVolumeOfMusic(0.03);
             }
             this.optionsMenu_t3.text = ship.musicMultiplier;
           }
@@ -714,8 +719,8 @@ var UI = {
         ) {
           if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
-          } else if (index.button == "RESTART") {
-            startTheGame();
+          } else if (index.button == "RETRY") {
+            continueTheGame();
           }
         }
       });
