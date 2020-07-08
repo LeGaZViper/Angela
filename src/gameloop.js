@@ -69,10 +69,11 @@ function gameLoop() {
     //update & render of enemy bullets
     enemyBulletList.forEach((eb) => {
       //enemy bullets - render
-      let distance = Math.sqrt(
-        Math.pow(eb.x - player.earthX, 2) + Math.pow(eb.y - player.earthY, 2)
-      );
-
+      if (eb.target == "none") {
+        let distance = Math.sqrt(
+          Math.pow(eb.x - player.earthX, 2) + Math.pow(eb.y - player.earthY, 2)
+        );
+      }
       if (
         collides(eb, player) &&
         player.HP[1] > 0 &&

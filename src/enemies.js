@@ -177,6 +177,7 @@ function enemyCharacter(E) {
   E.arrival = false;
   E.acceleration = 100;
   E.target = "none";
+  E.minimapIcon = "UI_" + E.behaviour;
   E.orbitAngle =
     Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
   E.angle = Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
@@ -346,31 +347,33 @@ function enemyCharacter(E) {
     }
     //let colorHPbar_1 = parseInt((E.HP / E.maxHP) * 255).toString(16);
     //if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
-    let colorHPbar = "white";
-    ctx.globalAlpha = 0.8;
-    ctx.fillStyle = "#606060";
-    ctx.fillRect(
-      E.x - 15,
-      E.y + E.height / 2,
-      E.height / 3 > 30 ? E.height / 3 : 30,
-      5
-    );
-    ctx.fillStyle = colorHPbar;
-    ctx.fillRect(
-      E.x - 15,
-      E.y + E.height / 2,
-      (E.HP / E.maxHP) * (E.height / 3 > 30 ? E.height / 3 : 30),
-      5
-    );
-    ctx.strokeStyle = "#000000";
-    ctx.globalAlpha = 1;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(
-      E.x - 15,
-      E.y + E.height / 2,
-      E.height / 3 > 30 ? E.height / 3 : 30,
-      5
-    );
+    if (E.maxHP > E.HP) {
+      let colorHPbar = "white";
+      ctx.globalAlpha = 0.8;
+      ctx.fillStyle = "#606060";
+      ctx.fillRect(
+        E.x - 15,
+        E.y + E.height / 2,
+        E.height / 3 > 30 ? E.height / 3 : 30,
+        5
+      );
+      ctx.fillStyle = colorHPbar;
+      ctx.fillRect(
+        E.x - 15,
+        E.y + E.height / 2,
+        (E.HP / E.maxHP) * (E.height / 3 > 30 ? E.height / 3 : 30),
+        5
+      );
+      ctx.strokeStyle = "#000000";
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(
+        E.x - 15,
+        E.y + E.height / 2,
+        E.height / 3 > 30 ? E.height / 3 : 30,
+        5
+      );
+    }
     ctx.stroke();
     ctx.closePath();
   };
@@ -417,10 +420,10 @@ function enemyCharacter(E) {
   E.piercingCD = false;
   E.opacity = 0;
   E.checkBehaviour = function () {
-    E.distance = Math.sqrt(
-      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
-    );
     if (E.behaviour == "orbit") {
+      E.distance = Math.sqrt(
+        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+      );
       if (E.distance < 500 * screenratio && !E.inOrbit) {
         E.inOrbit = true;
         E.arrival = true;
@@ -430,6 +433,9 @@ function enemyCharacter(E) {
         enemyBulletList.push(enemyBullet({ x: E.x, y: E.y }, E.bulletType));
       }
     } else if (E.behaviour == "mine") {
+      E.distance = Math.sqrt(
+        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+      );
       if (E.distance < 40 * screenratio && E.HP > 0) {
         E.HP = 0;
         if (player.shield[0] >= 2) player.shield[0] -= 2;
@@ -442,6 +448,9 @@ function enemyCharacter(E) {
         checkDeath(E);
       }
     } else if (E.behaviour == "ignore") {
+      E.distance = Math.sqrt(
+        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+      );
       if (E.distance < 240 * screenratio && !E.arrival) {
         E.speed = 0;
         E.arrival = true;

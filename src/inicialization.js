@@ -1,6 +1,6 @@
 //First inicialization
 if (localStorage.ship == undefined) {
-  resetLocalStorage();
+  newLocalStorage();
 }
 
 window.onload = () => {

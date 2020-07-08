@@ -83,3 +83,8 @@ function resetLocalStorage() {
   ship.musicMultiplier = music;
   localStorage.ship = JSON.stringify(ship);
 }
+
+function newLocalStorage() {
+  ship = new DefaultSetup();
+  localStorage.ship = JSON.stringify(ship);
+}

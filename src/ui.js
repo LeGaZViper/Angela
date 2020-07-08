@@ -588,7 +588,7 @@ var UI = {
           );
           ctx.rotate(e.angle);
           if (e.behaviour != "collide")
-            ctx.drawImage(sprite["UI_" + e.behaviour], -3.5, -3.5, 7, 7);
+            ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
           else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
           ctx.restore();
         } else {
