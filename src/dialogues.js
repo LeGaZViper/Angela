@@ -8,7 +8,7 @@ class Dialogue {
     this.ttl = ttl;
     this.timeToType = 1;
     this.opacity = 1;
-    this.y = canvas.height / 2 + 200 * screenratio + 35 * part * screenratio;
+    this.y = canvas.height / 2 + 200 * screenratio + 40 * part * screenratio;
     this.leadingRow = true;
     this.color = color;
     this.part = part;
@@ -63,6 +63,7 @@ var textIndex;
 function pushDialogue(index) {
   let dialogueLevel = DialogueData["level_" + ship.level];
   textIndex = index;
+  dialogueLevel.dialoguesUsed[index] = true;
   dialogueList.push(
     new Dialogue(
       dialogueLevel.text[index],
@@ -75,7 +76,8 @@ function pushDialogue(index) {
 function dialogueHandler() {
   let dialogueLevel = DialogueData["level_" + ship.level];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
-    if (dialogueLevel.triggerType[i] == "timer") {
+    if (dialogueLevel.dialoguesUsed[i]) continue;
+    else if (dialogueLevel.triggerType[i] == "timer") {
       if (dialogueLevel.triggerIndex[i] == levelTimer) pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)

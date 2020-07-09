@@ -12,6 +12,11 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function killAll() {
+  enemyList = [];
+  levels_handler.level.total = 0;
+}
+
 //collision; adjusted for translated objects
 function collides(a, b) {
   return (

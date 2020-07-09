@@ -43,9 +43,9 @@ var levels_handler = {
       if (
         index != "waves" &&
         index != "startTime" &&
-        this.level[index][2] == this.waveCounter
+        this.level[index][3] == this.waveCounter
       ) {
-        for (let i = 0; i < this.level[index][0]; i++) {
+        for (let i = 0; i < this.level[index][1]; i++) {
           let randomPosArray = detMatrix[Math.floor(Math.random() * 4)];
           let det_x =
             (randomPosArray[0] * player.spaceSize) / screenratio / 2 +
@@ -66,8 +66,8 @@ var levels_handler = {
           enemySpawnList.push({
             x: det_x,
             y: det_y,
-            type: index,
-            spawnCD: this.level[index][1],
+            type: this.level[index][0],
+            spawnCD: this.level[index][2],
           });
         }
       }
@@ -81,15 +81,17 @@ var levels_handler = {
 
 function levelLayout(L) {
   if (ship.level == 0) {
-    L.waves = 1;
-    L.startTime = 2;
-    L.lootCube = [2, 1, 1];
-    L.cube = [5, 1, 1];
-    L.carrier = [2, 1, 1];
+    // type, number, spawnCD, wave
+    L.waves = 3;
+    L.startTime = 10000;
+    L.miniArrow1 = ["miniArrow", 5, 1000, 1];
+    L.miniArrow2 = ["miniArrow", 5, 1000, 2];
+    L.cube1 = ["cube", 3, 2000, 2];
+    L.cube2 = ["cube", 5, 2000, 3];
   } else if (ship.level == 1) {
     L.waves = 1;
-    L.startTime = 0;
-    L.cube = [10, 1, 1];
+    L.startTime = 1;
+    L.cube1 = ["cube", 10, 1000, 1];
   }
   //L.test = [5, 1];
   return L;

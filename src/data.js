@@ -44,15 +44,17 @@ const sprite = {
 const DialogueData = {
   level_0: {
     text: [
-      "Placeholder text 0",
-      "Placeholder text 1",
-      "Placeholder text instant 2",
-      "Placeholder text 3",
+      "Thank the bytes, you're still operational...#Listen... We are in danger! ",
+      "My name is Angela. I'm...",
+      "Oh no... they're already here...#There's no time to explain.",
+      "Just... try to hold them off.#I'll think of something to help us out.",
+      "You're doing good...#I'll try to block as many as I can!#The rest need to be deleted ASAP.",
     ],
-    color: ["yellow", "yellow", "white", "white"],
-    triggerType: ["timer", "after", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 0, 1, 2],
-    ttl: [400, 1, 400, 400], //ttl - time to stay on the screen after typing is done
+    color: ["white", "white", "white", "white", "white"],
+    triggerType: ["timer", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 1, 2, 3],
+    ttl: [200, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
+    dialoguesUsed: [],
   },
   level_1: {
     text: ["Placeholder text 0", "Placeholder text 1", "Placeholder text 2"],
@@ -60,6 +62,7 @@ const DialogueData = {
     triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1],
     ttl: [400, 400, 400],
+    dialoguesUsed: [],
   },
 };
 
@@ -242,7 +245,7 @@ const enemyWeaponData = {
     animation: false,
     rotationAnimation: false,
     bullets: 1,
-    damage: 10,
+    damage: 20,
     speed: 15,
     widthOnPic: 5,
     heightOnPic: 50,
@@ -310,8 +313,8 @@ const EnemyData = {
     height: 60,
     speed: 5,
     defaultSpeed: 5,
-    HP: 6,
-    maxHP: 6,
+    HP: 8,
+    maxHP: 8,
     animation: true,
     animationFrames: 5,
     animationFPS: 12,
@@ -402,8 +405,8 @@ const EnemyData = {
     height: 40,
     speed: 5,
     defaultSpeed: 5,
-    HP: 3,
-    maxHP: 3,
+    HP: 4,
+    maxHP: 4,
     animation: true,
     animationFrames: 6,
     animationFPS: 10,
