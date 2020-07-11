@@ -50,6 +50,7 @@ var backgroundParticles = {
       height: 672 * screenratio,
       angle: 0,
       animationX: 0,
+      visible: true,
       animation: function () {
         this.angle += 0.02;
         if (this.angle > Math.PI * 2) this.angle = 0;
@@ -66,6 +67,7 @@ var backgroundParticles = {
       height: 672 * screenratio,
       angle: 0,
       animationX: 0,
+      visible: true,
       animation: function () {
         this.angle += 0.02;
         if (this.angle > Math.PI * 2) this.angle = 0;
@@ -83,6 +85,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       timeIndex: 0,
+      visible: true,
       animation: function () {
         this.timeIndex++;
         if (this.timeIndex % 10 == 0) {
@@ -106,6 +109,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       timeIndex: 0,
+      visible: true,
       animation: function () {
         this.timeIndex++;
         if (this.timeIndex % 10 == 0) {
@@ -129,6 +133,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       timeIndex: 0,
+      visible: true,
       animation: function () {
         this.timeIndex++;
         if (this.timeIndex % 10 == 0) {
@@ -152,6 +157,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       timeIndex: 0,
+      visible: true,
       animation: function () {
         this.timeIndex++;
         if (this.timeIndex % 10 == 0) {
@@ -175,6 +181,7 @@ var backgroundParticles = {
       angle: 0,
       animationX: 0,
       timeIndex: 15,
+      visible: true,
       animation: function () {
         this.timeIndex++;
         if (this.timeIndex == 240) {
@@ -188,6 +195,31 @@ var backgroundParticles = {
         }
       },
     };
+
+    this.angelaDialogueBubble = {
+      type: "ANGELADIALOGUE",
+      sprite: sprite.UI_dialogueBubble,
+      x: player.earthX + 100 * screenratio,
+      y: player.earthY - 100 * screenratio,
+      widthOnPic: 77,
+      heightOnPic: 75,
+      width: 77 * screenratio,
+      height: 75 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      visible: false,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex % 15 == 0) {
+          this.animationX += this.widthOnPic;
+        }
+        if (this.timeIndex == 60) {
+          this.animationX = 0;
+          this.timeIndex = 0;
+        }
+      },
+    };
     this.particlesList = [
       this.fan1,
       this.fan2,
@@ -196,35 +228,23 @@ var backgroundParticles = {
       this.GPUFan3,
       this.GPUFan4,
       this.angela,
+      this.angelaDialogueBubble,
     ];
   },
   update_render: function () {
     this.particlesList.forEach((el) => {
-      el.animation();
       el.x += -(player.xspeed + camera.offSetX);
       el.y += -(player.yspeed + camera.offSetY);
-      ctx.beginPath();
-      ctx.save();
-      ctx.translate(el.x, el.y);
-      ctx.rotate(el.angle);
-      ctx.drawImage(
-        el.sprite,
-        el.animationX,
-        0,
-        el.widthOnPic,
-        el.heightOnPic,
-        -el.width / 2,
-        -el.height / 2,
-        el.width,
-        el.height
-      );
-      if (el.type == "ANGELA") {
-        //damaged main objective
-        ctx.globalAlpha = player.damageOpacity[0];
+      if (el.visible) {
+        el.animation();
+        ctx.beginPath();
+        ctx.save();
+        ctx.translate(el.x, el.y);
+        ctx.rotate(el.angle);
         ctx.drawImage(
           el.sprite,
           el.animationX,
-          el.heightOnPic,
+          0,
           el.widthOnPic,
           el.heightOnPic,
           -el.width / 2,
@@ -232,9 +252,24 @@ var backgroundParticles = {
           el.width,
           el.height
         );
+        if (el.type == "ANGELA") {
+          //damaged main objective
+          ctx.globalAlpha = player.damageOpacity[0];
+          ctx.drawImage(
+            el.sprite,
+            el.animationX,
+            el.heightOnPic,
+            el.widthOnPic,
+            el.heightOnPic,
+            -el.width / 2,
+            -el.height / 2,
+            el.width,
+            el.height
+          );
+        }
+        ctx.restore();
+        ctx.closePath();
       }
-      ctx.restore();
-      ctx.closePath();
     });
   },
 };
@@ -255,6 +290,7 @@ var environment = {
       widthOnPic: 960,
       heightOnPic: 540,
       activated: false,
+      maxIndex: 0,
       index: 0,
     };
     this.envi_list = [this.light, this.warning];
@@ -265,7 +301,7 @@ var environment = {
       if (el.type == "WARNING") {
         if (el.index > 0) {
           el.index--;
-          ctx.globalAlpha = (1 / 30) * el.index;
+          ctx.globalAlpha = (1 / el.maxIndex) * el.index;
         } else el.activated = false;
       }
       if (el.activated)
@@ -283,7 +319,18 @@ var environment = {
     });
   },
   warning_activation: function () {
-    this.warning.activated = true;
-    this.warning.index = 30;
+    if (!this.warning.activated) {
+      this.warning.activated = true;
+      this.warning.maxIndex = 30;
+      this.warning.index = 30;
+    }
+  },
+  warningLong_activation: function () {
+    if (!this.warning.activated) {
+      gameAudio.playSound("system_warning");
+      this.warning.activated = true;
+      this.warning.maxIndex = 70;
+      this.warning.index = 70;
+    }
   },
 };

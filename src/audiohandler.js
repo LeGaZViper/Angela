@@ -7,7 +7,9 @@ const gameAudio = {
   player_hit: new Audio("./audio/player_hit.ogg"),
   enemy_hit: new Audio("./audio/enemy_hit.ogg"),
   enemy_death: new Audio("./audio/enemy_death.ogg"),
-  enemy_bullet: new Audio("./audio/enemy_bullet.ogg"),
+  enemy_BASIC: new Audio("./audio/enemy_BASIC.ogg"),
+  enemy_MINIBASIC: new Audio("./audio/enemy_MINIBASIC.ogg"),
+  system_warning: new Audio("./audio/system_warning.ogg"),
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_angela: new Audio("./audio/typing_angela.ogg"),
   typing_angela_2: new Audio("./audio/typing_angela_2.ogg"),
@@ -21,9 +23,11 @@ const gameAudio = {
     this.player_LASER_loop.volume = 0.01 * ship.soundMultiplier;
     this.player_getDrop.volume = 0.01 * ship.soundMultiplier;
     this.player_hit.volume = 0.05 * ship.soundMultiplier;
+    this.system_warning.volume = 0.03 * ship.soundMultiplier;
     this.enemy_hit.volume = 0.05 * ship.soundMultiplier;
     this.enemy_death.volume = 0.05 * ship.soundMultiplier;
-    this.enemy_bullet.volume = 0.02 * ship.soundMultiplier;
+    this.enemy_BASIC.volume = 0.02 * ship.soundMultiplier;
+    this.enemy_MINIBASIC.volume = 0.02 * ship.soundMultiplier;
     this.typing_system.volume = 0.01 * ship.soundMultiplier;
     this.typing_angela.volume = 0.01 * ship.soundMultiplier;
     this.typing_angela_2.volume = 0.01 * ship.soundMultiplier;

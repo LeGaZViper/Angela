@@ -83,14 +83,14 @@ function levelLayout(L) {
   if (ship.level == 0) {
     // type, number, spawnCD, wave
     L.waves = 3;
-    L.startTime = 10000;
+    L.startTime = 13000;
     L.miniArrow1 = ["miniArrow", 5, 1000, 1];
     L.miniArrow2 = ["miniArrow", 5, 1000, 2];
     L.cube1 = ["cube", 3, 2000, 2];
     L.cube2 = ["cube", 5, 2000, 3];
   } else if (ship.level == 1) {
     L.waves = 1;
-    L.startTime = 1;
+    L.startTime = 5000;
     L.cube1 = ["cube", 10, 1000, 1];
   }
   //L.test = [5, 1];

@@ -632,6 +632,9 @@ var UI = {
     }
     dialogueHandler();
     if (dialogueList.length > 0) {
+      if (dialogueList[0].color == "white")
+        backgroundParticles.angelaDialogueBubble.visible = true;
+      else backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.01);
       dialogueList = dialogueList.filter(
         (index) => index.ttl > 0 && index.opacity > 0
@@ -639,7 +642,10 @@ var UI = {
       dialogueList.forEach((dia) => {
         dia.update_render();
       });
-    } else gameAudio.changeVolumeOfMusic(0.03);
+    } else {
+      backgroundParticles.angelaDialogueBubble.visible = false;
+      gameAudio.changeVolumeOfMusic(0.03);
+    }
 
     ctx.closePath();
   },

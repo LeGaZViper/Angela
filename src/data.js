@@ -32,6 +32,7 @@ const sprite = {
   UI_motherboardMap: new Image(),
   UI_motherboardFan: new Image(),
   UI_motherboardGPUFan: new Image(),
+  UI_dialogueBubble: new Image(),
   UI_visibility: new Image(),
   UI_warning: new Image(),
   UI_chase: new Image(),
@@ -46,19 +47,20 @@ const DialogueData = {
     text: [
       "Thank the bytes, you're still operational...#Listen... We are in danger! ",
       "My name is Angela. I'm...",
-      "Oh no... they're already here...#There's no time to explain.",
-      "Just... try to hold them off.#I'll think of something to help us out.",
-      "You're doing good...#I'll try to block as many as I can!#The rest need to be deleted ASAP.",
+      "WARNING: FIREWALL INTEGRITY 80%#INTRUDERS DETECTED IN THE MAIN CHAMBER",
+      "Oh no... they're already here...",
+      "Please, just... try to hold them off.#I'll think of something to help us out.",
+      "You're doing good...#I'll try to block as many as I can!#The rest needs to be deleted ASAP.",
     ],
-    color: ["white", "white", "white", "white", "white"],
-    triggerType: ["timer", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 0, 1, 2, 3],
-    ttl: [200, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
+    color: ["white", "white", "yellow", "white", "white", "white"],
+    triggerType: ["timer", "after", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 1, 2, 3, 3],
+    ttl: [200, 1, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
     dialoguesUsed: [],
   },
   level_1: {
     text: ["Placeholder text 0", "Placeholder text 1", "Placeholder text 2"],
-    color: ["yellow", "white", "white"],
+    color: ["white", "white", "white"],
     triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1],
     ttl: [400, 400, 400],
@@ -240,7 +242,7 @@ class DefaultSetup {
 const enemyWeaponData = {
   BASIC: {
     sprite: sprite.projectile_enemyBASIC,
-    sound: "enemy_bullet",
+    sound: "enemy_BASIC",
     name: "BASIC",
     animation: false,
     rotationAnimation: false,
@@ -253,7 +255,7 @@ const enemyWeaponData = {
   },
   UPLOADBASIC: {
     sprite: sprite.projectile_enemyBASIC,
-    sound: "enemy_bullet",
+    sound: "enemy_BASIC",
     name: "UPLOADBASIC",
     animation: false,
     rotationAnimation: false,
@@ -267,7 +269,7 @@ const enemyWeaponData = {
   MINIBASIC: {
     sprite: sprite.projectile_enemyBASIC,
     name: "MINIBASIC",
-    sound: "enemy_bullet",
+    sound: "enemy_MINIBASIC",
     animation: false,
     rotationAnimation: false,
     bullets: 1,
