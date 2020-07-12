@@ -92,7 +92,7 @@ function levelLayout(L) {
   } else if (ship.level == 1) {
     L.waves = 1;
     L.startTime = 0;
-    L.cube1 = ["cube", 10, 1000, 1];
+    L.watcher1 = ["cube", 10, 1000, 1];
   }
   //L.test = [5, 1];
   return L;

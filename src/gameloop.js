@@ -82,14 +82,19 @@ function gameLoop() {
         );
       }
       if (collides(eb, player)) {
-        if (player.HP[1] > 0 && !player.hitCD && !player.collisionCD) {
+        if (
+          player.HP[1] > 0 &&
+          !player.hitCD &&
+          !player.collisionCD &&
+          player.weapon.name != "INVICIBLEDRILL"
+        ) {
           if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
           else {
             player.HP[1] += -(eb.damage - player.shield[1]);
             player.shield[1] = 0;
           }
           gameAudio.playSound("player_hit");
-          eb.killed = true;
+          if (!eb.piercing) eb.killed = true;
           player.hitCD = true;
           player.hitCDstart(1, "bullet");
         }
@@ -117,6 +122,10 @@ function gameLoop() {
     });
     //check for weapon firing
     if (player.weaponDuration == 0) {
+      ship.speed = 12;
+      player.animationFPS = 5;
+      player.width = 75 * screenratio;
+      player.height = 75 * screenratio;
       chooseWeapon("BASIC");
       player.weaponDuration--;
     } else if (player.weaponDuration > 0) player.weaponDuration--;
@@ -182,16 +191,18 @@ function gameLoop() {
                 e.HP = 0;
                 checkDeath(e);
               }
-              if (player.shield[1] >= e.collisionDamage)
-                player.shield[1] -= e.collisionDamage;
-              else {
-                player.HP[1] += -(e.collisionDamage - player.shield[1]);
-                player.shield[1] = 0;
-              }
-              player.collisionCD = true;
-              gameAudio.playSound("player_hit");
-              if (player.HP[1] > 0) {
-                player.hitCDstart(1, "collision");
+              if (player.weapon.name != "INVICIBLEDRILL") {
+                player.collisionCD = true;
+                if (player.shield[1] >= e.collisionDamage)
+                  player.shield[1] -= e.collisionDamage;
+                else {
+                  player.HP[1] += -(e.collisionDamage - player.shield[1]);
+                  player.shield[1] = 0;
+                }
+                gameAudio.playSound("player_hit");
+                if (player.HP[1] > 0) {
+                  player.hitCDstart(1, "collision");
+                }
               }
             }
           }

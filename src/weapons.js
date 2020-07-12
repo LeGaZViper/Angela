@@ -3,6 +3,12 @@
 function chooseWeapon(name) {
   player.weapon = WeaponData[name];
   player.weaponDuration = player.weapon.duration;
+  if (player.weapon.name == "INVICIBLEDRILL") {
+    ship.speed = 20;
+    player.animationFPS = 60;
+    player.width = 150 * screenratio;
+    player.height = 150 * screenratio;
+  }
 }
 
 var weaponActivation = {
@@ -152,7 +158,7 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 7) + 1;
+  let choose = Math.floor(Math.random() * 8) + 1;
   for (let index in WeaponData) {
     if (choose == WeaponData[index].index) {
       R.name = WeaponData[index].name;

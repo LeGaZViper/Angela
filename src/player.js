@@ -219,16 +219,16 @@ var player = {
       player.companionsIndex[i]++;
       if (player.companionsIndex[i] == 360) player.companionsIndex[i] = 0;
     });
-
+    let companionDistance = player.weapon.name != "INVICIBLEDRILL" ? 50 : 100;
     for (let i = 0; i < player.companions; i++) {
       player.companionsX[i] =
         player.x +
-        50 *
+        companionDistance *
           screenratio *
           Math.cos((player.companionsIndex[i] / 180) * Math.PI);
       player.companionsY[i] =
         player.y +
-        50 *
+        companionDistance *
           screenratio *
           Math.sin((player.companionsIndex[i] / 180) * Math.PI);
     }
@@ -236,7 +236,9 @@ var player = {
   render: () => {
     player.animationIndex += 1;
     let nextIndex = Math.round(
-      60 / ((60 * (player.accelerationX + player.accelerationY)) / 200)
+      300 /
+        player.animationFPS /
+        ((60 * (player.accelerationX + player.accelerationY)) / 200)
     );
 
     if (nextIndex == 0) nextIndex = 1;
@@ -267,6 +269,20 @@ var player = {
       player.width,
       player.height
     );
+    if (player.HP[1] > 0 && player.weapon.name == "INVICIBLEDRILL") {
+      ctx.globalAlpha = (player.dodgeMeter / 100) * 5;
+      ctx.drawImage(
+        player.sprite,
+        player.animationX,
+        player.heightOnPic * 2,
+        player.widthOnPic,
+        player.heightOnPic,
+        -player.width / 2,
+        -player.height / 2,
+        player.width,
+        player.height
+      );
+    }
     //Damaged Scout #RED
     if (player.HP[1] > 0) {
       ctx.globalAlpha = player.damageOpacity[1];
@@ -288,7 +304,10 @@ var player = {
       ctx.save();
       ctx.translate(player.companionsX[i], player.companionsY[i]);
       ctx.rotate(player.angle);
-      ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
+      if (player.weapon.name != "INVICIBLEDRILL")
+        ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
+      else
+        ctx.drawImage(sprite.player_companion, 0, 30, 30, 30, -30, -30, 60, 60);
       ctx.restore();
     }
   },

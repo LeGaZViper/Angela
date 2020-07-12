@@ -63,8 +63,10 @@ function enemyBullet(B, target = "none") {
   B.target = target;
   B.killed = false;
   B.opacity = 1;
-  B.width = B.widthOnPic * screenratio;
-  B.height = B.heightOnPic * screenratio;
+  if (B.width == undefined && B.height == undefined) {
+    B.width = B.widthOnPic * screenratio;
+    B.height = B.heightOnPic * screenratio;
+  }
   B.angle = 0;
   if (target == "none") {
     B.dirx = player.earthX - B.x;
@@ -431,7 +433,7 @@ function enemyCharacter(E) {
         let turretDistance = Math.sqrt(
           Math.pow(player.x - ex, 2) + Math.pow(player.y - ey, 2)
         );
-        if (turretDistance < 650 * screenratio) {
+        if (turretDistance < 850 * screenratio) {
           E.turretAngle[i] =
             Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
           if (!E.turretAttackCD[i]) {
