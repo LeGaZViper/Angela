@@ -43,6 +43,7 @@ const sprite = {
 };
 
 const DialogueData = {
+  dialoguesUsed: [],
   level_0: {
     text: [
       "Thank the bytes, you're still operational...#Listen... We are in danger! ",
@@ -56,7 +57,6 @@ const DialogueData = {
     triggerType: ["timer", "after", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1, 2, 3, 3],
     ttl: [200, 1, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
-    dialoguesUsed: [],
   },
   level_1: {
     text: ["Placeholder text 0", "Placeholder text 1", "Placeholder text 2"],
@@ -64,7 +64,6 @@ const DialogueData = {
     triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1],
     ttl: [400, 400, 400],
-    dialoguesUsed: [],
   },
 };
 

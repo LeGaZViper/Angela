@@ -1,8 +1,8 @@
 //Check for total of enemies on the map | used in: win condition
 async function checkDeath(enemy, bulletType = "none") {
-  if (enemy.HP <= 0 && !enemy.deathAnimation) {
-    gameAudio.playSound("enemy_death");
+  if (enemy.HP <= 0 && !enemy.deathAnimation && !enemy.killed) {
     enemy.deathAnimation = true;
+    gameAudio.playSound("enemy_death");
     if (enemy.cache != undefined) {
       for (let i = 0; i < enemy.cache[1]; i++) {
         enemyList.push(
@@ -65,6 +65,7 @@ function enemyBullet(B, target = "none") {
   B.opacity = 1;
   B.width = B.widthOnPic * screenratio;
   B.height = B.heightOnPic * screenratio;
+  B.angle = 0;
   if (target == "none") {
     B.dirx = player.earthX - B.x;
     B.diry = player.earthY - B.y;
@@ -81,15 +82,15 @@ function enemyBullet(B, target = "none") {
 
     B.x += B.xspeed - player.xspeed - camera.offSetX;
     B.y += B.yspeed - player.yspeed - camera.offSetY;
+    B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
     B.hitBoxX = B.x - B.hitBoxWidth / 2;
     B.hitBoxY = B.y - B.hitBoxHeight / 2;
     B.calcTTL();
   };
   B.render = function () {
-    ctx.beginPath();
     ctx.save();
     ctx.translate(B.x, B.y);
-    ctx.rotate(Math.atan2(B.diry, B.dirx) + Math.PI / 2);
+    ctx.rotate(B.angle);
     ctx.globalAlpha = B.opacity;
     ctx.drawImage(
       B.sprite,
@@ -103,8 +104,6 @@ function enemyBullet(B, target = "none") {
       B.height
     );
     ctx.restore();
-    ctx.stroke();
-    ctx.closePath();
   };
   B.calcTTL = function () {
     if (B.ttl > 0) {
@@ -234,7 +233,6 @@ function enemyCharacter(E) {
         else E.animationX = 0;
       }
     }
-    ctx.beginPath();
     ctx.save();
     ctx.translate(E.x, E.y);
     if (!E.inOrbit && E.rotation) ctx.rotate(E.angle);
@@ -337,9 +335,6 @@ function enemyCharacter(E) {
       E.height / 3 > 30 ? E.height / 3 : 30,
       5
     );
-
-    ctx.stroke();
-    ctx.closePath();
   };
   E.deathAnimation_render = function () {
     E.x += -player.xspeed - camera.offSetX; //So that sprite won't move with the player
@@ -350,7 +345,6 @@ function enemyCharacter(E) {
         E.deathAnimation_angle = Math.random() * 2 * Math.PI;
         E.deathAnimation_index += 1;
       }
-      ctx.beginPath();
       ctx.save();
       ctx.translate(E.x, E.y);
       if (E.type == "smallCube" || E.type == "largeCube")
@@ -368,8 +362,6 @@ function enemyCharacter(E) {
         E.height
       );
       ctx.restore();
-      ctx.stroke();
-      ctx.closePath();
       if (E.deathAnimation_index == E.deathAnimationFrames) {
         E.killed = true;
         E.deathAnimation = false;
@@ -383,139 +375,134 @@ function enemyCharacter(E) {
   E.attackCD = false;
   E.piercingCD = false;
   E.opacity = 0;
-  E.checkBehaviour = function () {
-    if (E.behaviour == "orbit") {
-      E.distance = Math.sqrt(
-        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+  E.orbitBehaviour = function () {
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
+    if (E.distance < 500 * screenratio && !E.inOrbit) {
+      E.inOrbit = true;
+      E.arrival = true;
+      E.attackCDstart();
+    } else if (E.inOrbit && !E.attackCD) {
+      E.attackCDstart();
+      enemyBulletList.push(
+        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
       );
-      if (E.distance < 500 * screenratio && !E.inOrbit) {
-        E.inOrbit = true;
-        E.arrival = true;
-        E.attackCDstart();
-      } else if (E.inOrbit && !E.attackCD) {
-        E.attackCDstart();
-        enemyBulletList.push(
-          enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
+    }
+  };
+  E.mineBehaviour = function () {
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
+    if (E.distance < 40 * screenratio && E.HP > 0) {
+      E.HP = 0;
+      if (player.shield[0] >= 2) player.shield[0] -= 2;
+      else if (player.shield[0] == 1) {
+        player.shield[0] -= 1;
+        player.HP[0] -= 1;
+      } else {
+        player.HP[0] -= 2;
+      }
+      checkDeath(E);
+    }
+  };
+  E.ignoreBehaviour = function () {
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
+    if (E.distance < 240 * screenratio && !E.arrival) {
+      E.speed = 0;
+      E.arrival = true;
+      E.attackCDstart();
+    } else if (E.arrival && !E.attackCD) {
+      E.attackCDstart();
+      enemyBulletList.push(
+        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
+      );
+    }
+    if (E.turrets > 0) {
+      for (let i = E.turrets - 1; i >= 0; i--) {
+        let ex =
+          E.x +
+          E.turretDist[i] * Math.cos(E.angle + (Math.PI / 2) * i) * screenratio;
+        let ey =
+          E.y +
+          E.turretDist[i] * Math.sin(E.angle + (Math.PI / 2) * i) * screenratio;
+        let turretDistance = Math.sqrt(
+          Math.pow(player.x - ex, 2) + Math.pow(player.y - ey, 2)
         );
-      }
-    } else if (E.behaviour == "mine") {
-      E.distance = Math.sqrt(
-        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
-      );
-      if (E.distance < 40 * screenratio && E.HP > 0) {
-        E.HP = 0;
-        if (player.shield[0] >= 2) player.shield[0] -= 2;
-        else if (player.shield[0] == 1) {
-          player.shield[0] -= 1;
-          player.HP[0] -= 1;
-        } else {
-          player.HP[0] -= 2;
-        }
-        checkDeath(E);
-      }
-    } else if (E.behaviour == "ignore") {
-      E.distance = Math.sqrt(
-        Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
-      );
-      if (E.distance < 240 * screenratio && !E.arrival) {
-        E.speed = 0;
-        E.arrival = true;
-        E.attackCDstart();
-      } else if (E.arrival && !E.attackCD) {
-        E.attackCDstart();
-        enemyBulletList.push(
-          enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
-        );
-      }
-      if (E.turrets > 0) {
-        for (let i = E.turrets - 1; i >= 0; i--) {
-          let ex =
-            E.x +
-            E.turretDist[i] *
-              Math.cos(E.angle + (Math.PI / 2) * i) *
-              screenratio;
-          let ey =
-            E.y +
-            E.turretDist[i] *
-              Math.sin(E.angle + (Math.PI / 2) * i) *
-              screenratio;
-          let turretDistance = Math.sqrt(
-            Math.pow(player.x - ex, 2) + Math.pow(player.y - ey, 2)
-          );
-          if (turretDistance < 650 * screenratio) {
-            E.turretAngle[i] =
-              Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
-            if (!E.turretAttackCD[i]) {
-              E.turretAttackCDstart(i);
-              enemyBulletList.push(
-                enemyBullet(
-                  { x: ex, y: ey, ...enemyWeaponData[E.turretBulletType] },
-                  player
-                )
-              );
-            }
-          } else {
-            E.turretAngle[i] = E.angle;
-          }
-        }
-      }
-    } else if (E.behaviour == "chase") {
-      E.playerDistance = Math.sqrt(
-        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-      );
-      if (
-        E.playerDistance < 800 * screenratio &&
-        E.target == "none" &&
-        player.HP[1] > 0
-      ) {
-        E.target = player;
-      }
-      if (E.target != "none") {
-        E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-        if (E.playerDistance > 900 * screenratio || E.target.HP[1] == 0) {
-          if (E.acceleration <= 99) E.acceleration += 1;
-          else E.acceleration = 100;
-          E.randomDirX = E.target.x - E.x;
-          E.randomDirY = E.target.y - E.y;
-          E.target = "none";
-          E.speed = E.defaultSpeed;
-          E.randomDirCDcounter = 120;
-        } else if (E.playerDistance < 650 * screenratio) {
-          if (E.acceleration >= 1) E.acceleration -= 1;
-          else E.acceleration = 0;
-          if (!E.attackCD) {
-            E.attackCDstart();
+        if (turretDistance < 650 * screenratio) {
+          E.turretAngle[i] =
+            Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
+          if (!E.turretAttackCD[i]) {
+            E.turretAttackCDstart(i);
             enemyBulletList.push(
               enemyBullet(
-                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                { x: ex, y: ey, ...enemyWeaponData[E.turretBulletType] },
                 player
               )
             );
           }
         } else {
-          if (E.acceleration <= 99) E.acceleration += 1;
-          else E.acceleration = 100;
-          E.speed = E.defaultSpeed;
+          E.turretAngle[i] = E.angle;
+        }
+      }
+    }
+  };
+  E.chaseBehaviour = function () {
+    E.playerDistance = Math.sqrt(
+      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+    );
+    if (
+      E.playerDistance < 800 * screenratio &&
+      E.target == "none" &&
+      player.HP[1] > 0
+    ) {
+      E.target = player;
+    }
+    if (E.target != "none") {
+      E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+      if (E.playerDistance > 900 * screenratio || E.target.HP[1] == 0) {
+        if (E.acceleration <= 99) E.acceleration += 1;
+        else E.acceleration = 100;
+        E.randomDirX = E.target.x - E.x;
+        E.randomDirY = E.target.y - E.y;
+        E.target = "none";
+        E.speed = E.defaultSpeed;
+        E.randomDirCDcounter = 120;
+      } else if (E.playerDistance < 650 * screenratio) {
+        if (E.acceleration >= 1) E.acceleration -= 1;
+        else E.acceleration = 0;
+        if (!E.attackCD) {
+          E.attackCDstart();
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              player
+            )
+          );
         }
       } else {
         if (E.acceleration <= 99) E.acceleration += 1;
         else E.acceleration = 100;
-      }
-    } else if (E.behaviour == "spawn") {
-      if (E.spawning) E.spawnSummonTick();
-      E.spawnDistance = Math.sqrt(
-        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-      );
-      if (E.spawnDistance < 450 * screenratio && !E.spawning && !E.attackCD) {
-        E.spawning = true;
-        if (E.type == "mail") E.speed = 0;
-        E.attackCDstart();
-      } else {
         E.speed = E.defaultSpeed;
       }
-    } else if (E.behaviour == "collide") {
-      E.target = player;
-      E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+    } else {
+      if (E.acceleration <= 99) E.acceleration += 1;
+      else E.acceleration = 100;
+    }
+  };
+  E.spawnBehaviour = function () {
+    if (E.spawning) E.spawnSummonTick();
+    E.spawnDistance = Math.sqrt(
+      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+    );
+    if (E.spawnDistance < 450 * screenratio && !E.spawning && !E.attackCD) {
+      E.spawning = true;
+      if (E.type == "mail") E.speed = 0;
+      E.attackCDstart();
+    } else {
+      E.speed = E.defaultSpeed;
     }
   };
   E.spawnSummonTick = function () {
@@ -557,6 +544,32 @@ function enemyCharacter(E) {
         levels_handler.level.total += 1;
       }
       E.spawning = false;
+    }
+  };
+  E.collideBehaviour = function () {
+    E.target = player;
+    E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+  };
+  E.checkBehaviour = function () {
+    switch (E.behaviour) {
+      case "chase":
+        E.chaseBehaviour();
+        break;
+      case "ignore":
+        E.ignoreBehaviour();
+        break;
+      case "spawn":
+        E.spawnBehaviour();
+        break;
+      case "collide":
+        E.collideBehaviour();
+        break;
+      case "mine":
+        E.mineBehaviour();
+        break;
+      case "orbit":
+        E.orbitBehaviour();
+        break;
     }
   };
   E.attackCDstart = async function () {

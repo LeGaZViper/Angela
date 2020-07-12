@@ -31,7 +31,6 @@ class Dialogue {
     } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
     }
-    ctx.beginPath();
     if (this.color == "grey") ctx.font = 40 * screenratio + "px Glitch";
     else ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
@@ -40,7 +39,6 @@ class Dialogue {
     ctx.strokeText(this.displayText.join(""), canvas.width / 2, this.y);
     ctx.fillStyle = this.color;
     ctx.fillText(this.displayText.join(""), canvas.width / 2, this.y);
-    ctx.closePath();
   };
   typingSequence = function () {
     this.timeToType--;
@@ -64,7 +62,7 @@ var textIndex;
 function pushDialogue(index) {
   let dialogueLevel = DialogueData["level_" + ship.level];
   textIndex = index;
-  dialogueLevel.dialoguesUsed[index] = true;
+  DialogueData.dialoguesUsed[index] = true;
   dialogueList.push(
     new Dialogue(
       dialogueLevel.text[index],
@@ -77,7 +75,7 @@ function pushDialogue(index) {
 function dialogueHandler() {
   let dialogueLevel = DialogueData["level_" + ship.level];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
-    if (dialogueLevel.dialoguesUsed[i]) continue;
+    if (DialogueData.dialoguesUsed[i]) continue;
     else if (dialogueLevel.triggerType[i] == "timer") {
       if (dialogueLevel.triggerIndex[i] == levelTimer) pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {

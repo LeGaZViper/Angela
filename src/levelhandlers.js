@@ -15,6 +15,7 @@ async function spawn() {
     await sleep(levels_handler.level.startTime);
   }
   for (let i = 0; i < enemySpawnList.length; i++) {
+    if (enemySpawnList.length == 0) break;
     enemyList.push(
       enemyCharacter({
         x: enemySpawnList[i].x * screenratio + player.earthX,
@@ -90,7 +91,7 @@ function levelLayout(L) {
     L.cube2 = ["cube", 5, 2000, 3];
   } else if (ship.level == 1) {
     L.waves = 1;
-    L.startTime = 5000;
+    L.startTime = 0;
     L.cube1 = ["cube", 10, 1000, 1];
   }
   //L.test = [5, 1];

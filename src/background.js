@@ -237,7 +237,6 @@ var backgroundParticles = {
       el.y += -(player.yspeed + camera.offSetY);
       if (el.visible) {
         el.animation();
-        ctx.beginPath();
         ctx.save();
         ctx.translate(el.x, el.y);
         ctx.rotate(el.angle);
@@ -268,7 +267,6 @@ var backgroundParticles = {
           );
         }
         ctx.restore();
-        ctx.closePath();
       }
     });
   },

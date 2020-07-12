@@ -24,6 +24,8 @@ function gameLoop() {
     UI.menu_render(UI.menuList[UI.currentMenu]);
   } else if (levels_handler.level.total == 0) {
     if (levels_handler.level.waves >= levels_handler.waveCounter) {
+      dialogueList = [];
+      textIndex = undefined;
       levels_handler.waveCounter++;
       levels_handler.levelCreator();
       spawn();
@@ -41,6 +43,7 @@ function gameLoop() {
     player.update(); //player pos update - needs to be done as soon as possible to set correct positions for other objects
     background.update_render();
     backgroundParticles.update_render();
+    player.render();
     //game space borders
     ctx.globalAlpha = 1;
     ctx.strokeStyle = "#5C7CFF";
@@ -52,45 +55,44 @@ function gameLoop() {
       player.spaceSize,
       player.spaceSize
     );
-    ctx.closePath();
     environment.update_render();
     //update & render of player bullets
-    bulletList.forEach((b) => {
-      //bullets - if render check
-      if (b.explosive && b.explosion_triggered) b.explosion_render();
-      b.update();
-      if (
-        (b.x > -50 &&
-          b.x < canvas.width + 50 &&
-          b.y > -50 &&
-          b.y < canvas.height + 50) ||
-        b.name == "LASER"
-      )
-        b.render();
+    bulletList.forEach((b, bindex) => {
+      if (b.killed) bulletList.splice(bindex, 1);
+      else {
+        //bullets - if render check
+        if (b.explosive && b.explosion_triggered) b.explosion_render();
+        b.update();
+        if (
+          (b.x > -50 &&
+            b.x < canvas.width + 50 &&
+            b.y > -50 &&
+            b.y < canvas.height + 50) ||
+          b.name == "LASER"
+        )
+          b.render();
+      }
     });
     //update & render of enemy bullets
-    enemyBulletList.forEach((eb) => {
+    enemyBulletList.forEach((eb, index) => {
       //enemy bullets - render
       if (eb.target == "none") {
         var distance = Math.sqrt(
           Math.pow(eb.x - player.earthX, 2) + Math.pow(eb.y - player.earthY, 2)
         );
       }
-      if (
-        collides(eb, player) &&
-        player.HP[1] > 0 &&
-        !player.hitCD &&
-        !player.collisionCD
-      ) {
-        if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
-        else {
-          player.HP[1] += -(eb.damage - player.shield[1]);
-          player.shield[1] = 0;
+      if (collides(eb, player)) {
+        if (player.HP[1] > 0 && !player.hitCD && !player.collisionCD) {
+          if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
+          else {
+            player.HP[1] += -(eb.damage - player.shield[1]);
+            player.shield[1] = 0;
+          }
+          gameAudio.playSound("player_hit");
+          eb.killed = true;
+          player.hitCD = true;
+          player.hitCDstart(1, "bullet");
         }
-        gameAudio.playSound("player_hit");
-        eb.killed = true;
-        player.hitCD = true;
-        player.hitCDstart(1, "bullet");
       } else if (distance < 20 && eb.target == "none") {
         if (player.shield[0] >= eb.damage) player.shield[0] -= eb.damage;
         else {
@@ -109,10 +111,11 @@ function gameLoop() {
         eb.y < canvas.height + 50
       )
         eb.render();
+      if (eb.killed) {
+        enemyBulletList.splice(index, 1);
+      }
     });
-    enemyBulletList = enemyBulletList.filter((check) => !check.killed);
     //check for weapon firing
-    player.render();
     if (player.weaponDuration == 0) {
       chooseWeapon("BASIC");
       player.weaponDuration--;
@@ -157,25 +160,20 @@ function gameLoop() {
       player.LASER_firing = false;
     }
     //update & render for enemies
-    enemyList.forEach((e) => {
+    enemyList.forEach((e, eindex) => {
       //enemies
-      if (!e.deathAnimation) {
-        if (!e.killed) {
-          e.update();
-          //render inside of player view/canvas
-          if (
-            e.x > -100 &&
-            e.x < canvas.width + 100 &&
-            e.y > -100 &&
-            e.y < canvas.height + 100
-          ) {
-            e.render();
-            if (
-              !player.collisionCD &&
-              !player.hitCD &&
-              collides(e, player) &&
-              player.HP[1] > 0
-            ) {
+      if (!e.deathAnimation && !e.killed) {
+        e.update();
+        //render inside of player view/canvas
+        if (
+          e.x > -100 &&
+          e.x < canvas.width + 100 &&
+          e.y > -100 &&
+          e.y < canvas.height + 100
+        ) {
+          e.render();
+          if (collides(e, player)) {
+            if (!player.collisionCD && !player.hitCD && player.HP[1] > 0) {
               //player collision
               if (e.HP > 1) {
                 e.HP--;
@@ -229,15 +227,15 @@ function gameLoop() {
                 b.speed = 0;
               }
             }
+            checkDeath(e, b.name);
           }
-          checkDeath(e, b.name);
         });
+      } else if (e.killed) {
+        enemyList.splice(eindex, 1);
       } else {
         e.deathAnimation_render();
       }
     });
-    enemyList = enemyList.filter((check) => !check.killed);
-    bulletList = bulletList.filter((check) => !check.killed);
     //update & render of random drops
     randomDropList.forEach((r, i) => {
       r.update();
@@ -282,5 +280,6 @@ function gameLoop() {
     });
   }
   //call for the next iteration of gameLoop
+  ctx.closePath();
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);
 }

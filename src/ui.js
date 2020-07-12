@@ -395,7 +395,6 @@ var UI = {
   },
   game_render: function () {
     //UI
-    ctx.beginPath();
     ctx.globalAlpha = 1;
     ctx.fillStyle = "#0A0A0A";
     ctx.fillRect(
@@ -646,8 +645,6 @@ var UI = {
       backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.03);
     }
-
-    ctx.closePath();
   },
   click: function () {
     if (this.currentMenu == 0 && this.inMenu) {

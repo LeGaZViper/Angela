@@ -52,7 +52,6 @@ var weaponActivation = {
       ctx.globalAlpha = 1;
       ctx.textAlign = "center";
       ctx.font = 50 * screenratio + "px Consolas";
-      ctx.beginPath();
       ctx.fillText(
         `Attempts: ${this.lives}`,
         canvas.width / 2 - 50 * screenratio,
@@ -72,8 +71,6 @@ var weaponActivation = {
       if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
       ctx.strokeStyle = "#FF" + colorHPbar_1 + colorHPbar_1;
       ctx.lineWidth = 10;
-      ctx.stroke();
-      ctx.closePath();
 
       ctx.textAlign = "left";
       ctx.font = `bold ${60 * screenratio}px Consolas`;
@@ -181,7 +178,6 @@ function randomDrop(R) {
     }
   };
   R.render = function () {
-    ctx.beginPath();
     ctx.drawImage(
       sprite.UI_drop,
       R.animationX,
@@ -193,8 +189,6 @@ function randomDrop(R) {
       R.width,
       R.height
     );
-    ctx.stroke();
-    ctx.closePath();
   };
   return R;
 }
@@ -382,7 +376,6 @@ function bullet(B, numberOfBullets) {
   };
   B.render = function () {
     if (B.name == "LASER") {
-      ctx.beginPath();
       ctx.save();
       ctx.globalAlpha = 1;
       ctx.strokeStyle = B.color;
@@ -396,9 +389,7 @@ function bullet(B, numberOfBullets) {
       ctx.lineTo(B.x, B.y);
       ctx.stroke();
       ctx.restore();
-      ctx.closePath();
     } else if (!B.explosion_triggered) {
-      ctx.beginPath();
       ctx.save();
       ctx.translate(B.x, B.y);
       B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2 + B.rotationAngle;
@@ -421,8 +412,6 @@ function bullet(B, numberOfBullets) {
         ctx.fillRect(-B.width / 2, -B.height / 2, B.width, B.height);
       }
       ctx.restore();
-      ctx.stroke();
-      ctx.closePath();
     }
   };
   B.explode = function () {
@@ -450,7 +439,6 @@ function bullet(B, numberOfBullets) {
         B.explosion_angle = Math.random() * 2 * Math.PI;
         B.explosion_index += 1;
       }
-      ctx.beginPath();
       ctx.globalAlpha = 1;
       ctx.save();
       ctx.translate(B.x, B.y);
@@ -467,8 +455,6 @@ function bullet(B, numberOfBullets) {
         B.explosion_radius
       );
       ctx.restore();
-      ctx.stroke();
-      ctx.closePath();
       if (B.explosion_index == 11) B.killed = true;
     }
   };

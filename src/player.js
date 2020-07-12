@@ -106,37 +106,33 @@ var player = {
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
     player.shieldRecharge();
-
     if (distance < 160 * screenratio && !rightMouseDown) {
-      if (player.accelerationX > 0) {
+      if (player.accelerationX >= 2) {
         player.accelerationX -= 2;
-      }
-      if (player.accelerationY > 0) {
+      } else player.accelerationX = 0;
+      if (player.accelerationY >= 2) {
         player.accelerationY -= 2;
-      }
+      } else player.accelerationY = 0;
     } else if (
       distance >= 160 * screenratio &&
       distance <= 210 * screenratio &&
       !rightMouseDown
     ) {
-      if (player.accelerationX < 100) {
+      if (player.accelerationX >= 1) {
         player.accelerationX -= 1;
       }
-      if (player.accelerationY < 100) {
+      if (player.accelerationY >= 1) {
         player.accelerationY -= 1;
       }
     } else if (!rightMouseDown) {
-      if (player.accelerationX < 100) {
+      if (player.accelerationX <= 98) {
         player.accelerationX += 2;
-      }
-      if (player.accelerationY < 100) {
+      } else player.accelerationX = 100;
+
+      if (player.accelerationY <= 98) {
         player.accelerationY += 2;
-      }
+      } else player.accelerationY = 100;
     }
-    if (player.accelerationX > 100) player.accelerationX = 100;
-    if (player.accelerationY > 100) player.accelerationY = 100;
-    if (player.accelerationX < 0) player.accelerationX = 0;
-    if (player.accelerationY < 0) player.accelerationY = 0;
 
     player.speed = ship.speed * screenratio;
     if (!rightMouseDown) {
@@ -166,22 +162,24 @@ var player = {
         (player.xspeed >= 0 ? 1 : -1) == (player.targetxspeed >= 0 ? 1 : -1)
       ) {
         player.xspeed = player.targetxspeed;
-      } else {
+      } else if (player.targetxspeed != 0) {
         player.xspeed +=
-          0.3 *
-          (player.targetxspeed >= 0 ? 1 : -1) *
-          (player.accelerationX / 100);
+          ((player.targetxspeed >= 0 ? 1 : -1) * (player.accelerationX / 100)) /
+          3;
+      } else {
+        player.xspeed = 0;
       }
       if (
         Math.abs(player.yspeed) >= Math.abs(player.targetyspeed) &&
         (player.yspeed >= 0 ? 1 : -1) == (player.targetyspeed >= 0 ? 1 : -1)
       ) {
         player.yspeed = player.targetyspeed;
-      } else {
+      } else if (player.targetyspeed != 0) {
         player.yspeed +=
-          0.3 *
-          (player.targetyspeed >= 0 ? 1 : -1) *
-          (player.accelerationY / 100);
+          ((player.targetyspeed >= 0 ? 1 : -1) * (player.accelerationY / 100)) /
+          3;
+      } else {
+        player.yspeed = 0;
       }
 
       player.futureX += player.xspeed;
@@ -252,7 +250,6 @@ var player = {
     }
     if (player.animationIndex > nextIndex) player.animationIndex = 0;
 
-    ctx.beginPath();
     ctx.save();
     ctx.translate(player.x, player.y);
     player.angle =
@@ -294,8 +291,6 @@ var player = {
       ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
       ctx.restore();
     }
-    ctx.stroke();
-    ctx.closePath();
   },
   attackCDstart: async function () {
     player.attackCD = true;

@@ -32,6 +32,7 @@ function loseTheGame() {
     player.LASER_firing = false;
   }
   player.inWeaponActivation = false;
+  DialogueData.dialoguesUsed = [];
   player.inicialize(0, 50);
   camera.inicialize();
   background.inicialize();
@@ -54,6 +55,7 @@ function winTheLevel() {
   weaponActivation.inicialize();
   randomDropList = [];
   dialogueList = [];
+  DialogueData.dialoguesUsed = [];
   textIndex = NaN;
   levelTimer = 0;
   enemySpawnList = [];

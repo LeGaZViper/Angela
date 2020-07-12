@@ -14,6 +14,7 @@ function sleep(ms) {
 
 function killAll() {
   enemyList = [];
+  enemySpawnList = [];
   levels_handler.level.total = 0;
 }
 
@@ -42,7 +43,9 @@ function inicializeGame() {
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   UI.levelDisplayCheck = true;
+  DialogueData.dialoguesUsed = [];
   levelTimer = 0;
+  textIndex = undefined;
   dialogueList = [];
   bulletList = [];
   enemyList = [];
@@ -103,6 +106,7 @@ function loadTheGame(callback) {
   }
   scale();
   ship = JSON.parse(localStorage.ship);
+  ship.level = 1;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();
