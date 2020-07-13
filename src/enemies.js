@@ -44,6 +44,13 @@ async function checkDeath(enemy, bulletType = "none") {
         );
       }
     }
+    if (enemy.source != undefined) {
+      enemy.source.spawns--;
+    }
+    if (enemy.behaviour == "loot") {
+      lootCube.active = false;
+      lootCube.nextSpawn = levelTimer + 1800;
+    }
     if (levels_handler.level.total == 1) {
       await sleep(2000);
       if (levels_handler.level.total == 1) levels_handler.level.total -= 1;
@@ -496,11 +503,19 @@ function enemyCharacter(E) {
   };
   E.spawnBehaviour = function () {
     if (E.spawning) E.spawnSummonTick();
-    E.spawnDistance = Math.sqrt(
-      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-    );
-    if (E.spawnDistance < 450 * screenratio && !E.spawning && !E.attackCD) {
+    if (E.type != "mail")
+      E.spawnDistance = Math.sqrt(
+        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+      );
+    else E.spawnDistance = 0;
+    if (
+      E.spawnDistance < 450 * screenratio &&
+      !E.spawning &&
+      !E.attackCD &&
+      E.spawns < E.maximumSpawns
+    ) {
       E.spawning = true;
+      E.spawns++;
       if (E.type == "mail") E.speed = 0;
       E.attackCDstart();
     } else {
@@ -519,6 +534,7 @@ function enemyCharacter(E) {
           enemyList.push(
             enemyCharacter({
               randomDirCDcounter: 120,
+              source: E,
               x: E.x,
               y: E.y,
               randomDrop: false,

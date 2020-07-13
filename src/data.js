@@ -48,24 +48,42 @@ const DialogueData = {
   dialoguesUsed: [],
   level_0: {
     text: [
-      "Thank God, you're still operational...#Listen... We are in danger! ",
+      "Thank God, you're still operational...#Listen... we are in danger!",
       "My name is Angela. I'm...",
       "WARNING: FIREWALL INTEGRITY 80%#INTRUDERS DETECTED IN THE MAIN CHAMBER",
       "Oh no... they're already here...",
       "Please, just... try to hold them off.#I'll think of something to help us out.",
       "You're doing good...#I'll try to block as many as I can!#The rest needs to be deleted ASAP.",
     ],
-    color: ["grey", "white", "yellow", "white", "white", "white"],
+    color: ["white", "white", "orange", "white", "white", "white"],
     triggerType: ["timer", "after", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1, 2, 3, 3],
     ttl: [200, 1, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
   },
   level_1: {
-    text: ["Placeholder text 0", "Placeholder text 1", "Placeholder text 2"],
-    color: ["white", "white", "white"],
-    triggerType: ["timer", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 0, 1],
-    ttl: [400, 400, 400],
+    text: [
+      "Adjacent networks are full of them!",
+      "It's... scary... we need to get rid of them!",
+      "I've managed to corrupt some of them.#See if you can salvage their remains!",
+      "Maybe if we somehow disconnect from# the main network...",
+      "If I'd take a guess I'd say# there are network drivers for this...",
+      "WARNING: FIREWALL INTEGRITY 60%",
+    ],
+    color: ["white", "white", "white", "white", "white", "orange"],
+    triggerType: ["timer", "after", "after", "wave", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 1, 2, 3, 3],
+    ttl: [200, 200, 200, 200, 200, 200],
+  },
+  level_2: {
+    text: [
+      "I've found the drivers!#Stall for more time or we're doomed!",
+      "WARNING: FIREWALL INTEGRITY 30%",
+      "Just a little longer!#Gosh, I wish drivers weren't so complicated.",
+    ],
+    color: ["white", "orange", "white"],
+    triggerType: ["timer", "wave", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 2, 3],
+    ttl: [200, 200, 200],
   },
 };
 
@@ -428,14 +446,16 @@ const EnemyData = {
     widthOnPic: 90,
     heightOnPic: 90,
     attackCDvalue: 5000,
+    maximumSpawns: 5,
+    spawns: 0,
     bulletType: "miniArrow",
     collisionDamage: 10,
     width: 90,
     height: 90,
     speed: 3,
     defaultSpeed: 3,
-    HP: 12,
-    maxHP: 12,
+    HP: 20,
+    maxHP: 20,
     animation: false,
     spawnAnimationFrames: 5,
     spawnAnimationFPS: 6,

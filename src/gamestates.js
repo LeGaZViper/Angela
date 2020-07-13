@@ -59,6 +59,9 @@ function winTheLevel() {
   textIndex = NaN;
   levelTimer = 0;
   enemySpawnList = [];
+  enemyList = [];
+  lootCube.active = false;
+  lootCube.nextSpawn = 1300;
   nextLevel();
 }
 

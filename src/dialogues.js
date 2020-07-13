@@ -47,8 +47,10 @@ class Dialogue {
         gameAudio.playSound("typing_angela");
       } else if (this.color == "grey") {
         gameAudio.playSound("typing_angela_2");
+      } else if (this.color == "red") {
+        gameAudio.playSound("typing_enemy");
       } else {
-        environment.warningLong_activation();
+        if (this.color == "orange") environment.warningLong_activation();
         gameAudio.playSound("typing_system");
       }
       this.displayText.push(this.text[this.stringIndex]);

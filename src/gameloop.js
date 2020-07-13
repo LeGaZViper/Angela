@@ -216,7 +216,8 @@ function gameLoop() {
                 e.behaviour == "spawn" &&
                 !e.spawning &&
                 !e.attackCD &&
-                e.HP > b.damage
+                e.HP > b.damage &&
+                e.spawns < e.maximumSpawns
               ) {
                 e.spawning = true;
                 if (e.type == "mail") e.speed = 0;
@@ -289,6 +290,14 @@ function gameLoop() {
     $(document).ready(function () {
       loading.style.display = "none";
     });
+  }
+  if (
+    !lootCube.active &&
+    levelTimer - lootCube.nextSpawn == 0 &&
+    ship.level > 0
+  ) {
+    lootCube.active = true;
+    spawnAnEnemy("lootCube");
   }
   //call for the next iteration of gameLoop
   ctx.closePath();

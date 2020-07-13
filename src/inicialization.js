@@ -51,6 +51,8 @@ function inicializeGame() {
   enemyList = [];
   enemyBulletList = [];
   randomDropList = [];
+  lootCube.active = false;
+  lootCube.nextSpawn = 1300;
   weaponActivation.inicialize();
   canvas.style.cursor = "none";
   UI.inMenu = false;
