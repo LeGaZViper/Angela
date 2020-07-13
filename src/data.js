@@ -48,14 +48,14 @@ const DialogueData = {
   dialoguesUsed: [],
   level_0: {
     text: [
-      "Thank the bytes, you're still operational...#Listen... We are in danger! ",
+      "Thank God, you're still operational...#Listen... We are in danger! ",
       "My name is Angela. I'm...",
       "WARNING: FIREWALL INTEGRITY 80%#INTRUDERS DETECTED IN THE MAIN CHAMBER",
       "Oh no... they're already here...",
       "Please, just... try to hold them off.#I'll think of something to help us out.",
       "You're doing good...#I'll try to block as many as I can!#The rest needs to be deleted ASAP.",
     ],
-    color: ["white", "white", "yellow", "white", "white", "white"],
+    color: ["grey", "white", "yellow", "white", "white", "white"],
     triggerType: ["timer", "after", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1, 2, 3, 3],
     ttl: [200, 1, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
@@ -591,7 +591,7 @@ const EnemyData = {
     heightOnPic: 70,
     attackCDvalue: 2000,
     turretBulletType: "WATCHERBASIC",
-    bulletType: "GIANT",
+    bulletType: "UPLOADBASIC",
     collisionDamage: 10,
     width: 120,
     height: 120,

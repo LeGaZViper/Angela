@@ -59,6 +59,10 @@ const gameAudio = {
     }
   },
   changeVolumeOfMusic: function (value) {
-    this.currentMusic.volume = value * ship.musicMultiplier;
+    try {
+      this.currentMusic.volume = value * ship.musicMultiplier;
+    } catch (err) {
+      console.log("No current music.");
+    }
   },
 };

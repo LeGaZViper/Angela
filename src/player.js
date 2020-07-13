@@ -38,273 +38,271 @@ var camera = {
 //player object
 var ship;
 var player = {
-  inicialize: (starterX, starterY) => {
-    // in order to change player default pos one needs to change player.coord, player.earth, player.future accordingly
-    player.shipLives = 3;
-    player.starterPosX = starterX * screenratio;
-    player.starterPosY = starterY * screenratio;
-    player.spaceSize = 4000 * screenratio;
-    player.x = canvas.width / 2;
-    player.y = canvas.height / 2;
-    player.coordX = player.spaceSize / 2 + player.starterPosX;
-    player.coordY = player.spaceSize / 2 + player.starterPosY;
-    player.earthX = canvas.width / 2 - player.starterPosX;
-    player.earthY = canvas.height / 2 - player.starterPosY;
-    player.futureX = player.starterPosX;
-    player.futureY = player.starterPosY;
-    player.accelerationX = 0;
-    player.accelerationY = 0;
-    player.speed = 0;
-    player.xspeed = 0;
-    player.yspeed = 0;
-    player.width = ship.width * screenratio;
-    player.height = ship.height * screenratio;
-    player.widthOnPic = ship.widthOnPic;
-    player.heightOnPic = ship.heightOnPic;
-    player.animationX = 0;
-    player.animationY = 0;
+  inicialize: function (starterX, starterY) {
+    // in order to change player default pos one needs to change this.coord, this.earth, this.future accordingly
+    this.shipLives = 3;
+    this.starterPosX = starterX * screenratio;
+    this.starterPosY = starterY * screenratio;
+    this.spaceSize = 4000 * screenratio;
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 2;
+    this.coordX = this.spaceSize / 2 + this.starterPosX;
+    this.coordY = this.spaceSize / 2 + this.starterPosY;
+    this.earthX = canvas.width / 2 - this.starterPosX;
+    this.earthY = canvas.height / 2 - this.starterPosY;
+    this.futureX = this.starterPosX;
+    this.futureY = this.starterPosY;
+    this.accelerationX = 0;
+    this.accelerationY = 0;
+    this.speed = 0;
+    this.xspeed = 0;
+    this.yspeed = 0;
+    this.width = ship.width * screenratio;
+    this.height = ship.height * screenratio;
+    this.widthOnPic = ship.widthOnPic;
+    this.heightOnPic = ship.heightOnPic;
+    this.animationX = 0;
+    this.animationY = 0;
     //0 = Earth, 1 = Ship
-    player.maxHP = ship.maxHP;
-    player.HP = [player.maxHP[0], player.maxHP[1]];
-    player.maxShield = ship.maxShield;
-    player.shield = [ship.maxShield[0], ship.maxShield[1]];
-    player.angle = 0;
+    this.maxHP = ship.maxHP;
+    this.HP = [this.maxHP[0], this.maxHP[1]];
+    this.maxShield = ship.maxShield;
+    this.shield = [ship.maxShield[0], ship.maxShield[1]];
+    this.angle = 0;
 
-    player.hitBoxWidth = (player.width / 3) * 2;
-    player.hitBoxHeight = (player.height / 3) * 2;
-    player.hitBoxX = player.x - player.hitBoxWidth / 2;
-    player.hitBoxY = player.y - player.hitBoxHeight / 2;
-    player.animationX = 0;
-    player.animationIndex = 0;
-    player.animationFrames = 9;
-    player.animationFPS = 5;
-    player.sprite = sprite.player_scout;
+    this.hitBoxWidth = (this.width / 3) * 2;
+    this.hitBoxHeight = (this.height / 3) * 2;
+    this.hitBoxX = this.x - this.hitBoxWidth / 2;
+    this.hitBoxY = this.y - this.hitBoxHeight / 2;
+    this.animationX = 0;
+    this.animationIndex = 0;
+    this.animationFrames = 9;
+    this.animationFPS = 5;
+    this.sprite = sprite.player_scout;
 
-    player.weapon = WeaponData.BASIC;
-    player.weaponDuration = 0;
-    player.inWeaponActivation = false;
-    player.companions = ship.companions;
-    player.companionsX = [0, 0, 0];
-    player.companionsY = [0, 0, 0];
-    player.companionsIndex = [
+    this.weapon = WeaponData.BASIC;
+    this.weaponDuration = 0;
+    this.inWeaponActivation = false;
+    this.companions = ship.companions;
+    this.companionsX = [0, 0, 0];
+    this.companionsY = [0, 0, 0];
+    this.companionsIndex = [
       0,
-      360 / player.companions,
-      (2 * 360) / player.companions,
+      360 / this.companions,
+      (2 * 360) / this.companions,
     ];
-    player.shieldCD = [0, 0];
-    player.attackCD = false;
-    player.hitCD = false;
-    player.collisionCD = false;
-    player.killedCD = false;
-    player.opacity = [1, 1];
-    player.damageOpacity = [0, 0];
+    this.shieldCD = [0, 0];
+    this.attackCD = false;
+    this.hitCD = false;
+    this.collisionCD = false;
+    this.killedCD = false;
+    this.opacity = [1, 1];
+    this.damageOpacity = [0, 0];
   },
-  update: () => {
+  update: function () {
     //speed calculation
     let distance = Math.sqrt(
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
     );
-    player.shieldRecharge();
+    this.shieldRecharge();
     if (distance < 160 * screenratio && !rightMouseDown) {
-      if (player.accelerationX >= 2) {
-        player.accelerationX -= 2;
-      } else player.accelerationX = 0;
-      if (player.accelerationY >= 2) {
-        player.accelerationY -= 2;
-      } else player.accelerationY = 0;
+      if (this.accelerationX >= 2) {
+        this.accelerationX -= 2;
+      } else this.accelerationX = 0;
+      if (this.accelerationY >= 2) {
+        this.accelerationY -= 2;
+      } else this.accelerationY = 0;
     } else if (
       distance >= 160 * screenratio &&
       distance <= 210 * screenratio &&
       !rightMouseDown
     ) {
-      if (player.accelerationX >= 1) {
-        player.accelerationX -= 1;
+      if (this.accelerationX >= 1) {
+        this.accelerationX -= 1;
       }
-      if (player.accelerationY >= 1) {
-        player.accelerationY -= 1;
+      if (this.accelerationY >= 1) {
+        this.accelerationY -= 1;
       }
     } else if (!rightMouseDown) {
-      if (player.accelerationX <= 98) {
-        player.accelerationX += 2;
-      } else player.accelerationX = 100;
+      if (this.accelerationX <= 98) {
+        this.accelerationX += 2;
+      } else this.accelerationX = 100;
 
-      if (player.accelerationY <= 98) {
-        player.accelerationY += 2;
-      } else player.accelerationY = 100;
+      if (this.accelerationY <= 98) {
+        this.accelerationY += 2;
+      } else this.accelerationY = 100;
     }
 
-    player.speed = ship.speed * screenratio;
+    this.speed = ship.speed * screenratio;
     if (!rightMouseDown) {
-      player.ratio =
-        player.speed /
+      this.ratio =
+        this.speed /
         (Math.abs(xMousePos - canvas.width / 2) +
           Math.abs(yMousePos - canvas.height / 2));
-      player.lastRatioX = xMousePos - player.x;
-      player.lastRatioY = yMousePos - player.y;
+      this.lastRatioX = xMousePos - this.x;
+      this.lastRatioY = yMousePos - this.y;
     }
-    player.targetxspeed =
-      (player.ratio * player.lastRatioX * player.accelerationX) / 100;
-    player.targetyspeed =
-      (player.ratio * player.lastRatioY * player.accelerationY) / 100;
-    if (player.HP[0] <= 0 || player.shipLives == 0) {
-      player.speed = 0;
-      player.xspeed = 0;
-      player.yspeed = 0;
+    this.targetxspeed =
+      (this.ratio * this.lastRatioX * this.accelerationX) / 100;
+    this.targetyspeed =
+      (this.ratio * this.lastRatioY * this.accelerationY) / 100;
+    if (this.HP[0] <= 0 || this.shipLives == 0) {
+      this.speed = 0;
+      this.xspeed = 0;
+      this.yspeed = 0;
       loseTheGame();
-    } else if (player.HP[1] <= 0 && !player.killedCD) {
-      player.killedCD = true;
-      player.killedCDstart();
-    } else if (!isNaN(player.ratio)) {
+    } else if (this.HP[1] <= 0 && !this.killedCD) {
+      this.killedCD = true;
+      this.killedCDstart();
+    } else if (!isNaN(this.ratio)) {
       //player positioner
       if (
-        Math.abs(player.xspeed) >= Math.abs(player.targetxspeed) &&
-        (player.xspeed >= 0 ? 1 : -1) == (player.targetxspeed >= 0 ? 1 : -1)
+        Math.abs(this.xspeed) >= Math.abs(this.targetxspeed) &&
+        (this.xspeed >= 0 ? 1 : -1) == (this.targetxspeed >= 0 ? 1 : -1)
       ) {
-        player.xspeed = player.targetxspeed;
-      } else if (player.targetxspeed != 0) {
-        player.xspeed +=
-          ((player.targetxspeed >= 0 ? 1 : -1) * (player.accelerationX / 100)) /
-          3;
+        this.xspeed = this.targetxspeed;
+      } else if (this.targetxspeed != 0) {
+        this.xspeed +=
+          ((this.targetxspeed >= 0 ? 1 : -1) * (this.accelerationX / 100)) / 3;
       } else {
-        player.xspeed = 0;
+        this.xspeed = 0;
       }
       if (
-        Math.abs(player.yspeed) >= Math.abs(player.targetyspeed) &&
-        (player.yspeed >= 0 ? 1 : -1) == (player.targetyspeed >= 0 ? 1 : -1)
+        Math.abs(this.yspeed) >= Math.abs(this.targetyspeed) &&
+        (this.yspeed >= 0 ? 1 : -1) == (this.targetyspeed >= 0 ? 1 : -1)
       ) {
-        player.yspeed = player.targetyspeed;
-      } else if (player.targetyspeed != 0) {
-        player.yspeed +=
-          ((player.targetyspeed >= 0 ? 1 : -1) * (player.accelerationY / 100)) /
-          3;
+        this.yspeed = this.targetyspeed;
+      } else if (this.targetyspeed != 0) {
+        this.yspeed +=
+          ((this.targetyspeed >= 0 ? 1 : -1) * (this.accelerationY / 100)) / 3;
       } else {
-        player.yspeed = 0;
+        this.yspeed = 0;
       }
 
-      player.futureX += player.xspeed;
-      player.futureY += player.yspeed;
+      this.futureX += this.xspeed;
+      this.futureY += this.yspeed;
       if (
-        Math.abs(player.futureX) < player.spaceSize / 2 &&
-        Math.abs(player.futureY) < player.spaceSize / 2
+        Math.abs(this.futureX) < this.spaceSize / 2 &&
+        Math.abs(this.futureY) < this.spaceSize / 2
       ) {
-        player.coordX += player.xspeed;
-        player.coordY += player.yspeed;
-        player.hitBoxWidth = Math.abs(
-          (player.width / 3) * 2 * Math.pow(Math.cos(player.angle), 2) +
-            (player.height / 3) * 2 * Math.pow(Math.sin(player.angle), 2)
+        this.coordX += this.xspeed;
+        this.coordY += this.yspeed;
+        this.hitBoxWidth = Math.abs(
+          (this.width / 3) * 2 * Math.pow(Math.cos(this.angle), 2) +
+            (this.height / 3) * 2 * Math.pow(Math.sin(this.angle), 2)
         );
-        player.hitBoxHeight = Math.abs(
-          (player.width / 3) * 2 * Math.pow(Math.sin(player.angle), 2) +
-            (player.height / 3) * 2 * Math.pow(Math.cos(player.angle), 2)
+        this.hitBoxHeight = Math.abs(
+          (this.width / 3) * 2 * Math.pow(Math.sin(this.angle), 2) +
+            (this.height / 3) * 2 * Math.pow(Math.cos(this.angle), 2)
         );
-        player.hitBoxX = player.x - player.hitBoxWidth / 2;
-        player.hitBoxY = player.y - player.hitBoxHeight / 2;
-        player.earthX -= player.xspeed;
-        player.earthY -= player.yspeed;
+        this.hitBoxX = this.x - this.hitBoxWidth / 2;
+        this.hitBoxY = this.y - this.hitBoxHeight / 2;
+        this.earthX -= this.xspeed;
+        this.earthY -= this.yspeed;
       } else {
-        player.futureX -= player.xspeed;
-        player.futureY -= player.yspeed;
-        player.speed = 0;
-        player.xspeed = 0;
-        player.yspeed = 0;
+        this.futureX -= this.xspeed;
+        this.futureY -= this.yspeed;
+        this.speed = 0;
+        this.xspeed = 0;
+        this.yspeed = 0;
       }
     }
-    player.earthX -= camera.offSetX;
-    player.earthY -= camera.offSetY;
-    player.x -= camera.offSetX;
-    player.y -= camera.offSetY;
+    this.earthX -= camera.offSetX;
+    this.earthY -= camera.offSetY;
+    this.x -= camera.offSetX;
+    this.y -= camera.offSetY;
 
-    player.companionsIndex.forEach((_random, i) => {
-      player.companionsIndex[i]++;
-      if (player.companionsIndex[i] == 360) player.companionsIndex[i] = 0;
+    this.companionsIndex.forEach((_random, i) => {
+      this.companionsIndex[i]++;
+      if (this.companionsIndex[i] == 360) this.companionsIndex[i] = 0;
     });
-    let companionDistance = player.weapon.name != "INVICIBLEDRILL" ? 50 : 100;
-    for (let i = 0; i < player.companions; i++) {
-      player.companionsX[i] =
-        player.x +
+    let companionDistance = this.weapon.name != "INVICIBLEDRILL" ? 50 : 100;
+    for (let i = 0; i < this.companions; i++) {
+      this.companionsX[i] =
+        this.x +
         companionDistance *
           screenratio *
-          Math.cos((player.companionsIndex[i] / 180) * Math.PI);
-      player.companionsY[i] =
-        player.y +
+          Math.cos((this.companionsIndex[i] / 180) * Math.PI);
+      this.companionsY[i] =
+        this.y +
         companionDistance *
           screenratio *
-          Math.sin((player.companionsIndex[i] / 180) * Math.PI);
+          Math.sin((this.companionsIndex[i] / 180) * Math.PI);
     }
   },
-  render: () => {
-    player.animationIndex += 1;
+  render: function () {
+    this.animationIndex += 1;
     let nextIndex = Math.round(
       300 /
-        player.animationFPS /
-        ((60 * (player.accelerationX + player.accelerationY)) / 200)
+        this.animationFPS /
+        ((60 * (this.accelerationX + this.accelerationY)) / 200)
     );
 
     if (nextIndex == 0) nextIndex = 1;
-    if (nextIndex == Infinity) nextIndex = 60 / player.animationFPS;
+    if (nextIndex == Infinity) nextIndex = 60 / this.animationFPS;
 
-    if (player.animationIndex == nextIndex) {
-      player.animationIndex = 0;
-      if (player.animationX < player.widthOnPic * (player.animationFrames - 1))
-        player.animationX += player.widthOnPic;
-      else player.animationX = 0;
+    if (this.animationIndex == nextIndex) {
+      this.animationIndex = 0;
+      if (this.animationX < this.widthOnPic * (this.animationFrames - 1))
+        this.animationX += this.widthOnPic;
+      else this.animationX = 0;
     }
-    if (player.animationIndex > nextIndex) player.animationIndex = 0;
+    if (this.animationIndex > nextIndex) this.animationIndex = 0;
 
     ctx.save();
-    ctx.translate(player.x, player.y);
-    player.angle =
-      Math.atan2(yMousePos - player.y, xMousePos - player.x) + Math.PI / 2;
-    ctx.rotate(player.angle);
-    ctx.globalAlpha = player.opacity[1] - player.damageOpacity[1];
+    ctx.translate(this.x, this.y);
+    this.angle =
+      Math.atan2(yMousePos - this.y, xMousePos - this.x) + Math.PI / 2;
+    ctx.rotate(this.angle);
+    ctx.globalAlpha = this.opacity[1] - this.damageOpacity[1];
     ctx.drawImage(
-      player.sprite,
-      player.animationX,
+      this.sprite,
+      this.animationX,
       0,
-      player.widthOnPic,
-      player.heightOnPic,
-      -player.width / 2,
-      -player.height / 2,
-      player.width,
-      player.height
+      this.widthOnPic,
+      this.heightOnPic,
+      -this.width / 2,
+      -this.height / 2,
+      this.width,
+      this.height
     );
-    if (player.HP[1] > 0 && player.weapon.name == "INVICIBLEDRILL") {
-      ctx.globalAlpha = (player.dodgeMeter / 100) * 5;
+    if (this.HP[1] > 0 && this.weapon.name == "INVICIBLEDRILL") {
+      ctx.globalAlpha = (this.dodgeMeter / 100) * 5;
       ctx.drawImage(
-        player.sprite,
-        player.animationX,
-        player.heightOnPic * 2,
-        player.widthOnPic,
-        player.heightOnPic,
-        -player.width / 2,
-        -player.height / 2,
-        player.width,
-        player.height
+        this.sprite,
+        this.animationX,
+        this.heightOnPic * 2,
+        this.widthOnPic,
+        this.heightOnPic,
+        -this.width / 2,
+        -this.height / 2,
+        this.width,
+        this.height
       );
     }
     //Damaged Scout #RED
-    if (player.HP[1] > 0) {
-      ctx.globalAlpha = player.damageOpacity[1];
+    if (this.HP[1] > 0) {
+      ctx.globalAlpha = this.damageOpacity[1];
       ctx.drawImage(
-        player.sprite,
-        player.animationX,
-        player.heightOnPic,
-        player.widthOnPic,
-        player.heightOnPic,
-        -player.width / 2,
-        -player.height / 2,
-        player.width,
-        player.height
+        this.sprite,
+        this.animationX,
+        this.heightOnPic,
+        this.widthOnPic,
+        this.heightOnPic,
+        -this.width / 2,
+        -this.height / 2,
+        this.width,
+        this.height
       );
     }
     ctx.restore();
     ctx.globalAlpha = 1;
-    for (let i = 0; i < player.companions; i++) {
+    for (let i = 0; i < this.companions; i++) {
       ctx.save();
-      ctx.translate(player.companionsX[i], player.companionsY[i]);
-      ctx.rotate(player.angle);
-      if (player.weapon.name != "INVICIBLEDRILL")
+      ctx.translate(this.companionsX[i], this.companionsY[i]);
+      ctx.rotate(this.angle);
+      if (this.weapon.name != "INVICIBLEDRILL")
         ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
       else
         ctx.drawImage(sprite.player_companion, 0, 30, 30, 30, -30, -30, 60, 60);
@@ -312,51 +310,50 @@ var player = {
     }
   },
   attackCDstart: async function () {
-    player.attackCD = true;
-    await sleep(player.weapon.cooldown);
-    player.attackCD = false;
+    this.attackCD = true;
+    await sleep(this.weapon.cooldown);
+    this.attackCD = false;
   },
   hitCDstart: async function (playerEntity, event) {
-    if (playerEntity == 1) player.shieldCD[1] = 300;
-    else player.shieldCD[0] = 300;
-    player.damageOpacity[playerEntity] = 101 / 100;
+    if (playerEntity == 1) this.shieldCD[1] = 300;
+    else this.shieldCD[0] = 300;
+    this.damageOpacity[playerEntity] = 101 / 100;
     for (let i = 100; i >= 0; i--) {
-      if (playerEntity == 1 && event == "bullet" && i == 50)
-        player.hitCD = false;
-      if (player.damageOpacity[playerEntity] == (i + 1) / 100) {
-        player.damageOpacity[playerEntity] = i / 100;
+      if (playerEntity == 1 && event == "bullet" && i == 50) this.hitCD = false;
+      if (this.damageOpacity[playerEntity] == (i + 1) / 100) {
+        this.damageOpacity[playerEntity] = i / 100;
         await sleep(1);
       } else break;
     }
-    if (playerEntity == 1 && event == "bullet") player.hitCD = false;
+    if (playerEntity == 1 && event == "bullet") this.hitCD = false;
     else if (playerEntity == 1 && event == "collision")
-      player.collisionCD = false;
+      this.collisionCD = false;
   },
   shieldRecharge: function () {
-    if (player.shieldCD[0] > 0) {
-      player.shieldCD[0]--;
-    } else if (player.shield[0] < player.maxShield[0]) {
-      player.shieldCD[0] = 12;
-      player.shield[0] += 1;
+    if (this.shieldCD[0] > 0) {
+      this.shieldCD[0]--;
+    } else if (this.shield[0] < this.maxShield[0]) {
+      this.shieldCD[0] = 12;
+      this.shield[0] += 1;
     }
-    if (player.shieldCD[1] > 0) {
-      player.shieldCD[1]--;
-    } else if (player.shield[1] < player.maxShield[1]) {
-      player.shieldCD[1] = 6;
-      player.shield[1] += 1;
+    if (this.shieldCD[1] > 0) {
+      this.shieldCD[1]--;
+    } else if (this.shield[1] < this.maxShield[1]) {
+      this.shieldCD[1] = 6;
+      this.shield[1] += 1;
     }
   },
   killedCDstart: async function () {
-    player.shipLives--;
-    player.opacity[1] = 0.5;
+    this.shipLives--;
+    this.opacity[1] = 0.5;
     await sleep(5000);
-    player.HP[1] = player.maxHP[1];
-    player.opacity[1] = 1;
-    player.killedCD = false;
-    player.collisionCD = false;
+    this.HP[1] = this.maxHP[1];
+    this.opacity[1] = 1;
+    this.killedCD = false;
+    this.collisionCD = false;
   },
   setCompanions: function (c) {
-    player.companions = c;
-    player.companionsIndex = [0, 360 / c, (2 * 360) / c];
+    this.companions = c;
+    this.companionsIndex = [0, 360 / c, (2 * 360) / c];
   },
 };
