@@ -283,6 +283,14 @@ function gameLoop() {
         damageNumberList.splice(index, 1);
       }
     });
+    if (
+      !lootCube.active &&
+      levelTimer - lootCube.nextSpawn == 0 &&
+      ship.level > 0
+    ) {
+      lootCube.active = true;
+      spawnAnEnemy("lootCube");
+    }
     UI.game_render();
   }
   let loading = document.getElementById("loading");
@@ -290,14 +298,6 @@ function gameLoop() {
     $(document).ready(function () {
       loading.style.display = "none";
     });
-  }
-  if (
-    !lootCube.active &&
-    levelTimer - lootCube.nextSpawn == 0 &&
-    ship.level > 0
-  ) {
-    lootCube.active = true;
-    spawnAnEnemy("lootCube");
   }
   //call for the next iteration of gameLoop
   ctx.closePath();

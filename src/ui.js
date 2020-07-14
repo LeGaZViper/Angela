@@ -471,27 +471,6 @@ var UI = {
         screenratio,
       16 * screenratio
     );
-    //Danger light
-    ctx.fillStyle = "black";
-    if (player.HP[0] < player.maxHP[0] / 3) {
-      ctx.fillStyle = "red";
-    }
-    ctx.fillRect(
-      this.dangerLight_0.x,
-      this.dangerLight_0.y,
-      this.dangerLight_0.width,
-      this.dangerLight_0.height
-    );
-    ctx.fillStyle = "black";
-    if (player.HP[1] < player.maxHP[1] / 3) {
-      ctx.fillStyle = "red";
-    }
-    ctx.fillRect(
-      this.dangerLight_1.x,
-      this.dangerLight_1.y,
-      this.dangerLight_1.width,
-      this.dangerLight_1.height
-    );
 
     //Panels
     if (player.weapon.name != "BASIC") {
@@ -574,27 +553,17 @@ var UI = {
     );
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
-      if (!e.deathAnimation)
-        if (e.behaviour != "orbit") {
-          ctx.save();
-          ctx.translate(
-            e.coordX / (player.spaceSize / (200 * screenratio)),
-            e.coordY / (player.spaceSize / (200 * screenratio))
-          );
-          ctx.rotate(e.angle);
+      if (!e.deathAnimation && !e.killed) ctx.save();
+      ctx.translate(
+        e.coordX / (player.spaceSize / (200 * screenratio)),
+        e.coordY / (player.spaceSize / (200 * screenratio))
+      );
+      ctx.rotate(e.angle);
 
-          if (e.behaviour != "collide")
-            ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
-          else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
-          ctx.restore();
-        } else {
-          ctx.fillRect(
-            e.coordX / (player.spaceSize / (200 * screenratio)) - 3.5,
-            e.coordY / (player.spaceSize / (200 * screenratio)) - 3.5,
-            7,
-            7
-          );
-        }
+      if (e.behaviour != "collide")
+        ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
+      else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
+      ctx.restore();
     });
 
     ctx.fillStyle = "#DCE6EE";
