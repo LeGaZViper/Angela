@@ -59,7 +59,7 @@ function inicializeGame() {
   player.inicialize(0, 50);
   enemySpawnList = [];
   levels_handler.waveCounter = 1;
-  levels_handler.level = levelLayout({});
+  levels_handler.level = levelLayout["level_" + ship.level];
   levels_handler.levelCreator();
   background.inicialize();
   backgroundParticles.inicialize();

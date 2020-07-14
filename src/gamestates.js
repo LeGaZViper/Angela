@@ -69,7 +69,7 @@ function nextLevel() {
   //gameAudio.playMusic();
   UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
-  levels_handler.level = levelLayout({});
+  levels_handler.level = levelLayout["level_" + ship.level];
   levels_handler.levelCreator();
   spawn();
 }

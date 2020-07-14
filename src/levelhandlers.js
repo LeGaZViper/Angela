@@ -94,38 +94,42 @@ function spawnAnEnemy(enemy) {
   );
 }
 
-function levelLayout(L) {
-  if (ship.level == 0) {
-    // type, number, spawnCD, wave
-    L.waves = 3;
-    L.startTime = 13000;
-    L.miniArrow1 = ["miniArrow", 5, 1000, 1];
+var levelLayout = {
+  level_0: {
+    // [type, number, spawnCD, wave]
+    waves: 3,
+    startTime: 13000,
+    miniArrow1: ["miniArrow", 5, 1000, 1],
 
-    L.miniArrow2 = ["miniArrow", 5, 1000, 2];
-    L.cube1 = ["cube", 3, 2000, 2];
+    miniArrow2: ["miniArrow", 5, 1000, 2],
+    cube1: ["cube", 3, 2000, 2],
 
-    L.cube2 = ["cube", 5, 2000, 3];
-  } else if (ship.level == 1) {
-    L.waves = 3;
-    L.startTime = 6000;
-    L.cube1 = ["cube", 8, 1000, 1];
+    cube2: ["cube", 5, 2000, 3],
+  },
+  level_1: {
+    waves: 3,
+    startTime: 6000,
+    cube1: ["cube", 8, 1000, 1],
 
-    L.mail1 = ["mail", 2, 2500, 2];
-    L.cube2 = ["cube", 5, 1000, 2];
+    mail1: ["mail", 2, 2500, 2],
+    cube2: ["cube", 5, 1000, 2],
 
-    L.cube3 = ["cube", 4, 1000, 3];
-    L.mail2 = ["mail", 3, 2500, 3];
-  } else if (ship.level == 2) {
-    L.waves = 3;
-    L.startTime = 3000;
-    L.cube1 = ["cube", 5, 1000, 1];
-    L.mail1 = ["mail", 2, 2500, 1];
+    cube3: ["cube", 4, 1000, 3],
+    mail2: ["mail", 3, 2500, 3],
+  },
+  level_2: {
+    waves: 3,
+    startTime: 3000,
+    cube1: ["cube", 5, 1000, 1],
+    mail1: ["mail", 2, 2500, 1],
 
-    L.mail2 = ["mail", 3, 2500, 1];
-    L.icosphere1 = ["icosphere", 5, 2000, 2];
+    mail2: ["mail", 3, 2500, 1],
+    icosphere1: ["icosphere", 5, 2000, 2],
 
-    L.icosphere2 = ["icosphere", 10, 2000, 3];
-  }
-  //L.test = [5, 1];
-  return L;
-}
+    icosphere2: ["icosphere", 10, 2000, 3],
+  },
+  level_3: {
+    waves: 3,
+    startTime: 3000,
+  },
+};
