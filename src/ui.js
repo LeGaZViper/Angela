@@ -553,17 +553,19 @@ var UI = {
     );
     ctx.fillStyle = "red";
     enemyList.forEach((e) => {
-      if (!e.deathAnimation && !e.killed) ctx.save();
-      ctx.translate(
-        e.coordX / (player.spaceSize / (200 * screenratio)),
-        e.coordY / (player.spaceSize / (200 * screenratio))
-      );
-      ctx.rotate(e.angle);
+      if (!e.deathAnimation && !e.killed) {
+        ctx.save();
+        ctx.translate(
+          e.coordX / (player.spaceSize / (200 * screenratio)),
+          e.coordY / (player.spaceSize / (200 * screenratio))
+        );
+        ctx.rotate(e.angle);
 
-      if (e.behaviour != "collide")
-        ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
-      else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
-      ctx.restore();
+        if (e.behaviour != "collide")
+          ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
+        else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
+        ctx.restore();
+      }
     });
 
     ctx.fillStyle = "#DCE6EE";

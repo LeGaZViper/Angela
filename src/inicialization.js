@@ -108,7 +108,7 @@ function loadTheGame(callback) {
   }
   scale();
   ship = JSON.parse(localStorage.ship);
-  ship.level = 1;
+  ship.level = 2;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();
