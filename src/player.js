@@ -120,18 +120,24 @@ var player = {
     ) {
       if (this.accelerationX >= 1) {
         this.accelerationX -= 1;
-      }
+      } else this.accelerationX = 0;
       if (this.accelerationY >= 1) {
         this.accelerationY -= 1;
-      }
+      } else this.accelerationY = 0;
     } else if (!rightMouseDown) {
       if (this.accelerationX <= 98) {
         this.accelerationX += 2;
       } else this.accelerationX = 100;
-
       if (this.accelerationY <= 98) {
         this.accelerationY += 2;
       } else this.accelerationY = 100;
+    } else {
+      if (this.accelerationX >= 0.2) {
+        this.accelerationX -= 0.2;
+      } else this.accelerationX = 0;
+      if (this.accelerationY >= 0.2) {
+        this.accelerationY -= 0.2;
+      } else this.accelerationY = 0;
     }
 
     this.speed = ship.speed * screenratio;

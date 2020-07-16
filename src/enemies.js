@@ -49,9 +49,8 @@ async function checkDeath(enemy, bulletType = "none") {
     }
     if (enemy.behaviour == "loot") {
       lootCube.active = false;
-      lootCube.nextSpawn = levelTimer + 1800;
-    }
-    if (levels_handler.level.total == 1) {
+      lootCube.nextSpawn = levelTimer + 1300;
+    } else if (levels_handler.level.total == 1) {
       await sleep(2000);
       if (levels_handler.level.total == 1) levels_handler.level.total -= 1;
     } else {
@@ -231,6 +230,10 @@ function enemyCharacter(E) {
     );
     E.hitBoxX = E.x - E.hitBoxWidth / 2;
     E.hitBoxY = E.y - E.hitBoxHeight / 2;
+
+    if (E.ttl != undefined) {
+      E.calcTTL();
+    }
   };
   E.render = function () {
     if (E.animation && !E.spawning) {
@@ -515,7 +518,6 @@ function enemyCharacter(E) {
       E.spawns < E.maximumSpawns
     ) {
       E.spawning = true;
-      E.spawns++;
       if (E.type == "mail") E.speed = 0;
       E.attackCDstart();
     } else {
@@ -542,16 +544,19 @@ function enemyCharacter(E) {
               ...EnemyData[E.bulletType],
             })
           );
+          E.spawns++;
           levels_handler.level.total += 1;
           E.animationX = 0;
         }
       }
     } else if (E.type == "star") {
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 7 && E.spawns < E.maximumSpawns; i++) {
         let angle = (Math.PI / 4) * i;
         enemyList.push(
           enemyCharacter({
             randomDirCDcounter: 120,
+            ttl: 600,
+            source: E,
             x: E.x + Math.cos(angle) * 100 * screenratio,
             y: E.y + Math.sin(angle) * 100 * screenratio,
             randomDrop: false,
@@ -559,6 +564,7 @@ function enemyCharacter(E) {
             ...EnemyData[E.bulletType],
           })
         );
+        E.spawns++;
         levels_handler.level.total += 1;
       }
       E.spawning = false;
@@ -627,6 +633,14 @@ function enemyCharacter(E) {
       E.randomDirCDcounter = 300;
       E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
       E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
+    }
+  };
+  E.calcTTL = function () {
+    if (E.ttl > 0) {
+      E.ttl -= 1;
+    } else {
+      E.HP = 0;
+      checkDeath(E);
     }
   };
   if (E.appearOpacity == 0) E.appear();
