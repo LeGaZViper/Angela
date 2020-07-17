@@ -122,7 +122,7 @@ function gameLoop() {
     });
     //check for weapon firing
     if (player.weaponDuration == 0) {
-      ship.speed = 12;
+      player.speed = 12;
       player.animationFPS = 5;
       player.width = 75 * screenratio;
       player.height = 75 * screenratio;
@@ -232,10 +232,9 @@ function gameLoop() {
                 if (!b.piercing) b.killed = true;
               }
               if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
-              if (b.name == "CHAKRAM" && b.speed > 0) {
-                b.speed -= 4;
-              }
-              if (b.speed < 0) {
+              if (b.name == "CHAKRAM" && b.speed >= 5) {
+                b.speed -= 5;
+              } else {
                 b.speed = 0;
               }
             }
@@ -286,7 +285,7 @@ function gameLoop() {
     if (
       !lootCube.active &&
       levelTimer - lootCube.nextSpawn == 0 &&
-      ship.level > 0
+      playerData.level > 0
     ) {
       lootCube.active = true;
       spawnAnEnemy("lootCube");

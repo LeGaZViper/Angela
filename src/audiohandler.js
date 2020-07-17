@@ -18,23 +18,23 @@ const gameAudio = {
   music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   setVolume: function () {
-    this.player_BASIC.volume = 0.05 * ship.soundMultiplier;
-    this.player_CHAKRAM.volume = 0.06 * ship.soundMultiplier;
-    this.player_LASER_start.volume = 0.03 * ship.soundMultiplier;
-    this.player_LASER_loop.volume = 0.01 * ship.soundMultiplier;
-    this.player_getDrop.volume = 0.01 * ship.soundMultiplier;
-    this.player_hit.volume = 0.05 * ship.soundMultiplier;
-    this.system_warning.volume = 0.03 * ship.soundMultiplier;
-    this.enemy_hit.volume = 0.05 * ship.soundMultiplier;
-    this.enemy_death.volume = 0.05 * ship.soundMultiplier;
-    this.enemy_BASIC.volume = 0.02 * ship.soundMultiplier;
-    this.enemy_MINIBASIC.volume = 0.02 * ship.soundMultiplier;
-    this.typing_system.volume = 0.01 * ship.soundMultiplier;
-    this.typing_enemy.volume = 0.01 * ship.soundMultiplier;
-    this.typing_angela.volume = 0.01 * ship.soundMultiplier;
-    this.typing_angela_2.volume = 0.01 * ship.soundMultiplier;
-    this.music_level_0.volume = 0.03 * ship.musicMultiplier;
-    this.music_menu.volume = 0.05 * ship.musicMultiplier;
+    this.player_BASIC.volume = 0.05 * playerData.soundMultiplier;
+    this.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
+    this.player_LASER_start.volume = 0.03 * playerData.soundMultiplier;
+    this.player_LASER_loop.volume = 0.01 * playerData.soundMultiplier;
+    this.player_getDrop.volume = 0.01 * playerData.soundMultiplier;
+    this.player_hit.volume = 0.05 * playerData.soundMultiplier;
+    this.system_warning.volume = 0.03 * playerData.soundMultiplier;
+    this.enemy_hit.volume = 0.05 * playerData.soundMultiplier;
+    this.enemy_death.volume = 0.05 * playerData.soundMultiplier;
+    this.enemy_BASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.enemy_MINIBASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.typing_system.volume = 0.01 * playerData.soundMultiplier;
+    this.typing_enemy.volume = 0.01 * playerData.soundMultiplier;
+    this.typing_angela.volume = 0.01 * playerData.soundMultiplier;
+    this.typing_angela_2.volume = 0.01 * playerData.soundMultiplier;
+    this.music_level_0.volume = 0.03 * playerData.musicMultiplier;
+    this.music_menu.volume = 0.05 * playerData.musicMultiplier;
   },
   playSound: function (sound) {
     let copyAudio = this[sound].cloneNode();
@@ -62,7 +62,7 @@ const gameAudio = {
   },
   changeVolumeOfMusic: function (value) {
     try {
-      this.currentMusic.volume = value * ship.musicMultiplier;
+      this.currentMusic.volume = value * playerData.musicMultiplier;
     } catch (err) {
       console.log("No current music.");
     }

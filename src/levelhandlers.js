@@ -2,7 +2,7 @@
 async function spawn() {
   if (levelTimer == 0) {
     UI.levelDisplay.text =
-      Math.floor(ship.level / 3) + 1 + "-" + ((ship.level % 3) + 1);
+      Math.floor(playerData.level / 3) + 1 + "-" + ((playerData.level % 3) + 1);
     for (let i = 1; i <= 400; i++) {
       if (i <= 100) {
         UI.levelDisplay.opacity = i / 100;
@@ -131,5 +131,14 @@ var levelLayout = {
   level_3: {
     waves: 3,
     startTime: 3000,
+    cube1: ["cube", 5, 1000, 1],
+    betaCube1: ["betaCube", 5, 2000, 1],
+
+    cube2: ["cube", 6, 1000, 2],
+    betaCube2: ["betaCube", 5, 2000, 2],
+    watcher1: ["watcher", 3, 4000, 2],
+
+    icosphere3: ["icosphere", 8, 1500, 3],
+    betaCube3: ["betaCube", 8, 2000, 3],
   },
 };

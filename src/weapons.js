@@ -4,7 +4,7 @@ function chooseWeapon(name) {
   player.weapon = WeaponData[name];
   player.weaponDuration = player.weapon.duration;
   if (player.weapon.name == "INVICIBLEDRILL") {
-    ship.speed = 20;
+    player.speed = 20;
     player.animationFPS = 60;
     player.width = 150 * screenratio;
     player.height = 150 * screenratio;
@@ -211,6 +211,7 @@ function bullet(B, numberOfBullets) {
   B.speed =
     B.speed * screenratio + Math.abs(player.xspeed) + Math.abs(player.yspeed);
   B.damage = Math.round(B.damage * (B.companion ? 0.5 : 1));
+  B.damageFallOff = Math.round(B.damageFallOff * (B.companion ? 0.5 : 1));
   B.width = B.widthOnPic * screenratio * (B.companion ? 0.5 : 1);
   B.height = B.heightOnPic * screenratio * (B.companion ? 0.5 : 1);
   B.opacity = 1;
@@ -218,14 +219,13 @@ function bullet(B, numberOfBullets) {
   B.animationX = 0;
   B.animationIndex = 0;
   B.animationAngle = 0;
+  B.damage = B.damage - Math.round(Math.random() * B.damageFallOff);
   switch (B.index) {
     case 0: //BASIC
-      B.damage = Math.floor(B.damage * Math.random()) + 1;
       B.dirx = Math.cos(player.angle - Math.PI / 2);
       B.diry = Math.sin(player.angle - Math.PI / 2);
       break;
     case 1: //DOUBLE
-      B.damage = Math.floor(B.damage * Math.random()) + 1;
       if (numberOfBullets == 2) {
         B.dirx = Math.cos(player.angle - Math.PI / 2 + (1 / 180) * Math.PI);
         B.diry = Math.sin(player.angle - Math.PI / 2 + (1 / 180) * Math.PI);
@@ -248,7 +248,6 @@ function bullet(B, numberOfBullets) {
       }
       break;
     case 2: //SPRAY
-      B.damage = Math.floor(B.damage * Math.random()) + 1;
       if (numberOfBullets == 3) {
         B.dirx = Math.cos(player.angle - Math.PI / 2);
         B.diry = Math.sin(player.angle - Math.PI / 2);
@@ -291,12 +290,10 @@ function bullet(B, numberOfBullets) {
       B.shootingPointY = B.y;
       break;
     case 6: //CHAKRAM
-      B.damage = Math.floor(B.damage * Math.random()) + 1;
       B.dirx = Math.cos(player.angle - Math.PI / 2);
       B.diry = Math.sin(player.angle - Math.PI / 2);
       break;
     case 7: //NEONTHROWER
-      B.damage = Math.floor(B.damage * Math.random()) + 1;
       B.dirx = Math.cos(
         player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
       );

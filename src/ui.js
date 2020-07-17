@@ -79,7 +79,7 @@ var UI = {
       height: 0 * screenratio,
       x: canvas.width / 2 + 50 * screenratio,
       y: canvas.height / 2 - 110 * screenratio,
-      text: ship.soundMultiplier,
+      text: playerData.soundMultiplier,
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "white"],
@@ -89,7 +89,7 @@ var UI = {
       height: 0 * screenratio,
       x: canvas.width / 2 + 50 * screenratio,
       y: canvas.height / 2 - 30 * screenratio,
-      text: ship.musicMultiplier,
+      text: playerData.musicMultiplier,
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "white"],
@@ -340,55 +340,49 @@ var UI = {
   },
   menu_render: function (menu) {
     this.hover();
-    if (ship.level > 0) {
+    if (playerData.level > 0) {
       this.mainMenu_b1.opacity = 1;
     } else {
       this.mainMenu_b1.opacity = 0.5;
     }
     menu.forEach((index) => {
-      if (
-        (index.ship == undefined && index.toShip == undefined) ||
-        index.ship == this.displayShip ||
-        index.toShip == this.displayShip
-      ) {
-        ctx.fillStyle = index.color[0];
-        ctx.strokeStyle = index.color[1];
-        if (index.textSize != undefined) ctx.lineWidth = 6 * screenratio;
-        ctx.globalAlpha = index.opacity;
-        if (index.sprite == undefined && index.textOnly == undefined) {
-          ctx.strokeRect(index.x, index.y, index.width, index.height);
-          ctx.fillRect(index.x, index.y, index.width, index.height);
-        }
-        ctx.fillStyle = index.color[2];
-        if (index.text != undefined) {
-          ctx.font = index.textSize + "px FFFFORWA";
-          ctx.textAlign = "center";
-          ctx.strokeText(
-            index.text,
-            index.x + index.width / 2,
-            index.y + index.height / 2 + index.textSize / 2 + index.height / 14
+      ctx.fillStyle = index.color[0];
+      ctx.strokeStyle = index.color[1];
+      if (index.textSize != undefined) ctx.lineWidth = 6 * screenratio;
+      ctx.globalAlpha = index.opacity;
+      if (index.sprite == undefined && index.textOnly == undefined) {
+        ctx.strokeRect(index.x, index.y, index.width, index.height);
+        ctx.fillRect(index.x, index.y, index.width, index.height);
+      }
+      ctx.fillStyle = index.color[2];
+      if (index.text != undefined) {
+        ctx.font = index.textSize + "px FFFFORWA";
+        ctx.textAlign = "center";
+        ctx.strokeText(
+          index.text,
+          index.x + index.width / 2,
+          index.y + index.height / 2 + index.textSize / 2 + index.height / 14
+        );
+        ctx.fillText(
+          index.text,
+          index.x + index.width / 2,
+          index.y + index.height / 2 + index.textSize / 2 + index.height / 14
+        ); //text on screen
+      }
+      if (index.sprite != undefined) {
+        ctx.globalAlpha = 1;
+        if (index.button == undefined) {
+          ctx.drawImage(
+            index.sprite,
+            0,
+            0,
+            index.width / screenratio,
+            index.height / screenratio,
+            index.x,
+            index.y,
+            index.width,
+            index.height
           );
-          ctx.fillText(
-            index.text,
-            index.x + index.width / 2,
-            index.y + index.height / 2 + index.textSize / 2 + index.height / 14
-          ); //text on screen
-        }
-        if (index.sprite != undefined) {
-          ctx.globalAlpha = 1;
-          if (index.button == undefined) {
-            ctx.drawImage(
-              index.sprite,
-              0,
-              0,
-              index.width / screenratio,
-              index.height / screenratio,
-              index.x,
-              index.y,
-              index.width,
-              index.height
-            );
-          }
         }
       }
     });
@@ -507,7 +501,7 @@ var UI = {
     ctx.strokeStyle = "#5C7CFF";
     ctx.fillStyle = "white";
     ctx.fillText(
-      player.shipLives + "x",
+      player.playerLives + "x",
       canvas.width - 195 * screenratio,
       67 * screenratio
     );
@@ -632,7 +626,7 @@ var UI = {
           if (index.button == "NEW GAME") {
             startTheGame();
           } else if (index.button == "CONTINUE") {
-            if (ship.level > 0) {
+            if (playerData.level > 0) {
               continueTheGame();
             }
           } else if (index.button == "OPTIONS") {
@@ -655,23 +649,23 @@ var UI = {
             this.currentMenu = 0;
           }
           if (index.button == "sound") {
-            if (index.text == "🡅" && ship.soundMultiplier < 10) {
-              ship.soundMultiplier++;
-            } else if (index.text == "🡇" && ship.soundMultiplier > 0) {
-              ship.soundMultiplier--;
+            if (index.text == "🡅" && playerData.soundMultiplier < 10) {
+              playerData.soundMultiplier++;
+            } else if (index.text == "🡇" && playerData.soundMultiplier > 0) {
+              playerData.soundMultiplier--;
             }
             gameAudio.setVolume();
             gameAudio.playSound("player_BASIC");
-            this.optionsMenu_t2.text = ship.soundMultiplier;
+            this.optionsMenu_t2.text = playerData.soundMultiplier;
           } else if (index.button == "music") {
-            if (index.text == "🡅" && ship.musicMultiplier < 10) {
-              ship.musicMultiplier++;
+            if (index.text == "🡅" && playerData.musicMultiplier < 10) {
+              playerData.musicMultiplier++;
               gameAudio.changeVolumeOfMusic(0.03);
-            } else if (index.text == "🡇" && ship.musicMultiplier > 0) {
-              ship.musicMultiplier--;
+            } else if (index.text == "🡇" && playerData.musicMultiplier > 0) {
+              playerData.musicMultiplier--;
               gameAudio.changeVolumeOfMusic(0.03);
             }
-            this.optionsMenu_t3.text = ship.musicMultiplier;
+            this.optionsMenu_t3.text = playerData.musicMultiplier;
           }
           saveLocalStorage();
         }
@@ -749,7 +743,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
-          if (index.button == "CONTINUE" && ship.level > 0) {
+          if (index.button == "CONTINUE" && playerData.level > 0) {
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;

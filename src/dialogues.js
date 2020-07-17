@@ -62,7 +62,7 @@ class Dialogue {
 
 var textIndex;
 function pushDialogue(index) {
-  let dialogueLevel = DialogueData["level_" + ship.level];
+  let dialogueLevel = DialogueData["level_" + playerData.level];
   textIndex = index;
   DialogueData.dialoguesUsed[index] = true;
   dialogueList.push(
@@ -75,7 +75,7 @@ function pushDialogue(index) {
 }
 
 function dialogueHandler() {
-  let dialogueLevel = DialogueData["level_" + ship.level];
+  let dialogueLevel = DialogueData["level_" + playerData.level];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
     if (DialogueData.dialoguesUsed[i]) continue;
     else if (dialogueLevel.triggerType[i] == "timer") {

@@ -36,11 +36,11 @@ var camera = {
 };
 
 //player object
-var ship;
+var playerData;
 var player = {
   inicialize: function (starterX, starterY) {
     // in order to change player default pos one needs to change this.coord, this.earth, this.future accordingly
-    this.shipLives = 3;
+    this.playerLives = 3;
     this.starterPosX = starterX * screenratio;
     this.starterPosY = starterY * screenratio;
     this.spaceSize = 4000 * screenratio;
@@ -54,20 +54,20 @@ var player = {
     this.futureY = this.starterPosY;
     this.accelerationX = 0;
     this.accelerationY = 0;
-    this.speed = 0;
+    this.speed = 12;
     this.xspeed = 0;
     this.yspeed = 0;
-    this.width = ship.width * screenratio;
-    this.height = ship.height * screenratio;
-    this.widthOnPic = ship.widthOnPic;
-    this.heightOnPic = ship.heightOnPic;
+    this.width = 75 * screenratio;
+    this.height = 75 * screenratio;
+    this.widthOnPic = 150;
+    this.heightOnPic = 150;
     this.animationX = 0;
     this.animationY = 0;
     //0 = Earth, 1 = Ship
-    this.maxHP = ship.maxHP;
+    this.maxHP = [100, 50];
     this.HP = [this.maxHP[0], this.maxHP[1]];
-    this.maxShield = ship.maxShield;
-    this.shield = [ship.maxShield[0], ship.maxShield[1]];
+    this.maxShield = [100, 50];
+    this.shield = [this.maxShield[0], this.maxShield[1]];
     this.angle = 0;
 
     this.hitBoxWidth = (this.width / 3) * 2;
@@ -83,7 +83,6 @@ var player = {
     this.weapon = WeaponData.BASIC;
     this.weaponDuration = 0;
     this.inWeaponActivation = false;
-    this.companions = ship.companions;
     this.companionsX = [0, 0, 0];
     this.companionsY = [0, 0, 0];
     this.companionsIndex = [
@@ -140,7 +139,7 @@ var player = {
       } else this.accelerationY = 0;
     }
 
-    this.speed = ship.speed * screenratio;
+    this.currentSpeed = player.speed * screenratio;
     if (!rightMouseDown) {
       this.ratio =
         this.speed /
@@ -153,8 +152,8 @@ var player = {
       (this.ratio * this.lastRatioX * this.accelerationX) / 100;
     this.targetyspeed =
       (this.ratio * this.lastRatioY * this.accelerationY) / 100;
-    if (this.HP[0] <= 0 || this.shipLives == 0) {
-      this.speed = 0;
+    if (this.HP[0] <= 0 || this.playerLives == 0) {
+      this.currentSpeed = 0;
       this.xspeed = 0;
       this.yspeed = 0;
       loseTheGame();
@@ -209,7 +208,7 @@ var player = {
       } else {
         this.futureX -= this.xspeed;
         this.futureY -= this.yspeed;
-        this.speed = 0;
+        this.currentSpeed = 0;
         this.xspeed = 0;
         this.yspeed = 0;
       }
@@ -350,7 +349,7 @@ var player = {
     }
   },
   killedCDstart: async function () {
-    this.shipLives--;
+    this.playerLives--;
     this.opacity[1] = 0.5;
     await sleep(5000);
     this.HP[1] = this.maxHP[1];

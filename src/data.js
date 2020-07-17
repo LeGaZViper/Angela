@@ -1,6 +1,7 @@
 //List of spritemaps (might use only one in the final version) | used in: rendering
 const sprite = {
   enemy_cube: new Image(),
+  enemy_betaCube: new Image(),
   enemy_looterCube: new Image(),
   enemy_largeCube: new Image(),
   enemy_icosphere: new Image(),
@@ -21,6 +22,7 @@ const sprite = {
   projectile_NEON: new Image(),
   projectile_enemyBASIC: new Image(),
   projectile_enemyCLOUD: new Image(),
+  projectile_enemyBETABASIC: new Image(),
   projectile_SPREAD: new Image(),
   projectile_spreadProjectile: new Image(),
   projectile_explosion: new Image(),
@@ -76,14 +78,43 @@ const DialogueData = {
   },
   level_2: {
     text: [
-      "I've found the drivers!#Stall for more time or we're doomed!",
+      "I've found the drivers!#I need to access them!",
+      "Stall for more time or we're doomed!",
       "WARNING: FIREWALL INTEGRITY 30%",
       "Just a little longer!#Gosh, I wish drivers weren't so complicated.",
     ],
-    color: ["white", "orange", "white"],
-    triggerType: ["timer", "wave", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 2, 3],
-    ttl: [200, 200, 200],
+    color: ["white", "white", "orange", "white"],
+    triggerType: ["timer", "after", "wave", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 2, 3],
+    ttl: [200, 200, 200, 200],
+  },
+  level_3: {
+    text: [
+      "I've found another defense node to help us out.",
+      "It's very primitive with no intelligence whatsover,#but it can copy your attacks and movement.",
+      "This is bad... I'm sensing some heavy bitpower#heading our way.",
+      "These units are powerful enough# to bypass my encryption.",
+      "You need to keep them away from me!",
+      "CRITICAL: FIREWALL INTEGRITY 10%",
+    ],
+    color: ["white", "white", "white", "white", "white", "orange"],
+    triggerType: ["timer", "after", "wave", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 2, 2, 3, 3],
+    ttl: [200, 200, 200, 200, 200, 200],
+  },
+  level_4: {
+    text: [
+      "It's done!",
+      "Now how do I... password?#WHAT DO YOU MEAN I NEED A PASSWORD?!",
+      "123456",
+      "INVALID PASSWORD",
+      "admin",
+      "INVALID PASSWORD",
+    ],
+    color: ["white", "white", "white", "yellow", "white", "yellow"],
+    triggerType: ["timer", "after", "wave", "after", "after", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0, 2, 2, 3, 4],
+    ttl: [200, 200, 1, 100, 1, 100],
   },
 };
 
@@ -98,7 +129,8 @@ const WeaponData = {
     rotationAnimation: false,
     bullets: 1,
     damage: 3,
-    speed: 15,
+    damageFallOff: 1,
+    speed: 20,
     widthOnPic: 5,
     heightOnPic: 50,
     cooldown: 200,
@@ -113,7 +145,8 @@ const WeaponData = {
     rotationAnimation: false,
     bullets: 2,
     damage: 3,
-    speed: 15,
+    damageFallOff: 2,
+    speed: 20,
     widthOnPic: 5,
     heightOnPic: 50,
     cooldown: 200,
@@ -129,7 +162,8 @@ const WeaponData = {
     rotationAnimation: false,
     bullets: 3,
     damage: 3,
-    speed: 15,
+    damageFallOff: 2,
+    speed: 20,
     widthOnPic: 5,
     heightOnPic: 50,
     cooldown: 200,
@@ -146,6 +180,7 @@ const WeaponData = {
     explosive: true,
     bullets: 1,
     damage: 5,
+    damageFallOff: 1,
     speed: 7,
     widthOnPic: 12,
     heightOnPic: 33,
@@ -162,6 +197,7 @@ const WeaponData = {
     rotationAnimation: false,
     bullets: 1,
     damage: 2,
+    damageFallOff: 1,
     speed: 8,
     widthOnPic: 14,
     heightOnPic: 30,
@@ -190,14 +226,15 @@ const WeaponData = {
     animation: false,
     rotationAnimation: false,
     bullets: 1,
-    damage: 1,
+    damage: 3,
+    damageFallOff: 1,
     speed: 0,
     widthOnPic: 6,
     heightOnPic: 6,
     cooldown: 1,
     duration: 600,
     piercing: true,
-    hitCD: 200,
+    hitCD: 150,
     color: "#B2B5FF",
     ttl: 0,
   },
@@ -210,8 +247,9 @@ const WeaponData = {
     rotationAnimation: true,
     rotationSpeed: 20,
     bullets: 1,
-    damage: 2,
-    speed: 10,
+    damage: 5,
+    damageFallOff: 3,
+    speed: 15,
     widthOnPic: 70,
     heightOnPic: 70,
     cooldown: 300,
@@ -230,6 +268,7 @@ const WeaponData = {
     rotationSpeed: 10,
     bullets: 1,
     damage: 4,
+    damageFallOff: 2,
     speed: 7,
     widthOnPic: 50,
     heightOnPic: 50,
@@ -248,6 +287,7 @@ const WeaponData = {
     rotationAnimation: false,
     bullets: 1,
     damage: 3,
+    damageFallOff: 1,
     speed: 15,
     widthOnPic: 5,
     duration: 600,
@@ -259,16 +299,7 @@ const WeaponData = {
 
 class DefaultSetup {
   constructor() {
-    this.name = "SCOUT";
-    this.speed = 12;
-    this.width = 75;
-    this.height = 75;
-    this.widthOnPic = 150;
-    this.heightOnPic = 150;
-    this.maxShield = [100, 50];
-    this.maxHP = [100, 50];
     this.level = 0;
-    this.companions = 0;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
   }
@@ -282,8 +313,21 @@ const enemyWeaponData = {
     animation: false,
     rotationAnimation: false,
     bullets: 1,
-    damage: 20,
+    damage: 15,
     speed: 15,
+    widthOnPic: 5,
+    heightOnPic: 50,
+    ttl: 300,
+  },
+  BETABASIC: {
+    sprite: sprite.projectile_enemyBETABASIC,
+    sound: "enemy_BASIC",
+    name: "BETABASIC",
+    animation: false,
+    rotationAnimation: false,
+    bullets: 1,
+    damage: 10,
+    speed: 14,
     widthOnPic: 5,
     heightOnPic: 50,
     ttl: 300,
@@ -385,6 +429,30 @@ const EnemyData = {
     defaultSpeed: 5,
     HP: 8,
     maxHP: 8,
+    animation: true,
+    animationFrames: 5,
+    animationFPS: 12,
+    deathAnimationFPS: 3,
+    deathAnimationFrames: 9,
+  },
+  betaCube: {
+    type: "betaCube",
+    chaseDistance: Infinity,
+    behaviour: "chase",
+    sprite: sprite.enemy_betaCube,
+    rotation: true,
+    widthOnPic: 75,
+    heightOnPic: 75,
+    attackCDvalue: 2500,
+    bulletType: "BETABASIC",
+    bullets: 3,
+    collisionDamage: 15,
+    width: 75,
+    height: 75,
+    speed: 6,
+    defaultSpeed: 6,
+    HP: 13,
+    maxHP: 13,
     animation: true,
     animationFrames: 5,
     animationFPS: 12,
@@ -618,8 +686,8 @@ const EnemyData = {
     height: 120,
     speed: 2,
     defaultSpeed: 2,
-    HP: 25,
-    maxHP: 25,
+    HP: 50,
+    maxHP: 50,
     animation: true,
     animationFrames: 10,
     animationFPS: 5,

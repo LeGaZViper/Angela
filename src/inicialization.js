@@ -1,5 +1,5 @@
 //First inicialization
-if (localStorage.ship == undefined) {
+if (localStorage.playerData == undefined) {
   newLocalStorage();
 }
 
@@ -10,6 +10,24 @@ window.onload = () => {
 //Sleep function | used in: cooldowns
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function saveLocalStorage() {
+  localStorage.playerData = JSON.stringify(playerData);
+}
+
+function resetLocalStorage() {
+  let sound = playerData.soundMultiplier;
+  let music = playerData.musicMultiplier;
+  playerData = new DefaultSetup();
+  playerData.soundMultiplier = sound;
+  playerData.musicMultiplier = music;
+  localStorage.playerData = JSON.stringify(playerData);
+}
+
+function newLocalStorage() {
+  playerData = new DefaultSetup();
+  localStorage.playerData = JSON.stringify(playerData);
 }
 
 function killAll() {
@@ -38,7 +56,7 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
-  gameAudio.playMusic("music_level_" + ship.level);
+  gameAudio.playMusic("music_level_" + playerData.level);
   xMousePos =
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
@@ -57,9 +75,10 @@ function inicializeGame() {
   canvas.style.cursor = "none";
   UI.inMenu = false;
   player.inicialize(0, 50);
+  player.setCompanions(Math.floor(playerData.level / 3));
   enemySpawnList = [];
   levels_handler.waveCounter = 1;
-  levels_handler.level = levelLayout["level_" + ship.level];
+  levels_handler.level = levelLayout["level_" + playerData.level];
   levels_handler.levelCreator();
   background.inicialize();
   backgroundParticles.inicialize();
@@ -107,8 +126,8 @@ function loadTheGame(callback) {
         ".png";
   }
   scale();
-  ship = JSON.parse(localStorage.ship);
-  ship.level = 2;
+  playerData = JSON.parse(localStorage.playerData);
+  playerData.level = 3;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();

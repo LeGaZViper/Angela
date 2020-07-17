@@ -387,35 +387,58 @@ function enemyCharacter(E) {
   E.attackCD = false;
   E.piercingCD = false;
   E.opacity = 0;
-  E.orbitBehaviour = function () {
-    E.distance = Math.sqrt(
-      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+  E.chaseBehaviour = async function () {
+    E.playerDistance = Math.sqrt(
+      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
     );
-    if (E.distance < 500 * screenratio && !E.inOrbit) {
-      E.inOrbit = true;
-      E.arrival = true;
-      E.attackCDstart();
-    } else if (E.inOrbit && !E.attackCD) {
-      E.attackCDstart();
-      enemyBulletList.push(
-        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
-      );
+    if (
+      E.playerDistance < 800 * screenratio &&
+      E.target == "none" &&
+      player.HP[1] > 0
+    ) {
+      E.target = player;
     }
-  };
-  E.mineBehaviour = function () {
-    E.distance = Math.sqrt(
-      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
-    );
-    if (E.distance < 40 * screenratio && E.HP > 0) {
-      E.HP = 0;
-      if (player.shield[0] >= 2) player.shield[0] -= 2;
-      else if (player.shield[0] == 1) {
-        player.shield[0] -= 1;
-        player.HP[0] -= 1;
+    if (E.target != "none") {
+      E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+      if (E.playerDistance > 900 * screenratio || E.target.HP[1] <= 0) {
+        if (E.acceleration <= 99) E.acceleration += 1;
+        else E.acceleration = 100;
+        E.randomDirX = E.target.x - E.x;
+        E.randomDirY = E.target.y - E.y;
+        E.target = "none";
+        E.speed = E.defaultSpeed;
+        E.randomDirCDcounter = 120;
+      } else if (E.playerDistance < 650 * screenratio) {
+        if (E.acceleration >= 1) E.acceleration -= 1;
+        else E.acceleration = 0;
+        if (!E.attackCD && E.bullets == undefined) {
+          E.attackCDstart();
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              player
+            )
+          );
+        } else if (!E.attackCD) {
+          E.attackCDstart();
+          for (let i = 0; i < E.bullets; i++) {
+            enemyBulletList.push(
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                player
+              )
+            );
+            await sleep(200);
+          }
+        }
       } else {
-        player.HP[0] -= 2;
+        if (E.acceleration <= 99) E.acceleration += 1;
+        else E.acceleration = 100;
+        E.speed = E.defaultSpeed;
       }
-      checkDeath(E);
+    } else {
+      if (E.acceleration <= 99) E.acceleration += 1;
+      else E.acceleration = 100;
     }
   };
   E.ignoreBehaviour = function () {
@@ -459,49 +482,6 @@ function enemyCharacter(E) {
           E.turretAngle[i] = E.angle;
         }
       }
-    }
-  };
-  E.chaseBehaviour = function () {
-    E.playerDistance = Math.sqrt(
-      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-    );
-    if (
-      E.playerDistance < 800 * screenratio &&
-      E.target == "none" &&
-      player.HP[1] > 0
-    ) {
-      E.target = player;
-    }
-    if (E.target != "none") {
-      E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-      if (E.playerDistance > 900 * screenratio || E.target.HP[1] == 0) {
-        if (E.acceleration <= 99) E.acceleration += 1;
-        else E.acceleration = 100;
-        E.randomDirX = E.target.x - E.x;
-        E.randomDirY = E.target.y - E.y;
-        E.target = "none";
-        E.speed = E.defaultSpeed;
-        E.randomDirCDcounter = 120;
-      } else if (E.playerDistance < 650 * screenratio) {
-        if (E.acceleration >= 1) E.acceleration -= 1;
-        else E.acceleration = 0;
-        if (!E.attackCD) {
-          E.attackCDstart();
-          enemyBulletList.push(
-            enemyBullet(
-              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
-              player
-            )
-          );
-        }
-      } else {
-        if (E.acceleration <= 99) E.acceleration += 1;
-        else E.acceleration = 100;
-        E.speed = E.defaultSpeed;
-      }
-    } else {
-      if (E.acceleration <= 99) E.acceleration += 1;
-      else E.acceleration = 100;
     }
   };
   E.spawnBehaviour = function () {
@@ -573,6 +553,37 @@ function enemyCharacter(E) {
   E.collideBehaviour = function () {
     E.target = player;
     E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+  };
+  E.orbitBehaviour = function () {
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
+    if (E.distance < 500 * screenratio && !E.inOrbit) {
+      E.inOrbit = true;
+      E.arrival = true;
+      E.attackCDstart();
+    } else if (E.inOrbit && !E.attackCD) {
+      E.attackCDstart();
+      enemyBulletList.push(
+        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
+      );
+    }
+  };
+  E.mineBehaviour = function () {
+    E.distance = Math.sqrt(
+      Math.pow(player.earthX - E.x, 2) + Math.pow(player.earthY - E.y, 2)
+    );
+    if (E.distance < 40 * screenratio && E.HP > 0) {
+      E.HP = 0;
+      if (player.shield[0] >= 2) player.shield[0] -= 2;
+      else if (player.shield[0] == 1) {
+        player.shield[0] -= 1;
+        player.HP[0] -= 1;
+      } else {
+        player.HP[0] -= 2;
+      }
+      checkDeath(E);
+    }
   };
   E.checkBehaviour = function () {
     switch (E.behaviour) {

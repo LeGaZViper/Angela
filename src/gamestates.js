@@ -1,7 +1,7 @@
 //Start the game function | used in: main menu
 function startTheGame() {
   //Reset Progress
-  if (ship.level > 0) {
+  if (playerData.level > 0) {
     if (
       confirm(
         "Are you sure you want to start a new game?\nYour current progress will reset!"
@@ -43,14 +43,10 @@ function loseTheGame() {
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheLevel() {
   player.inWeaponActivation = false;
-  ship.level += 1;
+  playerData.level += 1;
   player.HP = [player.maxHP[0], player.maxHP[1]];
-  player.shield = [ship.maxShield[0], ship.maxShield[1]];
-  player.shipLives = 3;
-  if (ship.level % 3 == 0) {
-    ship.companions++;
-    player.setCompanions(ship.companions);
-  }
+  player.shield = [player.maxShield[0], player.maxShield[1]];
+  player.playerLives = 3;
   saveLocalStorage();
   weaponActivation.inicialize();
   randomDropList = [];
@@ -69,25 +65,7 @@ function nextLevel() {
   //gameAudio.playMusic();
   UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
-  levels_handler.level = levelLayout["level_" + ship.level];
+  levels_handler.level = levelLayout["level_" + playerData.level];
   levels_handler.levelCreator();
   spawn();
-}
-
-function saveLocalStorage() {
-  localStorage.ship = JSON.stringify(ship);
-}
-
-function resetLocalStorage() {
-  let sound = ship.soundMultiplier;
-  let music = ship.musicMultiplier;
-  ship = new DefaultSetup();
-  ship.soundMultiplier = sound;
-  ship.musicMultiplier = music;
-  localStorage.ship = JSON.stringify(ship);
-}
-
-function newLocalStorage() {
-  ship = new DefaultSetup();
-  localStorage.ship = JSON.stringify(ship);
 }
