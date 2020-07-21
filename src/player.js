@@ -97,6 +97,7 @@ var player = {
     this.killedCD = false;
     this.opacity = [1, 1];
     this.damageOpacity = [0, 0];
+    this.piercingCD = false;
   },
   update: function () {
     //speed calculation
@@ -314,6 +315,7 @@ var player = {
       ctx.restore();
     }
   },
+
   attackCDstart: async function () {
     this.attackCD = true;
     await sleep(this.weapon.cooldown);
@@ -333,6 +335,11 @@ var player = {
     if (playerEntity == 1 && event == "bullet") this.hitCD = false;
     else if (playerEntity == 1 && event == "collision")
       this.collisionCD = false;
+  },
+  piercingHitCDstart: async function (cd) {
+    this.piercingCD = true;
+    await sleep(cd);
+    this.piercingCD = false;
   },
   shieldRecharge: function () {
     if (this.shieldCD[0] > 0) {

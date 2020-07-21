@@ -88,15 +88,18 @@ function gameLoop() {
           !player.collisionCD &&
           player.weapon.name != "INVICIBLEDRILL"
         ) {
-          if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
-          else {
-            player.HP[1] += -(eb.damage - player.shield[1]);
-            player.shield[1] = 0;
+          if (!eb.piercing || !player.piercingCD) {
+            if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
+            else {
+              player.HP[1] += -(eb.damage - player.shield[1]);
+              player.shield[1] = 0;
+            }
+            gameAudio.playSound("player_hit");
+            if (!eb.piercing) eb.killed = true;
+            else player.piercingHitCDstart(eb.hitCD);
+            player.hitCD = true;
+            player.hitCDstart(1, "bullet");
           }
-          gameAudio.playSound("player_hit");
-          if (!eb.piercing) eb.killed = true;
-          player.hitCD = true;
-          player.hitCDstart(1, "bullet");
         }
       } else if (distance < 20 && eb.target == "none") {
         if (player.shield[0] >= eb.damage) player.shield[0] -= eb.damage;

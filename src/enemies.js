@@ -266,18 +266,20 @@ function enemyCharacter(E) {
       E.height
     );
     //damaged enemy ship
-    ctx.globalAlpha = E.opacity;
-    ctx.drawImage(
-      E.sprite,
-      0 + E.animationX,
-      E.heightOnPic,
-      E.widthOnPic,
-      E.heightOnPic,
-      -E.width / 2,
-      -E.height / 2,
-      E.width,
-      E.height
-    );
+    if (E.opacity > 0) {
+      ctx.globalAlpha = E.opacity;
+      ctx.drawImage(
+        E.sprite,
+        0 + E.animationX,
+        E.heightOnPic,
+        E.widthOnPic,
+        E.heightOnPic,
+        -E.width / 2,
+        -E.height / 2,
+        E.width,
+        E.height
+      );
+    }
     ctx.restore();
     if (E.turrets > 0) {
       for (let i = 0; i < E.turrets; i++) {
@@ -486,7 +488,7 @@ function enemyCharacter(E) {
   };
   E.spawnBehaviour = function () {
     if (E.spawning) E.spawnSummonTick();
-    if (E.type != "mail")
+    if (E.type != "mail" && E.type != "betaMail")
       E.spawnDistance = Math.sqrt(
         Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
       );
@@ -498,14 +500,14 @@ function enemyCharacter(E) {
       E.spawns < E.maximumSpawns
     ) {
       E.spawning = true;
-      if (E.type == "mail") E.speed = 0;
+      if (E.type == "mail" || E.type == "betaMail") E.speed = 0;
       E.attackCDstart();
     } else {
       E.speed = E.defaultSpeed;
     }
   };
   E.spawnSummonTick = function () {
-    if (E.type == "mail") {
+    if (E.type == "mail" || E.type == "betaMail") {
       E.spawnAnimationIndex += 1;
       if (E.spawnAnimationIndex == 60 / E.spawnAnimationFPS) {
         E.spawnAnimationIndex = 0;
@@ -517,13 +519,28 @@ function enemyCharacter(E) {
             enemyCharacter({
               randomDirCDcounter: 120,
               source: E,
-              x: E.x,
-              y: E.y,
+              x: E.x + (Math.random() - 0.5) * 50,
+              y: E.y + (Math.random() - 0.5) * 50,
               randomDrop: false,
               spawnCD: 0,
               ...EnemyData[E.bulletType],
             })
           );
+          if (E.type == "betaMail") {
+            enemyList.push(
+              enemyCharacter({
+                randomDirCDcounter: 120,
+                source: E,
+                x: E.x + (Math.random() - 0.5) * 50,
+                y: E.y + (Math.random() - 0.5) * 50,
+                randomDrop: false,
+                spawnCD: 0,
+                ...EnemyData[E.bulletType],
+              })
+            );
+            E.spawns++;
+            levels_handler.level.total += 1;
+          }
           E.spawns++;
           levels_handler.level.total += 1;
           E.animationX = 0;

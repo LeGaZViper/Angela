@@ -47,6 +47,7 @@ function winTheLevel() {
   player.HP = [player.maxHP[0], player.maxHP[1]];
   player.shield = [player.maxShield[0], player.maxShield[1]];
   player.playerLives = 3;
+  player.setCompanions(Math.floor(playerData.level / 3));
   saveLocalStorage();
   weaponActivation.inicialize();
   randomDropList = [];
@@ -62,7 +63,10 @@ function winTheLevel() {
 }
 
 function nextLevel() {
-  //gameAudio.playMusic();
+  if (playerData.level % 3 == 0) {
+    gameAudio.stopMusic();
+    gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
+  }
   UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
   levels_handler.level = levelLayout["level_" + playerData.level];

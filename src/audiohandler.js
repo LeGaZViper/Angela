@@ -15,6 +15,8 @@ const gameAudio = {
   typing_angela: new Audio("./audio/typing_angela.ogg"),
   typing_angela_2: new Audio("./audio/typing_angela_2.ogg"),
   music_level_0: new Audio("./audio/music_level_0.ogg"),
+  music_level_1: new Audio("./audio/music_level_1.ogg"),
+  music_level_2: new Audio("./audio/music_level_2.ogg"),
   music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   setVolume: function () {
@@ -34,6 +36,8 @@ const gameAudio = {
     this.typing_angela.volume = 0.01 * playerData.soundMultiplier;
     this.typing_angela_2.volume = 0.01 * playerData.soundMultiplier;
     this.music_level_0.volume = 0.03 * playerData.musicMultiplier;
+    this.music_level_1.volume = 0.03 * playerData.musicMultiplier;
+    this.music_level_2.volume = 0.03 * playerData.musicMultiplier;
     this.music_menu.volume = 0.05 * playerData.musicMultiplier;
   },
   playSound: function (sound) {
