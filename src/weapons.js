@@ -158,7 +158,7 @@ function randomDrop(R) {
   R.animationX = 0;
   R.animationIndex = 0;
   R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 8) + 1;
+  let choose = Math.floor(Math.random() * 9) + 1;
   for (let index in WeaponData) {
     if (choose == WeaponData[index].index) {
       R.name = WeaponData[index].name;
@@ -300,6 +300,10 @@ function bullet(B, numberOfBullets) {
       B.diry = Math.sin(
         player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
       );
+      break;
+    case 8: //WAVE
+      B.dirx = Math.cos(player.angle - Math.PI / 2);
+      B.diry = Math.sin(player.angle - Math.PI / 2);
       break;
   }
   B.hitBoxWidth = (B.width / 3) * 2;

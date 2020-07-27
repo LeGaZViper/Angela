@@ -430,7 +430,7 @@ function enemyCharacter(E) {
                 player
               )
             );
-            await sleep(200);
+            await sleep(E.bulletDelay);
           }
         }
       } else {

@@ -237,7 +237,7 @@ function gameLoop() {
               if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
               if (b.name == "CHAKRAM" && b.speed >= 5) {
                 b.speed -= 5;
-              } else {
+              } else if (b.name == "CHAKRAM") {
                 b.speed = 0;
               }
             }

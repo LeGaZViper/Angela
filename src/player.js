@@ -220,8 +220,8 @@ var player = {
     this.y -= camera.offSetY;
 
     this.companionsIndex.forEach((_random, i) => {
-      this.companionsIndex[i]++;
-      if (this.companionsIndex[i] == 360) this.companionsIndex[i] = 0;
+      this.companionsIndex[i] += 1.5;
+      if (this.companionsIndex[i] >= 360) this.companionsIndex[i] = 0;
     });
     let companionDistance = this.weapon.name != "INVICIBLEDRILL" ? 50 : 100;
     for (let i = 0; i < this.companions; i++) {
