@@ -68,7 +68,6 @@ function inicializeGame() {
   bulletList = [];
   enemyList = [];
   enemyBulletList = [];
-  randomDropList = [];
   lootCube.active = false;
   lootCube.nextSpawn = 1300;
   weaponActivation.inicialize();
@@ -127,7 +126,7 @@ function loadTheGame(callback) {
   }
   scale();
   playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 6;
+  playerData.level = 8;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();

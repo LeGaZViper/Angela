@@ -63,6 +63,7 @@ var weaponActivation = {
         canvas.width / 2 - 50 * screenratio,
         canvas.height / 6
       );
+      ctx.beginPath();
       ctx.arc(
         canvas.width / 2 + 175 * screenratio,
         canvas.height / 6 - 15 * screenratio,
@@ -71,6 +72,7 @@ var weaponActivation = {
         (this.timerIndex / this.defaultTimerIndex) * 2 * Math.PI,
         false
       );
+
       let colorHPbar_1 = parseInt(
         (this.timerIndex / this.defaultTimerIndex) * 255
       ).toString(16);
@@ -78,6 +80,8 @@ var weaponActivation = {
       ctx.strokeStyle = "#FF" + colorHPbar_1 + colorHPbar_1;
       ctx.lineWidth = 10;
 
+      ctx.stroke();
+      ctx.closePath();
       ctx.textAlign = "left";
       ctx.font = `bold ${60 * screenratio}px Consolas`;
       ctx.fillStyle = "#FFFD07";
@@ -146,58 +150,6 @@ var weaponActivation = {
     }
   },
 };
-
-var randomDropList = [];
-function randomDrop(R) {
-  R.width = 75 * screenratio;
-  R.height = 75 * screenratio;
-  R.hitBoxWidth = (R.width / 3) * 2;
-  R.hitBoxHeight = (R.height / 3) * 2;
-  R.hitBoxX = R.x - R.hitBoxWidth / 2;
-  R.hitBoxY = R.y - R.hitBoxHeight / 2;
-  R.animationX = 0;
-  R.animationIndex = 0;
-  R.timeIndex = 0;
-  let choose = Math.floor(Math.random() * 9) + 1;
-  for (let index in WeaponData) {
-    if (choose == WeaponData[index].index) {
-      R.name = WeaponData[index].name;
-    }
-  }
-  R.update = function () {
-    R.x += -player.xspeed - camera.offSetX;
-    R.y += -player.yspeed - camera.offSetY;
-    R.hitBoxX = R.x - R.hitBoxWidth / 2;
-    R.hitBoxY = R.y - R.hitBoxHeight / 2;
-    R.timeIndex++;
-    R.animationIndex++;
-
-    if (R.timeIndex == 200) {
-      R.timeIndex = 0;
-      R.animationIndex = 0;
-    }
-    if (R.timeIndex < 50 && R.animationIndex == 10) {
-      R.animationX += 150;
-      R.animationIndex = 0;
-    } else if (R.timeIndex >= 50) {
-      R.animationX = 0;
-    }
-  };
-  R.render = function () {
-    ctx.drawImage(
-      sprite.UI_drop,
-      R.animationX,
-      0,
-      150,
-      150,
-      R.x - R.width / 2,
-      R.y - R.height / 2,
-      R.width,
-      R.height
-    );
-  };
-  return R;
-}
 
 //bullets
 var bulletList = [];

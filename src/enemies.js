@@ -47,6 +47,25 @@ async function checkDeath(enemy, bulletType = "none") {
     if (enemy.source != undefined) {
       enemy.source.spawns--;
     }
+    if (enemy.randomDrop) {
+      let choice = Math.floor(Math.random() * 9) + 1;
+      for (let index in WeaponData) {
+        if (choice == WeaponData[index].index) {
+          choice = WeaponData[index].name;
+        }
+      }
+      if (!player.inWeaponActivation) {
+        gameAudio.playSound("player_getDrop");
+        weaponActivation.currentWord =
+          weaponActivation.wordList[
+            Math.floor(Math.random() * weaponActivation.wordList.length)
+          ];
+        weaponActivation.currentlyTyped = "";
+        weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
+        weaponActivation.weaponName = choice;
+        player.inWeaponActivation = true;
+      }
+    }
     if (enemy.behaviour == "loot") {
       lootCube.active = false;
       lootCube.nextSpawn = levelTimer + 1300;
@@ -58,6 +77,7 @@ async function checkDeath(enemy, bulletType = "none") {
     }
   }
 }
+
 var enemyBulletList = [];
 function enemyBullet(B, target = "none") {
   try {
@@ -379,9 +399,6 @@ function enemyCharacter(E) {
       if (E.deathAnimation_index == E.deathAnimationFrames) {
         E.killed = true;
         E.deathAnimation = false;
-        if (E.randomDrop) {
-          randomDropList.push(randomDrop({ x: E.x, y: E.y }));
-        }
       }
     }
   };

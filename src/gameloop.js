@@ -250,35 +250,6 @@ function gameLoop() {
         e.deathAnimation_render();
       }
     });
-    //update & render of random drops
-    randomDropList.forEach((r, i) => {
-      r.update();
-      if (
-        r.x > -50 &&
-        r.x < canvas.width + 50 &&
-        r.y > -50 &&
-        r.y < canvas.height + 50
-      ) {
-        r.render();
-        if (collides(r, player)) {
-          if (!player.inWeaponActivation) {
-            gameAudio.playSound("player_getDrop");
-            randomDropList.splice(i, 1);
-            weaponActivation.currentWord =
-              weaponActivation.wordList[
-                Math.floor(Math.random() * weaponActivation.wordList.length)
-              ];
-            weaponActivation.currentlyTyped = "";
-            console.log(
-              `Trying to activate ${r.name} with word ${weaponActivation.currentWord}`
-            );
-            player.inWeaponActivation = true;
-            weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
-            weaponActivation.weaponName = r.name;
-          }
-        }
-      }
-    });
     damageNumberList.forEach((num, index) => {
       num.update_render();
       if (num.ttl <= 0) {

@@ -50,7 +50,6 @@ function winTheLevel() {
   player.setCompanions(Math.floor(playerData.level / 3));
   saveLocalStorage();
   weaponActivation.inicialize();
-  randomDropList = [];
   dialogueList = [];
   DialogueData.dialoguesUsed = [];
   textIndex = NaN;

@@ -191,4 +191,25 @@ var levelLayout = {
     cube1: ["cube", 6, 500, 3],
     icosphere1: ["icosphere", 6, 500, 3],
   },
+  level_7: {
+    waves: 3,
+    startTime: 100,
+    betaMail1: ["betaMail", 6, 1500, 1],
+    watcher1: ["watcher", 2, 2000, 1],
+
+    cube1: ["cube", 30, 500, 2],
+    betaWatcher1: ["betaWatcher", 2, 3000, 2],
+
+    betaCube1: ["betaCube", 4, 3],
+    betaIcosphere1: ["betaIcosphere", 4, 3],
+    star1: ["star", 3, 3],
+    betaWatcher2: ["betaWatcher", 3, 3000, 3],
+  },
+  level_8: {
+    waves: 3,
+    startTime: 3000,
+    cube1: ["cube", 1, 1, 1],
+    cube2: ["cube", 1, 1, 2],
+    cube3: ["cube", 1, 1, 3],
+  },
 };
