@@ -563,7 +563,7 @@ function enemyCharacter(E) {
           E.animationX = 0;
         }
       }
-    } else if (E.type == "star") {
+    } else if (E.type == "star" || E.type == "betaStar") {
       for (let i = 0; i < 7 && E.spawns < E.maximumSpawns; i++) {
         let angle = (Math.PI / 4) * i;
         enemyList.push(

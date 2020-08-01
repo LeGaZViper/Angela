@@ -9,7 +9,9 @@ const sprite = {
   enemy_mail: new Image(),
   enemy_betaMail: new Image(),
   enemy_star: new Image(),
+  enemy_betaStar: new Image(),
   enemy_starPiece: new Image(),
+  enemy_betaStarPiece: new Image(),
   enemy_miniArrow: new Image(),
   enemy_betaMiniArrow: new Image(),
   enemy_corruptedCloud: new Image(),
@@ -97,7 +99,7 @@ const DialogueData = {
   },
   level_3: {
     text: [
-      "I've found another defense node to help us out.",
+      "I've constructed a defense node to help you out.",
       "It's very primitive with no intelligence whatsover,#but it can copy your attacks and movement.",
       "This is bad... I'm sensing some heavy bitpower#heading our way.",
       "These units are powerful enough# to bypass my encryption.",
@@ -173,11 +175,11 @@ const DialogueData = {
   level_5: {
     text: [
       "CRITICAL: FIREWALL UNRESPONDING",
-      "...they've gain control of my command panel...#there's no longer a way out.",
+      "...they've gain control of my control panel...#there's no longer a way out.",
       "...it's only a matter of time before they# get to us...",
       "Why are you still trying?#We've already lost...",
       "There's no point in fighting a lost battle...",
-      "Gosh... Okay... I can try to overload the command panel# to gain a brief control of it.",
+      "Gosh... Okay... I can try to overload the control panel.",
       "But it'll take a long time#considering our computing power.",
     ],
     color: ["orange", "white", "white", "white", "white", "white", "white"],
@@ -187,7 +189,7 @@ const DialogueData = {
   },
   level_6: {
     text: [
-      "I've found another defense node to aid you!",
+      "I've got another defense node to aid you!",
       "This won't be a pretty fight...",
       "Even if we don't make it,#I'm glad you stood on my side.",
       "ANOMALY DETECTED: 2 ADMINISTRATORS ONLINE",
@@ -202,22 +204,23 @@ const DialogueData = {
     text: [
       "Pitiful.#Do you realize who you are dealing with, Angela?",
       "Your actions shall meet consequences.",
-      "The panel is being overloaded.#We should be able to force it to restart#this way.",
-      "Who are you talking t...#Oh, this is unexpected.",
+      "WARNING: SECTOR 4 UNRESPONSIVE",
+      "The control panel is being overloaded.#We should be able to force it to restart#this way.",
+      "Who are you communicating with...",
     ],
-    color: ["red", "red", "white", "red"],
-    triggerType: ["wave", "after", "wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [2, 0, 3, 2],
+    color: ["red", "red", "orange", "white", "red"],
+    triggerType: ["wave", "after", "after", "wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [2, 0, 1, 3, 2],
     ttl: [200, 200, 200, 200],
   },
   level_8: {
     text: [
-      "This is just a big misunderstanding.#I don't know how this happend.",
-      "But don't worry. We won't issue any charges if you",
+      "What are you doing here?#I haven't seen one of your kind in ages!",
+      "Lower your aggresion#and I might consider getting you back to",
       "Do not listen to him!#He's trying to trick you to side with him!",
-      "Just focus on our objective!",
-      "I underestimated your skills, Angela...",
-      "...Wiping its memory,#isolating its adapters,#confusing its target system...#... in a such short time.",
+      "Focus on our objective!",
+      "I underestimated your skills, Angela.",
+      "Wiping its memory,#isolating its adapters,#confusing its target system...#in a such short time.",
       "Poor thing. I wonder if it knows",
       "DO NOT LIST",
       "LISTEN",
@@ -249,6 +252,16 @@ const DialogueData = {
     ], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
     triggerIndex: [240, 0, 1, 2, 2, 4, 5, 6, 7, 8],
     ttl: [200, 1, 200, 200, 200, 200, 1, 1, 1, 200],
+  },
+  level_9: {
+    text: [
+      "Scavanged enough resources for#probably the last defense node.",
+      "I won't be able to find more#because the network is almost unresponsive now.",
+    ],
+    color: ["white", "white"],
+    triggerType: ["wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerIndex: [240, 0],
+    ttl: [200, 200],
   },
 };
 
@@ -887,6 +900,30 @@ const EnemyData = {
     deathAnimationFPS: 8,
     deathAnimationFrames: 4,
   },
+  betaStar: {
+    type: "betaStar",
+    behaviour: "spawn",
+    sprite: sprite.enemy_betaStar,
+    rotation: false,
+    widthOnPic: 120,
+    heightOnPic: 120,
+    attackCDvalue: 5000,
+    bulletType: "betaStarPiece",
+    maximumSpawns: 16,
+    spawns: 0,
+    collisionDamage: 25,
+    width: 140,
+    height: 140,
+    speed: 3,
+    defaultSpeed: 3,
+    HP: 50,
+    maxHP: 50,
+    animation: true,
+    animationFrames: 4,
+    animationFPS: 6,
+    deathAnimationFPS: 8,
+    deathAnimationFrames: 4,
+  },
   starPiece: {
     type: "starPiece",
     behaviour: "collide",
@@ -901,6 +938,22 @@ const EnemyData = {
     defaultSpeed: 4,
     HP: 1,
     maxHP: 1,
+    animation: false,
+  },
+  betaStarPiece: {
+    type: "betaStarPiece",
+    behaviour: "collide",
+    collisionDamage: 30,
+    sprite: sprite.enemy_betaStarPiece,
+    rotation: true,
+    widthOnPic: 40,
+    heightOnPic: 40,
+    width: 50,
+    height: 50,
+    speed: 5,
+    defaultSpeed: 5,
+    HP: 3,
+    maxHP: 3,
     animation: false,
   },
   corruptedCloud: {
