@@ -31,7 +31,7 @@ class Dialogue {
     } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
     }
-    if (this.color == "grey") ctx.font = 40 * screenratio + "px Glitch";
+    if (this.color == "#adadad") ctx.font = 30 * screenratio + "px Consolas";
     else ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
     ctx.globalAlpha = this.opacity;
@@ -45,7 +45,7 @@ class Dialogue {
     if (this.timeToType == 0) {
       if (this.color == "white") {
         gameAudio.playSound("typing_angela");
-      } else if (this.color == "grey") {
+      } else if (this.color == "#adadad") {
         gameAudio.playSound("typing_angela_2");
       } else if (this.color == "red") {
         gameAudio.playSound("typing_enemy");

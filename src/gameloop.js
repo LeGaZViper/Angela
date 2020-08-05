@@ -272,6 +272,21 @@ function gameLoop() {
       loading.style.display = "none";
     });
   }
+  if (playerData.level == 11 && levelTimer == 2000) {
+    gameAudio.stopMusic();
+    if (!gameAudio.player_LASER_loop.paused) {
+      gameAudio.player_LASER_loop.pause();
+      player.LASER_firing = false;
+    }
+    player.inWeaponActivation = false;
+    DialogueData.dialoguesUsed = [];
+    player.inicialize(0, 50);
+    camera.inicialize();
+    background.inicialize();
+    backgroundParticles.inicialize();
+    environment.inicialize();
+    getMenu(2);
+  }
   //call for the next iteration of gameLoop
   ctx.closePath();
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);

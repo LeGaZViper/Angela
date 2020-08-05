@@ -246,8 +246,8 @@ var backgroundParticles = {
           0,
           el.widthOnPic,
           el.heightOnPic,
-          -el.width / 2,
-          -el.height / 2,
+          -Math.round(el.width / 2),
+          -Math.round(el.height / 2),
           el.width,
           el.height
         );

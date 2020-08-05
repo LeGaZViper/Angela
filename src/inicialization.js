@@ -126,7 +126,7 @@ function loadTheGame(callback) {
   }
   scale();
   playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 9;
+  playerData.level = 11;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();

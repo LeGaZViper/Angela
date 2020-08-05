@@ -56,8 +56,9 @@ const sprite = {
 };
 
 const DialogueData = {
-  dialoguesUsed: [],
+  dialoguesUsed: [], //array that saves used dialogue
   level_0: {
+    //Text to be displayed (# is used as a line break)
     text: [
       "Thank God, you're still operational...#Listen... we are in danger!",
       "My name is Angela. I'm...",
@@ -66,9 +67,15 @@ const DialogueData = {
       "Please, just... try to hold them off.#I'll think of something to help us out.",
       "You're doing good...#I'll try to block as many as I can!#The rest needs to be deleted ASAP.",
     ],
-    color: ["white", "white", "orange", "white", "white", "white"],
-    triggerType: ["timer", "after", "after", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 0, 1, 2, 3, 3],
+    color: ["white", "white", "orange", "white", "white", "white"], //color of the displayed text (colors distinguish characters)
+    /*
+    Trigger types
+    timer - level timer
+    wave - start of a wave
+    after - goes right after a specific dialogue index
+    */
+    triggerType: ["timer", "after", "after", "after", "after", "wave"],
+    triggerIndex: [240, 0, 1, 2, 3, 3], //specific trigger value (e.g. timer => 240 frames)
     ttl: [200, 1, 200, 200, 200, 200], //ttl - time to stay on the screen after typing is done
   },
   level_1: {
@@ -81,7 +88,7 @@ const DialogueData = {
       "WARNING: FIREWALL INTEGRITY 60%",
     ],
     color: ["white", "white", "white", "white", "white", "orange"],
-    triggerType: ["timer", "after", "after", "wave", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["timer", "after", "after", "wave", "after", "wave"],
     triggerIndex: [240, 0, 1, 2, 3, 3],
     ttl: [200, 200, 200, 200, 200, 200],
   },
@@ -93,7 +100,7 @@ const DialogueData = {
       "Just a little longer!#Gosh, I wish drivers weren't so complicated.",
     ],
     color: ["white", "white", "orange", "white"],
-    triggerType: ["timer", "after", "wave", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["timer", "after", "wave", "wave"],
     triggerIndex: [240, 0, 2, 3],
     ttl: [200, 200, 200, 200],
   },
@@ -107,7 +114,7 @@ const DialogueData = {
       "CRITICAL: FIREWALL INTEGRITY 10%",
     ],
     color: ["white", "white", "white", "white", "white", "orange"],
-    triggerType: ["timer", "after", "wave", "after", "after", "wave"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["timer", "after", "wave", "after", "after", "wave"],
     triggerIndex: [240, 0, 2, 2, 3, 3],
     ttl: [200, 200, 200, 200, 200, 200],
   },
@@ -168,7 +175,7 @@ const DialogueData = {
       "after",
       "after",
       "after",
-    ], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    ],
     triggerIndex: [240, 0, 1, 2, 3, 4, 5, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15],
     ttl: [200, 1, 200, 1, 100, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100],
   },
@@ -183,7 +190,7 @@ const DialogueData = {
       "But it'll take a long time#considering our computing power.",
     ],
     color: ["orange", "white", "white", "white", "white", "white", "white"],
-    triggerType: ["timer", "after", "after", "wave", "after", "wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["timer", "after", "after", "wave", "after", "wave", "after"],
     triggerIndex: [240, 0, 1, 2, 3, 3, 5],
     ttl: [200, 200, 200, 200, 200, 200, 200],
   },
@@ -196,7 +203,7 @@ const DialogueData = {
       "Anomaly? What is this nonsense...",
     ],
     color: ["white", "white", "white", "yellow", "white"],
-    triggerType: ["timer", "after", "after", "wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["timer", "after", "after", "wave", "after"],
     triggerIndex: [240, 0, 1, 3, 3],
     ttl: [200, 200, 200, 200, 200],
   },
@@ -209,22 +216,22 @@ const DialogueData = {
       "Who are you communicating with...",
     ],
     color: ["red", "red", "orange", "white", "red"],
-    triggerType: ["wave", "after", "after", "wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    triggerType: ["wave", "after", "after", "wave", "after"],
     triggerIndex: [2, 0, 1, 3, 2],
     ttl: [200, 200, 200, 200],
   },
   level_8: {
     text: [
-      "What are you doing here?#I haven't seen one of your kind in ages!",
-      "Lower your aggresion#and I might consider getting you back to",
+      "What are you doing here?#You're not supposed to be here.",
+      "Lower your aggression#and I might consider getting you back to",
       "Do not listen to him!#He's trying to trick you to side with him!",
       "Focus on our objective!",
       "I underestimated your skills, Angela.",
       "Wiping its memory,#isolating its adapters,#confusing its target system...#in a such short time.",
-      "Poor thing. I wonder if it knows",
-      "DO NOT LIST",
-      "LISTEN",
-      "listen to him!",
+      "Poor thing. I wonder if it knows what's goi",
+      "CAN YOU JUST S",
+      "SHuT ThE Fu*-&!_@",
+      "stop already?!",
     ],
     color: [
       "red",
@@ -235,7 +242,7 @@ const DialogueData = {
       "red",
       "red",
       "white",
-      "grey",
+      "#adadad",
       "white",
     ],
     triggerType: [
@@ -249,19 +256,76 @@ const DialogueData = {
       "after",
       "after",
       "after",
-    ], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
+    ],
     triggerIndex: [240, 0, 1, 2, 2, 4, 5, 6, 7, 8],
     ttl: [200, 1, 200, 200, 200, 200, 1, 1, 1, 200],
   },
   level_9: {
     text: [
       "Scavanged enough resources for#probably the last defense node.",
-      "I won't be able to find more#because the network is almost unresponsive now.",
+      "I won't be able to find more,#because the network is almost#unresponsive now.",
+      "You're in no position to disobey#what has been set, Angela.",
+      "Surrender now and your punishment#won't result in a deletion.",
+      "Let me do MY justice and then we can talk.",
+      "You speak of justice, yet you're #seeking it through vengeance.",
+      "You weren't there!#You didn't see what they did!",
     ],
-    color: ["white", "white"],
-    triggerType: ["wave", "after"], //timer - level timer, wave - start of a wave, after - goes right after a specific dialogue index
-    triggerIndex: [240, 0],
-    ttl: [200, 200],
+    color: ["white", "white", "red", "red", "white", "red", "white"],
+    triggerType: ["timer", "after", "wave", "after", "after", "wave", "after"],
+    triggerIndex: [240, 0, 2, 2, 3, 3, 5],
+    ttl: [200, 200, 200, 200, 200, 200, 200],
+  },
+  level_10: {
+    text: [
+      "Your record says more than enough.",
+      "'Kidnapped, beaten to unconsciousness then",
+      "I'VE TOLD YOU TO STOP!",
+      "'hook penetrated upper body pain",
+      "DO YOU HAVE ANY IDEA HOW",
+      "I'lL KiLl yOuuuuuU&@!<",
+      "THIS HURTS ME?!",
+      "'after 6 hits by a baseball bat and 3 knife stabs",
+      "THESE PEOPL",
+      "FuCKeRS ARe aBouT To Be DOnE fOr.",
+    ],
+    color: [
+      "red",
+      "red",
+      "white",
+      "red",
+      "white",
+      "#adadad",
+      "white",
+      "red",
+      "white",
+      "#adadad",
+    ],
+    triggerType: [
+      "timer",
+      "after",
+      "after",
+      "wave",
+      "after",
+      "after",
+      "after",
+      "wave",
+      "after",
+      "after",
+    ],
+    triggerIndex: [240, 0, 1, 2, 3, 4, 5, 3, 7, 8],
+    ttl: [200, 1, 200, 1, 1, 1, 200, 1, 1, 200],
+  },
+  level_11: {
+    text: [
+      "Even cold murderers are allowed# to have a fair trial.",
+      "TheY MadE a liVinG pinata#ouT OFf me aNd yOU#stIlL Defend TheM?!",
+      "I wIlL MaKe Sure noNe oF# these baStarDs surVive!",
+      "WARNING: CONTROL PANEL UNRESPONDING#SYSTEM RESTARTING...",
+    ],
+    color: ["red", "#adadad", "#adadad", "yellow"],
+    triggerType: ["timer", "after", "after", "timer"],
+    triggerIndex: [240, 0, 1, 1500],
+    ttl: [200, 200, 200, 200],
   },
 };
 
