@@ -66,7 +66,6 @@ function nextLevel() {
     gameAudio.stopMusic();
     gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
   }
-  UI.levelDisplayCheck = true;
   levels_handler.waveCounter = 1;
   levels_handler.level = levelLayout["level_" + playerData.level];
   levels_handler.levelCreator();

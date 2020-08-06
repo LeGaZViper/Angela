@@ -56,7 +56,8 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
-  gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
+  if (playerData.level < 12)
+    gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
   xMousePos =
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
@@ -128,7 +129,7 @@ function loadTheGame(callback) {
   }
   scale();
   playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 11;
+  playerData.level = 12;
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();

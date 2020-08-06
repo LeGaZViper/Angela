@@ -263,23 +263,13 @@ var UI = {
       this.pauseMenu_b1,
     ];
     this.beforeTheBossMenuTimer = 0;
-    this.beforeTheBossMenuWindow = {
-      width: 550 * screenratio,
-      height: 250 * screenratio,
-      x: canvas.width / 2 - 275 * screenratio,
-      y: canvas.height / 2 - 150 * screenratio,
-      text: "GAME OVER!",
-      textSize: 30 * screenratio,
-      opacity: 1,
-      color: ["#4C4C4C", "black", "white"],
-    };
 
     this.beforeTheBossMenu_b1 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
       x: canvas.width / 2 - 265 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "NO",
+      text: "QUIT",
       textSize: 30 * screenratio,
       button: "NO",
       opacity: 1,
@@ -291,14 +281,13 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "YES",
+      text: "CONNECT",
       textSize: 30 * screenratio,
       button: "YES",
       opacity: 1,
       color: ["grey", "black", "white"],
     };
     this.beforeTheBossMenu = [
-      this.beforeTheBossMenuWindow,
       this.beforeTheBossMenu_b1,
       this.beforeTheBossMenu_b2,
     ];
@@ -389,11 +378,7 @@ var UI = {
       this.mainMenu_b1.opacity = 0.5;
     }
     menuArray.forEach((element) => {
-      if (
-        this.currentMenu != 5 ||
-        this.beforeTheBossMenuTimer > 100 ||
-        element.button == undefined
-      ) {
+      if (this.currentMenu != 5 || this.beforeTheBossMenuTimer > 4560) {
         ctx.fillStyle = element.color[0];
         ctx.strokeStyle = element.color[1];
         if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
@@ -651,7 +636,10 @@ var UI = {
     }
     dialogueHandler();
     if (dialogueList.length > 0) {
-      if (dialogueList[0].color == "white")
+      if (
+        dialogueList[0].color == "white" ||
+        dialogueList[0].color == "#adadad"
+      )
         backgroundParticles.angelaDialogueBubble.visible = true;
       else backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.01);
@@ -678,6 +666,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          gameAudio.playSound("click");
           if (index.button == "NEW GAME") {
             startTheGame();
           } else if (index.button == "CONTINUE") {
@@ -701,6 +690,7 @@ var UI = {
           index.button != undefined
         ) {
           if (index.button == "BACK") {
+            gameAudio.playSound("click");
             this.currentMenu = 0;
           }
           if (index.button == "sound") {
@@ -736,6 +726,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          gameAudio.playSound("click");
           if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
           } else if (index.button == "RETRY") {
@@ -754,6 +745,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          gameAudio.playSound("click");
           if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
           }
@@ -770,6 +762,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          gameAudio.playSound("click");
           if (index.button == "BACKTOMENU") {
             this.currentMenu = 0;
             player.inWeaponActivation = false;
@@ -795,6 +788,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          gameAudio.playSound("click");
           if (index.button == "NO") {
             this.beforeTheBossMenuTimer = 0;
             this.currentMenu = 0;
@@ -930,7 +924,7 @@ var UI = {
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         } else {
-          if (index.text != "GAME OVER!") index.color[0] = this.UIColors.fill;
+          index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }

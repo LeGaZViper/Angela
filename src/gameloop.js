@@ -19,7 +19,7 @@ function gameLoop() {
   //menu sector
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (UI.currentMenu != 4) background.update_render();
+    if (UI.currentMenu < 4) background.update_render();
     if (UI.currentMenu == 5) {
       dialogueHandler();
       if (dialogueList.length > 0) {
@@ -280,6 +280,7 @@ function gameLoop() {
       spawnAnEnemy("lootCube");
     }
     UI.game_render();
+    if (playerData.level >= 11) lastLevelHandler();
   }
   let loading = document.getElementById("loading");
   if (loading.style.display != "none") {
@@ -287,24 +288,9 @@ function gameLoop() {
       loading.style.display = "none";
     });
   }
-  if (playerData.level == 11 && levelTimer == 100) {
-    levelTimer++;
-    gameAudio.stopMusic();
-    if (!gameAudio.player_LASER_loop.paused) {
-      gameAudio.player_LASER_loop.pause();
-      player.LASER_firing = false;
-    }
-    saveLocalStorage();
-    player.inWeaponActivation = false;
-    DialogueData.dialoguesUsed = [];
-    player.inicialize(0, 50);
-    camera.inicialize();
-    background.inicialize();
-    backgroundParticles.inicialize();
-    environment.inicialize();
-    getMenu(5);
-  }
+
   //call for the next iteration of gameLoop
   ctx.closePath();
+  gameAudio.checkPausedSounds();
   if (checkRefreshRate()) requestAnimationFrame(gameLoop);
 }

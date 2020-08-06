@@ -1,8 +1,14 @@
 //spawner of enemies
 async function spawn() {
-  if (levelTimer == 0) {
-    UI.levelDisplay.text =
-      Math.floor(playerData.level / 3) + 1 + "-" + ((playerData.level % 3) + 1);
+  if (levelTimer == 0 && playerData.level != 11) {
+    UI.levelDisplayCheck = true;
+    if (playerData.level > 12)
+      UI.levelDisplay.text =
+        Math.floor(playerData.level / 3) +
+        1 +
+        "-" +
+        ((playerData.level % 3) + 1);
+    else UI.levelDisplay.text = "??-??";
     for (let i = 1; i <= 400; i++) {
       if (i <= 100) {
         UI.levelDisplay.opacity = i / 100;
@@ -261,3 +267,40 @@ var levelLayout = {
     cube3: ["cube", 1, 1, 3],
   },
 };
+
+function lastLevelHandler() {
+  if (playerData.level == 11) {
+    backgroundParticles.angelaCorrupted.visible = true;
+    backgroundParticles.angela.visible = false;
+    if (levelTimer == 2170) {
+      environment.angelaJumpscare.activated = true;
+      //gameAudio.playSound("angelaJumpscare");
+    } else if (levelTimer == 2200) {
+      levelTimer++;
+      gameAudio.stopMusic();
+      if (!gameAudio.player_LASER_loop.paused) {
+        gameAudio.player_LASER_loop.pause();
+        player.LASER_firing = false;
+      }
+      saveLocalStorage();
+      player.inWeaponActivation = false;
+      textIndex = NaN;
+      DialogueData.dialoguesUsed = [];
+      player.inicialize(0, 50);
+      camera.inicialize();
+      background.inicialize();
+      backgroundParticles.inicialize();
+      environment.inicialize();
+      getMenu(5);
+    }
+  } else if (playerData.level == 12) {
+    backgroundParticles.angelaCorrupted.visible = true;
+    backgroundParticles.angela.visible = false;
+    if (levelTimer == 1) gameAudio.playMusic("music_level_4");
+    if (levelTimer == 1000) {
+      gameAudio.stopMusic();
+      gameAudio.playMusic("music_level_4_2");
+      gameAudio.currentMusic.currentTime = 3.4;
+    }
+  }
+}

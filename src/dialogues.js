@@ -48,7 +48,7 @@ class Dialogue {
       } else if (this.color == "#adadad") {
         gameAudio.playSound("typing_angela_2");
       } else if (this.color == "red") {
-        gameAudio.playSound("typing_enemy");
+        gameAudio.playSound("typing_infernus");
       } else {
         if (this.color == "orange") environment.warningLong_activation();
         gameAudio.playSound("typing_system");
@@ -83,9 +83,8 @@ function dialogueHandler() {
     else if (dialogueLevel.triggerType[i] == "timer") {
       if (dialogueLevel.triggerIndex[i] == levelTimer && !UI.inMenu)
         pushDialogue(i);
-      else if (dialogueLevel.triggerIndex[i] == UI.beforeTheBossMenuTimer) {
+      else if (dialogueLevel.triggerIndex[i] == UI.beforeTheBossMenuTimer)
         pushDialogue(i);
-      }
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
         pushDialogue(i);
