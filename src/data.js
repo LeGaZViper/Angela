@@ -327,6 +327,20 @@ const DialogueData = {
     triggerIndex: [240, 0, 1, 1500],
     ttl: [200, 200, 200, 200],
   },
+  level_12: {
+    text: ["Even cold murderers are allowed# to have a fair trial."],
+    color: ["red"],
+    triggerType: ["timer"],
+    triggerIndex: [240],
+    ttl: [200],
+  },
+  beforeTheBoss: {
+    text: ["Hello just testing.", "again testing"],
+    color: ["red", "white"],
+    triggerType: ["timer", "after"],
+    triggerIndex: [180, 0],
+    ttl: [200, 200],
+  },
 };
 
 //Default database for ingame weapons | used in: first inicialization
@@ -466,7 +480,7 @@ const WeaponData = {
     cooldown: 300,
     duration: 600,
     piercing: true,
-    hitCD: 200,
+    hitCD: 150,
     ttl: 300,
   },
   NEONTHROWER: {
@@ -1034,8 +1048,8 @@ const EnemyData = {
     height: 120,
     speed: 2,
     defaultSpeed: 2,
-    HP: 50,
-    maxHP: 50,
+    HP: 100,
+    maxHP: 100,
     animation: true,
     animationFrames: 4,
     animationFPS: 6,
@@ -1064,8 +1078,8 @@ const EnemyData = {
     height: 300,
     speed: 1,
     defaultSpeed: 1,
-    HP: 50,
-    maxHP: 50,
+    HP: 100,
+    maxHP: 100,
     animation: false,
     deathAnimationFPS: 8,
     deathAnimationFrames: 5,

@@ -62,7 +62,8 @@ class Dialogue {
 
 var textIndex;
 function pushDialogue(index) {
-  let dialogueLevel = DialogueData["level_" + playerData.level];
+  if (!UI.inMenu) var dialogueLevel = DialogueData["level_" + playerData.level];
+  else var dialogueLevel = DialogueData["beforeTheBoss"];
   textIndex = index;
   DialogueData.dialoguesUsed[index] = true;
   dialogueList.push(
@@ -75,11 +76,16 @@ function pushDialogue(index) {
 }
 
 function dialogueHandler() {
-  let dialogueLevel = DialogueData["level_" + playerData.level];
+  if (!UI.inMenu) var dialogueLevel = DialogueData["level_" + playerData.level];
+  else var dialogueLevel = DialogueData["beforeTheBoss"];
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
     if (DialogueData.dialoguesUsed[i]) continue;
     else if (dialogueLevel.triggerType[i] == "timer") {
-      if (dialogueLevel.triggerIndex[i] == levelTimer) pushDialogue(i);
+      if (dialogueLevel.triggerIndex[i] == levelTimer && !UI.inMenu)
+        pushDialogue(i);
+      else if (dialogueLevel.triggerIndex[i] == UI.beforeTheBossMenuTimer) {
+        pushDialogue(i);
+      }
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
       if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
         pushDialogue(i);

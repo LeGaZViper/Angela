@@ -74,7 +74,9 @@ function inicializeGame() {
   canvas.style.cursor = "none";
   UI.inMenu = false;
   player.inicialize(0, 50);
-  player.setCompanions(Math.floor(playerData.level / 3));
+  if (playerData.level < 9)
+    player.setCompanions(Math.floor(playerData.level / 3));
+  else player.setCompanions(3);
   enemySpawnList = [];
   levels_handler.waveCounter = 1;
   levels_handler.level = levelLayout["level_" + playerData.level];

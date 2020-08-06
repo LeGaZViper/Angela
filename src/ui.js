@@ -262,6 +262,46 @@ var UI = {
       this.pauseMenu_b0,
       this.pauseMenu_b1,
     ];
+    this.beforeTheBossMenuTimer = 0;
+    this.beforeTheBossMenuWindow = {
+      width: 550 * screenratio,
+      height: 250 * screenratio,
+      x: canvas.width / 2 - 275 * screenratio,
+      y: canvas.height / 2 - 150 * screenratio,
+      text: "GAME OVER!",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["#4C4C4C", "black", "white"],
+    };
+
+    this.beforeTheBossMenu_b1 = {
+      width: 250 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 265 * screenratio,
+      y: canvas.height / 2 + 40 * screenratio,
+      text: "NO",
+      textSize: 30 * screenratio,
+      button: "NO",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.beforeTheBossMenu_b2 = {
+      width: 250 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 + 15 * screenratio,
+      y: canvas.height / 2 + 40 * screenratio,
+      text: "YES",
+      textSize: 30 * screenratio,
+      button: "YES",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.beforeTheBossMenu = [
+      this.beforeTheBossMenuWindow,
+      this.beforeTheBossMenu_b1,
+      this.beforeTheBossMenu_b2,
+    ];
 
     this.levelDisplay = {
       x: canvas.width / 2,
@@ -335,54 +375,69 @@ var UI = {
       this.gameOverMenu,
       this.youWinMenu,
       this.pauseMenu,
+      this.beforeTheBossMenu,
     ];
     this.cursorIndex = 0;
   },
-  menu_render: function (menu) {
+  menu_render: function () {
+    let menuArray = this.menuList[this.currentMenu];
     this.hover();
+    if (this.currentMenu == 5) this.beforeTheBossMenuTimer++;
     if (playerData.level > 0) {
       this.mainMenu_b1.opacity = 1;
     } else {
       this.mainMenu_b1.opacity = 0.5;
     }
-    menu.forEach((index) => {
-      ctx.fillStyle = index.color[0];
-      ctx.strokeStyle = index.color[1];
-      if (index.textSize != undefined) ctx.lineWidth = 6 * screenratio;
-      ctx.globalAlpha = index.opacity;
-      if (index.sprite == undefined && index.textOnly == undefined) {
-        ctx.strokeRect(index.x, index.y, index.width, index.height);
-        ctx.fillRect(index.x, index.y, index.width, index.height);
-      }
-      ctx.fillStyle = index.color[2];
-      if (index.text != undefined) {
-        ctx.font = index.textSize + "px FFFFORWA";
-        ctx.textAlign = "center";
-        ctx.strokeText(
-          index.text,
-          index.x + index.width / 2,
-          index.y + index.height / 2 + index.textSize / 2 + index.height / 14
-        );
-        ctx.fillText(
-          index.text,
-          index.x + index.width / 2,
-          index.y + index.height / 2 + index.textSize / 2 + index.height / 14
-        ); //text on screen
-      }
-      if (index.sprite != undefined) {
-        ctx.globalAlpha = 1;
-        if (index.button == undefined) {
-          ctx.drawImage(
-            index.sprite,
-            0,
-            0,
-            index.width / screenratio,
-            index.height / screenratio,
-            index.x,
-            index.y,
-            index.width,
-            index.height
+    menuArray.forEach((element) => {
+      if (
+        this.currentMenu != 5 ||
+        this.beforeTheBossMenuTimer > 100 ||
+        element.button == undefined
+      ) {
+        ctx.fillStyle = element.color[0];
+        ctx.strokeStyle = element.color[1];
+        if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
+        ctx.globalAlpha = element.opacity;
+        if (element.sprite == undefined && element.textOnly == undefined) {
+          ctx.strokeRect(element.x, element.y, element.width, element.height);
+          ctx.fillRect(element.x, element.y, element.width, element.height);
+        }
+        ctx.fillStyle = element.color[2];
+        if (element.text != undefined) {
+          ctx.font = element.textSize + "px FFFFORWA";
+          ctx.textAlign = "center";
+          ctx.strokeText(
+            element.text,
+            element.x + element.width / 2,
+            element.y +
+              element.height / 2 +
+              element.textSize / 2 +
+              element.height / 14
           );
+          ctx.fillText(
+            element.text,
+            element.x + element.width / 2,
+            element.y +
+              element.height / 2 +
+              element.textSize / 2 +
+              element.height / 14
+          ); //text on screen
+        }
+        if (element.sprite != undefined) {
+          ctx.globalAlpha = 1;
+          if (element.button == undefined) {
+            ctx.drawImage(
+              element.sprite,
+              0,
+              0,
+              element.width / screenratio,
+              element.height / screenratio,
+              element.x,
+              element.y,
+              element.width,
+              element.height
+            );
+          }
         }
       }
     });
@@ -729,6 +784,27 @@ var UI = {
           }
         }
       });
+    } else if (this.currentMenu == 5 && this.inMenu) {
+      this.beforeTheBossMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          if (index.button == "NO") {
+            this.beforeTheBossMenuTimer = 0;
+            this.currentMenu = 0;
+          } else if (index.button == "YES") {
+            playerData.level += 1;
+            this.beforeTheBossMenuTimer = 0;
+            continueTheGame();
+          }
+        }
+      });
     }
   },
   hover: function () {
@@ -835,6 +911,26 @@ var UI = {
           index.color[2] = this.UIColors.hoverFontFill;
         } else {
           if (index.text != "GAME PAUSED.") index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
+    } else if (this.currentMenu == 5) {
+      this.beforeTheBossMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos - 5,
+            y: yMousePos - 5,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          if (index.text != "GAME OVER!") index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }

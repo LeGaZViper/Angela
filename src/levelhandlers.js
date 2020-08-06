@@ -221,20 +221,41 @@ var levelLayout = {
   level_9: {
     waves: 3,
     startTime: 3000,
-    cube1: ["cube", 1, 1, 1],
-    cube2: ["cube", 1, 1, 2],
-    cube3: ["cube", 1, 1, 3],
+    betaWatcher1: ["betaWatcher", 5, 2500, 1],
+    betaCube1: ["betaCube", 15, 1000, 1],
+    betaMail1: ["betaMail", 3, 1500, 1],
+    betaIcosphere1: ["betaIcosphere", 6, 1000, 1],
+
+    carrier1: ["carrier", 5, 2500, 2],
+    betaCube2: ["betaCube", 10, 1000, 2],
+    betaIcosphere2: ["betaIcosphere", 10, 1000, 2],
+
+    carrier2: ["carrier", 6, 2500, 3],
+    betaMail2: ["betaMail", 6, 1500, 3],
+    betaCube3: ["betaCube", 10, 1000, 3],
+    betaStar1: ["betaStar", 5, 1500, 3],
   },
   level_10: {
     waves: 3,
     startTime: 3000,
-    cube1: ["cube", 1, 1, 1],
-    cube2: ["cube", 1, 1, 2],
-    cube3: ["cube", 1, 1, 3],
+    carrier1: ["carrier", 5, 2000, 1],
+    betaCube1: ["betaCube", 20, 1000, 1],
+    betaIcosphere: ["betaIcosphere", 5, 1000, 1],
+
+    corruptedCloud1: ["corruptedCloud", 5, 2000, 2],
+    betaCube2: ["betaCube", 5, 1500, 2],
+    carrier2: ["carrier", 3, 2000, 2],
+
+    corruptedCloud2: ["corruptedCloud", 20, 1000, 3],
   },
   level_11: {
     waves: 1,
-    startTime: 3000,
+    startTime: 10000,
+    cube1: ["cube", 1, 1, 1],
+  },
+  level_12: {
+    waves: 3,
+    startTime: 5000,
     cube1: ["cube", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],

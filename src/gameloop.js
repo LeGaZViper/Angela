@@ -20,8 +20,22 @@ function gameLoop() {
   if (UI.inMenu) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (UI.currentMenu != 4) background.update_render();
+    if (UI.currentMenu == 5) {
+      dialogueHandler();
+      if (dialogueList.length > 0) {
+        gameAudio.changeVolumeOfMusic(0.01);
+        dialogueList = dialogueList.filter(
+          (index) => index.ttl > 0 && index.opacity > 0
+        );
+        dialogueList.forEach((dia) => {
+          dia.update_render();
+        });
+      } else {
+        gameAudio.changeVolumeOfMusic(0.03);
+      }
+    }
     environment.update_render();
-    UI.menu_render(UI.menuList[UI.currentMenu]);
+    UI.menu_render();
   } else if (levels_handler.level.total == 0) {
     if (levels_handler.level.waves >= levels_handler.waveCounter) {
       dialogueList = [];
@@ -234,7 +248,8 @@ function gameLoop() {
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;
               }
-              if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD);
+              if (!e.piercingCD)
+                e.piercingDamageCDstart(b.hitCD / (player.companions + 1));
               if (b.name == "CHAKRAM" && b.speed >= 5) {
                 b.speed -= 5;
               } else if (b.name == "CHAKRAM") {
@@ -272,12 +287,14 @@ function gameLoop() {
       loading.style.display = "none";
     });
   }
-  if (playerData.level == 11 && levelTimer == 2000) {
+  if (playerData.level == 11 && levelTimer == 100) {
+    levelTimer++;
     gameAudio.stopMusic();
     if (!gameAudio.player_LASER_loop.paused) {
       gameAudio.player_LASER_loop.pause();
       player.LASER_firing = false;
     }
+    saveLocalStorage();
     player.inWeaponActivation = false;
     DialogueData.dialoguesUsed = [];
     player.inicialize(0, 50);
@@ -285,7 +302,7 @@ function gameLoop() {
     background.inicialize();
     backgroundParticles.inicialize();
     environment.inicialize();
-    getMenu(2);
+    getMenu(5);
   }
   //call for the next iteration of gameLoop
   ctx.closePath();
