@@ -261,8 +261,8 @@ var levelLayout = {
   },
   level_12: {
     waves: 3,
-    startTime: 5000,
-    cube1: ["cube", 1, 1, 1],
+    startTime: 10,
+    angela: ["angela", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],
   },
