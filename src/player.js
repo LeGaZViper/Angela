@@ -316,11 +316,6 @@ var player = {
     }
   },
 
-  attackCDstart: async function () {
-    this.attackCD = true;
-    await sleep(this.weapon.cooldown);
-    this.attackCD = false;
-  },
   hitCDstart: async function (playerEntity, event) {
     if (playerEntity == 1) this.shieldCD[1] = 300;
     else this.shieldCD[0] = 300;
@@ -335,11 +330,6 @@ var player = {
     if (playerEntity == 1 && event == "bullet") this.hitCD = false;
     else if (playerEntity == 1 && event == "collision")
       this.collisionCD = false;
-  },
-  piercingHitCDstart: async function (cd) {
-    this.piercingCD = true;
-    await sleep(cd);
-    this.piercingCD = false;
   },
   shieldRecharge: function () {
     if (this.shieldCD[0] > 0) {

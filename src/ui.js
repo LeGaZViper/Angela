@@ -595,11 +595,15 @@ var UI = {
         );
         ctx.rotate(e.angle);
 
-        if (e.behaviour != "collide")
-          ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
-        else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
-        ctx.restore();
+        try {
+          if (e.behaviour != "collide")
+            ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
+          else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
+        } catch (err) {
+          ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
+        }
       }
+      ctx.restore();
     });
 
     ctx.fillStyle = "#DCE6EE";
@@ -643,11 +647,11 @@ var UI = {
         backgroundParticles.angelaDialogueBubble.visible = true;
       else backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.01);
-      dialogueList = dialogueList.filter(
-        (index) => index.ttl > 0 && index.opacity > 0
-      );
-      dialogueList.forEach((dia) => {
-        dia.update_render();
+      dialogueList.forEach((el, index) => {
+        el.update_render();
+        if (el.ttl <= 0 && el.opacity <= 0) {
+          dialogueList.splice(index, 1);
+        }
       });
     } else {
       backgroundParticles.angelaDialogueBubble.visible = false;

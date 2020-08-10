@@ -79,7 +79,7 @@ async function checkDeath(enemy, bulletType = "none") {
 }
 
 var enemyBulletList = [];
-function enemyBullet(B, target = "none") {
+function enemyBullet(B, target = "none", xman = 0, yman = 0) {
   try {
     gameAudio.playSound(B.sound);
   } catch (err) {
@@ -97,6 +97,9 @@ function enemyBullet(B, target = "none") {
   if (target == "none") {
     B.dirx = player.earthX - B.x;
     B.diry = player.earthY - B.y;
+  } else if (target == "custom") {
+    B.dirx = xman - B.x;
+    B.diry = yman - B.y;
   } else {
     B.dirx = target.x + target.xspeed * 20 - B.x;
     B.diry = target.y + target.yspeed * 20 - B.y;
@@ -185,8 +188,10 @@ function enemyCharacter(E) {
   E.update = function () {
     E.checkBehaviour();
     if (
-      Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
-      Math.abs(E.y - player.earthY) > player.spaceSize / 2
+      (Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
+        Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
+      E.behaviour != "angela_phase2" &&
+      E.behaviour != "angela_phase3"
     ) {
       //check for miss position
       E.randomDirCDCounter = 300;
@@ -227,6 +232,19 @@ function enemyCharacter(E) {
         let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
         E.xspeed = ratio * E.randomDirX;
         E.yspeed = ratio * E.randomDirY;
+      } else if (
+        E.behaviour == "angela_phase2" ||
+        E.behaviour == "angela_phase3"
+      ) {
+        E.playerOrbitAngle -= 0.01;
+        E.x =
+          (canvas.width / 2) * Math.cos(E.playerOrbitAngle) + canvas.width / 2;
+        E.y =
+          (canvas.height / 2) * Math.sin(E.playerOrbitAngle) +
+          canvas.height / 2;
+        E.coordX = player.spaceSize / 2 + E.x - player.earthX;
+        E.coordY = player.spaceSize / 2 + E.y - player.earthY;
+        if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
       } else {
         E.randomDirCDcounter = 300;
         let ratio =
@@ -235,11 +253,12 @@ function enemyCharacter(E) {
         E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
       }
     }
-
-    E.x += E.xspeed - player.xspeed - camera.offSetX;
-    E.y += E.yspeed - player.yspeed - camera.offSetY;
-    E.coordX += E.xspeed;
-    E.coordY += E.yspeed;
+    if (E.behaviour != "angela_phase2" && E.behaviour != "angela_phase3") {
+      E.x += E.xspeed - player.xspeed - camera.offSetX;
+      E.y += E.yspeed - player.yspeed - camera.offSetY;
+      E.coordX += E.xspeed;
+      E.coordY += E.yspeed;
+    }
     E.hitBoxWidth = Math.abs(
       (E.width / 3) * 2 * Math.pow(Math.cos(E.angle), 2) +
         (E.height / 3) * 2 * Math.pow(Math.sin(E.angle), 2)
@@ -619,6 +638,43 @@ function enemyCharacter(E) {
       checkDeath(E);
     }
   };
+  E.angelaBehaviour1 = function () {
+    E.target = player;
+    E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+    E.playerDistance = Math.sqrt(
+      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
+    );
+    if (E.playerDistance < 650 * screenratio) {
+      if (E.acceleration >= 1) E.acceleration -= 1;
+      else E.acceleration = 0;
+      if (E.ammo > 0 && !E.attackCD) {
+        if (E.bulletType == "WAVE" && !E.weaponCD) {
+          let randomAngle = Math.random() * 22;
+          for (let i = 0; i < 12; i++) {
+            enemyBulletList.push(
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                "custom",
+                E.x + Math.cos((Math.PI / 6 + randomAngle / 6) * i),
+                E.y + Math.sin((Math.PI / 6 + randomAngle / 6) * i)
+              )
+            );
+            E.ammo -= 2;
+          }
+          setTimer(200, E, "weaponCD");
+        }
+      } else if (!E.attackCD) {
+        E.attackCDstart();
+        E.ammo = 100;
+        //Change weapon
+      }
+    } else {
+      if (E.acceleration <= 99) E.acceleration += 1;
+      else E.acceleration = 100;
+      E.speed = E.defaultSpeed;
+    }
+  };
+  E.angelaBehaviour2 = function () {};
   E.checkBehaviour = function () {
     switch (E.behaviour) {
       case "chase":
@@ -632,6 +688,12 @@ function enemyCharacter(E) {
         break;
       case "collide":
         E.collideBehaviour();
+        break;
+      case "angela_phase1":
+        E.angelaBehaviour1();
+        break;
+      case "angela_phase2":
+        E.angelaBehaviour2();
         break;
       case "mine":
         E.mineBehaviour();
@@ -654,7 +716,7 @@ function enemyCharacter(E) {
   for (let i = 0; i < E.turrets; i++) {
     E.turretAttackCDstart(i);
   }
-  E.attackCDstart();
+  if (playerData.level < 12) E.attackCDstart();
   E.hitCDstart = async function () {
     E.opacity = 0.71;
     for (let i = 70; i >= 0; i--) {

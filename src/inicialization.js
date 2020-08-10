@@ -161,3 +161,18 @@ function scale() {
   canvas.width = $(window).width();
   canvas.height = $(window).height();
 }
+
+var timerList = [];
+function setTimer(ms, reference, attributeName) {
+  let ticks = Math.round((ms * 60) / 1000);
+  reference[attributeName] = true;
+  timerList.push(new Timer(ticks, reference, attributeName));
+}
+
+class Timer {
+  constructor(value, reference, attributeName) {
+    this.value = value;
+    this.reference = reference;
+    this.attributeName = attributeName;
+  }
+}

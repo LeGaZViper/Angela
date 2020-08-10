@@ -110,7 +110,7 @@ function gameLoop() {
             }
             gameAudio.playSound("player_hit");
             if (!eb.piercing) eb.killed = true;
-            else player.piercingHitCDstart(eb.hitCD);
+            else setTimer(eb.hitCD, player, "piercingCD"); //player.piercingHitCDstart(eb.hitCD);
             player.hitCD = true;
             player.hitCDstart(1, "bullet");
           }
@@ -166,7 +166,8 @@ function gameLoop() {
           gameAudio.player_LASER_loop.play();
         }
         bulletList.push(bullet({ ...player.weapon }, player.weapon.bullets));
-        player.attackCDstart();
+        setTimer(player.weapon.cooldown, player, "attackCD");
+        //player.attackCDstart();
         for (let i = 0; i < player.companions; i++) {
           bulletList.push(
             bullet(
@@ -239,6 +240,7 @@ function gameLoop() {
                 e.spawning = true;
                 if (e.type == "mail") e.speed = 0;
                 e.attackCDstart();
+                //setTimer(e.attackCDvalue, e, "attackCD");
               }
               if (b.explosive && !b.explosion_triggered) b.explode();
               else if ((!b.piercing || !e.piercingCD) && !b.explosive) {
@@ -282,6 +284,14 @@ function gameLoop() {
     UI.game_render();
     if (playerData.level >= 11) lastLevelHandler();
   }
+  timerList.forEach((el, index) => {
+    if (el.value > 0) {
+      el.value--;
+    } else {
+      timerList.splice(index, 1);
+      el.reference[el.attributeName] = false;
+    }
+  });
   let loading = document.getElementById("loading");
   if (loading.style.display != "none") {
     $(document).ready(function () {
