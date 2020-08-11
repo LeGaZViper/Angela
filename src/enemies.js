@@ -652,23 +652,38 @@ function enemyCharacter(E) {
       else E.acceleration = 0;
       if (E.ammo > 0 && !E.attackCD) {
         if (E.bulletType == "COG" && !E.weaponCD) {
-          let randomAngle = Math.random() * 22;
+          let randomAngle = Math.random() * 0.5;
           for (let i = 0; i < 12; i++) {
             enemyBulletList.push(
               enemyBullet(
                 { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
                 "custom",
-                E.x + Math.cos((Math.PI / 6 + randomAngle / 6) * i),
-                E.y + Math.sin((Math.PI / 6 + randomAngle / 6) * i)
+                E.x + Math.cos((Math.PI / 6 + randomAngle) * i),
+                E.y + Math.sin((Math.PI / 6 + randomAngle) * i)
               )
             );
             E.ammo -= 2;
           }
           setTimer(200, E, "weaponCD");
+        } else if (E.bulletType == "ANGELABASIC" && !E.weaponCD) {
+          for (let i = 0; i < 8; i++) {
+            enemyBulletList.push(
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                "custom",
+                E.x + Math.cos(E.angle - Math.PI / 2 + 0.06 * i),
+                E.y + Math.sin(E.angle - Math.PI / 2 + 0.06 * i)
+              )
+            );
+            E.ammo -= 4;
+          }
+          setTimer(300, E, "weaponCD");
         }
       } else if (!E.attackCD) {
         E.attackCDstart();
         E.ammo = 100;
+        if (E.bulletType == "COG") E.bulletType = "ANGELABASIC";
+        else if (E.bulletType == "ANGELABASIC") E.bulletType = "COG";
         //Change weapon
       }
     } else {
