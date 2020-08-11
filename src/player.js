@@ -346,6 +346,10 @@ var player = {
     }
   },
   killedCDstart: async function () {
+    if (!gameAudio.player_LASER_loop.paused) {
+      gameAudio.player_LASER_loop.pause();
+      player.LASER_firing = false;
+    }
     this.playerLives--;
     this.opacity[1] = 0.5;
     await sleep(5000);

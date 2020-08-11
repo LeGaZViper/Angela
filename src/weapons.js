@@ -375,6 +375,7 @@ function bullet(B, numberOfBullets) {
   };
   B.explode = function () {
     B.explosion_triggered = true;
+    gameAudio.playSound("explosion");
     B.speed = 0;
     enemyList.forEach((e) => {
       if (

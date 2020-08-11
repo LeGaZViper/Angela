@@ -14,18 +14,7 @@ async function userInput(event, eventValue) {
     if (event.which == 1) {
       leftMouseDown = true;
     } else if (event.which == 3) rightMouseDown = true;
-    //release
-  } else if (eventValue == 2) {
-    if (event.which == 1) {
-      leftMouseDown = false;
-    } else if (event.which == 3) rightMouseDown = false;
-    else if (event.which == 122) {
-      if (!document.fullscreenElement) {
-        canvas.requestFullscreen().catch((err) => {
-          console.log(err);
-        });
-      } else document.exitFullscreen();
-    } else if (event.which == 27 && !UI.inMenu) {
+    else if (event.which == 27 && !UI.inMenu) {
       if (!gameAudio.player_LASER_loop.paused) {
         gameAudio.player_LASER_loop.pause();
         player.LASER_firing = false;
@@ -39,10 +28,26 @@ async function userInput(event, eventValue) {
     ) {
       weaponActivation.checkInput(event.key);
     }
+    //release
+  } else if (eventValue == 2) {
+    if (event.which == 1) {
+      leftMouseDown = false;
+    } else if (event.which == 3) rightMouseDown = false;
+    else if (event.which == 122) {
+      if (!document.fullscreenElement) {
+        canvas.requestFullscreen().catch((err) => {
+          console.log(err);
+        });
+      } else document.exitFullscreen();
+    }
   }
 }
 
 document.onfullscreenchange = function () {
   scale();
+  if (UI.inMenu) player.inicialize(0, 50);
+  background.inicialize();
+  backgroundParticles.inicialize();
+  environment.inicialize();
   UI.inicialize();
 };

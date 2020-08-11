@@ -139,10 +139,21 @@ var UI = {
       color: ["grey", "black", "white"],
     };
     this.optionsMenu_b4 = {
+      width: 300 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 150 * screenratio,
+      y: canvas.height / 2 + 25 * screenratio,
+      text: "FULLSCREEN",
+      button: "FULLSCREEN",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b5 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
       x: canvas.width / 2 - 125 * screenratio,
-      y: canvas.height / 2 + 25 * screenratio,
+      y: canvas.height / 2 + 100 * screenratio,
       text: "BACK",
       button: "BACK",
       textSize: 30 * screenratio,
@@ -161,6 +172,7 @@ var UI = {
       this.optionsMenu_b2,
       this.optionsMenu_b3,
       this.optionsMenu_b4,
+      this.optionsMenu_b5,
     ];
 
     this.gameOverMenuWindow = {
@@ -696,8 +708,13 @@ var UI = {
           if (index.button == "BACK") {
             gameAudio.playSound("click");
             this.currentMenu = 0;
-          }
-          if (index.button == "sound") {
+          } else if (index.button == "FULLSCREEN") {
+            if (!document.fullscreenElement) {
+              canvas.requestFullscreen().catch((err) => {
+                console.log(err);
+              });
+            } else document.exitFullscreen();
+          } else if (index.button == "sound") {
             if (index.text == "🡅" && playerData.soundMultiplier < 10) {
               playerData.soundMultiplier++;
             } else if (index.text == "🡇" && playerData.soundMultiplier > 0) {
@@ -710,9 +727,11 @@ var UI = {
             if (index.text == "🡅" && playerData.musicMultiplier < 10) {
               playerData.musicMultiplier++;
               gameAudio.changeVolumeOfMusic(0.03);
+              gameAudio.playSound("testMusic");
             } else if (index.text == "🡇" && playerData.musicMultiplier > 0) {
               playerData.musicMultiplier--;
               gameAudio.changeVolumeOfMusic(0.03);
+              gameAudio.playSound("testMusic");
             }
             this.optionsMenu_t3.text = playerData.musicMultiplier;
           }

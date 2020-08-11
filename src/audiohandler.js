@@ -1,15 +1,22 @@
 const gameAudio = {
   click: new Audio("./audio/click.ogg"),
+  testMusic: new Audio("./audio/testMusic.ogg"),
   player_BASIC: new Audio("./audio/player_BASIC.ogg"),
   player_CHAKRAM: new Audio("./audio/player_CHAKRAM.ogg"),
+  player_NEONTHROWER: new Audio("./audio/player_NEONTHROWER.ogg"),
+  player_WAVE: new Audio("./audio/player_WAVE.ogg"),
+  player_ROCKET: new Audio("./audio/player_ROCKET.ogg"),
   player_LASER_start: new Audio("./audio/player_LASER_start.ogg"),
   player_LASER_loop: new Audio("./audio/player_LASER_loop.ogg"),
   player_getDrop: new Audio("./audio/player_getDrop.ogg"),
+  explosion: new Audio("./audio/explosion.ogg"),
   player_hit: new Audio("./audio/player_hit.ogg"),
   enemy_hit: new Audio("./audio/enemy_hit.ogg"),
   enemy_death: new Audio("./audio/enemy_death.ogg"),
   enemy_BASIC: new Audio("./audio/enemy_BASIC.ogg"),
   enemy_MINIBASIC: new Audio("./audio/enemy_MINIBASIC.ogg"),
+  enemy_CLOUD: new Audio("./audio/enemy_CLOUD.ogg"),
+  enemy_COG: new Audio("./audio/enemy_COG.ogg"),
   system_warning: new Audio("./audio/system_warning.ogg"),
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_infernus: new Audio("./audio/typing_infernus.ogg"),
@@ -27,16 +34,23 @@ const gameAudio = {
   activatedSounds: [],
   setVolume: function () {
     this.click.volume = 0.02 * playerData.soundMultiplier;
+    this.testMusic.volume = 0.03 * playerData.musicMultiplier;
     this.player_BASIC.volume = 0.05 * playerData.soundMultiplier;
     this.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
+    this.player_NEONTHROWER.volume = 0.05 * playerData.soundMultiplier;
+    this.player_WAVE.volume = 0.05 * playerData.soundMultiplier;
+    this.player_ROCKET.volume = 0.03 * playerData.soundMultiplier;
     this.player_LASER_start.volume = 0.03 * playerData.soundMultiplier;
     this.player_LASER_loop.volume = 0.01 * playerData.soundMultiplier;
     this.player_getDrop.volume = 0.01 * playerData.soundMultiplier;
+    this.explosion.volume = 0.05 * playerData.soundMultiplier;
     this.player_hit.volume = 0.05 * playerData.soundMultiplier;
     this.system_warning.volume = 0.03 * playerData.soundMultiplier;
     this.enemy_hit.volume = 0.05 * playerData.soundMultiplier;
     this.enemy_death.volume = 0.05 * playerData.soundMultiplier;
     this.enemy_BASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.enemy_CLOUD.volume = 0.01 * playerData.soundMultiplier;
+    this.enemy_COG.volume = 0.01 * playerData.soundMultiplier;
     this.enemy_MINIBASIC.volume = 0.02 * playerData.soundMultiplier;
     this.typing_system.volume = 0.01 * playerData.soundMultiplier;
     this.typing_infernus.volume = 0.01 * playerData.soundMultiplier;
@@ -77,6 +91,7 @@ const gameAudio = {
     }
   },
   changeVolumeOfMusic: function (value) {
+    this.setVolume();
     try {
       this.currentMusic.volume = value * playerData.musicMultiplier;
     } catch (err) {

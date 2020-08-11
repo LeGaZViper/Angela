@@ -104,16 +104,22 @@ function enemyBullet(B, target = "none", xman = 0, yman = 0) {
     B.dirx = target.x + target.xspeed * 20 - B.x;
     B.diry = target.y + target.yspeed * 20 - B.y;
   }
+  B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
   B.hitBoxWidth = (B.width / 3) * 2;
   B.hitBoxHeight = (B.height / 3) * 2;
   B.update = function () {
+    if (B.rotationAnimation) {
+      B.angle += (B.rotationSpeed / 180) * Math.PI;
+      if (B.angle > 2 * Math.PI) {
+        B.angle = 0;
+      }
+    }
     let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
     B.xspeed = ratio * B.dirx;
     B.yspeed = ratio * B.diry;
 
     B.x += B.xspeed - player.xspeed - camera.offSetX;
     B.y += B.yspeed - player.yspeed - camera.offSetY;
-    B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
     B.hitBoxX = B.x - B.hitBoxWidth / 2;
     B.hitBoxY = B.y - B.hitBoxHeight / 2;
     B.calcTTL();
@@ -232,10 +238,7 @@ function enemyCharacter(E) {
         let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
         E.xspeed = ratio * E.randomDirX;
         E.yspeed = ratio * E.randomDirY;
-      } else if (
-        E.behaviour == "angela_phase2" ||
-        E.behaviour == "angela_phase3"
-      ) {
+      } else if (E.moveWithPlayer) {
         E.playerOrbitAngle -= 0.01;
         E.x =
           (canvas.width / 2) * Math.cos(E.playerOrbitAngle) + canvas.width / 2;
@@ -253,7 +256,7 @@ function enemyCharacter(E) {
         E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
       }
     }
-    if (E.behaviour != "angela_phase2" && E.behaviour != "angela_phase3") {
+    if (!E.moveWithPlayer) {
       E.x += E.xspeed - player.xspeed - camera.offSetX;
       E.y += E.yspeed - player.yspeed - camera.offSetY;
       E.coordX += E.xspeed;
@@ -648,7 +651,7 @@ function enemyCharacter(E) {
       if (E.acceleration >= 1) E.acceleration -= 1;
       else E.acceleration = 0;
       if (E.ammo > 0 && !E.attackCD) {
-        if (E.bulletType == "WAVE" && !E.weaponCD) {
+        if (E.bulletType == "COG" && !E.weaponCD) {
           let randomAngle = Math.random() * 22;
           for (let i = 0; i < 12; i++) {
             enemyBulletList.push(

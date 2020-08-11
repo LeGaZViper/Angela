@@ -50,7 +50,6 @@ function gameLoop() {
   } else {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     levelTimer++;
-    //Game part
     ctx.beginPath();
     camera.update();
     camera.check();
@@ -144,6 +143,10 @@ function gameLoop() {
       player.width = 75 * screenratio;
       player.height = 75 * screenratio;
       chooseWeapon("BASIC");
+      if (!gameAudio.player_LASER_loop.paused) {
+        gameAudio.player_LASER_loop.pause();
+        player.LASER_firing = false;
+      }
       player.weaponDuration--;
     } else if (player.weaponDuration > 0) player.weaponDuration--;
     if (leftMouseDown) {
