@@ -8,7 +8,7 @@ This simple game is about defending a motherboard from hostiles. Nothing special
 
 Written in: JavaScript
 
-Platform: PC Browser (IE not welcomed)
+Platform: PC Browser (IE not welcome)
 
 Libraries: JQuerry
 
