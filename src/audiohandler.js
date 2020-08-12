@@ -29,7 +29,7 @@ const gameAudio = {
   music_level_3: new Audio("./audio/music_level_3.ogg"),
   music_level_4: new Audio("./audio/music_level_4.ogg"),
   music_level_4_2: new Audio("./audio/music_level_4_2.ogg"),
-  music_menu: new Audio("./audio/music_menu.ogg"),
+  //music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   activatedSounds: [],
   setVolume: function () {
@@ -63,7 +63,7 @@ const gameAudio = {
     this.music_level_3.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4_2.volume = 0.03 * playerData.musicMultiplier;
-    this.music_menu.volume = 0.05 * playerData.musicMultiplier;
+    //this.music_menu.volume = 0.05 * playerData.musicMultiplier;
   },
   playSound: function (sound) {
     let copyAudio = this[sound].cloneNode();

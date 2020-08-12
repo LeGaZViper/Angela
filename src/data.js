@@ -3,7 +3,6 @@ const sprite = {
   enemy_cube: new Image(),
   enemy_betaCube: new Image(),
   enemy_looterCube: new Image(),
-  enemy_largeCube: new Image(),
   enemy_icosphere: new Image(),
   enemy_betaIcosphere: new Image(),
   enemy_mail: new Image(),
