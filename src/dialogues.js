@@ -13,7 +13,7 @@ class Dialogue {
     this.color = color;
     this.part = part;
   }
-  update_render = function () {
+  update_render() {
     if (!this.leadingRow || this.text.length < this.stringIndex) this.ttl--;
     if (this.ttl < 100 && this.ttl > 1 && this.opacity > 0)
       this.opacity = Math.floor((this.opacity - 0.02) * 100) / 100;
@@ -39,8 +39,8 @@ class Dialogue {
     ctx.strokeText(this.displayText.join(""), canvas.width / 2, this.y);
     ctx.fillStyle = this.color;
     ctx.fillText(this.displayText.join(""), canvas.width / 2, this.y);
-  };
-  typingSequence = function () {
+  }
+  typingSequence() {
     this.timeToType--;
     if (this.timeToType == 0) {
       if (this.color == "white") {
@@ -57,7 +57,7 @@ class Dialogue {
       this.timeToType = 5;
       this.stringIndex++;
     }
-  };
+  }
 }
 
 var textIndex;
