@@ -12,8 +12,10 @@ Platform: PC Browser (IE not welcomed)
 
 Libraries: JQuerry
 
-Software: VS Code, Blender, Paint.net
+Software: VS Code, Blender, Paint.net, sfxr
 
-Sound effects by: Kenney Vleugels (https://kenney.nl/)
+Some sound effects by: Kenney Vleugels (https://kenney.nl/)
 
-Music by: Chris Zabriskie (http://chriszabriskie.com/)
+Music by: Kevin MacLeod (https://incompetech.com/)
+Licensed under Creative Commons: By Attribution 3.0
+http://creativecommons.org/licenses/by/3.0/
