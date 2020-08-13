@@ -80,11 +80,13 @@ async function checkDeath(enemy, bulletType = "none") {
 
 var enemyBulletList = [];
 function enemyBullet(B, target = "none", xman = 0, yman = 0) {
-  try {
+  if (
+    B.x > -200 &&
+    B.x < canvas.width + 200 &&
+    B.y > -200 &&
+    B.y < canvas.height + 200
+  )
     gameAudio.playSound(B.sound);
-  } catch (err) {
-    console.log("Unable to find sound file for " + B.type);
-  }
   B.ttl = 300;
   B.target = target;
   B.killed = false;
@@ -785,6 +787,22 @@ function enemyCharacter(E) {
           E.manualUpdate = true;
           E.chargeRectX = player.x;
           E.chargeRectY = player.y;
+
+          setTimer(2000, E, "weaponCD");
+          setTimer(3500 * screenratio, E, "chargeEnd");
+        } else if (!E.weaponCD && E.chargeActive) {
+          E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
+          E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
+          E.coordX -= E.chargeXSpeed;
+          E.coordY -= E.chargeYSpeed;
+          if (!E.chargeEnd) {
+            E.ammo = 0;
+            E.manualUpdate = false;
+            E.chargeActive = false;
+            E.appearOpacity = 0;
+            E.aggressiveAppear();
+          }
+        } else {
           if (E.chargeSet == 0) {
             E.x = canvas.width;
             E.y = player.y;
@@ -806,21 +824,8 @@ function enemyCharacter(E) {
             E.chargeXSpeed = 0;
             E.chargeYSpeed = 20;
           }
-
-          setTimer(2000, E, "weaponCD");
-        } else if (!E.weaponCD && E.chargeActive) {
-          E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
-          E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
-          E.coordX -= E.chargeXSpeed;
-          E.coordY -= E.chargeYSpeed;
-          if (E.x < 0 || E.x > canvas.width || E.y < 0 || E.y > canvas.height) {
-            E.ammo = 0;
-            E.manualUpdate = false;
-            E.chargeActive = false;
-            E.appearOpacity = 0;
-            E.aggressiveAppear();
-          }
-        } else {
+          E.chargeRectX -= camera.offSetX;
+          E.chargeRectY -= camera.offSetY;
           ctx.globalAlpha = 0.1;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {

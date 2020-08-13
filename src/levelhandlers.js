@@ -295,7 +295,7 @@ function lastLevelHandler() {
       getMenu(5);
     }
   } else if (playerData.level == 12) {
-    backgroundParticles.angelaCorrupted.visible = true;
+    backgroundParticles.hole.visible = true;
     backgroundParticles.angela.visible = false;
     //if (levelTimer == 1) gameAudio.playMusic("music_level_4");
     if (levelTimer == 1000) {

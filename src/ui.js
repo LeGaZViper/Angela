@@ -542,13 +542,23 @@ var UI = {
         this.duration_panel.height
       );
     }
-    ctx.drawImage(
-      this.HPpanel.sprite,
-      this.HPpanel.x,
-      this.HPpanel.y,
-      this.HPpanel.width,
-      this.HPpanel.height
-    );
+    if (playerData.level < 12) {
+      ctx.drawImage(
+        this.HPpanel.sprite,
+        this.HPpanel.x,
+        this.HPpanel.y,
+        this.HPpanel.width,
+        this.HPpanel.height
+      );
+    } else {
+      ctx.drawImage(
+        sprite.UI_HPpanelError,
+        this.HPpanel.x,
+        this.HPpanel.y,
+        this.HPpanel.width,
+        this.HPpanel.height
+      );
+    }
     ctx.font = 13 * screenratio + "px FFFFORWA";
     ctx.strokeStyle = "#5C7CFF";
     ctx.fillStyle = "white";
@@ -654,7 +664,7 @@ var UI = {
     if (dialogueList.length > 0) {
       if (
         dialogueList[0].color == "white" ||
-        dialogueList[0].color == "#adadad"
+        (dialogueList[0].color == "#adadad" && playerData.level < 12)
       )
         backgroundParticles.angelaDialogueBubble.visible = true;
       else backgroundParticles.angelaDialogueBubble.visible = false;

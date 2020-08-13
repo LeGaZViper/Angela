@@ -17,6 +17,8 @@ const gameAudio = {
   enemy_MINIBASIC: new Audio("./audio/enemy_MINIBASIC.ogg"),
   enemy_CLOUD: new Audio("./audio/enemy_CLOUD.ogg"),
   enemy_COG: new Audio("./audio/enemy_COG.ogg"),
+  enemy_CORRUPTEDSHOT: new Audio("./audio/enemy_CORRUPTEDSHOT.ogg"),
+  enemy_UPLOAD: new Audio("./audio/enemy_CORRUPTEDSHOT.ogg"),
   system_warning: new Audio("./audio/system_warning.ogg"),
   typing_system: new Audio("./audio/typing_system.ogg"),
   typing_infernus: new Audio("./audio/typing_infernus.ogg"),
@@ -50,7 +52,9 @@ const gameAudio = {
     this.enemy_death.volume = 0.05 * playerData.soundMultiplier;
     this.enemy_BASIC.volume = 0.02 * playerData.soundMultiplier;
     this.enemy_CLOUD.volume = 0.01 * playerData.soundMultiplier;
+    this.enemy_UPLOAD.volume = 0.05 * playerData.soundMultiplier;
     this.enemy_COG.volume = 0.01 * playerData.soundMultiplier;
+    this.enemy_CORRUPTEDSHOT.volume = 0.01 * playerData.soundMultiplier;
     this.enemy_MINIBASIC.volume = 0.02 * playerData.soundMultiplier;
     this.typing_system.volume = 0.01 * playerData.soundMultiplier;
     this.typing_infernus.volume = 0.01 * playerData.soundMultiplier;

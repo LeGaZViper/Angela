@@ -221,6 +221,33 @@ var backgroundParticles = {
         }
       },
     };
+    this.hole = {
+      type: "HOLE",
+      sprite: sprite.UI_hole,
+      x: player.earthX + 2,
+      y: player.earthY,
+      widthOnPic: 250,
+      heightOnPic: 250,
+      width: 250 * screenratio,
+      height: 250 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 15,
+      visible: false,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex == 240) {
+          this.timeIndex = 0;
+        }
+        if (this.timeIndex < 8) {
+          this.animationX = this.widthOnPic;
+        } else if (this.timeIndex > 120 && this.timeIndex <= 128) {
+          this.animationX = this.widthOnPic * 2;
+        } else {
+          this.animationX = 0;
+        }
+      },
+    };
 
     this.angelaDialogueBubble = {
       type: "ANGELADIALOGUE",
@@ -256,6 +283,7 @@ var backgroundParticles = {
       this.angela,
       this.angelaDialogueBubble,
       this.angelaCorrupted,
+      this.hole,
     ];
   },
   update_render: function () {
