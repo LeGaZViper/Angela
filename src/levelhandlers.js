@@ -263,7 +263,7 @@ var levelLayout = {
   level_12: {
     waves: 3,
     startTime: 10,
-    angela: ["angela_phase1", 1, 1, 1],
+    angela: ["angela_phase2", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],
   },
@@ -297,11 +297,11 @@ function lastLevelHandler() {
   } else if (playerData.level == 12) {
     backgroundParticles.angelaCorrupted.visible = true;
     backgroundParticles.angela.visible = false;
-    if (levelTimer == 1) gameAudio.playMusic("music_level_4");
+    //if (levelTimer == 1) gameAudio.playMusic("music_level_4");
     if (levelTimer == 1000) {
       gameAudio.stopMusic();
       gameAudio.playMusic("music_level_4_2");
-      gameAudio.currentMusic.currentTime = 3.4;
+      gameAudio.currentMusic.currentTime = 3.1;
     }
   }
 }

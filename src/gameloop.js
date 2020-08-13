@@ -205,12 +205,14 @@ function gameLoop() {
           if (collides(e, player)) {
             if (!player.collisionCD && !player.hitCD && player.HP[1] > 0) {
               //player collision
-              if (e.HP > 1) {
-                e.HP--;
-                e.hitCDstart();
-              } else {
-                e.HP = 0;
-                checkDeath(e);
+              if (playerData.level < 12) {
+                if (e.HP > 1) {
+                  e.HP--;
+                  e.hitCDstart();
+                } else {
+                  e.HP = 0;
+                  checkDeath(e);
+                }
               }
               if (player.weapon.name != "INVICIBLEDRILL") {
                 player.collisionCD = true;

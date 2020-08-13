@@ -56,8 +56,7 @@ function collides_UI(a, b) {
 }
 
 function inicializeGame() {
-  if (playerData.level < 12)
-    gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
+  gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
   xMousePos =
     Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
   yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));

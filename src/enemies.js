@@ -171,9 +171,16 @@ function enemyCharacter(E) {
       await sleep(10);
     }
   };
+  E.aggressiveAppear = async function () {
+    for (let i = 1; i <= 100; i++) {
+      E.appearOpacity = i / 100;
+      await sleep(1);
+    }
+  };
   E.width *= screenratio;
   E.height *= screenratio;
   E.speed *= screenratio;
+  E.manualUpdate = false;
   E.defaultSpeed *= screenratio;
   E.coordX = player.spaceSize / 2 + E.x - player.earthX;
   E.coordY = player.spaceSize / 2 + E.y - player.earthY;
@@ -203,74 +210,78 @@ function enemyCharacter(E) {
   }
   E.update = function () {
     E.checkBehaviour();
-    if (
-      (Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
-        Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
-      E.behaviour != "angela_phase2" &&
-      E.behaviour != "angela_phase3"
-    ) {
-      //check for miss position
-      E.randomDirCDCounter = 300;
-      E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
-      E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
-      let ratio =
-        E.speed /
-        (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
-      E.xspeed = ratio * (player.earthX - E.x);
-      E.yspeed = ratio * (player.earthY - E.y);
-    } else {
-      if (E.behaviour == "ignore") {
+    if (!E.manualUpdate) {
+      if (
+        (Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
+          Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
+        E.behaviour != "angela_phase2" &&
+        E.behaviour != "angela_phase3"
+      ) {
+        //check for miss position
+        E.randomDirCDCounter = 300;
+        E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
+        E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
         let ratio =
           E.speed /
           (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
         E.xspeed = ratio * (player.earthX - E.x);
         E.yspeed = ratio * (player.earthY - E.y);
-      } else if (E.behaviour == "orbit") {
-        if (E.inOrbit) {
-          E.orbitAngle -= 0.01;
-
-          E.xspeed = E.speed * Math.cos(E.orbitAngle);
-          E.yspeed = E.speed * Math.sin(E.orbitAngle);
-        } else {
+      } else {
+        if (E.behaviour == "ignore") {
           let ratio =
             E.speed /
             (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
           E.xspeed = ratio * (player.earthX - E.x);
           E.yspeed = ratio * (player.earthY - E.y);
+        } else if (E.behaviour == "orbit") {
+          if (E.inOrbit) {
+            E.orbitAngle -= 0.01;
+
+            E.xspeed = E.speed * Math.cos(E.orbitAngle);
+            E.yspeed = E.speed * Math.sin(E.orbitAngle);
+          } else {
+            let ratio =
+              E.speed /
+              (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+            E.xspeed = ratio * (player.earthX - E.x);
+            E.yspeed = ratio * (player.earthY - E.y);
+          }
+        } else if (
+          E.behaviour == "spawn" ||
+          E.behaviour == "loot" ||
+          (E.target == "none" && E.behaviour == "chase")
+        ) {
+          E.randomDirCD();
+          E.angle = Math.atan2(E.randomDirY, E.randomDirX) + Math.PI / 2;
+          let ratio =
+            E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
+          E.xspeed = ratio * E.randomDirX;
+          E.yspeed = ratio * E.randomDirY;
+        } else if (E.moveWithPlayer) {
+          E.playerOrbitAngle -= 0.01;
+          E.x =
+            (canvas.width / 2) * Math.cos(E.playerOrbitAngle) +
+            canvas.width / 2;
+          E.y =
+            (canvas.height / 2) * Math.sin(E.playerOrbitAngle) +
+            canvas.height / 2;
+          E.coordX = player.spaceSize / 2 + E.x - player.earthX;
+          E.coordY = player.spaceSize / 2 + E.y - player.earthY;
+          if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
+        } else {
+          E.randomDirCDcounter = 300;
+          let ratio =
+            E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
+          E.xspeed = (ratio * (E.target.x - E.x) * E.acceleration) / 100;
+          E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
         }
-      } else if (
-        E.behaviour == "spawn" ||
-        E.behaviour == "loot" ||
-        (E.target == "none" && E.behaviour == "chase")
-      ) {
-        E.randomDirCD();
-        E.angle = Math.atan2(E.randomDirY, E.randomDirX) + Math.PI / 2;
-        let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
-        E.xspeed = ratio * E.randomDirX;
-        E.yspeed = ratio * E.randomDirY;
-      } else if (E.moveWithPlayer) {
-        E.playerOrbitAngle -= 0.01;
-        E.x =
-          (canvas.width / 2) * Math.cos(E.playerOrbitAngle) + canvas.width / 2;
-        E.y =
-          (canvas.height / 2) * Math.sin(E.playerOrbitAngle) +
-          canvas.height / 2;
-        E.coordX = player.spaceSize / 2 + E.x - player.earthX;
-        E.coordY = player.spaceSize / 2 + E.y - player.earthY;
-        if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
-      } else {
-        E.randomDirCDcounter = 300;
-        let ratio =
-          E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
-        E.xspeed = (ratio * (E.target.x - E.x) * E.acceleration) / 100;
-        E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
       }
-    }
-    if (!E.moveWithPlayer) {
-      E.x += E.xspeed - player.xspeed - camera.offSetX;
-      E.y += E.yspeed - player.yspeed - camera.offSetY;
-      E.coordX += E.xspeed;
-      E.coordY += E.yspeed;
+      if (!E.moveWithPlayer) {
+        E.x += E.xspeed - player.xspeed - camera.offSetX;
+        E.y += E.yspeed - player.yspeed - camera.offSetY;
+        E.coordX += E.xspeed;
+        E.coordY += E.yspeed;
+      }
     }
     E.hitBoxWidth = Math.abs(
       (E.width / 3) * 2 * Math.pow(Math.cos(E.angle), 2) +
@@ -718,7 +729,125 @@ function enemyCharacter(E) {
       E.speed = E.defaultSpeed;
     }
   };
-  E.angelaBehaviour2 = function () {};
+  E.angelaBehaviour2 = function () {
+    E.target = player;
+    E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
+    if (E.ammo > 0 && !E.attackCD) {
+      if (E.bulletType == "COG" && !E.weaponCD) {
+        let randomAngle = Math.random() * 0.5;
+        for (let i = 0; i < 12; i++) {
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              "custom",
+              E.x + Math.cos((Math.PI / 6 + randomAngle) * i),
+              E.y + Math.sin((Math.PI / 6 + randomAngle) * i)
+            )
+          );
+          E.ammo -= 2;
+        }
+        setTimer(200, E, "weaponCD");
+      } else if (E.bulletType == "ANGELABASIC" && !E.weaponCD) {
+        for (let i = -4; i < 4; i++) {
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              "custom",
+              E.x + Math.cos(E.angle - Math.PI / 2 + 0.06 * i),
+              E.y + Math.sin(E.angle - Math.PI / 2 + 0.06 * i)
+            )
+          );
+          E.ammo -= 4;
+        }
+        setTimer(300, E, "weaponCD");
+      } else if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
+        for (let i = 0; i < 16; i++) {
+          let randomSelector = Math.round(Math.random());
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              "custom",
+              E.x +
+                Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+              E.y +
+                Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+            )
+          );
+          E.ammo -= 4;
+        }
+        setTimer(200, E, "weaponCD");
+      } else if (E.bulletType == "CHARGE") {
+        if (!E.chargeActive) {
+          E.chargeSet = Math.round(Math.random() * 3);
+          E.appearOpacity = 0;
+          E.aggressiveAppear();
+          E.chargeActive = true;
+          E.manualUpdate = true;
+          E.chargeRectX = player.x;
+          E.chargeRectY = player.y;
+          if (E.chargeSet == 0) {
+            E.x = canvas.width;
+            E.y = player.y;
+            E.chargeXSpeed = -20;
+            E.chargeYSpeed = 0;
+          } else if (E.chargeSet == 1) {
+            E.x = 0;
+            E.y = player.y;
+            E.chargeXSpeed = 20;
+            E.chargeYSpeed = 0;
+          } else if (E.chargeSet == 2) {
+            E.x = player.x;
+            E.y = canvas.height;
+            E.chargeXSpeed = 0;
+            E.chargeYSpeed = -20;
+          } else if (E.chargeSet == 3) {
+            E.x = player.x;
+            E.y = 0;
+            E.chargeXSpeed = 0;
+            E.chargeYSpeed = 20;
+          }
+
+          setTimer(2000, E, "weaponCD");
+        } else if (!E.weaponCD && E.chargeActive) {
+          E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
+          E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
+          E.coordX -= E.chargeXSpeed;
+          E.coordY -= E.chargeYSpeed;
+          if (E.x < 0 || E.x > canvas.width || E.y < 0 || E.y > canvas.height) {
+            E.ammo = 0;
+            E.manualUpdate = false;
+            E.chargeActive = false;
+            E.appearOpacity = 0;
+            E.aggressiveAppear();
+          }
+        } else {
+          ctx.globalAlpha = 0.1;
+          ctx.fillStyle = "red";
+          if (E.chargeSet <= 1) {
+            ctx.fillRect(
+              0,
+              E.chargeRectY - E.height / 2,
+              canvas.width,
+              E.height
+            );
+          } else {
+            ctx.fillRect(
+              E.chargeRectX - E.width / 2,
+              0,
+              E.width,
+              canvas.height
+            );
+          }
+        }
+      }
+    } else if (!E.attackCD) {
+      E.attackCDstart();
+      E.ammo = 100;
+      if (E.bulletType == "COG") E.bulletType = "CHARGE";
+      else if (E.bulletType == "ANGELABASIC") E.bulletType = "CORRUPTEDSHOT";
+      else if (E.bulletType == "CORRUPTEDSHOT") E.bulletType = "COG";
+    }
+  };
   E.checkBehaviour = function () {
     switch (E.behaviour) {
       case "chase":
