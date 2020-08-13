@@ -89,6 +89,8 @@ function enemyBullet(B, target = "none", xman = 0, yman = 0) {
   B.target = target;
   B.killed = false;
   B.opacity = 1;
+  B.animationIndex = 0;
+  B.animationX = 0;
   if (B.width == undefined && B.height == undefined) {
     B.width = B.widthOnPic * screenratio;
     B.height = B.heightOnPic * screenratio;
@@ -114,6 +116,14 @@ function enemyBullet(B, target = "none", xman = 0, yman = 0) {
         B.angle = 0;
       }
     }
+    if (B.animation) {
+      B.animationIndex++;
+      if (B.animationIndex % B.animationUpdate == 0) {
+        B.animationIndex = 0;
+        B.animationX++;
+      }
+      if (B.animationX == B.animationFrames) B.animationX = 0;
+    }
     let ratio = B.speed / (Math.abs(B.dirx) + Math.abs(B.diry));
     B.xspeed = ratio * B.dirx;
     B.yspeed = ratio * B.diry;
@@ -131,7 +141,7 @@ function enemyBullet(B, target = "none", xman = 0, yman = 0) {
     ctx.globalAlpha = B.opacity;
     ctx.drawImage(
       B.sprite,
-      0,
+      0 + B.widthOnPic * B.animationX,
       0,
       B.widthOnPic,
       B.heightOnPic,
@@ -666,7 +676,7 @@ function enemyCharacter(E) {
           }
           setTimer(200, E, "weaponCD");
         } else if (E.bulletType == "ANGELABASIC" && !E.weaponCD) {
-          for (let i = 0; i < 8; i++) {
+          for (let i = -4; i < 4; i++) {
             enemyBulletList.push(
               enemyBullet(
                 { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
@@ -678,13 +688,29 @@ function enemyCharacter(E) {
             E.ammo -= 4;
           }
           setTimer(300, E, "weaponCD");
+        } else if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
+          for (let i = 0; i < 16; i++) {
+            let randomSelector = Math.round(Math.random());
+            enemyBulletList.push(
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+                "custom",
+                E.x +
+                  Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+                E.y +
+                  Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+              )
+            );
+            E.ammo -= 4;
+          }
+          setTimer(200, E, "weaponCD");
         }
       } else if (!E.attackCD) {
         E.attackCDstart();
         E.ammo = 100;
         if (E.bulletType == "COG") E.bulletType = "ANGELABASIC";
-        else if (E.bulletType == "ANGELABASIC") E.bulletType = "COG";
-        //Change weapon
+        else if (E.bulletType == "ANGELABASIC") E.bulletType = "CORRUPTEDSHOT";
+        else if (E.bulletType == "CORRUPTEDSHOT") E.bulletType = "COG";
       }
     } else {
       if (E.acceleration <= 99) E.acceleration += 1;

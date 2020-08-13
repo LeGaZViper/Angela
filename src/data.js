@@ -35,6 +35,7 @@ const sprite = {
   projectile_enemyBETAWAVE: new Image(),
   projectile_enemyCOG: new Image(),
   projectile_enemyANGELABASIC: new Image(),
+  projectile_enemyCORRUPTEDSHOT: new Image(),
   projectile_SPREAD: new Image(),
   projectile_spreadProjectile: new Image(),
   projectile_explosion: new Image(),
@@ -767,6 +768,20 @@ const enemyWeaponData = {
     heightOnPic: 50,
     ttl: 300,
   },
+  CORRUPTEDSHOT: {
+    sprite: sprite.projectile_enemyCORRUPTEDSHOT,
+    sound: "enemy_BASIC",
+    name: "CORRUPTEDSHOT",
+    animation: true,
+    animationFrames: 3,
+    animationUpdate: 5,
+    rotationAnimation: false,
+    damage: 10,
+    speed: 12,
+    widthOnPic: 15,
+    heightOnPic: 60,
+    ttl: 300,
+  },
 };
 
 /*
@@ -1203,7 +1218,7 @@ const EnemyData = {
   angela_phase1: {
     type: "angela_phase1",
     behaviour: "angela_phase1",
-    bulletType: "COG",
+    bulletType: "ANGELABASIC",
     ammo: 100,
     weaponCD: false,
     attackCDvalue: 3000,

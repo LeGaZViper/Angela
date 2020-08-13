@@ -357,7 +357,7 @@ function bullet(B, numberOfBullets) {
       if (B.sprite != undefined) {
         ctx.drawImage(
           B.sprite,
-          0 + (B.width / screenratio) * B.animationX,
+          0 + B.widthOnPic * B.animationX,
           0,
           B.widthOnPic,
           B.heightOnPic,
