@@ -87,7 +87,6 @@ function enemyBullet(B, target = "none", xman = 0, yman = 0) {
     B.y < canvas.height + 200
   )
     gameAudio.playSound(B.sound);
-  B.ttl = 300;
   B.target = target;
   B.killed = false;
   B.opacity = 1;
@@ -826,7 +825,7 @@ function enemyCharacter(E) {
           }
           E.chargeRectX -= camera.offSetX;
           E.chargeRectY -= camera.offSetY;
-          ctx.globalAlpha = 0.1;
+          ctx.globalAlpha = 0.2;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {
             ctx.fillRect(
@@ -844,15 +843,55 @@ function enemyCharacter(E) {
             );
           }
         }
+      } else if (E.bulletType == "AIRSTRIKE") {
+        if (!E.airStrikeActive) {
+          setTimer(750, E, "weaponCD");
+          E.airStrikeX = player.x;
+          E.airStrikeY = player.y;
+          E.airStrikeActive = true;
+        } else if (!E.weaponCD && E.airStrikeActive) {
+          enemyBulletList.push(
+            enemyBullet(
+              {
+                x: E.airStrikeX,
+                y: E.airStrikeY,
+                ...enemyWeaponData[E.bulletType],
+              },
+              "custom",
+              E.airStrikeX + 0.01,
+              E.airStrikeY + 0.01
+            )
+          );
+          E.ammo -= 15;
+          E.airStrikeActive = false;
+        } else {
+          E.airStrikeX += -player.xspeed - camera.offSetX;
+          E.airStrikeY += -player.yspeed - camera.offSetY;
+          ctx.globalAlpha = 0.3;
+          ctx.fillStyle = "red";
+          ctx.drawImage(
+            sprite.projectile_enemyAIRSTRIKEDANGER,
+            0,
+            0,
+            150,
+            150,
+            E.airStrikeX - 75 * screenratio,
+            E.airStrikeY - 75 * screenratio,
+            150 * screenratio,
+            150 * screenratio
+          );
+        }
       }
     } else if (!E.attackCD) {
       E.attackCDstart();
       E.ammo = 100;
-      if (E.bulletType == "COG") E.bulletType = "CHARGE";
-      else if (E.bulletType == "ANGELABASIC") E.bulletType = "CORRUPTEDSHOT";
-      else if (E.bulletType == "CORRUPTEDSHOT") E.bulletType = "COG";
+      if (E.bulletType == "ANGELABASIC") E.bulletType = "CHARGE";
+      else if (E.bulletType == "CHARGE") E.bulletType = "COG";
+      else if (E.bulletType == "COG") E.bulletType = "AIRSTRIKE";
+      else if (E.bulletType == "AIRSTRIKE") E.bulletTyoe = "ANGELABASIC";
     }
   };
+  E.angelaBehaviour3 = function () {};
   E.checkBehaviour = function () {
     switch (E.behaviour) {
       case "chase":
@@ -872,6 +911,9 @@ function enemyCharacter(E) {
         break;
       case "angela_phase2":
         E.angelaBehaviour2();
+        break;
+      case "angela_phase3":
+        E.angelaBehaviour3();
         break;
       case "mine":
         E.mineBehaviour();
