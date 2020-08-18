@@ -215,8 +215,7 @@ function enemyCharacter(E) {
       if (
         (Math.abs(E.x - player.earthX) > player.spaceSize / 2 ||
           Math.abs(E.y - player.earthY) > player.spaceSize / 2) &&
-        E.behaviour != "angela_phase2" &&
-        E.behaviour != "angela_phase3"
+        !E.moveWithPlayer
       ) {
         //check for miss position
         E.randomDirCDCounter = 300;
@@ -891,7 +890,12 @@ function enemyCharacter(E) {
       else if (E.bulletType == "AIRSTRIKE") E.bulletTyoe = "ANGELABASIC";
     }
   };
-  E.angelaBehaviour3 = function () {};
+  E.angelaBehaviour3 = function () {
+    player.setPos(0, 0);
+    background.inicialize();
+    backgroundParticles.inicialize();
+    camera.inicialize();
+  };
   E.checkBehaviour = function () {
     switch (E.behaviour) {
       case "chase":

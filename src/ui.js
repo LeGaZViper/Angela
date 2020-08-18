@@ -40,7 +40,7 @@ var UI = {
       width: 300 * screenratio,
       height: 70 * screenratio,
       x: canvas.width / 2 - 150 * screenratio,
-      y: canvas.height / 2 - 150 * screenratio,
+      y: canvas.height / 2 - 170 * screenratio,
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "white"],
@@ -49,7 +49,7 @@ var UI = {
       width: 300 * screenratio,
       height: 70 * screenratio,
       x: canvas.width / 2 - 150 * screenratio,
-      y: canvas.height / 2 - 67 * screenratio,
+      y: canvas.height / 2 - 87 * screenratio,
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "white"],
@@ -58,7 +58,7 @@ var UI = {
       width: 0 * screenratio,
       height: 0 * screenratio,
       x: canvas.width / 2 - 50 * screenratio,
-      y: canvas.height / 2 - 110 * screenratio,
+      y: canvas.height / 2 - 130 * screenratio,
       text: "SOUND:",
       textSize: 30 * screenratio,
       opacity: 1,
@@ -68,7 +68,7 @@ var UI = {
       width: 0 * screenratio,
       height: 0 * screenratio,
       x: canvas.width / 2 - 50 * screenratio,
-      y: canvas.height / 2 - 30 * screenratio,
+      y: canvas.height / 2 - 50 * screenratio,
       text: "MUSIC:",
       textSize: 30 * screenratio,
       opacity: 1,
@@ -78,7 +78,7 @@ var UI = {
       width: 0 * screenratio,
       height: 0 * screenratio,
       x: canvas.width / 2 + 50 * screenratio,
-      y: canvas.height / 2 - 110 * screenratio,
+      y: canvas.height / 2 - 130 * screenratio,
       text: playerData.soundMultiplier,
       textSize: 30 * screenratio,
       opacity: 1,
@@ -88,7 +88,7 @@ var UI = {
       width: 0 * screenratio,
       height: 0 * screenratio,
       x: canvas.width / 2 + 50 * screenratio,
-      y: canvas.height / 2 - 30 * screenratio,
+      y: canvas.height / 2 - 50 * screenratio,
       text: playerData.musicMultiplier,
       textSize: 30 * screenratio,
       opacity: 1,
@@ -98,7 +98,7 @@ var UI = {
       width: 25 * screenratio,
       height: 25 * screenratio,
       x: canvas.width / 2 + 100 * screenratio,
-      y: canvas.height / 2 - 145 * screenratio,
+      y: canvas.height / 2 - 165 * screenratio,
       text: "🡅",
       button: "sound",
       textSize: 20 * screenratio,
@@ -109,7 +109,7 @@ var UI = {
       width: 25 * screenratio,
       height: 25 * screenratio,
       x: canvas.width / 2 + 100 * screenratio,
-      y: canvas.height / 2 - 110 * screenratio,
+      y: canvas.height / 2 - 130 * screenratio,
       text: "🡇",
       button: "sound",
       textSize: 20 * screenratio,
@@ -120,7 +120,7 @@ var UI = {
       width: 25 * screenratio,
       height: 25 * screenratio,
       x: canvas.width / 2 + 100 * screenratio,
-      y: canvas.height / 2 - 62 * screenratio,
+      y: canvas.height / 2 - 82 * screenratio,
       text: "🡅",
       button: "music",
       textSize: 20 * screenratio,
@@ -131,7 +131,7 @@ var UI = {
       width: 25 * screenratio,
       height: 25 * screenratio,
       x: canvas.width / 2 + 100 * screenratio,
-      y: canvas.height / 2 - 27 * screenratio,
+      y: canvas.height / 2 - 47 * screenratio,
       text: "🡇",
       button: "music",
       textSize: 20 * screenratio,
@@ -142,18 +142,29 @@ var UI = {
       width: 300 * screenratio,
       height: 50 * screenratio,
       x: canvas.width / 2 - 150 * screenratio,
-      y: canvas.height / 2 + 25 * screenratio,
-      text: "FULLSCREEN",
-      button: "FULLSCREEN",
+      y: canvas.height / 2 + 5 * screenratio,
+      text: document.fullscreen ? "FULLSCREEN" : "WINDOWED",
+      button: "DISPLAYMODE",
       textSize: 30 * screenratio,
       opacity: 1,
       color: ["grey", "black", "white"],
     };
     this.optionsMenu_b5 = {
+      width: 300 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 150 * screenratio,
+      y: canvas.height / 2 + 80 * screenratio,
+      text: keyboardControler.active ? "KEYBOARD + MOUSE" : "MOUSE ONLY",
+      button: "CONTROLS",
+      textSize: 20 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+    this.optionsMenu_b6 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
       x: canvas.width / 2 - 125 * screenratio,
-      y: canvas.height / 2 + 100 * screenratio,
+      y: canvas.height / 2 + 155 * screenratio,
       text: "BACK",
       button: "BACK",
       textSize: 30 * screenratio,
@@ -173,6 +184,7 @@ var UI = {
       this.optionsMenu_b3,
       this.optionsMenu_b4,
       this.optionsMenu_b5,
+      this.optionsMenu_b6,
     ];
 
     this.gameOverMenuWindow = {
@@ -718,12 +730,21 @@ var UI = {
           if (index.button == "BACK") {
             gameAudio.playSound("click");
             this.currentMenu = 0;
-          } else if (index.button == "FULLSCREEN") {
-            if (!document.fullscreenElement) {
+          } else if (index.button == "CONTROLS") {
+            keyboardControler.active = !keyboardControler.active;
+            playerData.keyboardControl = !playerData.keyboardControl;
+            saveLocalStorage();
+            index.text = keyboardControler.active
+              ? "KEYBOARD + MOUSE"
+              : "MOUSE ONLY";
+          } else if (index.button == "DISPLAYMODE") {
+            if (!document.fullscreen) {
               canvas.requestFullscreen().catch((err) => {
                 console.log(err);
               });
-            } else document.exitFullscreen();
+            } else {
+              document.exitFullscreen();
+            }
           } else if (index.button == "sound") {
             if (index.text == "🡅" && playerData.soundMultiplier < 10) {
               playerData.soundMultiplier++;

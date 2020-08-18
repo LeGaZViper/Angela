@@ -27,6 +27,9 @@ async function userInput(event, eventValue) {
       event.which != 20
     ) {
       weaponActivation.checkInput(event.key);
+      keyboardControler.eventHandler(event.key.toUpperCase(), "down");
+    } else if (keyboardControler.active) {
+      keyboardControler.eventHandler(event.key.toUpperCase(), "down");
     }
     //release
   } else if (eventValue == 2) {
@@ -39,6 +42,8 @@ async function userInput(event, eventValue) {
           console.log(err);
         });
       } else document.exitFullscreen();
+    } else if (keyboardControler.active) {
+      keyboardControler.eventHandler(event.key.toUpperCase(), "up");
     }
   }
 }
@@ -50,4 +55,59 @@ document.onfullscreenchange = function () {
   backgroundParticles.inicialize();
   environment.inicialize();
   UI.inicialize();
+};
+
+var keyboardControler = {
+  buttonsActive: 0,
+  inicialize: function () {
+    this.active = playerData.keyboardControl;
+    this.movementVectorX = canvas.width / 2;
+    this.movementVectorY = canvas.height / 2;
+    this.W = {
+      x: 0,
+      y: -1,
+      active: false,
+    };
+    this.A = {
+      x: -1,
+      y: 0,
+      active: false,
+    };
+    this.S = {
+      x: 0,
+      y: 1,
+      active: false,
+    };
+    this.D = {
+      x: 1,
+      y: 0,
+      active: false,
+    };
+  },
+  eventHandler: function (event, type) {
+    let eventProperty = this[event];
+    try {
+      if (type == "down" && !eventProperty.active) {
+        this.buttonsActive++;
+        eventProperty.active = true;
+        this.movementVectorX += eventProperty.x;
+        this.movementVectorY += eventProperty.y;
+        player.movementByKeyboard(
+          this.movementVectorX,
+          this.movementVectorY,
+          true
+        );
+      } else if (type == "up" && eventProperty.active) {
+        eventProperty.active = false;
+        this.buttonsActive--;
+        this.movementVectorX -= eventProperty.x;
+        this.movementVectorY -= eventProperty.y;
+        player.movementByKeyboard(
+          this.movementVectorX,
+          this.movementVectorY,
+          true
+        );
+      }
+    } catch (err) {}
+  },
 };

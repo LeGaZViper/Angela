@@ -38,6 +38,20 @@ var camera = {
 //player object
 var playerData;
 var player = {
+  setPos: function (x, y) {
+    this.x = canvas.width / 2;
+    this.y = canvas.height / 2;
+    this.coordX = this.spaceSize / 2 + x * screenratio;
+    this.coordY = this.spaceSize / 2 + y * screenratio;
+    this.earthX = canvas.width / 2 - x * screenratio;
+    this.earthY = canvas.height / 2 - y * screenratio;
+    this.futureX = x * screenratio;
+    this.futureY = y * screenratio;
+    this.xspeed = 0;
+    this.yspeed = 0;
+    this.accelerationX = 0;
+    this.accelerationY = 0;
+  },
   inicialize: function (starterX, starterY) {
     // in order to change player default pos one needs to change this.coord, this.earth, this.future accordingly
     this.playerLives = 3;
@@ -54,7 +68,8 @@ var player = {
     this.futureY = this.starterPosY;
     this.accelerationX = 0;
     this.accelerationY = 0;
-    this.speed = 12;
+    this.defaultSpeed = 20;
+    this.speed = this.defaultSpeed;
     this.xspeed = 0;
     this.yspeed = 0;
     this.width = 75 * screenratio;
@@ -98,57 +113,17 @@ var player = {
     this.opacity = [1, 1];
     this.damageOpacity = [0, 0];
     this.piercingCD = false;
+    this.lastRatioX = 0;
+    this.lastRatioY = 0;
   },
   update: function () {
-    //speed calculation
-    let distance = Math.sqrt(
-      Math.pow(xMousePos - canvas.width / 2, 2) +
-        Math.pow(yMousePos - canvas.height / 2, 2)
-    );
     this.shieldRecharge();
-    if (distance < 160 * screenratio && !rightMouseDown) {
-      if (this.accelerationX >= 2) {
-        this.accelerationX -= 2;
-      } else this.accelerationX = 0;
-      if (this.accelerationY >= 2) {
-        this.accelerationY -= 2;
-      } else this.accelerationY = 0;
-    } else if (
-      distance >= 160 * screenratio &&
-      distance <= 210 * screenratio &&
-      !rightMouseDown
-    ) {
-      if (this.accelerationX >= 1) {
-        this.accelerationX -= 1;
-      } else this.accelerationX = 0;
-      if (this.accelerationY >= 1) {
-        this.accelerationY -= 1;
-      } else this.accelerationY = 0;
-    } else if (!rightMouseDown) {
-      if (this.accelerationX <= 98) {
-        this.accelerationX += 2;
-      } else this.accelerationX = 100;
-      if (this.accelerationY <= 98) {
-        this.accelerationY += 2;
-      } else this.accelerationY = 100;
+    if (!keyboardControler.active) {
+      this.movementByMouse();
     } else {
-      if (this.accelerationX >= 0.2) {
-        this.accelerationX -= 0.2;
-      } else this.accelerationX = 0;
-      if (this.accelerationY >= 0.2) {
-        this.accelerationY -= 0.2;
-      } else this.accelerationY = 0;
+      this.movementByKeyboard();
     }
-
     this.currentSpeed = player.speed * screenratio;
-    if (!rightMouseDown) {
-      this.ratio =
-        this.speed /
-        (Math.abs(xMousePos - canvas.width / 2) +
-          Math.abs(yMousePos - canvas.height / 2));
-      this.lastRatioX = xMousePos - this.x;
-      this.lastRatioY = yMousePos - this.y;
-    }
     this.targetxspeed =
       (this.ratio * this.lastRatioX * this.accelerationX) / 100;
     this.targetyspeed =
@@ -361,5 +336,87 @@ var player = {
   setCompanions: function (c) {
     this.companions = c;
     this.companionsIndex = [0, 360 / c, (2 * 360) / c];
+  },
+  movementByMouse: function () {
+    let distance = Math.sqrt(
+      Math.pow(xMousePos - canvas.width / 2, 2) +
+        Math.pow(yMousePos - canvas.height / 2, 2)
+    );
+    if (distance < 160 * screenratio && !rightMouseDown) {
+      if (this.accelerationX >= 2) {
+        this.accelerationX -= 2;
+      } else this.accelerationX = 0;
+      if (this.accelerationY >= 2) {
+        this.accelerationY -= 2;
+      } else this.accelerationY = 0;
+    } else if (
+      distance >= 160 * screenratio &&
+      distance <= 210 * screenratio &&
+      !rightMouseDown
+    ) {
+      if (this.accelerationX >= 1) {
+        this.accelerationX -= 1;
+      } else this.accelerationX = 0;
+      if (this.accelerationY >= 1) {
+        this.accelerationY -= 1;
+      } else this.accelerationY = 0;
+    } else if (!rightMouseDown) {
+      if (this.accelerationX <= 98) {
+        this.accelerationX += 2;
+      } else this.accelerationX = 100;
+      if (this.accelerationY <= 98) {
+        this.accelerationY += 2;
+      } else this.accelerationY = 100;
+    } else {
+      if (this.accelerationX >= 0.2) {
+        this.accelerationX -= 0.2;
+      } else this.accelerationX = 0;
+      if (this.accelerationY >= 0.2) {
+        this.accelerationY -= 0.2;
+      } else this.accelerationY = 0;
+    }
+    if (!rightMouseDown) {
+      this.ratio =
+        this.currentSpeed /
+        (Math.abs(xMousePos - canvas.width / 2) +
+          Math.abs(yMousePos - canvas.height / 2));
+      this.lastRatioX = xMousePos - canvas.width / 2;
+      this.lastRatioY = yMousePos - canvas.height / 2;
+    }
+  },
+  movementByKeyboard: function (vectorx, vectory, event = false) {
+    if (!event) {
+      if (keyboardControler.buttonsActive > 0) {
+        if (this.accelerationX <= 98) {
+          this.accelerationX += 2;
+        } else this.accelerationX = 100;
+        if (this.accelerationY <= 98) {
+          this.accelerationY += 2;
+        } else this.accelerationY = 100;
+      } else {
+        if (this.accelerationX >= 2) {
+          this.accelerationX -= 2;
+        } else this.accelerationX = 0;
+        if (this.accelerationY >= 2) {
+          this.accelerationY -= 2;
+        } else this.accelerationY = 0;
+      }
+    } else {
+      if (keyboardControler.buttonsActive == 1) {
+        this.ratio =
+          this.currentSpeed /
+          (Math.abs(vectorx - canvas.width / 2) +
+            Math.abs(vectory - canvas.height / 2));
+        this.lastRatioX = vectorx - canvas.width / 2;
+        this.lastRatioY = vectory - canvas.height / 2;
+      } else if (keyboardControler.buttonsActive > 1) {
+        this.ratio =
+          (this.currentSpeed + 10 * screenratio) /
+          (Math.abs(vectorx - canvas.width / 2) +
+            Math.abs(vectory - canvas.height / 2));
+        this.lastRatioX = vectorx - canvas.width / 2;
+        this.lastRatioY = vectory - canvas.height / 2;
+      }
+    }
   },
 };

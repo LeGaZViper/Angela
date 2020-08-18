@@ -138,7 +138,7 @@ function gameLoop() {
     });
     //check for weapon firing
     if (player.weaponDuration == 0) {
-      player.speed = 12;
+      player.speed = player.defaultSpeed;
       player.animationFPS = 5;
       player.width = 75 * screenratio;
       player.height = 75 * screenratio;

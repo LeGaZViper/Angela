@@ -129,6 +129,7 @@ function loadTheGame(callback) {
   scale();
   playerData = JSON.parse(localStorage.playerData);
   playerData.level = 12;
+  keyboardControler.inicialize();
   player.inicialize(0, 50);
   background.inicialize();
   backgroundParticles.inicialize();
