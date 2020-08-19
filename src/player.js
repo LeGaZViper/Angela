@@ -119,9 +119,9 @@ var player = {
   update: function () {
     this.shieldRecharge();
     if (!keyboardControler.active) {
-      this.movementByMouse();
+      this.ratioByMouse();
     } else {
-      this.movementByKeyboard();
+      this.ratioByKeyboard();
     }
     this.currentSpeed = player.speed * screenratio;
     this.targetxspeed =
@@ -139,26 +139,37 @@ var player = {
     } else if (!isNaN(this.ratio)) {
       //player positioner
       if (
-        Math.abs(this.xspeed) >= Math.abs(this.targetxspeed) &&
-        (this.xspeed >= 0 ? 1 : -1) == (this.targetxspeed >= 0 ? 1 : -1)
+        (Math.abs(this.xspeed) < Math.abs(this.targetxspeed) ||
+          (this.xspeed >= 0 ? 1 : -1) != (this.targetxspeed >= 0 ? 1 : -1)) &&
+        this.targetxspeed != 0
       ) {
-        this.xspeed = this.targetxspeed;
-      } else if (this.targetxspeed != 0) {
         this.xspeed +=
           ((this.targetxspeed >= 0 ? 1 : -1) * (this.accelerationX / 100)) / 3;
       } else {
-        this.xspeed = 0;
+        if (this.xspeed >= 0.5) {
+          this.xspeed -= 0.5;
+        } else if (this.xspeed <= -0.5) {
+          this.xspeed += 0.5;
+        } else {
+          this.xspeed = 0;
+        }
       }
+
       if (
-        Math.abs(this.yspeed) >= Math.abs(this.targetyspeed) &&
-        (this.yspeed >= 0 ? 1 : -1) == (this.targetyspeed >= 0 ? 1 : -1)
+        (Math.abs(this.yspeed) < Math.abs(this.targetyspeed) ||
+          (this.yspeed >= 0 ? 1 : -1) != (this.targetyspeed >= 0 ? 1 : -1)) &&
+        this.targetyspeed != 0
       ) {
-        this.yspeed = this.targetyspeed;
-      } else if (this.targetyspeed != 0) {
         this.yspeed +=
           ((this.targetyspeed >= 0 ? 1 : -1) * (this.accelerationY / 100)) / 3;
       } else {
-        this.yspeed = 0;
+        if (this.yspeed >= 0.5) {
+          this.yspeed -= 0.5;
+        } else if (this.yspeed <= -0.5) {
+          this.yspeed += 0.5;
+        } else {
+          this.yspeed = 0;
+        }
       }
 
       this.futureX += this.xspeed;
@@ -337,7 +348,7 @@ var player = {
     this.companions = c;
     this.companionsIndex = [0, 360 / c, (2 * 360) / c];
   },
-  movementByMouse: function () {
+  ratioByMouse: function () {
     let distance = Math.sqrt(
       Math.pow(xMousePos - canvas.width / 2, 2) +
         Math.pow(yMousePos - canvas.height / 2, 2)
@@ -384,7 +395,7 @@ var player = {
       this.lastRatioY = yMousePos - canvas.height / 2;
     }
   },
-  movementByKeyboard: function (vectorx, vectory, event = false) {
+  ratioByKeyboard: function (vectorx, vectory, event = false) {
     if (!event) {
       if (keyboardControler.buttonsActive > 0) {
         if (this.accelerationX <= 98) {

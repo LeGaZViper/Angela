@@ -92,7 +92,7 @@ var keyboardControler = {
         eventProperty.active = true;
         this.movementVectorX += eventProperty.x;
         this.movementVectorY += eventProperty.y;
-        player.movementByKeyboard(
+        player.ratioByKeyboard(
           this.movementVectorX,
           this.movementVectorY,
           true
@@ -102,7 +102,7 @@ var keyboardControler = {
         this.buttonsActive--;
         this.movementVectorX -= eventProperty.x;
         this.movementVectorY -= eventProperty.y;
-        player.movementByKeyboard(
+        player.ratioByKeyboard(
           this.movementVectorX,
           this.movementVectorY,
           true
