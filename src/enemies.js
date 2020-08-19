@@ -787,14 +787,14 @@ function enemyCharacter(E) {
           E.chargeRectY = player.y;
 
           setTimer(2000, E, "weaponCD");
-          setTimer(3500 * screenratio, E, "chargeEnd");
+          setTimer(3000 * screenratio, E, "chargeEnd");
         } else if (!E.weaponCD && E.chargeActive) {
           E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
           E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
-          E.coordX -= E.chargeXSpeed;
-          E.coordY -= E.chargeYSpeed;
+          E.coordX += E.chargeXSpeed;
+          E.coordY += E.chargeYSpeed;
           if (!E.chargeEnd) {
-            E.ammo = 0;
+            E.ammo -= 100;
             E.manualUpdate = false;
             E.chargeActive = false;
             E.appearOpacity = 0;
@@ -804,24 +804,26 @@ function enemyCharacter(E) {
           if (E.chargeSet == 0) {
             E.x = canvas.width;
             E.y = player.y;
-            E.chargeXSpeed = -20;
+            E.chargeXSpeed = -40;
             E.chargeYSpeed = 0;
           } else if (E.chargeSet == 1) {
             E.x = 0;
             E.y = player.y;
-            E.chargeXSpeed = 20;
+            E.chargeXSpeed = 40;
             E.chargeYSpeed = 0;
           } else if (E.chargeSet == 2) {
             E.x = player.x;
             E.y = canvas.height;
             E.chargeXSpeed = 0;
-            E.chargeYSpeed = -20;
+            E.chargeYSpeed = -40;
           } else if (E.chargeSet == 3) {
             E.x = player.x;
             E.y = 0;
             E.chargeXSpeed = 0;
-            E.chargeYSpeed = 20;
+            E.chargeYSpeed = 40;
           }
+          E.coordX = player.spaceSize / 2 + E.x - player.earthX;
+          E.coordY = player.spaceSize / 2 + E.y - player.earthY;
           E.chargeRectX -= camera.offSetX;
           E.chargeRectY -= camera.offSetY;
           ctx.globalAlpha = 0.2;
@@ -887,7 +889,7 @@ function enemyCharacter(E) {
       if (E.bulletType == "ANGELABASIC") E.bulletType = "CHARGE";
       else if (E.bulletType == "CHARGE") E.bulletType = "COG";
       else if (E.bulletType == "COG") E.bulletType = "AIRSTRIKE";
-      else if (E.bulletType == "AIRSTRIKE") E.bulletTyoe = "ANGELABASIC";
+      else if (E.bulletType == "AIRSTRIKE") E.bulletType = "ANGELABASIC";
     }
   };
   E.angelaBehaviour3 = function () {

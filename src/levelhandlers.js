@@ -18,8 +18,8 @@ async function spawn() {
       await sleep(10);
     }
     UI.levelDisplayCheck = false;
-    await sleep(levels_handler.level.startTime);
   }
+  await sleep(levels_handler.level.startTime);
   for (let i = 0; i < enemySpawnList.length; i++) {
     if (enemySpawnList.length == 0) break;
 
@@ -257,7 +257,7 @@ var levelLayout = {
   },
   level_11: {
     waves: 1,
-    startTime: 10000,
+    startTime: 100000,
     cube1: ["cube", 1, 1, 1],
   },
   level_12: {
@@ -273,10 +273,10 @@ function lastLevelHandler() {
   if (playerData.level == 11) {
     backgroundParticles.angelaCorrupted.visible = true;
     backgroundParticles.angela.visible = false;
-    if (levelTimer == 2170) {
+    if (levelTimer == 2200) {
       environment.angelaJumpscare.activated = true;
       //gameAudio.playSound("angelaJumpscare");
-    } else if (levelTimer == 2200) {
+    } else if (levelTimer == 2230) {
       levelTimer++;
       gameAudio.stopMusic();
       if (!gameAudio.player_LASER_loop.paused) {

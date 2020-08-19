@@ -293,7 +293,7 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 - 265 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "QUIT",
+      text: "LET HER",
       textSize: 30 * screenratio,
       button: "NO",
       opacity: 1,
@@ -305,7 +305,7 @@ var UI = {
       height: 50 * screenratio,
       x: canvas.width / 2 + 15 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "CONNECT",
+      text: "HELP",
       textSize: 30 * screenratio,
       button: "YES",
       opacity: 1,
@@ -402,7 +402,7 @@ var UI = {
       this.mainMenu_b1.opacity = 0.5;
     }
     menuArray.forEach((element) => {
-      if (this.currentMenu != 5 || this.beforeTheBossMenuTimer > 4560) {
+      if (this.currentMenu != 5 || this.beforeTheBossMenuTimer > 5200) {
         ctx.fillStyle = element.color[0];
         ctx.strokeStyle = element.color[1];
         if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
