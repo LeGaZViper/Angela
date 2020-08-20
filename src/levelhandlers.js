@@ -90,13 +90,25 @@ let lootCube = {
   active: false,
   nextSpawn: 1300,
 };
-function spawnAnEnemy(enemy) {
-  let pos = generateRandomSpawnPos();
+
+function spawnAnEnemy(
+  enemy,
+  x = -1,
+  y = -1,
+  orbitAngle = 2 * Math.PI * Math.random()
+) {
+  let pos;
+  if (x == -1 && y == -1) {
+    pos = generateRandomSpawnPos();
+  } else {
+    pos = [x, y];
+  }
   enemyList.push(
     enemyCharacter({
       x: pos[0] * screenratio + player.earthX,
       y: pos[1] * screenratio + player.earthY,
       ...EnemyData[enemy],
+      playerOrbitAngle: orbitAngle,
     })
   );
 }
@@ -262,7 +274,7 @@ var levelLayout = {
   },
   level_12: {
     waves: 3,
-    startTime: 10,
+    startTime: 10000000,
     angela: ["angela_phase2", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],

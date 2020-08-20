@@ -6,9 +6,9 @@ async function userInput(event, eventValue) {
   //mouse movement
   if (eventValue == 0) {
     xMousePos =
-      Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
+      Math.abs(event.clientX) - (window.innerWidth - canvas.width) / 2;
     yMousePos =
-      Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
+      Math.abs(event.clientY) - (window.innerHeight - canvas.height) / 2;
     //press down
   } else if (eventValue == 1) {
     if (event.which == 1) {
@@ -21,13 +21,6 @@ async function userInput(event, eventValue) {
       }
       gameAudio.stopMusic();
       getMenu(4);
-    } else if (
-      player.inWeaponActivation &&
-      event.which != 16 &&
-      event.which != 20
-    ) {
-      weaponActivation.checkInput(event.key);
-      keyboardControler.eventHandler(event.key.toUpperCase(), "down");
     } else if (keyboardControler.active) {
       keyboardControler.eventHandler(event.key.toUpperCase(), "down");
     }

@@ -6,13 +6,11 @@ This simple game is about defending a motherboard from hostiles. Nothing special
 
 ![alt text](banner.png)
 
-Written in: JavaScript
+Written in: plain JavaScript
 
 Platform: PC Browser (IE not welcome)
 
-Libraries: JQuerry
-
-Software: VS Code, Blender, Paint.net, sfxr
+Development software: VS Code, Blender, Paint.net, sfxr
 
 Some sound effects by: Kenney Vleugels (https://kenney.nl/)
 

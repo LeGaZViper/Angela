@@ -55,20 +55,21 @@ async function checkDeath(enemy, bulletType = "none") {
         }
       }
       if (!player.inWeaponActivation) {
+        weaponActivation.targets = 3 + Math.round(Math.random());
         gameAudio.playSound("player_getDrop");
-        weaponActivation.currentWord =
-          weaponActivation.wordList[
-            Math.floor(Math.random() * weaponActivation.wordList.length)
-          ];
-        weaponActivation.currentlyTyped = "";
         weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
         weaponActivation.weaponName = choice;
         player.inWeaponActivation = true;
+        for (let i = 0; i < weaponActivation.targets; i++) {
+          spawnAnEnemy("lootCubeTarget");
+        }
       }
     }
     if (enemy.behaviour == "loot") {
       lootCube.active = false;
       lootCube.nextSpawn = levelTimer + 1300;
+    } else if (enemy.behaviour == "lootCubeTarget") {
+      weaponActivation.targets--;
     } else if (levels_handler.level.total == 1) {
       await sleep(2000);
       if (levels_handler.level.total == 1) levels_handler.level.total -= 1;
@@ -258,12 +259,14 @@ function enemyCharacter(E) {
           E.xspeed = ratio * E.randomDirX;
           E.yspeed = ratio * E.randomDirY;
         } else if (E.moveWithPlayer) {
-          E.playerOrbitAngle -= 0.01;
+          E.playerOrbitAngle -= E.speed;
           E.x =
-            (canvas.width / 2) * Math.cos(E.playerOrbitAngle) +
+            (canvas.width / E.distanceFromPlayerX) *
+              Math.cos(E.playerOrbitAngle) +
             canvas.width / 2;
           E.y =
-            (canvas.height / 2) * Math.sin(E.playerOrbitAngle) +
+            (canvas.height / E.distanceFromPlayerY) *
+              Math.sin(E.playerOrbitAngle) +
             canvas.height / 2;
           E.coordX = player.spaceSize / 2 + E.x - player.earthX;
           E.coordY = player.spaceSize / 2 + E.y - player.earthY;
@@ -898,6 +901,12 @@ function enemyCharacter(E) {
     backgroundParticles.inicialize();
     camera.inicialize();
   };
+  E.lootCubeTarget = function () {
+    if (weaponActivation.failTimeIndex > 0) {
+      E.HP = 0;
+      checkDeath(E);
+    }
+  };
   E.checkBehaviour = function () {
     switch (E.behaviour) {
       case "chase":
@@ -920,6 +929,9 @@ function enemyCharacter(E) {
         break;
       case "angela_phase3":
         E.angelaBehaviour3();
+        break;
+      case "lootCubeTarget":
+        E.lootCubeTarget();
         break;
       case "mine":
         E.mineBehaviour();

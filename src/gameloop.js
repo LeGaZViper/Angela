@@ -298,12 +298,7 @@ function gameLoop() {
     }
   });
   let loading = document.getElementById("loading");
-  if (loading.style.display != "none") {
-    $(document).ready(function () {
-      loading.style.display = "none";
-    });
-  }
-
+  if (loading.style.display == "") loading.style.display = "none";
   //call for the next iteration of gameLoop
   ctx.closePath();
   gameAudio.checkPausedSounds();

@@ -3,8 +3,10 @@ if (localStorage.playerData == undefined) {
   newLocalStorage();
 }
 
-window.onload = () => {
-  loadTheGame(gameLoop);
+document.onreadystatechange = () => {
+  if (document.readyState == "complete") {
+    loadTheGame(gameLoop);
+  }
 };
 
 //Sleep function | used in: cooldowns
@@ -57,9 +59,6 @@ function collides_UI(a, b) {
 
 function inicializeGame() {
   gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
-  xMousePos =
-    Math.abs(event.clientX) - ($(document).width() - canvas.width) / 2;
-  yMousePos = Math.abs(event.clientY) - parseInt($("#canvas").css("marginTop"));
   UI.levelDisplayCheck = true;
   DialogueData.dialoguesUsed = [];
   levelTimer = 0;
@@ -138,9 +137,7 @@ function loadTheGame(callback) {
   gameAudio.setVolume();
   UI.inicialize();
   //Disabling rightclick popup
-  $("#canvas").bind("contextmenu", function () {
-    return false;
-  });
+  canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   callback();
 }
 
@@ -151,15 +148,15 @@ function scale() {
   canvas.width = 1100;
   canvas.height = 900;
   while (
-    $(window).height() < canvas.height ||
-    $(window).width() < canvas.width
+    window.innerHeight < canvas.height ||
+    window.innerWidth < canvas.width
   ) {
     screenratio -= 0.1;
     canvas.width = 1100 * screenratio;
     canvas.height = 900 * screenratio;
   }
-  canvas.width = $(window).width();
-  canvas.height = $(window).height();
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 
 var timerList = [];

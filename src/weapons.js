@@ -13,53 +13,27 @@ function chooseWeapon(name) {
 
 var weaponActivation = {
   inicialize: function () {
-    this.currentIndex = 0;
-    this.currentWord = "";
-    this.currentlyTyped = "";
-    this.lives = 3;
     this.weaponName = "DOUBLE";
     this.failTimeIndex = 0;
     this.successTimeIndex = 0;
     this.timerIndex = 0;
+    this.targets = 0;
   },
-  wordList: [
-    "hello",
-    "hOnza",
-    "PLEASEGIVEMEFOOD",
-    "VERYLONGTEXT",
-    "windowsSUX",
-  ],
-  defaultTimerIndex: 600,
-  checkInput: function (input) {
-    if (this.failTimeIndex < 1) {
-      if (input == this.currentWord[this.currentIndex]) {
-        this.currentlyTyped += this.currentWord[this.currentIndex];
-        this.currentIndex++;
-        if (this.currentIndex == this.currentWord.length) {
-          this.successTimeIndex = 120;
-          chooseWeapon(this.weaponName);
-        }
-      } else if (this.lives > 1) {
-        this.lives--;
-        this.failTimeIndex = 20;
-      } else {
-        this.lives--;
-        this.failTimeIndex = 120;
-      }
-    }
-  },
+  defaultTimerIndex: 660,
   render_update: function () {
     this.timerIndex--;
     if (this.timerIndex == 0) {
       this.failTimeIndex = 120;
-      this.lives = 0;
-    }
-    if (this.lives > 0 && this.successTimeIndex == 0) {
+      this.targets = -1;
+    } else if (this.targets == 0 && this.successTimeIndex == 0) {
+      this.successTimeIndex = 120;
+      chooseWeapon(this.weaponName);
+    } else if (this.timerIndex > 0 && this.successTimeIndex == 0) {
       ctx.globalAlpha = 1;
       ctx.textAlign = "center";
       ctx.font = 50 * screenratio + "px Consolas";
       ctx.fillText(
-        `Attempts: ${this.lives}`,
+        `Targets: ${this.targets}`,
         canvas.width / 2 - 50 * screenratio,
         canvas.height / 6
       );
@@ -79,29 +53,11 @@ var weaponActivation = {
       if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
       ctx.strokeStyle = "#FF" + colorHPbar_1 + colorHPbar_1;
       ctx.lineWidth = 10;
-
       ctx.stroke();
       ctx.closePath();
-      ctx.textAlign = "left";
-      ctx.font = `bold ${60 * screenratio}px Consolas`;
-      ctx.fillStyle = "#FFFD07";
-      let width = ctx.measureText(this.currentWord).width;
-      ctx.fillText(
-        this.currentWord,
-        canvas.width / 2 - width / 2,
-        canvas.height / 4
-      );
-      ctx.fillStyle = "#8C95FF";
-      ctx.fillText(
-        this.currentlyTyped,
-        canvas.width / 2 - width / 2,
-        canvas.height / 4
-      );
-    }
-    if (this.failTimeIndex > 0) {
+    } else if (this.failTimeIndex > 0) {
       this.fail_render();
-    }
-    if (this.successTimeIndex > 0) {
+    } else if (this.successTimeIndex > 0) {
       this.success_render();
     }
   },
@@ -114,8 +70,7 @@ var weaponActivation = {
       ctx.globalAlpha = 1;
     } else if (this.failTimeIndex == 1) {
       player.inWeaponActivation = false;
-      this.lives = 3;
-      this.currentIndex = 0;
+      this.targets = 0;
     } else {
       ctx.fillStyle = "red";
       ctx.globalAlpha = this.failTimeIndex / this.defaultTimerIndex;
@@ -145,8 +100,6 @@ var weaponActivation = {
     );
     if (this.successTimeIndex == 0) {
       player.inWeaponActivation = false;
-      this.lives = 3;
-      this.currentIndex = 0;
     }
   },
 };

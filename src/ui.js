@@ -697,8 +697,8 @@ var UI = {
       this.mainMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -720,8 +720,8 @@ var UI = {
       this.optionsMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -773,8 +773,8 @@ var UI = {
       this.gameOverMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -792,8 +792,8 @@ var UI = {
       this.youWinMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -809,8 +809,8 @@ var UI = {
       this.pauseMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -835,8 +835,8 @@ var UI = {
       this.beforeTheBossMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -860,8 +860,8 @@ var UI = {
       this.mainMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -886,8 +886,8 @@ var UI = {
       this.optionsMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -906,8 +906,8 @@ var UI = {
       this.gameOverMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -926,8 +926,8 @@ var UI = {
       this.youWinMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -947,8 +947,8 @@ var UI = {
       this.pauseMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
@@ -967,8 +967,8 @@ var UI = {
       this.beforeTheBossMenu.forEach((index) => {
         if (
           collides_UI(index, {
-            x: xMousePos - 5,
-            y: yMousePos - 5,
+            x: xMousePos,
+            y: yMousePos,
             width: 1,
             height: 1,
           }) &&
