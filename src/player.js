@@ -57,7 +57,8 @@ var player = {
     this.playerLives = 3;
     this.starterPosX = starterX * screenratio;
     this.starterPosY = starterY * screenratio;
-    this.spaceSize = 4000 * screenratio;
+    this.defaultSpaceSize = 4000 * screenratio;
+    this.spaceSize = this.defaultSpaceSize;
     this.x = canvas.width / 2;
     this.y = canvas.height / 2;
     this.coordX = this.spaceSize / 2 + this.starterPosX;
@@ -144,7 +145,7 @@ var player = {
         this.targetxspeed != 0
       ) {
         this.xspeed +=
-          ((this.targetxspeed >= 0 ? 1 : -1) * (this.accelerationX / 100)) / 3;
+          ((this.targetxspeed >= 0 ? 1 : -1) * (this.accelerationX / 100)) / 2;
       } else {
         if (this.xspeed >= 0.5) {
           this.xspeed -= 0.5;
@@ -161,7 +162,7 @@ var player = {
         this.targetyspeed != 0
       ) {
         this.yspeed +=
-          ((this.targetyspeed >= 0 ? 1 : -1) * (this.accelerationY / 100)) / 3;
+          ((this.targetyspeed >= 0 ? 1 : -1) * (this.accelerationY / 100)) / 2;
       } else {
         if (this.yspeed >= 0.5) {
           this.yspeed -= 0.5;

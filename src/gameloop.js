@@ -50,6 +50,7 @@ function gameLoop() {
   } else {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     levelTimer++;
+    if (playerData.level >= 11) lastLevelHandler();
     ctx.beginPath();
     camera.update();
     camera.check();
@@ -59,7 +60,8 @@ function gameLoop() {
     player.render();
     //game space borders
     ctx.globalAlpha = 1;
-    ctx.strokeStyle = "#5C7CFF";
+    if (player.spaceSize / screenratio > 1001) ctx.strokeStyle = "#5C7CFF";
+    else ctx.strokeStyle = "cyan";
     ctx.lineWidth = 5;
     ctx.globalAlpha = 0.7;
     ctx.strokeRect(
@@ -287,14 +289,15 @@ function gameLoop() {
       spawnAnEnemy("lootCube");
     }
     UI.game_render();
-    if (playerData.level >= 11) lastLevelHandler();
   }
   timerList.forEach((el, index) => {
-    if (el.value > 0) {
-      el.value--;
-    } else {
-      timerList.splice(index, 1);
-      el.reference[el.attributeName] = false;
+    if (el.createdInMenu == UI.inMenu) {
+      if (el.value > 0) {
+        el.value--;
+      } else {
+        timerList.splice(index, 1);
+        el.reference[el.attributeName] = false;
+      }
     }
   });
   let loading = document.getElementById("loading");

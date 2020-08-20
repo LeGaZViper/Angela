@@ -67,6 +67,7 @@ function inicializeGame() {
   bulletList = [];
   enemyList = [];
   enemyBulletList = [];
+  timerList = [];
   lootCube.active = false;
   lootCube.nextSpawn = 1300;
   weaponActivation.inicialize();
@@ -160,16 +161,17 @@ function scale() {
 }
 
 var timerList = [];
-function setTimer(ms, reference, attributeName) {
+function setTimer(ms, reference, attributeName, inMenu = UI.inMenu) {
   let ticks = Math.round((ms * 60) / 1000);
   reference[attributeName] = true;
-  timerList.push(new Timer(ticks, reference, attributeName));
+  timerList.push(new Timer(ticks, reference, attributeName, inMenu));
 }
 
 class Timer {
-  constructor(value, reference, attributeName) {
+  constructor(value, reference, attributeName, createdInMenu) {
     this.value = value;
     this.reference = reference;
     this.attributeName = attributeName;
+    this.createdInMenu = createdInMenu;
   }
 }

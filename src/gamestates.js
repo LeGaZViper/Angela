@@ -1,6 +1,10 @@
 //Start the game function | used in: main menu
 function startTheGame() {
-  //Reset Progress
+  inicializeGame();
+}
+
+//reset of progress
+function askAboutReset() {
   if (playerData.level > 0) {
     if (
       confirm(
@@ -8,20 +12,21 @@ function startTheGame() {
       )
     ) {
       resetLocalStorage();
-      inicializeGame();
+      return true;
     }
-  } else inicializeGame();
-}
-
-//Continue the game function | used in: continue
-function continueTheGame() {
-  inicializeGame();
+  }
+  return false;
 }
 
 function getMenu(menu) {
   canvas.style.cursor = "auto";
   UI.inMenu = true;
-  UI.currentMenu = menu;
+  UI.globalCustomAlpha = 0;
+  UI.getMenuWithEffect(menu);
+}
+
+function closeMenu() {
+  UI.inMenu = false;
 }
 
 //Lose the game function | used in: gameover
@@ -33,6 +38,7 @@ function loseTheGame() {
   }
   player.inWeaponActivation = false;
   DialogueData.dialoguesUsed = [];
+  timerList = [];
   player.inicialize(0, 50);
   camera.inicialize();
   background.inicialize();
@@ -55,6 +61,7 @@ function winTheLevel() {
   textIndex = NaN;
   levelTimer = 0;
   enemySpawnList = [];
+  timerList = [];
   enemyList = [];
   lootCube.active = false;
   lootCube.nextSpawn = 1300;

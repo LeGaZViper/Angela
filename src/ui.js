@@ -2,6 +2,8 @@ var UI = {
   inMenu: true,
   currentMenu: 0,
   inicialize: function () {
+    this.globalCustomAlpha = 1;
+    this.globalCustomAlphaCheck = false;
     this.mainMenu_b0 = {
       width: 300 * screenratio,
       height: 50 * screenratio,
@@ -406,7 +408,13 @@ var UI = {
         ctx.fillStyle = element.color[0];
         ctx.strokeStyle = element.color[1];
         if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
-        ctx.globalAlpha = element.opacity;
+        if (
+          this.globalCustomAlphaCheck &&
+          element.opacity > this.globalCustomAlpha
+        )
+          ctx.globalAlpha = this.globalCustomAlpha;
+        else ctx.globalAlpha = element.opacity;
+
         if (element.sprite == undefined && element.textOnly == undefined) {
           ctx.strokeRect(element.x, element.y, element.width, element.height);
           ctx.fillRect(element.x, element.y, element.width, element.height);
@@ -624,8 +632,8 @@ var UI = {
       if (!e.deathAnimation && !e.killed) {
         ctx.save();
         ctx.translate(
-          e.coordX / (player.spaceSize / (200 * screenratio)),
-          e.coordY / (player.spaceSize / (200 * screenratio))
+          e.coordX / (player.defaultSpaceSize / (200 * screenratio)),
+          e.coordY / (player.defaultSpaceSize / (200 * screenratio))
         );
         ctx.rotate(e.angle);
 
@@ -643,21 +651,27 @@ var UI = {
     ctx.fillStyle = "#DCE6EE";
     ctx.strokeStyle = "#5C7CFF";
     ctx.lineWidth = 1;
-    ctx.moveTo(3, player.coordY / (player.spaceSize / (200 * screenratio)));
+    ctx.moveTo(
+      3,
+      player.coordY / (player.defaultSpaceSize / (200 * screenratio))
+    );
     ctx.lineTo(
       200 * screenratio,
-      player.coordY / (player.spaceSize / (200 * screenratio))
+      player.coordY / (player.defaultSpaceSize / (200 * screenratio))
     );
 
-    ctx.moveTo(player.coordX / (player.spaceSize / (200 * screenratio)), 3);
+    ctx.moveTo(
+      player.coordX / (player.defaultSpaceSize / (200 * screenratio)),
+      3
+    );
     ctx.lineTo(
-      player.coordX / (player.spaceSize / (200 * screenratio)),
+      player.coordX / (player.defaultSpaceSize / (200 * screenratio)),
       200 * screenratio
     );
     ctx.stroke();
     ctx.fillRect(
-      player.coordX / (player.spaceSize / (200 * screenratio)) - 2.5,
-      player.coordY / (player.spaceSize / (200 * screenratio)) - 2.5,
+      player.coordX / (player.defaultSpaceSize / (200 * screenratio)) - 2.5,
+      player.coordY / (player.defaultSpaceSize / (200 * screenratio)) - 2.5,
       5,
       5
     );
@@ -693,166 +707,171 @@ var UI = {
     }
   },
   click: function () {
-    if (this.currentMenu == 0 && this.inMenu) {
-      this.mainMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          gameAudio.playSound("click");
-          if (index.button == "NEW GAME") {
-            startTheGame();
-          } else if (index.button == "CONTINUE") {
-            if (playerData.level > 0) {
-              continueTheGame();
-            }
-          } else if (index.button == "OPTIONS") {
-            this.currentMenu = 1;
-          }
-        }
-      });
-    } else if (this.currentMenu == 1 && this.inMenu) {
-      this.optionsMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          if (index.button == "BACK") {
+    if (!this.globalCustomAlphaCheck) {
+      if (this.currentMenu == 0 && this.inMenu) {
+        this.mainMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
             gameAudio.playSound("click");
-            this.currentMenu = 0;
-          } else if (index.button == "CONTROLS") {
-            keyboardControler.active = !keyboardControler.active;
-            playerData.keyboardControl = !playerData.keyboardControl;
+            if (index.button == "NEW GAME") {
+              let reset = askAboutReset();
+              if (reset) this.closeMenuEffect(startTheGame);
+            } else if (index.button == "CONTINUE") {
+              if (playerData.level > 0) {
+                this.closeMenuEffect(startTheGame);
+              }
+            } else if (index.button == "OPTIONS") {
+              this.getMenuWithEffect(1);
+            }
+          }
+        });
+      } else if (this.currentMenu == 1 && this.inMenu) {
+        this.optionsMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            if (index.button == "BACK") {
+              gameAudio.playSound("click");
+              this.getMenuWithEffect(0);
+            } else if (index.button == "CONTROLS") {
+              gameAudio.playSound("click");
+              keyboardControler.active = !keyboardControler.active;
+              playerData.keyboardControl = !playerData.keyboardControl;
+              saveLocalStorage();
+              index.text = keyboardControler.active
+                ? "KEYBOARD + MOUSE"
+                : "MOUSE ONLY";
+            } else if (index.button == "DISPLAYMODE") {
+              gameAudio.playSound("click");
+              if (!document.fullscreen) {
+                canvas.requestFullscreen().catch((err) => {
+                  console.log(err);
+                });
+              } else {
+                document.exitFullscreen();
+              }
+            } else if (index.button == "sound") {
+              if (index.text == "🡅" && playerData.soundMultiplier < 10) {
+                playerData.soundMultiplier++;
+              } else if (index.text == "🡇" && playerData.soundMultiplier > 0) {
+                playerData.soundMultiplier--;
+              }
+              gameAudio.setVolume();
+              gameAudio.playSound("player_BASIC");
+              this.optionsMenu_t2.text = playerData.soundMultiplier;
+            } else if (index.button == "music") {
+              if (index.text == "🡅" && playerData.musicMultiplier < 10) {
+                playerData.musicMultiplier++;
+                gameAudio.changeVolumeOfMusic(0.03);
+                gameAudio.playSound("testMusic");
+              } else if (index.text == "🡇" && playerData.musicMultiplier > 0) {
+                playerData.musicMultiplier--;
+                gameAudio.changeVolumeOfMusic(0.03);
+                gameAudio.playSound("testMusic");
+              }
+              this.optionsMenu_t3.text = playerData.musicMultiplier;
+            }
             saveLocalStorage();
-            index.text = keyboardControler.active
-              ? "KEYBOARD + MOUSE"
-              : "MOUSE ONLY";
-          } else if (index.button == "DISPLAYMODE") {
-            if (!document.fullscreen) {
-              canvas.requestFullscreen().catch((err) => {
-                console.log(err);
-              });
-            } else {
-              document.exitFullscreen();
+          }
+        });
+      } else if (this.currentMenu == 2 && this.inMenu) {
+        this.gameOverMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "BACKTOMENU") {
+              this.getMenuWithEffect(0);
+            } else if (index.button == "RETRY") {
+              this.closeMenuEffect(startTheGame);
             }
-          } else if (index.button == "sound") {
-            if (index.text == "🡅" && playerData.soundMultiplier < 10) {
-              playerData.soundMultiplier++;
-            } else if (index.text == "🡇" && playerData.soundMultiplier > 0) {
-              playerData.soundMultiplier--;
+          }
+        });
+      } else if (this.currentMenu == 3 && this.inMenu) {
+        this.youWinMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "BACKTOMENU") {
+              this.getMenuWithEffect(0);
             }
-            gameAudio.setVolume();
-            gameAudio.playSound("player_BASIC");
-            this.optionsMenu_t2.text = playerData.soundMultiplier;
-          } else if (index.button == "music") {
-            if (index.text == "🡅" && playerData.musicMultiplier < 10) {
-              playerData.musicMultiplier++;
-              gameAudio.changeVolumeOfMusic(0.03);
-              gameAudio.playSound("testMusic");
-            } else if (index.text == "🡇" && playerData.musicMultiplier > 0) {
-              playerData.musicMultiplier--;
-              gameAudio.changeVolumeOfMusic(0.03);
-              gameAudio.playSound("testMusic");
+          }
+        });
+      } else if (this.currentMenu == 4 && this.inMenu) {
+        this.pauseMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "BACKTOMENU") {
+              this.getMenuWithEffect(0);
+              player.inWeaponActivation = false;
+              player.inicialize(0, 50);
+              camera.inicialize();
+              background.inicialize();
+              backgroundParticles.inicialize();
+            } else if (index.button == "RESUME") {
+              gameAudio.resumeMusic();
+              canvas.style.cursor = "none";
+              this.closeMenuEffect(closeMenu);
             }
-            this.optionsMenu_t3.text = playerData.musicMultiplier;
           }
-          saveLocalStorage();
-        }
-      });
-    } else if (this.currentMenu == 2 && this.inMenu) {
-      this.gameOverMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          gameAudio.playSound("click");
-          if (index.button == "BACKTOMENU") {
-            this.currentMenu = 0;
-          } else if (index.button == "RETRY") {
-            continueTheGame();
+        });
+      } else if (this.currentMenu == 5 && this.inMenu) {
+        this.beforeTheBossMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "NO") {
+              this.beforeTheBossMenuTimer = 0;
+              this.getMenuWithEffect(0);
+            } else if (index.button == "YES") {
+              playerData.level += 1;
+              this.beforeTheBossMenuTimer = 0;
+              this.closeMenuEffect(startTheGame);
+            }
           }
-        }
-      });
-    } else if (this.currentMenu == 3 && this.inMenu) {
-      this.youWinMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          gameAudio.playSound("click");
-          if (index.button == "BACKTOMENU") {
-            this.currentMenu = 0;
-          }
-        }
-      });
-    } else if (this.currentMenu == 4 && this.inMenu) {
-      this.pauseMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          gameAudio.playSound("click");
-          if (index.button == "BACKTOMENU") {
-            this.currentMenu = 0;
-            player.inWeaponActivation = false;
-            player.inicialize(0, 50);
-            camera.inicialize();
-            background.inicialize();
-            backgroundParticles.inicialize();
-          } else if (index.button == "RESUME") {
-            gameAudio.resumeMusic();
-            canvas.style.cursor = "none";
-            UI.inMenu = false;
-          }
-        }
-      });
-    } else if (this.currentMenu == 5 && this.inMenu) {
-      this.beforeTheBossMenu.forEach((index) => {
-        if (
-          collides_UI(index, {
-            x: xMousePos,
-            y: yMousePos,
-            width: 1,
-            height: 1,
-          }) &&
-          index.button != undefined
-        ) {
-          gameAudio.playSound("click");
-          if (index.button == "NO") {
-            this.beforeTheBossMenuTimer = 0;
-            this.currentMenu = 0;
-          } else if (index.button == "YES") {
-            playerData.level += 1;
-            this.beforeTheBossMenuTimer = 0;
-            continueTheGame();
-          }
-        }
-      });
+        });
+      }
     }
   },
   hover: function () {
@@ -992,5 +1011,29 @@ var UI = {
       if (i == object.cooldown / 10) object.opacity = 0;
       if (object.opacity == 0) break;
     }
+  },
+  getMenuWithEffect: async function (menu) {
+    this.globalCustomAlphaCheck = true;
+    if (this.globalCustomAlpha != 0) {
+      for (; this.globalCustomAlpha > 0; this.globalCustomAlpha -= 0.06) {
+        await sleep(10);
+      }
+      this.globalCustomAlpha = 0;
+    }
+    this.currentMenu = menu;
+    for (; this.globalCustomAlpha < 1; this.globalCustomAlpha += 0.06) {
+      await sleep(10);
+    }
+    this.globalCustomAlpha = 1;
+    this.globalCustomAlphaCheck = false;
+  },
+  closeMenuEffect: async function (callback) {
+    this.globalCustomAlphaCheck = true;
+    for (; this.globalCustomAlpha > 0; this.globalCustomAlpha -= 0.06) {
+      await sleep(10);
+    }
+    this.globalCustomAlpha = 0;
+    this.globalCustomAlphaCheck = false;
+    callback();
   },
 };

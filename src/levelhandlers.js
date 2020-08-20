@@ -274,7 +274,7 @@ var levelLayout = {
   },
   level_12: {
     waves: 3,
-    startTime: 10000000,
+    startTime: 10,
     angela: ["angela_phase2", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],

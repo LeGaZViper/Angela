@@ -181,11 +181,11 @@ function enemyCharacter(E) {
   };
   E.width *= screenratio;
   E.height *= screenratio;
-  E.speed *= screenratio;
   E.manualUpdate = false;
   E.defaultSpeed *= screenratio;
-  E.coordX = player.spaceSize / 2 + E.x - player.earthX;
-  E.coordY = player.spaceSize / 2 + E.y - player.earthY;
+  E.coordX = player.defaultSpaceSize / 2 + E.x - player.earthX;
+  E.coordY = player.defaultSpaceSize / 2 + E.y - player.earthY;
+  E.speed = E.defaultSpeed * screenratio;
   E.deathAnimation = false;
   E.deathAnimation_angle = Math.random() * 2 * Math.PI;
   E.deathAnimation_index = 0;
@@ -259,18 +259,35 @@ function enemyCharacter(E) {
           E.xspeed = ratio * E.randomDirX;
           E.yspeed = ratio * E.randomDirY;
         } else if (E.moveWithPlayer) {
-          E.playerOrbitAngle -= E.speed;
-          E.x =
-            (canvas.width / E.distanceFromPlayerX) *
-              Math.cos(E.playerOrbitAngle) +
-            canvas.width / 2;
-          E.y =
-            (canvas.height / E.distanceFromPlayerY) *
-              Math.sin(E.playerOrbitAngle) +
-            canvas.height / 2;
-          E.coordX = player.spaceSize / 2 + E.x - player.earthX;
-          E.coordY = player.spaceSize / 2 + E.y - player.earthY;
-          if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
+          if (E.behaviour == "angela_phase3") {
+            E.playerOrbitAngle -= E.speed;
+            E.x =
+              E.distanceFromCenter *
+                Math.cos(E.playerOrbitAngle) *
+                screenratio +
+              player.earthX;
+            E.y =
+              E.distanceFromCenter *
+                Math.sin(E.playerOrbitAngle) *
+                screenratio +
+              player.earthY;
+            E.coordX = player.defaultSpaceSize / 2 + E.x - player.earthX;
+            E.coordY = player.defaultSpaceSize / 2 + E.y - player.earthY;
+            if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
+          } else {
+            E.playerOrbitAngle -= E.speed;
+            E.x =
+              (canvas.width / E.distanceFromPlayerX) *
+                Math.cos(E.playerOrbitAngle) +
+              canvas.width / 2;
+            E.y =
+              (canvas.height / E.distanceFromPlayerY) *
+                Math.sin(E.playerOrbitAngle) +
+              canvas.height / 2;
+            E.coordX = player.defaultSpaceSize / 2 + E.x - player.earthX;
+            E.coordY = player.defaultSpaceSize / 2 + E.y - player.earthY;
+            if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
+          }
         } else {
           E.randomDirCDcounter = 300;
           let ratio =
@@ -896,10 +913,14 @@ function enemyCharacter(E) {
     }
   };
   E.angelaBehaviour3 = function () {
-    player.setPos(0, 0);
-    background.inicialize();
-    backgroundParticles.inicialize();
-    camera.inicialize();
+    if (!E.playerPosReseted) {
+      E.playerPosReseted = true;
+      player.setPos(0, 0);
+      background.inicialize();
+      backgroundParticles.inicialize();
+      camera.inicialize();
+      player.spaceSize = 1000 * screenratio;
+    }
   };
   E.lootCubeTarget = function () {
     if (weaponActivation.failTimeIndex > 0) {
