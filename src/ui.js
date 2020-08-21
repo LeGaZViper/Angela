@@ -2,7 +2,7 @@ var UI = {
   inMenu: true,
   currentMenu: 0,
   inicialize: function () {
-    this.globalCustomAlpha = 1;
+    this.globalCustomAlpha = 0;
     this.globalCustomAlphaCheck = false;
     this.mainMenu_b0 = {
       width: 300 * screenratio,
@@ -291,11 +291,11 @@ var UI = {
     this.beforeTheBossMenuTimer = 0;
 
     this.beforeTheBossMenu_b1 = {
-      width: 250 * screenratio,
+      width: 320 * screenratio,
       height: 50 * screenratio,
-      x: canvas.width / 2 - 265 * screenratio,
+      x: canvas.width / 2 - 315 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "LET HER",
+      text: "HELP ANGELA",
       textSize: 30 * screenratio,
       button: "NO",
       opacity: 1,
@@ -303,11 +303,11 @@ var UI = {
     };
 
     this.beforeTheBossMenu_b2 = {
-      width: 250 * screenratio,
+      width: 320 * screenratio,
       height: 50 * screenratio,
-      x: canvas.width / 2 + 15 * screenratio,
+      x: canvas.width / 2 + 65 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
-      text: "HELP",
+      text: "DEFEAT ANGELA",
       textSize: 30 * screenratio,
       button: "YES",
       opacity: 1,
@@ -404,7 +404,7 @@ var UI = {
       this.mainMenu_b1.opacity = 0.5;
     }
     menuArray.forEach((element) => {
-      if (this.currentMenu != 5 || this.beforeTheBossMenuTimer > 5200) {
+      if (this.currentMenu != 5 || this.beforeTheBossMenuTimer > 5290) {
         ctx.fillStyle = element.color[0];
         ctx.strokeStyle = element.color[1];
         if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
@@ -690,14 +690,16 @@ var UI = {
     if (dialogueList.length > 0) {
       if (
         dialogueList[0].color == "white" ||
-        (dialogueList[0].color == "#adadad" && playerData.level < 12)
+        ((dialogueList[0].color == "#adadad" ||
+          dialogueList[0].color == "cyan") &&
+          playerData.level < 12)
       )
         backgroundParticles.angelaDialogueBubble.visible = true;
       else backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.01);
       dialogueList.forEach((el, index) => {
-        el.update_render();
-        if (el.ttl <= 0 && el.opacity <= 0) {
+        if (!Dialogue.stopDialogues) el.update_render();
+        if (el.ttl <= 0 || el.opacity <= 0) {
           dialogueList.splice(index, 1);
         }
       });
@@ -728,7 +730,7 @@ var UI = {
                 this.closeMenuEffect(startTheGame);
               }
             } else if (index.button == "OPTIONS") {
-              this.getMenuWithEffect(1);
+              this.getMenuEffect(1);
             }
           }
         });
@@ -745,7 +747,7 @@ var UI = {
           ) {
             if (index.button == "BACK") {
               gameAudio.playSound("click");
-              this.getMenuWithEffect(0);
+              this.getMenuEffect(0);
             } else if (index.button == "CONTROLS") {
               gameAudio.playSound("click");
               keyboardControler.active = !keyboardControler.active;
@@ -776,11 +778,9 @@ var UI = {
               if (index.text == "🡅" && playerData.musicMultiplier < 10) {
                 playerData.musicMultiplier++;
                 gameAudio.changeVolumeOfMusic(0.03);
-                gameAudio.playSound("testMusic");
               } else if (index.text == "🡇" && playerData.musicMultiplier > 0) {
                 playerData.musicMultiplier--;
                 gameAudio.changeVolumeOfMusic(0.03);
-                gameAudio.playSound("testMusic");
               }
               this.optionsMenu_t3.text = playerData.musicMultiplier;
             }
@@ -800,7 +800,8 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "BACKTOMENU") {
-              this.getMenuWithEffect(0);
+              gameAudio.playMusic("music_menu");
+              this.getMenuEffect(0);
             } else if (index.button == "RETRY") {
               this.closeMenuEffect(startTheGame);
             }
@@ -819,7 +820,8 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "BACKTOMENU") {
-              this.getMenuWithEffect(0);
+              gameAudio.playMusic("music_menu");
+              this.getMenuEffect(0);
             }
           }
         });
@@ -836,7 +838,8 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "BACKTOMENU") {
-              this.getMenuWithEffect(0);
+              this.getMenuEffect(0);
+              gameAudio.playMusic("music_menu");
               player.inWeaponActivation = false;
               player.inicialize(0, 50);
               camera.inicialize();
@@ -862,11 +865,10 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "NO") {
-              this.beforeTheBossMenuTimer = 0;
-              this.getMenuWithEffect(0);
+              playerData.level += 2;
+              this.closeMenuEffect(startTheGame);
             } else if (index.button == "YES") {
               playerData.level += 1;
-              this.beforeTheBossMenuTimer = 0;
               this.closeMenuEffect(startTheGame);
             }
           }
@@ -1012,7 +1014,7 @@ var UI = {
       if (object.opacity == 0) break;
     }
   },
-  getMenuWithEffect: async function (menu) {
+  getMenuEffect: async function (menu) {
     this.globalCustomAlphaCheck = true;
     if (this.globalCustomAlpha != 0) {
       for (; this.globalCustomAlpha > 0; this.globalCustomAlpha -= 0.06) {

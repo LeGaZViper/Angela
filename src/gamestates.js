@@ -3,6 +3,14 @@ function startTheGame() {
   inicializeGame();
 }
 
+function warningClick() {
+  let warn = document.getElementById("warning");
+  warn.style.display = "none";
+  gameAudio.playSound("click");
+  gameAudio.playMusic("music_menu");
+  UI.getMenuEffect(0);
+}
+
 //reset of progress
 function askAboutReset() {
   if (playerData.level > 0) {
@@ -22,7 +30,7 @@ function getMenu(menu) {
   canvas.style.cursor = "auto";
   UI.inMenu = true;
   UI.globalCustomAlpha = 0;
-  UI.getMenuWithEffect(menu);
+  UI.getMenuEffect(menu);
 }
 
 function closeMenu() {
@@ -70,7 +78,6 @@ function winTheLevel() {
 
 function nextLevel() {
   if (playerData.level % 3 == 0) {
-    gameAudio.stopMusic();
     gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
   }
   levels_handler.waveCounter = 1;

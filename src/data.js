@@ -64,7 +64,8 @@ const sprite = {
   UI_ignore: new Image(),
   UI_spawn: new Image(),
   UI_loot: new Image(),
-  UI_angelaJumpscare: new Image(),
+  UI_angelaJumpscare1: new Image(),
+  UI_angelaJumpscare2: new Image(),
 };
 
 const DialogueData = {
@@ -198,7 +199,7 @@ const DialogueData = {
       "...it's only a matter of time before they# get to us...",
       "Why are you still trying?#We've already lost...",
       "There's no point in fighting a lost battle...",
-      "Gosh... Okay... I can try to overload the control panel.",
+      "Wait... I can try to overload the control panel.",
       "But it'll take a long time#considering our computing power.",
     ],
     color: ["orange", "white", "white", "white", "white", "white", "white"],
@@ -290,9 +291,9 @@ const DialogueData = {
   level_10: {
     text: [
       "Your record says more than enough.",
-      "'Kidnapped, beaten to unconsciousness then",
+      "'Kidnapped, beaten to unconsciousness, then",
       "I'VE TOLD YOU TO STOP!",
-      "'hook penetrated upper body pain",
+      "'Neck shows bloody marks after a tight rope noos",
       "DO YOU HAVE ANY IDEA HOW",
       "I'lL KiLl yOuuuuuU&@!<",
       "THIS HURTS ME?!",
@@ -347,17 +348,17 @@ const DialogueData = {
       "Second:#She brought you down here#to help her take revenge#on 'certain' people.",
       "These people did some terrible things.#So their punishment is indeed an eternal#servitude in the hellcoin mines.",
       "However, it wouldn't have happend#if Angela's father worked at#a boring job just like everyone else.",
-      "You see the situation is complicated#and we don't have time to#discuss it further.",
-      "I won't be able to confront#her before she deletes#them from the database.",
-      "Since you still have access#to the network, you're the only#one who can stop#her in time.",
-      "Normally I wouldn't give a damn#about a few workers.#But she's disgracing MY#and YOUR authorities.",
+      "You see, the situation is complicated#and we don't have time to#discuss it further.",
+      "I won't be able to confront her#in time without the forces#of my master whom I shouldn't disturb.",
+      "However, since you are so capable#you can deal with her#instead.",
+      "Normally, I wouldn't give a damn#about a few workers.#But she's disgracing MY#and YOUR authorities.",
       "So, what do you say?",
       "Surely it can't be that hard to decide.",
       "Hellooo? You there?",
       "Gosh, why do I have to deal with angels...",
       "FOR THE LOVE OF SATAN CAN YOU PRESS A BUTTON?!",
       "Do I look like an easter bunny to you?!",
-      "Fine. Here's your easter egg:",
+      "Fine. Here's your stupid easter egg:",
     ],
     color: [
       "red",
@@ -417,13 +418,25 @@ const DialogueData = {
   },
   level_12: {
     text: [
-      "I kNOw whY yoU CAme BacK.",
-      "UnForTUnaTelY For yOU I'm dOnE beINg NICe.",
+      "So THeY sEnT yOU To STop Me?",
+      "IT wAS fun whIlE it LaStED...",
+      "BuT nOw, UnForTUnaTelY For yOU, I'm dOnE beINg NICe.",
     ],
-    color: ["#adadad", "#adadad"],
-    triggerType: ["timer", "timer"],
-    triggerIndex: [240, 500],
-    ttl: [200, 200],
+    color: ["#adadad", "#adadad", "#adadad"],
+    triggerType: ["timer", "after", "after"],
+    triggerIndex: [240, 0, 1],
+    ttl: [200, 200, 200],
+  },
+  level_13: {
+    text: [
+      "So THeY sEn... waIT... you caME To HeLp ME?#AftER EvEryTHing I diD to YOU?",
+      "I GueSs I don'T haVE a CHoIce...",
+      "WeLl... IF yOU can hOlD tHEm#Off OnE MoRE TIme,I CaN FOcus on#the DeLeTIon pRoceSS.",
+    ],
+    color: ["#adadad", "#adadad", "#adadad"],
+    triggerType: ["timer", "after", "after"],
+    triggerIndex: [240, 0, 0],
+    ttl: [200, 200, 200],
   },
 };
 
@@ -746,7 +759,7 @@ const enemyWeaponData = {
   },
   BETAWAVE: {
     sprite: sprite.projectile_enemyBETAWAVE,
-    sound: "player_wave",
+    sound: "player_WAVE",
     name: "BETAWAVE",
     animation: false,
     piercing: true,

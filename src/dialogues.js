@@ -1,5 +1,6 @@
 var dialogueList = [];
 class Dialogue {
+  static stopDialogues = false;
   constructor(text, color, ttl, startingIndex = 0, part = 0) {
     if (startingIndex == 0) this.text = text.split("");
     else this.text = text;
@@ -31,12 +32,16 @@ class Dialogue {
     } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
     }
-    if (this.color == "#adadad") ctx.font = 30 * screenratio + "px Consolas";
+    if (this.color == "#adadad") ctx.font = 30 * screenratio + "px Courier New";
+    else if (this.color == "cyan")
+      ctx.font = 30 * screenratio + "px Lucida Console";
     else ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
     ctx.globalAlpha = this.opacity;
     ctx.strokeStyle = "black";
     ctx.strokeText(this.displayText.join(""), canvas.width / 2, this.y);
+    if (this.color == "#adadad" || this.color == "cyan")
+      this.color = Math.round(Math.random()) == 1 ? "#adadad" : "cyan";
     ctx.fillStyle = this.color;
     ctx.fillText(this.displayText.join(""), canvas.width / 2, this.y);
   }
@@ -45,7 +50,7 @@ class Dialogue {
     if (this.timeToType == 0) {
       if (this.color == "white") {
         gameAudio.playSound("typing_angela");
-      } else if (this.color == "#adadad") {
+      } else if (this.color == "#adadad" || this.color == "cyan") {
         gameAudio.playSound("typing_angela_2");
       } else if (this.color == "red") {
         gameAudio.playSound("typing_infernus");

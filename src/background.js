@@ -358,10 +358,41 @@ var environment = {
       opacity: 0.7,
       animationX: 0,
     };
-
-    this.angelaJumpscare = {
-      type: "ANGELAJUMPSCARE",
-      sprite: sprite.UI_angelaJumpscare,
+    this.angelaJumpscare1 = {
+      type: "ANGELAJUMPSCARE1",
+      sprite: sprite.UI_angelaJumpscare1,
+      x: canvas.width / 2 - 425 * screenratio,
+      y: canvas.height / 2 - 500 * screenratio,
+      widthOnPic: 600,
+      heightOnPic: 800,
+      width: 750 * screenratio,
+      height: 1000 * screenratio,
+      angle: 0,
+      animationX: 0,
+      timeIndex: 0,
+      activated: false,
+      opacity: 1,
+      animation: function () {
+        if (!UI.inMenu) {
+          this.timeIndex++;
+          if (this.timeIndex % 2 == 0) {
+            this.animationX += this.widthOnPic;
+          }
+          if (this.timeIndex % 6 == 0) {
+            this.animationX = 0;
+          }
+          if (this.timeIndex == 50) {
+            Dialogue.stopDialogues = false;
+            this.activated = false;
+            this.animationX = 0;
+            this.timeIndex = 0;
+          }
+        }
+      },
+    };
+    this.angelaJumpscare2 = {
+      type: "ANGELAJUMPSCARE2",
+      sprite: sprite.UI_angelaJumpscare2,
       x: canvas.width / 2 - (131 * screenratio * 5) / 2,
       y: canvas.height / 2 - (180 * screenratio * 5) / 2,
       widthOnPic: 131,
@@ -374,21 +405,28 @@ var environment = {
       activated: false,
       opacity: 1,
       animation: function () {
-        this.timeIndex++;
-        if (this.timeIndex % 3 == 0) {
-          this.animationX += this.widthOnPic;
-        }
-        if (this.timeIndex % 9 == 0) {
-          this.animationX = 0;
-        }
-        if (this.timeIndex == 30) {
-          this.activated = false;
-          this.animationX = 0;
-          this.timeIndex = 0;
+        if (!UI.inMenu) {
+          this.timeIndex++;
+          if (this.timeIndex % 3 == 0) {
+            this.animationX += this.widthOnPic;
+          }
+          if (this.timeIndex % 9 == 0) {
+            this.animationX = 0;
+          }
+          if (this.timeIndex == 30) {
+            this.activated = false;
+            this.animationX = 0;
+            this.timeIndex = 0;
+          }
         }
       },
     };
-    this.envi_list = [this.light, this.warning, this.angelaJumpscare];
+    this.envi_list = [
+      this.light,
+      this.warning,
+      this.angelaJumpscare1,
+      this.angelaJumpscare2,
+    ];
   },
   update_render: function () {
     this.envi_list.forEach((el) => {

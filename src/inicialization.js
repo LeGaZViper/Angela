@@ -62,6 +62,7 @@ function inicializeGame() {
   UI.levelDisplayCheck = true;
   DialogueData.dialoguesUsed = [];
   levelTimer = 0;
+  savedTimer = 0;
   textIndex = undefined;
   dialogueList = [];
   bulletList = [];
@@ -70,6 +71,7 @@ function inicializeGame() {
   timerList = [];
   lootCube.active = false;
   lootCube.nextSpawn = 1300;
+  UI.beforeTheBossMenuTimer = 0;
   weaponActivation.inicialize();
   canvas.style.cursor = "none";
   UI.inMenu = false;
@@ -128,7 +130,7 @@ function loadTheGame(callback) {
   }
   scale();
   playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 12;
+  playerData.level = 11;
   keyboardControler.inicialize();
   player.inicialize(0, 50);
   background.inicialize();

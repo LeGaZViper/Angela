@@ -1,14 +1,18 @@
 # Locus Defender
 
+_Warning: The game is dark and not suitable for children or those who are easily disturbed. Contains jumpscares and flashy effects. Player caution advised!_
+
 Hi and welcome to my little game project!
 
-This simple game is about defending a motherboard from hostiles. Nothing special at the moment, but it's getting there.
+This simple game is about defending a lovely soul named Angela. The hostiles seem like a threat at first glance, but is it really them who are evil? Will you seek a revenge or justice?
 
 ![alt text](banner.png)
 
 Written in: plain JavaScript
 
 Platform: PC Browser (IE not welcome)
+
+Genre: Action/Horror
 
 Development software: VS Code, Blender, Paint.net, sfxr
 

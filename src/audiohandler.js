@@ -1,6 +1,5 @@
 const gameAudio = {
   click: new Audio("./audio/click.ogg"),
-  testMusic: new Audio("./audio/testMusic.ogg"),
   player_BASIC: new Audio("./audio/player_BASIC.ogg"),
   player_CHAKRAM: new Audio("./audio/player_CHAKRAM.ogg"),
   player_NEONTHROWER: new Audio("./audio/player_NEONTHROWER.ogg"),
@@ -24,19 +23,19 @@ const gameAudio = {
   typing_infernus: new Audio("./audio/typing_infernus.ogg"),
   typing_angela: new Audio("./audio/typing_angela.ogg"),
   typing_angela_2: new Audio("./audio/typing_angela_2.ogg"),
-  angelaJumpscare: new Audio("./audio/angelaJumpscare.ogg"),
+  angelaJumpscare1: new Audio("./audio/angelaJumpscare1.ogg"),
+  angelaJumpscare2: new Audio("./audio/angelaJumpscare2.ogg"),
   music_level_0: new Audio("./audio/music_level_0.ogg"),
   music_level_1: new Audio("./audio/music_level_1.ogg"),
   music_level_2: new Audio("./audio/music_level_2.ogg"),
   music_level_3: new Audio("./audio/music_level_3.ogg"),
   music_level_4: new Audio("./audio/music_level_4.ogg"),
   music_level_4_2: new Audio("./audio/music_level_4_2.ogg"),
-  //music_menu: new Audio("./audio/music_menu.ogg"),
+  music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   activatedSounds: [],
   setVolume: function () {
     this.click.volume = 0.02 * playerData.soundMultiplier;
-    this.testMusic.volume = 0.03 * playerData.musicMultiplier;
     this.player_BASIC.volume = 0.05 * playerData.soundMultiplier;
     this.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
     this.player_NEONTHROWER.volume = 0.05 * playerData.soundMultiplier;
@@ -60,14 +59,15 @@ const gameAudio = {
     this.typing_infernus.volume = 0.01 * playerData.soundMultiplier;
     this.typing_angela.volume = 0.01 * playerData.soundMultiplier;
     this.typing_angela_2.volume = 0.01 * playerData.soundMultiplier;
-    this.angelaJumpscare.volume = 0.1 * playerData.soundMultiplier;
+    this.angelaJumpscare1.volume = 0.1 * playerData.soundMultiplier;
+    this.angelaJumpscare2.volume = 0.1 * playerData.soundMultiplier;
     this.music_level_0.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_1.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_2.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_3.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4_2.volume = 0.03 * playerData.musicMultiplier;
-    //this.music_menu.volume = 0.05 * playerData.musicMultiplier;
+    this.music_menu.volume = 0.03 * playerData.musicMultiplier;
   },
   playSound: function (sound) {
     let copyAudio = this[sound].cloneNode();
@@ -76,6 +76,7 @@ const gameAudio = {
     copyAudio.play();
   },
   playMusic: function (music) {
+    if (this.currentMusic != null) this.stopMusic();
     try {
       this.currentMusic = this[music].cloneNode();
       this.currentMusic.volume = this[music].volume;

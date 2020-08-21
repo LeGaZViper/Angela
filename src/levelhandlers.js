@@ -2,7 +2,7 @@
 async function spawn() {
   if (levelTimer == 0 && playerData.level != 11) {
     UI.levelDisplayCheck = true;
-    if (playerData.level > 12)
+    if (playerData.level < 12)
       UI.levelDisplay.text =
         Math.floor(playerData.level / 3) +
         1 +
@@ -275,19 +275,35 @@ var levelLayout = {
   level_12: {
     waves: 3,
     startTime: 10,
-    angela: ["angela_phase2", 1, 1, 1],
+    angela: ["angela_phase3", 1, 1, 1],
+    cube2: ["cube", 1, 1, 2],
+    cube3: ["cube", 1, 1, 3],
+  },
+  level_13: {
+    waves: 3,
+    startTime: 10,
+    angela: ["angela_phase3", 1, 1, 1],
     cube2: ["cube", 1, 1, 2],
     cube3: ["cube", 1, 1, 3],
   },
 };
 
-function lastLevelHandler() {
-  if (playerData.level == 11) {
+var savedTimer = 0;
+function levelEffectsHandler() {
+  if (playerData.level == 10) {
+    if (levels_handler.waveCounter == 2 && savedTimer == 0) {
+      savedTimer = levelTimer;
+    } else if (savedTimer + 420 == levelTimer && savedTimer != 0) {
+      Dialogue.stopDialogues = true;
+      environment.angelaJumpscare1.activated = true;
+      gameAudio.playSound("angelaJumpscare1");
+    }
+  } else if (playerData.level == 11) {
     backgroundParticles.angelaCorrupted.visible = true;
     backgroundParticles.angela.visible = false;
     if (levelTimer == 2200) {
-      environment.angelaJumpscare.activated = true;
-      //gameAudio.playSound("angelaJumpscare");
+      environment.angelaJumpscare2.activated = true;
+      //gameAudio.playSound("angelaJumpscare2");
     } else if (levelTimer == 2230) {
       levelTimer++;
       gameAudio.stopMusic();

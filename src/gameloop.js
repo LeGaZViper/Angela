@@ -50,7 +50,7 @@ function gameLoop() {
   } else {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     levelTimer++;
-    if (playerData.level >= 11) lastLevelHandler();
+    levelEffectsHandler();
     ctx.beginPath();
     camera.update();
     camera.check();
