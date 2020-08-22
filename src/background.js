@@ -14,26 +14,54 @@ var background = {
     } else {
       this.x2 += -(player.xspeed + camera.offSetX);
       this.y2 += 15 * screenratio - (player.yspeed + camera.offSetY);
-      ctx.drawImage(
-        sprite.UI_motherboardRay,
-        this.x2,
-        this.y2,
-        4000 * screenratio,
-        87 * screenratio
-      );
+      if (playerData.level > 4 && playerData.level < 12) {
+        ctx.drawImage(
+          sprite.UI_motherboardRayRed,
+          this.x2,
+          this.y2,
+          4000 * screenratio,
+          87 * screenratio
+        );
+      } else {
+        ctx.drawImage(
+          sprite.UI_motherboardRay,
+          this.x2,
+          this.y2,
+          4000 * screenratio,
+          87 * screenratio
+        );
+      }
     }
     if (this.y2 > player.earthY + (2000 * screenratio - 87 * screenratio)) {
       this.timeIndex = -1;
     }
     this.x1 += -(player.xspeed + camera.offSetX);
     this.y1 += -(player.yspeed + camera.offSetY);
-    ctx.drawImage(
-      sprite.UI_motherboard,
-      this.x1 - 2000 * screenratio,
-      this.y1 - 2000 * screenratio,
-      4000 * screenratio,
-      4000 * screenratio
-    );
+    if (playerData.level > 4 && playerData.level < 12) {
+      ctx.drawImage(
+        sprite.UI_motherboard,
+        4000,
+        0,
+        4000,
+        4000,
+        this.x1 - 2000 * screenratio,
+        this.y1 - 2000 * screenratio,
+        4000 * screenratio,
+        4000 * screenratio
+      );
+    } else {
+      ctx.drawImage(
+        sprite.UI_motherboard,
+        0,
+        0,
+        4000,
+        4000,
+        this.x1 - 2000 * screenratio,
+        this.y1 - 2000 * screenratio,
+        4000 * screenratio,
+        4000 * screenratio
+      );
+    }
   },
 };
 

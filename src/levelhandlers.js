@@ -290,6 +290,10 @@ var levelLayout = {
 
 var savedTimer = 0;
 function levelEffectsHandler() {
+  if (playerData.level > 4 && playerData.level < 12 && levelTimer == 1) {
+    backgroundParticles.fan1.sprite = sprite.UI_motherboardFanRed;
+    backgroundParticles.fan2.sprite = sprite.UI_motherboardFanRed;
+  }
   if (playerData.level == 10) {
     if (levels_handler.waveCounter == 2 && savedTimer == 0) {
       savedTimer = levelTimer;
@@ -303,7 +307,7 @@ function levelEffectsHandler() {
     backgroundParticles.angela.visible = false;
     if (levelTimer == 2200) {
       environment.angelaJumpscare2.activated = true;
-      //gameAudio.playSound("angelaJumpscare2");
+      gameAudio.playSound("angelaJumpscare2");
     } else if (levelTimer == 2230) {
       levelTimer++;
       gameAudio.stopMusic();
@@ -325,7 +329,6 @@ function levelEffectsHandler() {
   } else if (playerData.level == 12) {
     backgroundParticles.hole.visible = true;
     backgroundParticles.angela.visible = false;
-    //if (levelTimer == 1) gameAudio.playMusic("music_level_4");
     if (levelTimer == 1000) {
       gameAudio.stopMusic();
       gameAudio.playMusic("music_level_4_2");

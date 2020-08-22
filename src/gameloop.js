@@ -34,8 +34,11 @@ function gameLoop() {
         gameAudio.changeVolumeOfMusic(0.03);
       }
     }
-    environment.update_render();
-    UI.menu_render();
+    let warn = document.getElementById("warning");
+    if (warn.style.display == "none") {
+      environment.update_render();
+      UI.menu_render();
+    }
   } else if (levels_handler.level.total == 0) {
     if (levels_handler.level.waves >= levels_handler.waveCounter) {
       dialogueList = [];

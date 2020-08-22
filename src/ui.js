@@ -9,7 +9,7 @@ var UI = {
       height: 184 * screenratio,
       widthOnPic: 353,
       heightOnPic: 184,
-      x: canvas.width / 2 - 176.5 * screenratio,
+      x: canvas.width / 2 - 176 * screenratio,
       y: canvas.height / 2 - 400 * screenratio,
       sprite: sprite.UI_logo,
       opacity: 1,
@@ -485,6 +485,11 @@ var UI = {
               element.height
             );
           }
+        }
+        if (this.beforeTheBossMenuTimer == 9550) {
+          console.log(
+            `${window.location.href}sprites/enemy/angelaPhase1/chatthread1287.log`
+          );
         }
       }
     });

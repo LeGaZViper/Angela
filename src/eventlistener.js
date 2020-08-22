@@ -5,10 +5,8 @@ var rightMouseDown = false;
 async function userInput(event, eventValue) {
   //mouse movement
   if (eventValue == 0) {
-    xMousePos =
-      Math.abs(event.clientX) - (window.innerWidth - canvas.width) / 2;
-    yMousePos =
-      Math.abs(event.clientY) - (window.innerHeight - canvas.height) / 2;
+    xMousePos = Math.abs(event.clientX); // - (document.body.clientWidth - canvas.width) / 2;
+    yMousePos = Math.abs(event.clientY); // - (document.body.clientHeight - canvas.height) / 2;
     //press down
   } else if (eventValue == 1) {
     if (event.which == 1) {
