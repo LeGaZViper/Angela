@@ -5,13 +5,29 @@ var UI = {
     this.globalCustomAlpha = 0;
     this.globalCustomAlphaCheck = false;
     this.mainMenu_sprite0 = {
-      width: 467 * screenratio,
-      height: 200 * screenratio,
-      x: canvas.width / 2 - 233.5 * screenratio,
+      width: 353 * screenratio,
+      height: 184 * screenratio,
+      widthOnPic: 353,
+      heightOnPic: 184,
+      x: canvas.width / 2 - 176.5 * screenratio,
       y: canvas.height / 2 - 400 * screenratio,
       sprite: sprite.UI_logo,
       opacity: 1,
       color: ["grey", "black", "white"],
+      animationX: 0,
+      timeIndex: 15,
+      animation: function () {
+        this.timeIndex++;
+        if (this.timeIndex == 300) {
+          this.timeIndex = 0;
+        }
+        if (this.timeIndex < 15) {
+          this.animationX =
+            (Math.floor(this.timeIndex / 2) + 1) * this.widthOnPic;
+        } else {
+          this.animationX = 0;
+        }
+      },
     };
     this.mainMenu_b0 = {
       width: 300 * screenratio,
@@ -456,12 +472,13 @@ var UI = {
         }
         if (element.sprite != undefined) {
           if (element.button == undefined) {
+            if (element.animation != undefined) element.animation();
             ctx.drawImage(
               element.sprite,
+              element.animationX,
               0,
-              0,
-              element.width / screenratio,
-              element.height / screenratio,
+              element.widthOnPic,
+              element.heightOnPic,
               element.x,
               element.y,
               element.width,

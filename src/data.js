@@ -644,7 +644,7 @@ const WeaponData = {
 class DefaultSetup {
   constructor() {
     this.level = 0;
-    this.keyboardControl = false;
+    this.keyboardControl = true;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
   }

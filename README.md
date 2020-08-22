@@ -1,10 +1,11 @@
-# Locus Defender
+# Angela
 
-_Warning: The game is dark and not suitable for children or those who are easily disturbed. Contains jumpscares and flashy effects. Player caution advised!_
+**_Warning: This game is dark and not suitable for children or those who are easily disturbed. Contains jumpscares and flashy effects. Player caution advised!_**
+_(Also: spaghetti code - extra spOoOoky)_
 
-Hi and welcome to my little game project!
+### Hi and welcome to my little game project!
 
-This simple game is about defending a lovely soul named Angela. The hostiles seem like a threat at first glance, but is it really them who are evil? Will you seek a revenge or justice?
+This simple game is about defending a lovely soul named Angela. The hostiles seem like a threat at a first glance, but is it really them who are evil? Will you seek a revenge or justice?
 
 ![alt text](banner.png)
 
