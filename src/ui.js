@@ -4,6 +4,15 @@ var UI = {
   inicialize: function () {
     this.globalCustomAlpha = 0;
     this.globalCustomAlphaCheck = false;
+    this.mainMenu_sprite0 = {
+      width: 467 * screenratio,
+      height: 200 * screenratio,
+      x: canvas.width / 2 - 233.5 * screenratio,
+      y: canvas.height / 2 - 400 * screenratio,
+      sprite: sprite.UI_logo,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
     this.mainMenu_b0 = {
       width: 300 * screenratio,
       height: 50 * screenratio,
@@ -37,7 +46,12 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.mainMenu = [this.mainMenu_b0, this.mainMenu_b1, this.mainMenu_b2];
+    this.mainMenu = [
+      this.mainMenu_b0,
+      this.mainMenu_b1,
+      this.mainMenu_b2,
+      this.mainMenu_sprite0,
+    ];
     this.optionsMenu_box0 = {
       width: 300 * screenratio,
       height: 70 * screenratio,
@@ -441,7 +455,6 @@ var UI = {
           ); //text on screen
         }
         if (element.sprite != undefined) {
-          ctx.globalAlpha = 1;
           if (element.button == undefined) {
             ctx.drawImage(
               element.sprite,
@@ -469,24 +482,16 @@ var UI = {
       190 * screenratio,
       50 * screenratio
     );
-    //HP bars
-    /* let x1_player = parseInt(
-      (1-player.HP[1] / player.maxHP[1]) * 255
-    ).toString(16); */
+
     let x2_player = parseInt((player.HP[1] / player.maxHP[1]) * 255).toString(
       16
     );
-    //if (x1_player.length == 1) x1_player = "0" + x1_player;
     if (x2_player.length == 1) x2_player = "0" + x2_player;
     this.HPbar_player.color = "#F1" + x2_player + x2_player;
 
-    /* let x1_earth = parseInt(
-      -(player.HP[0] / player.maxHP[0] - 1) * 255
-    ).toString(16); */
     let x2_earth = parseInt((player.HP[0] / player.maxHP[0]) * 255).toString(
       16
     );
-    //if (x1_earth.length == 1) x1_earth = "0" + x1_earth;
     if (x2_earth.length == 1) x2_player = "0" + x2_earth;
     this.HPbar_earth.color = "#F1" + x2_earth + x2_earth;
 

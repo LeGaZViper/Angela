@@ -66,6 +66,7 @@ const sprite = {
   UI_loot: new Image(),
   UI_angelaJumpscare1: new Image(),
   UI_angelaJumpscare2: new Image(),
+  UI_logo: new Image(),
 };
 
 const DialogueData = {
