@@ -63,7 +63,7 @@ function gameLoop() {
     player.render();
     //game space borders
     ctx.globalAlpha = 1;
-    if (player.spaceSize / screenratio > 1001) ctx.strokeStyle = "#5C7CFF";
+    if (player.spaceSize / screenratio > 1201) ctx.strokeStyle = "#5C7CFF";
     else ctx.strokeStyle = "cyan";
     ctx.lineWidth = 5;
     ctx.globalAlpha = 0.7;
