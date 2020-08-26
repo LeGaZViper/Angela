@@ -37,8 +37,8 @@ async function checkDeath(enemy, bulletType = "none") {
               y: enemy.y,
               dirx: Math.cos((Math.PI / 8) * i),
               diry: Math.sin((Math.PI / 8) * i),
+              ...WeaponData.SPREADER_PROJECTILE,
             },
-            "SPREADER_PROJECTILE",
             1
           )
         );
@@ -48,7 +48,9 @@ async function checkDeath(enemy, bulletType = "none") {
       enemy.source.spawns--;
     }
     if (enemy.randomDrop) {
-      let choice = Math.floor(Math.random() * 9) + 1;
+      if (playerData.level != 12)
+        var choice = Math.round(Math.random() * 8) + 1;
+      else var choice = Math.round(Math.random() * 7) + 1;
       for (let index in WeaponData) {
         if (choice == WeaponData[index].index) {
           choice = WeaponData[index].name;
@@ -688,8 +690,8 @@ function enemyCharacter(E) {
     E.playerDistance = Math.sqrt(
       Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
     );
-    let damageBoost = 1 - E.HP / E.maxHP;
-    E.attackCDvalue = E.defaultAttackCDvalue - 1200 * damageBoost;
+    let rampUp = 1 - E.HP / E.maxHP;
+    E.attackCDvalue = E.defaultAttackCDvalue - 1200 * rampUp;
     if (E.playerDistance < 650 * screenratio) {
       if (E.acceleration >= 1) E.acceleration -= 1;
       else E.acceleration = 0;
@@ -705,9 +707,9 @@ function enemyCharacter(E) {
                 E.y + Math.sin((Math.PI / 6 + randomAngle) * i)
               )
             );
-            E.ammo -= 2;
+            E.ammo -= 2 - Math.round(1 * rampUp);
           }
-          setTimer(200 - 30 * damageBoost, E, "weaponCD");
+          setTimer(200 - 30 * rampUp, E, "weaponCD");
         } else if (E.bulletType == "ANGELABASIC" && !E.weaponCD) {
           for (let i = -4; i < 4; i++) {
             enemyBulletList.push(
@@ -718,9 +720,9 @@ function enemyCharacter(E) {
                 E.y + Math.sin(E.angle - Math.PI / 2 + 0.06 * i)
               )
             );
-            E.ammo -= 4;
+            E.ammo -= 4 - Math.round(1 * rampUp);
           }
-          setTimer(300 - 30 * damageBoost, E, "weaponCD");
+          setTimer(300 - 30 * rampUp, E, "weaponCD");
         } else if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
           for (let i = 0; i < 16; i++) {
             let randomSelector = Math.round(Math.random());
@@ -734,9 +736,9 @@ function enemyCharacter(E) {
                   Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
               )
             );
-            E.ammo -= 4;
+            E.ammo -= 4 - Math.round(1 * rampUp);
           }
-          setTimer(200 - 30 * damageBoost, E, "weaponCD");
+          setTimer(200 - 30 * rampUp, E, "weaponCD");
         }
       } else if (!E.attackCD) {
         E.attackCDstart();
@@ -754,8 +756,8 @@ function enemyCharacter(E) {
   E.angelaBehaviour2 = function () {
     E.target = player;
     E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-    let damageBoost = 1 - E.HP / E.maxHP;
-    E.attackCDvalue = E.defaultAttackCDvalue - 1500 * damageBoost;
+    let rampUp = 1 - E.HP / E.maxHP;
+    E.attackCDvalue = E.defaultAttackCDvalue - 1500 * rampUp;
     if (E.ammo > 0 && !E.attackCD) {
       if (E.bulletType == "COG" && !E.weaponCD) {
         let randomAngle = Math.random() * 0.5;
@@ -770,7 +772,7 @@ function enemyCharacter(E) {
           );
           E.ammo -= 2;
         }
-        setTimer(200 - 40 * damageBoost, E, "weaponCD");
+        setTimer(200 - 40 * rampUp, E, "weaponCD");
       } else if (E.bulletType == "ANGELABASIC" && !E.weaponCD) {
         for (let i = -4; i < 4; i++) {
           enemyBulletList.push(
@@ -783,7 +785,7 @@ function enemyCharacter(E) {
           );
           E.ammo -= 4;
         }
-        setTimer(300 - 40 * damageBoost, E, "weaponCD");
+        setTimer(300 - 40 * rampUp, E, "weaponCD");
       } else if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
         for (let i = 0; i < 16; i++) {
           let randomSelector = Math.round(Math.random());
@@ -799,7 +801,7 @@ function enemyCharacter(E) {
           );
           E.ammo -= 4;
         }
-        setTimer(200 - 40 * damageBoost, E, "weaponCD");
+        setTimer(200 - 40 * rampUp, E, "weaponCD");
       } else if (E.bulletType == "CHARGE") {
         if (!E.chargeActive) {
           E.chargeSet = Math.round(Math.random() * 3);
@@ -810,15 +812,15 @@ function enemyCharacter(E) {
           E.chargeRectX = player.x;
           E.chargeRectY = player.y;
 
-          setTimer(E.chargeWaitTime - 500 * damageBoost, E, "weaponCD");
-          setTimer(1000 + E.chargeWaitTime - 500 * damageBoost, E, "chargeEnd");
+          setTimer(E.chargeWaitTime - 500 * rampUp, E, "weaponCD");
+          setTimer(1000 + E.chargeWaitTime - 500 * rampUp, E, "chargeEnd");
         } else if (!E.weaponCD && E.chargeActive) {
           E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
           E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
           E.coordX += E.chargeXSpeed;
           E.coordY += E.chargeYSpeed;
           if (!E.chargeEnd) {
-            E.ammo -= 100;
+            E.ammo -= 100 - 1 * Math.round(rampUp);
             E.manualUpdate = false;
             E.chargeActive = false;
             E.appearOpacity = 0;
@@ -850,7 +852,7 @@ function enemyCharacter(E) {
           E.coordY = player.spaceSize / 2 + E.y - player.earthY;
           E.chargeRectX -= camera.offSetX;
           E.chargeRectY -= camera.offSetY;
-          ctx.globalAlpha = 0.2;
+          ctx.globalAlpha = 0.3;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {
             ctx.fillRect(
@@ -859,6 +861,29 @@ function enemyCharacter(E) {
               canvas.width,
               E.height
             );
+            ctx.globalAlpha = 0.6;
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              canvas.width / 3 - 51 * screenratio,
+              E.chargeRectY - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              (2 * canvas.width) / 3 - 51 * screenratio,
+              E.chargeRectY - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
           } else {
             ctx.fillRect(
               E.chargeRectX - E.width / 2,
@@ -866,11 +891,34 @@ function enemyCharacter(E) {
               E.width,
               canvas.height
             );
+            ctx.globalAlpha = 0.6;
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              E.chargeRectX - 51 * screenratio,
+              canvas.height / 3 - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              E.chargeRectX - 51 * screenratio,
+              (2 * canvas.height) / 3 - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
           }
         }
       } else if (E.bulletType == "AIRSTRIKE") {
         if (!E.airStrikeActive) {
-          setTimer(E.airStrikeCD - 200 * damageBoost, E, "weaponCD");
+          setTimer(E.airStrikeCD - 200 * rampUp, E, "weaponCD");
           E.airStrikeX = player.x;
           E.airStrikeY = player.y;
           E.airStrikeActive = true;
@@ -894,7 +942,7 @@ function enemyCharacter(E) {
         } else {
           E.airStrikeX += -player.xspeed - camera.offSetX;
           E.airStrikeY += -player.yspeed - camera.offSetY;
-          ctx.globalAlpha = 0.3;
+          ctx.globalAlpha = 1;
           ctx.fillStyle = "red";
           ctx.drawImage(
             sprite.projectile_enemyAIRSTRIKEDANGER,
@@ -921,8 +969,8 @@ function enemyCharacter(E) {
   E.angelaBehaviour3 = function () {
     E.target = player;
     E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-    let damageBoost = 1 - E.HP / E.maxHP;
-    E.attackCDvalue = E.defaultAttackCDvalue - 2000 * damageBoost;
+    let rampUp = 1 - E.HP / E.maxHP;
+    E.attackCDvalue = E.defaultAttackCDvalue - 2000 * rampUp;
     if (!E.playerPosReseted) {
       E.attackCDstart();
       E.playerPosReseted = true;
@@ -933,7 +981,35 @@ function enemyCharacter(E) {
       player.spaceSize = 1200 * screenratio;
     }
     if (E.ammo > 0 && !E.attackCD) {
-      if (E.bulletType == "CHARGE") {
+      if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
+        for (let i = 0; i < 16; i++) {
+          let randomSelector = Math.round(Math.random());
+          enemyBulletList.push(
+            enemyBullet(
+              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
+              "custom",
+              E.x +
+                Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+              E.y +
+                Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+            )
+          );
+          E.ammo -= 4 - Math.round(2 * rampUp);
+        }
+        if (rampUp > 0.5) {
+          for (let i = -3; i < 3; i++) {
+            enemyBulletList.push(
+              enemyBullet(
+                { x: E.x, y: E.y, ...enemyWeaponData["ANGELABASIC"] },
+                "custom",
+                E.x + Math.cos(E.angle - Math.PI / 2 + 0.1 * i),
+                E.y + Math.sin(E.angle - Math.PI / 2 + 0.1 * i)
+              )
+            );
+          }
+        }
+        setTimer(200 - 30 * rampUp, E, "weaponCD");
+      } else if (E.bulletType == "CHARGE") {
         if (!E.chargeActive) {
           E.chargeSet = Math.round(Math.random() * 3);
           E.appearOpacity = 0;
@@ -943,15 +1019,15 @@ function enemyCharacter(E) {
           E.chargeRectX = player.x;
           E.chargeRectY = player.y;
 
-          setTimer(E.chargeWaitTime - 900 * damageBoost, E, "weaponCD");
-          setTimer(1000 + E.chargeWaitTime - 900 * damageBoost, E, "chargeEnd");
+          setTimer(E.chargeWaitTime - 900 * rampUp, E, "weaponCD");
+          setTimer(1000 + E.chargeWaitTime - 900 * rampUp, E, "chargeEnd");
         } else if (!E.weaponCD && E.chargeActive) {
           E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
           E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
           E.coordX += E.chargeXSpeed;
           E.coordY += E.chargeYSpeed;
           if (!E.chargeEnd) {
-            E.ammo -= 100;
+            E.ammo -= 100 - Math.floor(66 * rampUp);
             E.manualUpdate = false;
             E.chargeActive = false;
             E.appearOpacity = 0;
@@ -983,7 +1059,7 @@ function enemyCharacter(E) {
           E.coordY = player.spaceSize / 2 + E.y - player.earthY;
           E.chargeRectX -= camera.offSetX;
           E.chargeRectY -= camera.offSetY;
-          ctx.globalAlpha = 0.2;
+          ctx.globalAlpha = 0.3;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {
             ctx.fillRect(
@@ -992,6 +1068,29 @@ function enemyCharacter(E) {
               canvas.width,
               E.height
             );
+            ctx.globalAlpha = 0.6;
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              canvas.width / 3 - 51 * screenratio,
+              E.chargeRectY - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              (2 * canvas.width) / 3 - 51 * screenratio,
+              E.chargeRectY - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
           } else {
             ctx.fillRect(
               E.chargeRectX - E.width / 2,
@@ -999,21 +1098,46 @@ function enemyCharacter(E) {
               E.width,
               canvas.height
             );
+            ctx.globalAlpha = 0.6;
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              E.chargeRectX - 51 * screenratio,
+              canvas.height / 3 - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
+            ctx.drawImage(
+              sprite.projectile_enemyDANGER,
+              0,
+              0,
+              102,
+              102,
+              E.chargeRectX - 51 * screenratio,
+              (2 * canvas.height) / 3 - 51 * screenratio,
+              102 * screenratio,
+              102 * screenratio
+            );
           }
         }
       } else if (E.bulletType == "AIRSTRIKE") {
         if (!E.airStrikeActive) {
-          setTimer(E.airStrikeCD - 200 * damageBoost, E, "weaponCD");
-          let randomAngle = Math.random() * 0.5;
-          for (let i = 0; i < 12; i++) {
-            enemyBulletList.push(
-              enemyBullet(
-                { x: E.x, y: E.y, ...enemyWeaponData["COG"] },
-                "custom",
-                E.x + Math.cos((Math.PI / 6 + randomAngle) * i),
-                E.y + Math.sin((Math.PI / 6 + randomAngle) * i)
-              )
-            );
+          setTimer(E.airStrikeCD - 200 * rampUp, E, "weaponCD");
+          if (rampUp > 0.5) {
+            let randomAngle = Math.random() * 0.5;
+            for (let i = 0; i < 12; i++) {
+              enemyBulletList.push(
+                enemyBullet(
+                  { x: E.x, y: E.y, ...enemyWeaponData["COG"] },
+                  "custom",
+                  E.x + Math.cos((Math.PI / 6 + randomAngle) * i),
+                  E.y + Math.sin((Math.PI / 6 + randomAngle) * i)
+                )
+              );
+            }
           }
           E.airStrikeX = player.x;
           E.airStrikeY = player.y;
@@ -1038,7 +1162,7 @@ function enemyCharacter(E) {
         } else {
           E.airStrikeX += -player.xspeed - camera.offSetX;
           E.airStrikeY += -player.yspeed - camera.offSetY;
-          ctx.globalAlpha = 0.3;
+          ctx.globalAlpha = 0.6;
           ctx.fillStyle = "red";
           ctx.drawImage(
             sprite.projectile_enemyAIRSTRIKEDANGER,
@@ -1056,8 +1180,9 @@ function enemyCharacter(E) {
     } else if (!E.attackCD) {
       E.attackCDstart();
       E.ammo = 100;
-      if (E.bulletType == "CHARGE") E.bulletType = "AIRSTRIKE";
+      if (E.bulletType == "CORRUPTEDSHOT") E.bulletType = "AIRSTRIKE";
       else if (E.bulletType == "AIRSTRIKE") E.bulletType = "CHARGE";
+      else if (E.bulletType == "CHARGE") E.bulletType = "CORRUPTEDSHOT";
     }
   };
   E.lootCubeTarget = function () {

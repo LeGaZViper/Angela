@@ -104,7 +104,7 @@ function gameLoop() {
           player.HP[1] > 0 &&
           !player.hitCD &&
           !player.collisionCD &&
-          player.weapon.name != "INVICIBLEDRILL"
+          player.weapon.name != "INVINCIBLEDRILL"
         ) {
           if (!eb.piercing || !player.piercingCD) {
             if (player.shield[1] >= eb.damage) player.shield[1] -= eb.damage;
@@ -219,7 +219,7 @@ function gameLoop() {
                   checkDeath(e);
                 }
               }
-              if (player.weapon.name != "INVICIBLEDRILL") {
+              if (player.weapon.name != "INVINCIBLEDRILL") {
                 player.collisionCD = true;
                 if (player.shield[1] >= e.collisionDamage)
                   player.shield[1] -= e.collisionDamage;

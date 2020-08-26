@@ -3,7 +3,7 @@
 function chooseWeapon(name) {
   player.weapon = WeaponData[name];
   player.weaponDuration = player.weapon.duration;
-  if (player.weapon.name == "INVICIBLEDRILL") {
+  if (player.weapon.name == "INVINCIBLEDRILL") {
     player.speed = 20;
     player.animationFPS = 60;
     player.width = 150 * screenratio;
@@ -22,7 +22,7 @@ var weaponActivation = {
   defaultTimerIndex: 660,
   render_update: function () {
     this.timerIndex--;
-    if (this.timerIndex == 0) {
+    if (this.timerIndex == 0 && this.successTimeIndex == 0) {
       this.failTimeIndex = 120;
       this.targets = -1;
     } else if (this.targets == 0 && this.successTimeIndex == 0) {
@@ -111,6 +111,7 @@ function bullet(B, numberOfBullets) {
     B.x = player.x + 8 * screenratio * Math.cos(player.angle - Math.PI / 2);
     B.y = player.y + 8 * screenratio * Math.sin(player.angle - Math.PI / 2);
   }
+  B.dirx;
   B.killed = false;
   B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
   B.speed =

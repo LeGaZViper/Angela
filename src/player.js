@@ -210,7 +210,7 @@ var player = {
       this.companionsIndex[i] += 2;
       if (this.companionsIndex[i] >= 360) this.companionsIndex[i] = 0;
     });
-    let companionDistance = this.weapon.name != "INVICIBLEDRILL" ? 50 : 100;
+    let companionDistance = this.weapon.name != "INVINCIBLEDRILL" ? 50 : 100;
     for (let i = 0; i < this.companions; i++) {
       this.companionsX[i] =
         this.x +
@@ -260,7 +260,7 @@ var player = {
       this.width,
       this.height
     );
-    if (this.HP[1] > 0 && this.weapon.name == "INVICIBLEDRILL") {
+    if (this.HP[1] > 0 && this.weapon.name == "INVINCIBLEDRILL") {
       ctx.globalAlpha = (this.dodgeMeter / 100) * 5;
       ctx.drawImage(
         this.sprite,
@@ -295,7 +295,7 @@ var player = {
       ctx.save();
       ctx.translate(this.companionsX[i], this.companionsY[i]);
       ctx.rotate(this.angle);
-      if (this.weapon.name != "INVICIBLEDRILL")
+      if (this.weapon.name != "INVINCIBLEDRILL")
         ctx.drawImage(sprite.player_companion, 0, 0, 30, 30, -15, -15, 30, 30);
       else
         ctx.drawImage(sprite.player_companion, 0, 30, 30, 30, -30, -30, 60, 60);

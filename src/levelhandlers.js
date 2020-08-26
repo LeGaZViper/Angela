@@ -19,7 +19,11 @@ async function spawn() {
     }
     UI.levelDisplayCheck = false;
   }
-  await sleep(levels_handler.level.startTime);
+  if (levels_handler.level.startTime == undefined)
+    await sleep(
+      levels_handler.level["startTimeWave" + levels_handler.waveCounter]
+    );
+  else await sleep(levels_handler.level.startTime);
   for (let i = 0; i < enemySpawnList.length; i++) {
     if (enemySpawnList.length == 0) break;
 
@@ -276,14 +280,15 @@ var levelLayout = {
   },
   level_12: {
     waves: 3,
-    startTime: 10,
-    angela: ["angela_phase3", 1, 1, 1],
-    cube2: ["cube", 1, 1, 2],
-    cube3: ["cube", 1, 1, 3],
+    startTimeWave1: 12500,
+    startTimeWave2: 2000,
+    angela1: ["angela_phase1", 1, 1, 1],
+    angela2: ["angela_phase2", 1, 1, 2],
+    angela3: ["angela_phase3", 1, 1, 3],
   },
   level_13: {
     waves: 14,
-    startTime: 10,
+    startTime: 20000,
     miniArrow1: ["miniArrow", 20, 500, 1],
     betaMiniArrow1: ["betaMiniArrow", 20, 500, 2],
     cube1: ["cube", 20, 500, 3],
