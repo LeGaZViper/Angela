@@ -257,20 +257,22 @@ var UI = {
       this.gameOverMenu_b1,
     ];
 
-    this.youWinMenuWindow = {
-      width: 550 * screenratio,
-      height: 250 * screenratio,
-      x: canvas.width / 2 - 275 * screenratio,
-      y: canvas.height / 2 - 150 * screenratio,
-      text: "GAME COMPLETED!",
-      textSize: 30 * screenratio,
+    this.creditsMenu_sprite0 = {
+      width: 600 * screenratio,
+      height: 370 * screenratio,
+      widthOnPic: 600,
+      heightOnPic: 370,
+      x: canvas.width / 2 - 300 * screenratio,
+      y: canvas.height / 2 - 250 * screenratio,
+      sprite: sprite.UI_credits,
       opacity: 1,
-      color: ["#4C4C4C", "black", "white"],
+      color: ["grey", "black", "white"],
+      animationX: 0,
     };
-    this.youWinMenu_b0 = {
+    this.creditsMenu_b0 = {
       width: 250 * screenratio,
       height: 50 * screenratio,
-      x: canvas.width / 2 + 15 * screenratio,
+      x: canvas.width / 2 - 125 * screenratio,
       y: canvas.height / 2 + 40 * screenratio,
       text: "MENU",
       textSize: 30 * screenratio,
@@ -278,7 +280,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.youWinMenu = [this.youWinMenuWindow, this.youWinMenu_b0];
+    this.creditsMenu = [this.creditsMenu_sprite0, this.creditsMenu_b0];
 
     this.pauseMenuWindow = {
       width: 550 * screenratio,
@@ -346,6 +348,36 @@ var UI = {
     this.beforeTheBossMenu = [
       this.beforeTheBossMenu_b1,
       this.beforeTheBossMenu_b2,
+    ];
+
+    this.judgementEnding_sprite0 = {
+      width: 750 * screenratio,
+      height: 955 * screenratio,
+      widthOnPic: 750,
+      heightOnPic: 955,
+      x: canvas.width / 2 - 375 * screenratio,
+      y: canvas.height / 2 - 477 * screenratio,
+      sprite: sprite.UI_judgementending,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+      animationX: 0,
+    };
+
+    this.judgementEnding_b0 = {
+      width: 320 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 160 * screenratio,
+      y: canvas.height / 2 + 400 * screenratio,
+      text: "CREDITS",
+      textSize: 30 * screenratio,
+      button: "CREDITS",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.judgementEndingMenu = [
+      this.judgementEnding_sprite0,
+      this.judgementEnding_b0,
     ];
 
     this.levelDisplay = {
@@ -418,9 +450,10 @@ var UI = {
       this.mainMenu,
       this.optionsMenu,
       this.gameOverMenu,
-      this.youWinMenu,
+      this.creditsMenu,
       this.pauseMenu,
       this.beforeTheBossMenu,
+      this.judgementEndingMenu,
     ];
     this.cursorIndex = 0;
   },
@@ -488,7 +521,7 @@ var UI = {
         }
         if (this.beforeTheBossMenuTimer == 9550) {
           console.log(
-            `${window.location.href}sprites/enemy/angelaPhase1/chatthread1287.log`
+            `${window.location.href}sprites/enemy/angelaPhase1/chatlog_1.log`
           );
         }
       }
@@ -663,14 +696,7 @@ var UI = {
           e.coordY / (player.defaultSpaceSize / (200 * screenratio))
         );
         ctx.rotate(e.angle);
-
-        try {
-          if (e.behaviour != "collide")
-            ctx.drawImage(sprite[e.minimapIcon], -3.5, -3.5, 7, 7);
-          else ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
-        } catch (err) {
-          ctx.drawImage(sprite["UI_chase"], -3.5, -3.5, 7, 7);
-        }
+        ctx.drawImage(e.minimapIcon, -3.5, -3.5, 7, 7);
       }
       ctx.restore();
     });
@@ -835,7 +861,7 @@ var UI = {
           }
         });
       } else if (this.currentMenu == 3 && this.inMenu) {
-        this.youWinMenu.forEach((index) => {
+        this.creditsMenu.forEach((index) => {
           if (
             collides_UI(index, {
               x: xMousePos,
@@ -897,6 +923,23 @@ var UI = {
             } else if (index.button == "YES") {
               playerData.level += 1;
               this.closeMenuEffect(startTheGame);
+            }
+          }
+        });
+      } else if (this.currentMenu == 6 && this.inMenu) {
+        this.judgementEndingMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "CREDITS") {
+              this.getMenuEffect(3);
             }
           }
         });
@@ -971,7 +1014,7 @@ var UI = {
         }
       });
     } else if (this.currentMenu == 3) {
-      this.youWinMenu.forEach((index) => {
+      this.creditsMenu.forEach((index) => {
         if (
           collides_UI(index, {
             x: xMousePos,
@@ -1013,6 +1056,27 @@ var UI = {
       });
     } else if (this.currentMenu == 5) {
       this.beforeTheBossMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos,
+            y: yMousePos,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
+    } else if (this.currentMenu == 6) {
+      //judgement ending
+      this.judgementEndingMenu.forEach((index) => {
         if (
           collides_UI(index, {
             x: xMousePos,

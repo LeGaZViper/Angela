@@ -57,12 +57,10 @@ function loseTheGame() {
 //Win the game function | used in: gameloop ~ all enemies dead
 function winTheLevel() {
   player.inWeaponActivation = false;
-  playerData.level += 1;
   player.HP = [player.maxHP[0], player.maxHP[1]];
   player.shield = [player.maxShield[0], player.maxShield[1]];
   player.playerLives = 3;
   player.setCompanions(Math.floor(playerData.level / 3));
-  saveLocalStorage();
   weaponActivation.inicialize();
   dialogueList = [];
   DialogueData.dialoguesUsed = [];
@@ -73,9 +71,25 @@ function winTheLevel() {
   enemyList = [];
   lootCube.active = false;
   lootCube.nextSpawn = 1300;
-  nextLevel();
+  if (playerData.level < 12) {
+    playerData.level += 1;
+    nextLevel();
+  } else {
+    gameAudio.stopMusic();
+    player.inicialize(0, 50);
+    camera.inicialize();
+    background.inicialize();
+    backgroundParticles.inicialize();
+    environment.inicialize();
+    if (playerData.level == 12) {
+      getMenu(6);
+    } else if (playerData.level == 13) {
+      getMenu(7);
+    }
+    playerData.level = 11;
+  }
+  saveLocalStorage();
 }
-
 function nextLevel() {
   if (playerData.level % 3 == 0) {
     gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));

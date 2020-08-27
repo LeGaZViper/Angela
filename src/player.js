@@ -94,7 +94,7 @@ var player = {
     this.animationIndex = 0;
     this.animationFrames = 9;
     this.animationFPS = 5;
-    this.sprite = sprite.player_scout;
+    this.sprite = sprite.player_angel305;
 
     this.weapon = WeaponData.BASIC;
     this.weaponDuration = 0;

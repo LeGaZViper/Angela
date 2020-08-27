@@ -57,6 +57,12 @@ function collides_UI(a, b) {
   );
 }
 
+function _305() {
+  console.log(
+    `${window.location.href}sprites/enemy/angelaPhase2/chatlog_2.log`
+  );
+}
+
 function inicializeGame() {
   gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
   UI.levelDisplayCheck = true;

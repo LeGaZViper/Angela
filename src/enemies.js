@@ -29,6 +29,7 @@ async function checkDeath(enemy, bulletType = "none") {
       }
     }
     if (bulletType == "SPREADER" && bulletList.length < 300) {
+      gameAudio.playSound("player_SPREADERPROJECTILE");
       for (let i = 0; i < 16; i++) {
         bulletList.push(
           bullet(
@@ -37,7 +38,7 @@ async function checkDeath(enemy, bulletType = "none") {
               y: enemy.y,
               dirx: Math.cos((Math.PI / 8) * i),
               diry: Math.sin((Math.PI / 8) * i),
-              ...WeaponData.SPREADER_PROJECTILE,
+              ...WeaponData.SPREADERPROJECTILE,
             },
             1
           )
@@ -199,7 +200,6 @@ function enemyCharacter(E) {
   E.arrival = false;
   E.acceleration = 100;
   E.target = "none";
-  E.minimapIcon = "UI_" + E.behaviour;
   E.orbitAngle =
     Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
   E.angle = Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;

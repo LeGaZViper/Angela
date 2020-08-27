@@ -1,6 +1,8 @@
 const gameAudio = {
   click: new Audio("./audio/click.ogg"),
   player_BASIC: new Audio("./audio/player_BASIC.ogg"),
+  player_SPREADER: new Audio("./audio/player_SPREADER.ogg"),
+  player_SPREADERPROJECTILE: new Audio("./audio/player_SPREADERPROJECTILE.ogg"),
   player_CHAKRAM: new Audio("./audio/player_CHAKRAM.ogg"),
   player_NEONTHROWER: new Audio("./audio/player_NEONTHROWER.ogg"),
   player_WAVE: new Audio("./audio/player_WAVE.ogg"),
@@ -37,6 +39,8 @@ const gameAudio = {
   setVolume: function () {
     this.click.volume = 0.02 * playerData.soundMultiplier;
     this.player_BASIC.volume = 0.05 * playerData.soundMultiplier;
+    this.player_SPREADER.volume = 0.05 * playerData.soundMultiplier;
+    this.player_SPREADERPROJECTILE.volume = 0.02 * playerData.soundMultiplier;
     this.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
     this.player_NEONTHROWER.volume = 0.05 * playerData.soundMultiplier;
     this.player_WAVE.volume = 0.05 * playerData.soundMultiplier;

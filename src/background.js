@@ -406,7 +406,7 @@ var environment = {
           if (this.timeIndex % 2 == 0) {
             this.animationX += this.widthOnPic;
           }
-          if (this.timeIndex % 6 == 0) {
+          if (this.timeIndex % Math.round(Math.random() * 6) == 0) {
             this.animationX = 0;
           }
           if (this.timeIndex == 50) {
