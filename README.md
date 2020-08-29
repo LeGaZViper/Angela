@@ -23,10 +23,10 @@ Music by: Kevin MacLeod (https://incompetech.com/)
 Licensed under Creative Commons: By Attribution 3.0\
 http://creativecommons.org/licenses/by/3.0/  
 Used music titles:\
-Limit 70 (level 1)\
-Rising tide (faster) (level 2)\
-I can feel it coming (level 3)\
-Hiding your reality (level 4)\
-Shadowlands 2 - Bridge (final boss fight)\
-Darkling (final boss fight)\
-Grim Idol (final battle)\
+Limit 70 _(level 1)_\
+Rising tide (faster) _(level 2)_\
+I can feel it coming _(level 3)_\
+Hiding your reality _(level 4)_\
+Shadowlands 2 - Bridge _(final boss fight)_\
+Darkling _(final boss fight)_\
+Grim Idol _(final battle)_\

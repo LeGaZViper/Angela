@@ -139,3 +139,19 @@ p {
   background: url("GitHub-Mark-64px-hover.png");
   background-size: 100% 100%;
 }
+
+.twitter-logo {
+  position: absolute;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  background: url("Twitter-64px.png");
+  background-size: 100% 100%;
+  bottom: 15px;
+  right: 75px;
+}
+
+.twitter-logo:hover {
+  background: url("Twitter-64px-hover.png");
+  background-size: 100% 100%;
+}

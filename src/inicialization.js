@@ -39,11 +39,17 @@ function killAll() {
 }
 
 function hideMenuLinks() {
-  document.getElementsByClassName("github-link")[0].style.display = "none";
+  let array = document.querySelectorAll(".link");
+  for (let i = 0; i < array.length; i++) {
+    array[i].style.display = "none";
+  }
 }
 
 function showMenuLinks() {
-  document.getElementsByClassName("github-link")[0].style.display = "";
+  let array = document.querySelectorAll(".link");
+  for (let i = 0; i < array.length; i++) {
+    array[i].style.display = "";
+  }
 }
 
 //collision; adjusted for translated objects
