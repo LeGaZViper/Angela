@@ -15,13 +15,13 @@ Written in: plain JavaScript\
 Platform: PC Browser (IE not welcome)\
 Genre: Action/Horror\
 Development software: VS Code, Blender, Paint.net, sfxr, Audacity\
-Spritesheet creator: https://www.codeandweb.com/free-sprite-sheet-packer\
-Sprite compressor: https://compresspng.com/\
-Music compressor: https://www.compresss.com/ (quality set to 50)\
+Spritesheet creator: https://www.codeandweb.com/free-sprite-sheet-packer  
+Sprite compressor: https://compresspng.com/  
+Music compressor: https://www.compresss.com/ (quality set to 50)
 
-Music by: Kevin MacLeod (https://incompetech.com/)\
+Music by: Kevin MacLeod (https://incompetech.com/)  
 Licensed under Creative Commons: By Attribution 3.0\
-http://creativecommons.org/licenses/by/3.0/\
+http://creativecommons.org/licenses/by/3.0/  
 Used music titles:\
 Limit 70 (level 1)\
 Rising tide (faster) (level 2)\
