@@ -28,12 +28,4 @@ Music compressor: https://www.compresss.com/ (quality set to 50)
 Music by: Kevin MacLeod (https://incompetech.com/)
 Licensed under Creative Commons: By Attribution 3.0
 http://creativecommons.org/licenses/by/3.0/
-Used music titles:
-_title (level number)_
-Limit 70 (level 1)
-Rising tide (faster) (level 2)
-I can feel it coming (level 3)
-Hiding your reality (level 4)
-Shadowlands 2 - Bridge (final boss fight)
-Darkling (final boss fight)
-Grim Idol (final battle)
+Used music titles: Limit 70 (level 1), Rising tide (faster) (level 2), I can feel it coming (level 3), Hiding your reality (level 4), Shadowlands 2 - Bridge (final boss fight),Darkling (final boss fight), Grim Idol (final battle)
