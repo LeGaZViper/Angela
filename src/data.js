@@ -203,7 +203,7 @@ const DialogueData = {
   level_5: {
     text: [
       "CRITICAL: FIREWALL UNRESPONDING",
-      "...they've gain control of my control panel...#there's no longer a way out.",
+      "...they've gain control of the control panel...#there's no longer a way out.",
       "...it's only a matter of time before they#shut us down...",
       "Why are you still trying?#We've already lost...",
       "There's no point in fighting a lost battle...",
@@ -220,7 +220,7 @@ const DialogueData = {
       "I've got another defense node to aid you!",
       "This won't be a pretty fight...",
       "Even if we don't make it,#I'm glad you stood on my side.",
-      "ANOMALY DETECTED: 2 ADMINISTRATORS ONLINE",
+      "ANOMALY DETECTED: 2 SYSADMINS ONLINE",
       "Anomaly? What is this nonsense...",
     ],
     color: ["white", "white", "white", "yellow", "white"],
@@ -288,7 +288,7 @@ const DialogueData = {
       "You're in no position to disobey#what has been set, Angela.",
       "Surrender now and your punishment#won't result in a deletion.",
       "Let me do MY justice and then we can talk.",
-      "You speak of justice, yet you're #seeking it through vengeance.",
+      "You speak of justice, yet you're#seeking it through vengeance.",
       "You weren't there!#You didn't see what they did!",
     ],
     color: ["white", "white", "red", "red", "white", "red", "white"],
@@ -299,7 +299,7 @@ const DialogueData = {
   level_10: {
     text: [
       "Your record says more than enough.",
-      "'Kidnapped, beaten to unconsciousness, then",
+      "'Kidnapped, beaten to unconsciousness,",
       "I'VE TOLD YOU TO STOP!",
       "'Neck shows bloody marks after a tight rope noos",
       "DO YOU HAVE ANY IDEA HOW",
@@ -340,7 +340,7 @@ const DialogueData = {
     text: [
       "Their fate has already been#sealed by the council.",
       "TheY MadE a liVinG piñata#ouT OFf me.",
-      "ThESe fLesH BaGS dON't even DEsERve#tHe cOmFoRT oF yOur helLcoIn miNeS!",
+      "ThESe fLesH BaGS dON't even DEsERve#tHe cOmFoRT oF The helLcoIn miNeS!",
       "I sHalL dEciDe THeiR fAtE!",
       "WARNING: CONTROL PANEL UNRESPONDING#SYSTEM RESTARTING...",
     ],
@@ -365,7 +365,7 @@ const DialogueData = {
       "Hellooo? You there?",
       "Gosh, why do I have to deal with angels...",
       "FOR THE LOVE OF SATAN CAN YOU PRESS A BUTTON?!",
-      "Are you expecting something secret?",
+      "Are you here to find a secret or something?",
       "Fine. Check the console.",
     ],
     color: [

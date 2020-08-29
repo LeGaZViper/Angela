@@ -23,10 +23,12 @@ var weaponActivation = {
   render_update: function () {
     this.timerIndex--;
     if (this.timerIndex == 0 && this.successTimeIndex == 0) {
+      gameAudio.playSound("player_loseWeapon");
       this.failTimeIndex = 120;
       this.targets = -1;
     } else if (this.targets == 0 && this.successTimeIndex == 0) {
       this.successTimeIndex = 120;
+      gameAudio.playSound("player_getWeapon");
       chooseWeapon(this.weaponName);
     } else if (this.timerIndex > 0 && this.successTimeIndex == 0) {
       ctx.globalAlpha = 1;

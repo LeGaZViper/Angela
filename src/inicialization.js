@@ -38,6 +38,14 @@ function killAll() {
   levels_handler.level.total = 0;
 }
 
+function hideMenuLinks() {
+  document.getElementsByClassName("github-link")[0].style.display = "none";
+}
+
+function showMenuLinks() {
+  document.getElementsByClassName("github-link")[0].style.display = "";
+}
+
 //collision; adjusted for translated objects
 function collides(a, b) {
   return (
@@ -64,7 +72,10 @@ function _305() {
 }
 
 function inicializeGame() {
-  gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
+  if (playerData.level < 13)
+    gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
+  else gameAudio.stopMusic();
+  hideMenuLinks();
   UI.levelDisplayCheck = true;
   DialogueData.dialoguesUsed = [];
   levelTimer = 0;
@@ -136,7 +147,7 @@ function loadTheGame(callback) {
   }
   scale();
   playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 12;
+  playerData.level = 13;
   keyboardControler.inicialize();
   player.inicialize(0, 50);
   background.inicialize();

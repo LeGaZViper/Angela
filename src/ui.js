@@ -273,7 +273,7 @@ var UI = {
       width: 250 * screenratio,
       height: 50 * screenratio,
       x: canvas.width / 2 - 125 * screenratio,
-      y: canvas.height / 2 + 40 * screenratio,
+      y: canvas.height / 2 + 140 * screenratio,
       text: "MENU",
       textSize: 30 * screenratio,
       button: "BACKTOMENU",
@@ -853,6 +853,7 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "BACKTOMENU") {
+              showMenuLinks();
               gameAudio.playMusic("music_menu");
               this.getMenuEffect(0);
             } else if (index.button == "RETRY") {
@@ -893,6 +894,7 @@ var UI = {
             if (index.button == "BACKTOMENU") {
               this.getMenuEffect(0);
               gameAudio.playMusic("music_menu");
+              showMenuLinks();
               player.inWeaponActivation = false;
               player.inicialize(0, 50);
               camera.inicialize();
@@ -939,6 +941,7 @@ var UI = {
           ) {
             gameAudio.playSound("click");
             if (index.button == "CREDITS") {
+              showMenuLinks();
               this.getMenuEffect(3);
             }
           }

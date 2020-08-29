@@ -353,5 +353,9 @@ function levelEffectsHandler() {
       gameAudio.playMusic("music_level_4_2");
       gameAudio.currentMusic.currentTime = 3.1;
     }
+  } else if (playerData.level == 13) {
+    if (levelTimer == 1200) {
+      gameAudio.playMusic("music_level_5");
+    }
   }
 }

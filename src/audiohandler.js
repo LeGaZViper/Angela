@@ -10,6 +10,8 @@ const gameAudio = {
   player_LASER_start: new Audio("./audio/player_LASER_start.ogg"),
   player_LASER_loop: new Audio("./audio/player_LASER_loop.ogg"),
   player_getDrop: new Audio("./audio/player_getDrop.ogg"),
+  player_loseWeapon: new Audio("./audio/player_loseWeapon.ogg"),
+  player_getWeapon: new Audio("./audio/player_getWeapon.ogg"),
   explosion: new Audio("./audio/explosion.ogg"),
   player_hit: new Audio("./audio/player_hit.ogg"),
   enemy_hit: new Audio("./audio/enemy_hit.ogg"),
@@ -33,6 +35,7 @@ const gameAudio = {
   music_level_3: new Audio("./audio/music_level_3.ogg"),
   music_level_4: new Audio("./audio/music_level_4.ogg"),
   music_level_4_2: new Audio("./audio/music_level_4_2.ogg"),
+  music_level_5: new Audio("./audio/music_level_5.ogg"),
   music_menu: new Audio("./audio/music_menu.ogg"),
   currentMusic: null,
   activatedSounds: [],
@@ -47,13 +50,16 @@ const gameAudio = {
     this.player_ROCKET.volume = 0.03 * playerData.soundMultiplier;
     this.player_LASER_start.volume = 0.03 * playerData.soundMultiplier;
     this.player_LASER_loop.volume = 0.01 * playerData.soundMultiplier;
-    this.player_getDrop.volume = 0.01 * playerData.soundMultiplier;
+    this.player_getDrop.volume = 0.05 * playerData.soundMultiplier;
+    this.player_loseWeapon.volume = 0.05 * playerData.soundMultiplier;
+    this.player_getWeapon.volume = 0.05 * playerData.soundMultiplier;
     this.explosion.volume = 0.05 * playerData.soundMultiplier;
     this.player_hit.volume = 0.05 * playerData.soundMultiplier;
     this.system_warning.volume = 0.03 * playerData.soundMultiplier;
-    this.enemy_hit.volume = 0.05 * playerData.soundMultiplier;
-    this.enemy_death.volume = 0.05 * playerData.soundMultiplier;
+    this.enemy_hit.volume = 0.02 * playerData.soundMultiplier;
+    this.enemy_death.volume = 0.02 * playerData.soundMultiplier;
     this.enemy_BASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.enemy_MINIBASIC.volume = 0.01 * playerData.soundMultiplier;
     this.enemy_CLOUD.volume = 0.01 * playerData.soundMultiplier;
     this.enemy_UPLOAD.volume = 0.05 * playerData.soundMultiplier;
     this.enemy_COG.volume = 0.01 * playerData.soundMultiplier;
@@ -71,6 +77,7 @@ const gameAudio = {
     this.music_level_3.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4.volume = 0.03 * playerData.musicMultiplier;
     this.music_level_4_2.volume = 0.03 * playerData.musicMultiplier;
+    this.music_level_5.volume = 0.03 * playerData.musicMultiplier;
     this.music_menu.volume = 0.03 * playerData.musicMultiplier;
   },
   playSound: function (sound) {

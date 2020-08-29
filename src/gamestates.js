@@ -21,9 +21,9 @@ function askAboutReset() {
     ) {
       resetLocalStorage();
       return true;
-    }
+    } else return false;
   }
-  return false;
+  return true;
 }
 
 function getMenu(menu) {
