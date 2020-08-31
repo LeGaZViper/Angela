@@ -155,3 +155,36 @@ p {
   background: url("Twitter-64px-hover.png");
   background-size: 100% 100%;
 }
+
+.loadingText {
+  font-size: 2vh;
+  padding-top: 3vh;
+  color: white;
+}
+
+.loadingGif {
+  width: 12vw;
+  height: 4vh;
+  position: relative;
+  top: -10vh;
+}
+
+.loadingBox {
+  width: 14vw;
+  height: 4vh;
+  position: relative;
+  left: 50%;
+  margin-top: 2vh;
+  margin-left: -7vw;
+  background-color: grey;
+  border: solid #333333 3px;
+}
+
+.loadingBar {
+  width: 0;
+  height: 4vh;
+  position: absolute;
+  left: 50%;
+  margin-left: -7vw;
+  background-color: #b2b5ff;
+}

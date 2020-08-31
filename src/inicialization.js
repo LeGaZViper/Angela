@@ -5,7 +5,7 @@ if (localStorage.playerData == undefined) {
 
 document.onreadystatechange = () => {
   if (document.readyState == "complete") {
-    loadTheGame(gameLoop);
+    loadTheGame();
   }
 };
 
@@ -116,7 +116,7 @@ function inicializeGame() {
 //Main Inicialization
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-function loadTheGame(callback) {
+async function loadTheGame() {
   canvas.addEventListener("click", function () {
     UI.click();
   });
@@ -129,13 +129,22 @@ function loadTheGame(callback) {
   canvas.addEventListener("mousemove", function () {
     userInput(event, 0);
   });
+  //Disabling rightclick popup
+  canvas.addEventListener("contextmenu", (event) => event.preventDefault());
   document.addEventListener("keydown", function () {
     userInput(event, 1);
   });
   document.addEventListener("keyup", function () {
     userInput(event, 2);
   });
-  //Setting path
+  loadGameAssets(gameLoop);
+}
+
+function loadGameAssets(callback) {
+  let spritesLoaded = 0;
+  let loadingArray = [];
+  let loadingText = document.querySelector(".loadingText");
+  let loadingBar = document.querySelector(".loadingBar");
   for (let index in sprite) {
     let precursor = index.split("_");
     if (precursor[0] == "UI" || precursor[0] == "projectile")
@@ -150,21 +159,45 @@ function loadTheGame(callback) {
         "/" +
         precursor[1] +
         ".png";
+    loadingArray.push(precursor[1]);
+    sprite[index].onload = function () {
+      loadingArray.splice(0, 1);
+      if (loadingArray[0] != undefined) loadingText.innerHTML = loadingArray[0];
+      spritesLoaded++;
+      loadingBar.style.width = (14 / 111) * spritesLoaded + "vw";
+      if (spritesLoaded == 74) {
+        let soundsLoaded = 0;
+        for (let index in gameAudio.gameAudioFiles) {
+          gameAudio.gameAudioFiles[index].src = "./audio/" + index + ".ogg";
+          loadingArray.push(index);
+          gameAudio.gameAudioFiles[index].onloadeddata = function () {
+            soundsLoaded++;
+            loadingBar.style.width =
+              (14 / 111) * (spritesLoaded + soundsLoaded) + "vw";
+            loadingArray.splice(0, 1);
+            if (loadingArray[0] != undefined)
+              loadingText.innerHTML = loadingArray[0];
+            if (soundsLoaded == 37) {
+              scale();
+              playerData = JSON.parse(localStorage.playerData);
+              playerData.level = 13;
+              keyboardControler.inicialize();
+              player.inicialize(0, 50);
+              background.inicialize();
+              backgroundParticles.inicialize();
+              environment.inicialize();
+              camera.inicialize();
+              gameAudio.setVolume();
+              UI.inicialize();
+              let loading = document.getElementById("loading");
+              loading.style.display = "none";
+              callback();
+            }
+          };
+        }
+      }
+    };
   }
-  scale();
-  playerData = JSON.parse(localStorage.playerData);
-  playerData.level = 13;
-  keyboardControler.inicialize();
-  player.inicialize(0, 50);
-  background.inicialize();
-  backgroundParticles.inicialize();
-  environment.inicialize();
-  camera.inicialize();
-  gameAudio.setVolume();
-  UI.inicialize();
-  //Disabling rightclick popup
-  canvas.addEventListener("contextmenu", (event) => event.preventDefault());
-  callback();
 }
 
 //Dynamic resolution scaling function  | used in: rendering

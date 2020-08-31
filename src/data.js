@@ -688,7 +688,7 @@ const enemyWeaponData = {
   },
   UPLOADBASIC: {
     sprite: sprite.projectile_enemyUPLOAD,
-    sound: "enemy_UPLOAD",
+    sound: "enemy_CORRUPTEDSHOT",
     name: "UPLOADBASIC",
     animation: true,
     animationFrames: 3,
@@ -704,7 +704,7 @@ const enemyWeaponData = {
   },
   BETAUPLOADBASIC: {
     sprite: sprite.projectile_enemyUPLOAD,
-    sound: "enemy_UPLOAD",
+    sound: "enemy_CORRUPTEDSHOT",
     name: "BETAUPLOADBASIC",
     animation: true,
     animationFrames: 3,
