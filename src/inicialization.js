@@ -64,17 +64,12 @@ function collides(a, b) {
 //collision; normal one; for UI
 function collides_UI(a, b) {
   return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
+    a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y
   );
 }
 
 function _305() {
-  console.log(
-    `${window.location.href}sprites/enemy/angelaPhase2/chatlog_2.log`
-  );
+  console.log(`${window.location.href}sprites/enemy/angelaPhase2/chatlog_2.log`);
 }
 
 function inicializeGame() {
@@ -99,8 +94,7 @@ function inicializeGame() {
   canvas.style.cursor = "none";
   UI.inMenu = false;
   player.inicialize(0, 50);
-  if (playerData.level < 9)
-    player.setCompanions(Math.floor(playerData.level / 3));
+  if (playerData.level < 9) player.setCompanions(Math.floor(playerData.level / 3));
   else player.setCompanions(3);
   enemySpawnList = [];
   levels_handler.waveCounter = 1;
@@ -145,39 +139,33 @@ function loadGameAssets(callback) {
   let loadingArray = [];
   let loadingText = document.querySelector(".loadingText");
   let loadingBar = document.querySelector(".loadingBar");
+  let nOfSprites = 75;
+  let nOfSounds = 37;
+  let nOfAssets = nOfSprites + nOfSounds;
   for (let index in sprite) {
     let precursor = index.split("_");
     if (precursor[0] == "UI" || precursor[0] == "projectile")
-      sprite[index].src =
-        "./sprites/" + precursor[0] + "/" + precursor[1] + ".png";
+      sprite[index].src = "./sprites/" + precursor[0] + "/" + precursor[1] + ".png";
     else
       sprite[index].src =
-        "./sprites/" +
-        precursor[0] +
-        "/" +
-        precursor[1] +
-        "/" +
-        precursor[1] +
-        ".png";
+        "./sprites/" + precursor[0] + "/" + precursor[1] + "/" + precursor[1] + ".png";
     loadingArray.push(precursor[1]);
     sprite[index].onload = function () {
       loadingArray.splice(0, 1);
       if (loadingArray[0] != undefined) loadingText.innerHTML = loadingArray[0];
       spritesLoaded++;
-      loadingBar.style.width = (14 / 111) * spritesLoaded + "vw";
-      if (spritesLoaded == 74) {
+      loadingBar.style.width = (14 / nOfAssets) * spritesLoaded + "vw";
+      if (spritesLoaded == nOfSprites) {
         let soundsLoaded = 0;
         for (let index in gameAudio.gameAudioFiles) {
           gameAudio.gameAudioFiles[index].src = "./audio/" + index + ".ogg";
           loadingArray.push(index);
           gameAudio.gameAudioFiles[index].onloadeddata = function () {
             soundsLoaded++;
-            loadingBar.style.width =
-              (14 / 111) * (spritesLoaded + soundsLoaded) + "vw";
+            loadingBar.style.width = (14 / nOfAssets) * (spritesLoaded + soundsLoaded) + "vw";
             loadingArray.splice(0, 1);
-            if (loadingArray[0] != undefined)
-              loadingText.innerHTML = loadingArray[0];
-            if (soundsLoaded == 37) {
+            if (loadingArray[0] != undefined) loadingText.innerHTML = loadingArray[0];
+            if (soundsLoaded == nOfSounds) {
               scale();
               playerData = JSON.parse(localStorage.playerData);
               playerData.level = 13;
@@ -206,10 +194,7 @@ function scale() {
   screenratio = 1;
   canvas.width = 1100;
   canvas.height = 900;
-  while (
-    window.innerHeight < canvas.height ||
-    window.innerWidth < canvas.width
-  ) {
+  while (window.innerHeight < canvas.height || window.innerWidth < canvas.width) {
     screenratio -= 0.1;
     canvas.width = 1100 * screenratio;
     canvas.height = 900 * screenratio;

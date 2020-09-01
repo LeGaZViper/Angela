@@ -24,9 +24,7 @@ function gameLoop() {
       dialogueHandler();
       if (dialogueList.length > 0) {
         gameAudio.changeVolumeOfMusic(0.01);
-        dialogueList = dialogueList.filter(
-          (index) => index.ttl > 0 && index.opacity > 0
-        );
+        dialogueList = dialogueList.filter((index) => index.ttl > 0 && index.opacity > 0);
         dialogueList.forEach((dia) => {
           dia.update_render();
         });
@@ -82,10 +80,7 @@ function gameLoop() {
         if (b.explosive && b.explosion_triggered) b.explosion_render();
         b.update();
         if (
-          (b.x > -50 &&
-            b.x < canvas.width + 50 &&
-            b.y > -50 &&
-            b.y < canvas.height + 50) ||
+          (b.x > -50 && b.x < canvas.width + 50 && b.y > -50 && b.y < canvas.height + 50) ||
           b.name == "LASER"
         )
           b.render();
@@ -130,12 +125,7 @@ function gameLoop() {
         player.hitCDstart(0, "bullet");
       }
       eb.update();
-      if (
-        eb.x > -50 &&
-        eb.x < canvas.width + 50 &&
-        eb.y > -50 &&
-        eb.y < canvas.height + 50
-      )
+      if (eb.x > -50 && eb.x < canvas.width + 50 && eb.y > -50 && eb.y < canvas.height + 50)
         eb.render();
       if (eb.killed) {
         enemyBulletList.splice(index, 1);
@@ -148,7 +138,7 @@ function gameLoop() {
       player.width = 75 * screenratio;
       player.height = 75 * screenratio;
       chooseWeapon("BASIC");
-      if (!gameAudio.player_LASER_loop.paused) {
+      if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
         gameAudio.player_LASER_loop.pause();
         player.LASER_firing = false;
       }
@@ -163,15 +153,12 @@ function gameLoop() {
           } catch (err) {
             console.error("Missing an audio file.");
           }
-        } else if (
-          player.LASER_firing == false ||
-          player.LASER_firing == undefined
-        ) {
+        } else if (player.LASER_firing == false || player.LASER_firing == undefined) {
           player.LASER_firing = true;
           gameAudio.playSound("player_LASER_start");
         } else {
-          gameAudio.player_LASER_loop.loop = true;
-          gameAudio.player_LASER_loop.play();
+          gameAudio.gameAudioFiles.player_LASER_loop.loop = true;
+          gameAudio.gameAudioFiles.player_LASER_loop.play();
         }
         bulletList.push(bullet({ ...player.weapon }, player.weapon.bullets));
         setTimer(player.weapon.cooldown, player, "attackCD");
@@ -190,8 +177,8 @@ function gameLoop() {
           );
         }
       }
-    } else if (!gameAudio.player_LASER_loop.paused) {
-      gameAudio.player_LASER_loop.pause();
+    } else if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
+      gameAudio.gameAudioFiles.player_LASER_loop.pause();
       player.LASER_firing = false;
     }
     //update & render for enemies
@@ -260,8 +247,7 @@ function gameLoop() {
                 e.hitCDstart();
                 if (!b.piercing) b.killed = true;
               }
-              if (!e.piercingCD)
-                e.piercingDamageCDstart(b.hitCD / (player.companions + 1));
+              if (!e.piercingCD) e.piercingDamageCDstart(b.hitCD / (player.companions + 1));
               if (b.name == "CHAKRAM" && b.speed >= 5) {
                 b.speed -= 5;
               } else if (b.name == "CHAKRAM") {
@@ -283,11 +269,7 @@ function gameLoop() {
         damageNumberList.splice(index, 1);
       }
     });
-    if (
-      !lootCube.active &&
-      levelTimer - lootCube.nextSpawn == 0 &&
-      playerData.level > 0
-    ) {
+    if (!lootCube.active && levelTimer - lootCube.nextSpawn == 0 && playerData.level > 0) {
       lootCube.active = true;
       spawnAnEnemy("lootCube");
     }

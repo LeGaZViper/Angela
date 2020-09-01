@@ -15,9 +15,7 @@ function warningClick() {
 function askAboutReset() {
   if (playerData.level > 0) {
     if (
-      confirm(
-        "Are you sure you want to start a new game?\nYour current progress will reset!"
-      )
+      confirm("Are you sure you want to start a new game?\nYour current progress will reset!")
     ) {
       resetLocalStorage();
       return true;
@@ -40,8 +38,8 @@ function closeMenu() {
 //Lose the game function | used in: gameover
 function loseTheGame() {
   gameAudio.stopMusic();
-  if (!gameAudio.player_LASER_loop.paused) {
-    gameAudio.player_LASER_loop.pause();
+  if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
+    gameAudio.gameAudioFiles.player_LASER_loop.pause();
     player.LASER_firing = false;
   }
   player.inWeaponActivation = false;

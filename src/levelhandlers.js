@@ -4,10 +4,7 @@ async function spawn() {
     UI.levelDisplayCheck = true;
     if (playerData.level < 12)
       UI.levelDisplay.text =
-        Math.floor(playerData.level / 3) +
-        1 +
-        "-" +
-        ((playerData.level % 3) + 1);
+        Math.floor(playerData.level / 3) + 1 + "-" + ((playerData.level % 3) + 1);
     else UI.levelDisplay.text = "??-??";
     for (let i = 1; i <= 400; i++) {
       if (i <= 100) {
@@ -20,9 +17,7 @@ async function spawn() {
     UI.levelDisplayCheck = false;
   }
   if (levels_handler.level.startTime == undefined)
-    await sleep(
-      levels_handler.level["startTimeWave" + levels_handler.waveCounter]
-    );
+    await sleep(levels_handler.level["startTimeWave" + levels_handler.waveCounter]);
   else await sleep(levels_handler.level.startTime);
   for (let i = 0; i < enemySpawnList.length; i++) {
     if (enemySpawnList.length == 0) break;
@@ -79,9 +74,7 @@ function generateRandomSpawnPos() {
   let det_x =
     (randomPosArray[0] * player.spaceSize) / screenratio / 2 +
     randomPosArray[2] *
-      (((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) /
-        screenratio /
-        2);
+      (((Math.random() < 0.5 ? -1 : 1) * Math.random() * player.spaceSize) / screenratio / 2);
 
   let det_y =
     (randomPosArray[1] * player.spaceSize) / screenratio / 2 +
@@ -95,12 +88,7 @@ let lootCube = {
   nextSpawn: 1300,
 };
 
-function spawnAnEnemy(
-  enemy,
-  x = -1,
-  y = -1,
-  orbitAngle = 2 * Math.PI * Math.random()
-) {
+function spawnAnEnemy(enemy, x = -1, y = -1, orbitAngle = 2 * Math.PI * Math.random()) {
   let pos;
   if (x == -1 && y == -1) {
     pos = generateRandomSpawnPos();
@@ -330,8 +318,8 @@ function levelEffectsHandler() {
     } else if (levelTimer == 2230) {
       levelTimer++;
       gameAudio.stopMusic();
-      if (!gameAudio.player_LASER_loop.paused) {
-        gameAudio.player_LASER_loop.pause();
+      if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
+        gameAudio.gameAudioFiles.player_LASER_loop.pause();
         player.LASER_firing = false;
       }
       saveLocalStorage();

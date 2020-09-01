@@ -9,12 +9,13 @@ var UI = {
       height: 184 * screenratio,
       widthOnPic: 353,
       heightOnPic: 184,
-      x: canvas.width / 2 - 176 * screenratio,
-      y: canvas.height / 2 - 400 * screenratio,
+      x: Math.round(canvas.width / 2 - 176 * screenratio),
+      y: Math.round(canvas.height / 2 - 400 * screenratio),
       sprite: sprite.UI_logo,
       opacity: 1,
       color: ["grey", "black", "white"],
       animationX: 0,
+      animationY: 0,
       timeIndex: 15,
       animation: function () {
         this.timeIndex++;
@@ -22,8 +23,7 @@ var UI = {
           this.timeIndex = 0;
         }
         if (this.timeIndex < 15) {
-          this.animationX =
-            (Math.floor(this.timeIndex / 2) + 1) * this.widthOnPic;
+          this.animationX = (Math.floor(this.timeIndex / 2) + 1) * this.widthOnPic;
         } else {
           this.animationX = 0;
         }
@@ -251,11 +251,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.gameOverMenu = [
-      this.gameOverMenuWindow,
-      this.gameOverMenu_b0,
-      this.gameOverMenu_b1,
-    ];
+    this.gameOverMenu = [this.gameOverMenuWindow, this.gameOverMenu_b0, this.gameOverMenu_b1];
 
     this.creditsMenu_sprite0 = {
       width: 600 * screenratio,
@@ -268,6 +264,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
       animationX: 0,
+      animationY: 0,
     };
     this.creditsMenu_b0 = {
       width: 250 * screenratio,
@@ -315,11 +312,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.pauseMenu = [
-      this.pauseMenuWindow,
-      this.pauseMenu_b0,
-      this.pauseMenu_b1,
-    ];
+    this.pauseMenu = [this.pauseMenuWindow, this.pauseMenu_b0, this.pauseMenu_b1];
     this.beforeTheBossMenuTimer = 0;
 
     this.beforeTheBossMenu_b1 = {
@@ -345,10 +338,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.beforeTheBossMenu = [
-      this.beforeTheBossMenu_b1,
-      this.beforeTheBossMenu_b2,
-    ];
+    this.beforeTheBossMenu = [this.beforeTheBossMenu_b1, this.beforeTheBossMenu_b2];
 
     this.judgementEnding_sprite0 = {
       width: 750 * screenratio,
@@ -361,6 +351,7 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
       animationX: 0,
+      animationY: 0,
     };
 
     this.judgementEnding_b0 = {
@@ -375,10 +366,79 @@ var UI = {
       color: ["grey", "black", "white"],
     };
 
-    this.judgementEndingMenu = [
-      this.judgementEnding_sprite0,
-      this.judgementEnding_b0,
-    ];
+    this.judgementEndingMenu = [this.judgementEnding_sprite0, this.judgementEnding_b0];
+
+    this.revengeEnding_sprite0 = {
+      width: 750 * screenratio,
+      height: 955 * screenratio,
+      widthOnPic: 750,
+      heightOnPic: 955,
+      x: canvas.width / 2 - 375 * screenratio,
+      y: canvas.height / 2 - 477 * screenratio,
+      sprite: sprite.UI_judgementending,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+      animationX: 0,
+      animationY: 0,
+    };
+
+    this.revengeEnding_b0 = {
+      width: 320 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 160 * screenratio,
+      y: canvas.height / 2 + 400 * screenratio,
+      text: "CREDITS",
+      textSize: 30 * screenratio,
+      button: "CREDITS",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.revengeEndingMenu = [this.revengeEnding_sprite0, this.revengeEnding_b0];
+
+    this.tutorial_b0 = {
+      width: 320 * screenratio,
+      height: 50 * screenratio,
+      x: canvas.width / 2 - 160 * screenratio,
+      y: canvas.height / 2 + 300 * screenratio,
+      text: "NEXT",
+      textSize: 30 * screenratio,
+      button: "NEXT",
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.tutorial_t0 = {
+      width: 0 * screenratio,
+      height: 0 * screenratio,
+      x: canvas.width / 2,
+      y: canvas.height / 2 - 378 * screenratio,
+      text: "Movement",
+      textSize: 30 * screenratio,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+    };
+
+    this.tutorial_sprite0 = {
+      width: 870 * screenratio,
+      height: 590 * screenratio,
+      widthOnPic: 870,
+      heightOnPic: 590,
+      x: canvas.width / 2 - 435 * screenratio,
+      y: canvas.height / 2 - 350 * screenratio,
+      sprite: sprite.UI_tutorial,
+      opacity: 1,
+      color: ["grey", "black", "white"],
+      animationX: 0,
+      animationY: 0,
+    };
+
+    this.tutorialHandler = {
+      index: 0,
+      text: ["Movement", "Enemies", "Weapon acquisition"],
+    };
+
+    this.tutorialMenu = [this.tutorial_b0, this.tutorial_sprite0, this.tutorial_t0];
 
     this.levelDisplay = {
       x: canvas.width / 2,
@@ -454,6 +514,8 @@ var UI = {
       this.pauseMenu,
       this.beforeTheBossMenu,
       this.judgementEndingMenu,
+      this.revengeEndingMenu,
+      this.tutorialMenu,
     ];
     this.cursorIndex = 0;
   },
@@ -471,10 +533,7 @@ var UI = {
         ctx.fillStyle = element.color[0];
         ctx.strokeStyle = element.color[1];
         if (element.textSize != undefined) ctx.lineWidth = 6 * screenratio;
-        if (
-          this.globalCustomAlphaCheck &&
-          element.opacity > this.globalCustomAlpha
-        )
+        if (this.globalCustomAlphaCheck && element.opacity > this.globalCustomAlpha)
           ctx.globalAlpha = this.globalCustomAlpha;
         else ctx.globalAlpha = element.opacity;
 
@@ -489,18 +548,12 @@ var UI = {
           ctx.strokeText(
             element.text,
             element.x + element.width / 2,
-            element.y +
-              element.height / 2 +
-              element.textSize / 2 +
-              element.height / 14
+            element.y + element.height / 2 + element.textSize / 2 + element.height / 14
           );
           ctx.fillText(
             element.text,
             element.x + element.width / 2,
-            element.y +
-              element.height / 2 +
-              element.textSize / 2 +
-              element.height / 14
+            element.y + element.height / 2 + element.textSize / 2 + element.height / 14
           ); //text on screen
         }
         if (element.sprite != undefined) {
@@ -509,7 +562,7 @@ var UI = {
             ctx.drawImage(
               element.sprite,
               element.animationX,
-              0,
+              element.animationY,
               element.widthOnPic,
               element.heightOnPic,
               element.x,
@@ -520,9 +573,7 @@ var UI = {
           }
         }
         if (this.beforeTheBossMenuTimer == 9550) {
-          console.log(
-            `${window.location.href}sprites/enemy/angelaPhase1/chatlog_1.log`
-          );
+          console.log(`${window.location.href}sprites/enemy/angelaPhase1/chatlog_1.log`);
         }
       }
     });
@@ -538,15 +589,11 @@ var UI = {
       50 * screenratio
     );
 
-    let x2_player = parseInt((player.HP[1] / player.maxHP[1]) * 255).toString(
-      16
-    );
+    let x2_player = parseInt((player.HP[1] / player.maxHP[1]) * 255).toString(16);
     if (x2_player.length == 1) x2_player = "0" + x2_player;
     this.HPbar_player.color = "#F1" + x2_player + x2_player;
 
-    let x2_earth = parseInt((player.HP[0] / player.maxHP[0]) * 255).toString(
-      16
-    );
+    let x2_earth = parseInt((player.HP[0] / player.maxHP[0]) * 255).toString(16);
     if (x2_earth.length == 1) x2_player = "0" + x2_earth;
     this.HPbar_earth.color = "#F1" + x2_earth + x2_earth;
 
@@ -568,8 +615,7 @@ var UI = {
           screenratio,
       51 * screenratio,
       (player.shield[1] / player.maxShield[1]) *
-        ((player.maxShield[1] * 120) /
-          (player.maxHP[1] + player.maxShield[1])) *
+        ((player.maxShield[1] * 120) / (player.maxHP[1] + player.maxShield[1])) *
         screenratio,
       16 * screenratio
     );
@@ -592,8 +638,7 @@ var UI = {
           screenratio,
       21 * screenratio,
       (player.shield[0] / player.maxShield[0]) *
-        ((player.maxShield[0] * 160) /
-          (player.maxHP[0] + player.maxShield[0])) *
+        ((player.maxShield[0] * 160) / (player.maxHP[0] + player.maxShield[0])) *
         screenratio,
       16 * screenratio
     );
@@ -642,17 +687,11 @@ var UI = {
     ctx.font = 13 * screenratio + "px FFFFORWA";
     ctx.strokeStyle = "#5C7CFF";
     ctx.fillStyle = "white";
-    ctx.fillText(
-      player.playerLives + "x",
-      canvas.width - 195 * screenratio,
-      67 * screenratio
-    );
+    ctx.fillText(player.playerLives + "x", canvas.width - 195 * screenratio, 67 * screenratio);
     //cursor
     this.cursorIndex +=
       0.001 *
-        Math.sqrt(
-          Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)
-        ) +
+        Math.sqrt(Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)) +
       0.02;
     ctx.globalAlpha = 1;
     ctx.save();
@@ -670,11 +709,7 @@ var UI = {
       ctx.textAlign = "center";
       ctx.font = UI.levelDisplay.textSize + "px FFFFORWA";
       ctx.strokeStyle = "black";
-      ctx.strokeText(
-        UI.levelDisplay.text,
-        UI.levelDisplay.x,
-        UI.levelDisplay.y
-      );
+      ctx.strokeText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y);
       ctx.fillStyle = UI.levelDisplay.color;
       ctx.fillText(UI.levelDisplay.text, UI.levelDisplay.x, UI.levelDisplay.y); //text on screen
       ctx.globalAlpha = 1;
@@ -704,19 +739,13 @@ var UI = {
     ctx.fillStyle = "#DCE6EE";
     ctx.strokeStyle = "#5C7CFF";
     ctx.lineWidth = 1;
-    ctx.moveTo(
-      3,
-      player.coordY / (player.defaultSpaceSize / (200 * screenratio))
-    );
+    ctx.moveTo(3, player.coordY / (player.defaultSpaceSize / (200 * screenratio)));
     ctx.lineTo(
       200 * screenratio,
       player.coordY / (player.defaultSpaceSize / (200 * screenratio))
     );
 
-    ctx.moveTo(
-      player.coordX / (player.defaultSpaceSize / (200 * screenratio)),
-      3
-    );
+    ctx.moveTo(player.coordX / (player.defaultSpaceSize / (200 * screenratio)), 3);
     ctx.lineTo(
       player.coordX / (player.defaultSpaceSize / (200 * screenratio)),
       200 * screenratio
@@ -743,8 +772,7 @@ var UI = {
     if (dialogueList.length > 0) {
       if (
         dialogueList[0].color == "white" ||
-        ((dialogueList[0].color == "#adadad" ||
-          dialogueList[0].color == "cyan") &&
+        ((dialogueList[0].color == "#adadad" || dialogueList[0].color == "cyan") &&
           playerData.level < 12)
       )
         backgroundParticles.angelaDialogueBubble.visible = true;
@@ -777,7 +805,14 @@ var UI = {
             gameAudio.playSound("click");
             if (index.button == "NEW GAME") {
               let reset = askAboutReset();
-              if (reset) this.closeMenuEffect(startTheGame);
+              if (reset) {
+                hideMenuLinks();
+                this.tutorialHandler.index = 0;
+                this.tutorial_sprite0.animationX = 0;
+                if (!playerData.keyboardControl) this.tutorial_sprite0.animationY = 590;
+                this.tutorial_b0.text = "NEXT";
+                this.getMenuEffect(8);
+              }
             } else if (index.button == "CONTINUE") {
               if (playerData.level > 0) {
                 this.closeMenuEffect(startTheGame);
@@ -806,9 +841,7 @@ var UI = {
               keyboardControler.active = !keyboardControler.active;
               playerData.keyboardControl = !playerData.keyboardControl;
               saveLocalStorage();
-              index.text = keyboardControler.active
-                ? "KEYBOARD + MOUSE"
-                : "MOUSE ONLY";
+              index.text = keyboardControler.active ? "KEYBOARD + MOUSE" : "MOUSE ONLY";
             } else if (index.button == "DISPLAYMODE") {
               gameAudio.playSound("click");
               if (!document.fullscreen) {
@@ -946,6 +979,51 @@ var UI = {
             }
           }
         });
+      } else if (this.currentMenu == 7 && this.inMenu) {
+        this.revengeEndingMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "CREDITS") {
+              showMenuLinks();
+              this.getMenuEffect(3);
+            }
+          }
+        });
+      } else if (this.currentMenu == 8 && this.inMenu) {
+        this.tutorialMenu.forEach((index) => {
+          if (
+            collides_UI(index, {
+              x: xMousePos,
+              y: yMousePos,
+              width: 1,
+              height: 1,
+            }) &&
+            index.button != undefined
+          ) {
+            gameAudio.playSound("click");
+            if (index.button == "NEXT") {
+              if (this.tutorialHandler.index < 2) {
+                this.tutorialHandler.index++;
+                this.tutorial_sprite0.animationY = 0;
+                this.tutorial_sprite0.animationX += 870;
+                this.tutorial_t0.text = this.tutorialHandler.text[this.tutorialHandler.index];
+                if (this.tutorialHandler.index == 2) {
+                  index.text = "START";
+                }
+              } else {
+                this.closeMenuEffect(startTheGame);
+              }
+            }
+          }
+        });
       }
     }
   },
@@ -1031,8 +1109,7 @@ var UI = {
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
         } else {
-          if (index.text != "GAME COMPLETED!")
-            index.color[0] = this.UIColors.fill;
+          if (index.text != "GAME COMPLETED!") index.color[0] = this.UIColors.fill;
           index.color[1] = this.UIColors.stroke;
           index.color[2] = this.UIColors.fontFill;
         }
@@ -1080,6 +1157,47 @@ var UI = {
     } else if (this.currentMenu == 6) {
       //judgement ending
       this.judgementEndingMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos,
+            y: yMousePos,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
+    } else if (this.currentMenu == 7) {
+      //revenge ending
+      this.revengeEndingMenu.forEach((index) => {
+        if (
+          collides_UI(index, {
+            x: xMousePos,
+            y: yMousePos,
+            width: 1,
+            height: 1,
+          }) &&
+          index.button != undefined
+        ) {
+          index.color[0] = this.UIColors.hoverFill;
+          index.color[1] = this.UIColors.hoverStroke;
+          index.color[2] = this.UIColors.hoverFontFill;
+        } else {
+          index.color[0] = this.UIColors.fill;
+          index.color[1] = this.UIColors.stroke;
+          index.color[2] = this.UIColors.fontFill;
+        }
+      });
+    } else if (this.currentMenu == 8) {
+      this.tutorialMenu.forEach((index) => {
         if (
           collides_UI(index, {
             x: xMousePos,

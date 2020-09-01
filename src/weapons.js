@@ -1,5 +1,4 @@
 //Weapon choosing function | used in weapons
-//Weapon choosing function | used in weapons
 function chooseWeapon(name) {
   player.weapon = WeaponData[name];
   player.weaponDuration = player.weapon.duration;
@@ -95,11 +94,7 @@ var weaponActivation = {
     ctx.fillStyle = "white";
     ctx.font = 30 * screenratio + "px FFFFORWA";
     ctx.globalAlpha = 1;
-    ctx.fillText(
-      `SUCCESS: ${this.weaponName}`,
-      canvas.width / 2,
-      canvas.height / 4
-    );
+    ctx.fillText(`SUCCESS: ${this.weaponName}`, canvas.width / 2, canvas.height / 4);
     if (this.successTimeIndex == 0) {
       player.inWeaponActivation = false;
     }
@@ -116,8 +111,7 @@ function bullet(B, numberOfBullets) {
   B.dirx;
   B.killed = false;
   B.angle = Math.atan2(B.diry, B.dirx) + Math.PI / 2;
-  B.speed =
-    B.speed * screenratio + Math.abs(player.xspeed) + Math.abs(player.yspeed);
+  B.speed = B.speed * screenratio + Math.abs(player.xspeed) + Math.abs(player.yspeed);
   B.damage = Math.round(B.damage * (B.companion ? 0.5 : 1));
   B.damageFallOff = Math.round(B.damageFallOff * (B.companion ? 0.5 : 1));
   B.width = B.widthOnPic * screenratio * (B.companion ? 0.5 : 1);
@@ -296,10 +290,8 @@ function bullet(B, numberOfBullets) {
       ctx.strokeStyle = B.color;
       ctx.lineWidth = B.width * screenratio;
       ctx.moveTo(
-        B.shootingPointX +
-          Math.cos(player.angle - Math.PI / 2) * 20 * screenratio,
-        B.shootingPointY +
-          Math.sin(player.angle - Math.PI / 2) * 20 * screenratio
+        B.shootingPointX + Math.cos(player.angle - Math.PI / 2) * 20 * screenratio,
+        B.shootingPointY + Math.sin(player.angle - Math.PI / 2) * 20 * screenratio
       );
       ctx.lineTo(B.x, B.y);
       ctx.stroke();

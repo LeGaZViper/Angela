@@ -43,68 +43,41 @@ const gameAudio = {
   setVolume: function () {
     this.gameAudioFiles.click.volume = 0.02 * playerData.soundMultiplier;
     this.gameAudioFiles.player_BASIC.volume = 0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_SPREADER.volume =
-      0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_SPREADERPROJECTILE.volume =
-      0.02 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_CHAKRAM.volume =
-      0.06 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_NEONTHROWER.volume =
-      0.05 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_SPREADER.volume = 0.05 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_SPREADERPROJECTILE.volume = 0.02 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_NEONTHROWER.volume = 0.05 * playerData.soundMultiplier;
     this.gameAudioFiles.player_WAVE.volume = 0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_ROCKET.volume =
-      0.03 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_LASER_start.volume =
-      0.03 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_LASER_loop.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_getDrop.volume =
-      0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_loseWeapon.volume =
-      0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_getWeapon.volume =
-      0.05 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_ROCKET.volume = 0.03 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_LASER_start.volume = 0.03 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_LASER_loop.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_getDrop.volume = 0.05 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_loseWeapon.volume = 0.05 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_getWeapon.volume = 0.05 * playerData.soundMultiplier;
     this.gameAudioFiles.explosion.volume = 0.05 * playerData.soundMultiplier;
     this.gameAudioFiles.player_hit.volume = 0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.system_warning.volume =
-      0.03 * playerData.soundMultiplier;
+    this.gameAudioFiles.system_warning.volume = 0.03 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_hit.volume = 0.02 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_death.volume = 0.02 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_BASIC.volume = 0.02 * playerData.soundMultiplier;
-    this.gameAudioFiles.enemy_MINIBASIC.volume =
-      0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.enemy_MINIBASIC.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_CLOUD.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_COG.volume = 0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.enemy_CORRUPTEDSHOT.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.enemy_MINIBASIC.volume =
-      0.02 * playerData.soundMultiplier;
-    this.gameAudioFiles.typing_system.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.typing_infernus.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.typing_angela.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.typing_angela_2.volume =
-      0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.angelaJumpscare1.volume =
-      0.1 * playerData.soundMultiplier;
-    this.gameAudioFiles.angelaJumpscare2.volume =
-      0.1 * playerData.soundMultiplier;
-    this.gameAudioFiles.music_level_0.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_1.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_2.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_3.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_4.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_4_2.volume =
-      0.03 * playerData.musicMultiplier;
-    this.gameAudioFiles.music_level_5.volume =
-      0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.enemy_CORRUPTEDSHOT.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.enemy_MINIBASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.gameAudioFiles.typing_system.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.typing_infernus.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.typing_angela.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.typing_angela_2.volume = 0.01 * playerData.soundMultiplier;
+    this.gameAudioFiles.angelaJumpscare1.volume = 0.1 * playerData.soundMultiplier;
+    this.gameAudioFiles.angelaJumpscare2.volume = 0.1 * playerData.soundMultiplier;
+    this.gameAudioFiles.music_level_0.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_1.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_2.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_3.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_4.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_4_2.volume = 0.03 * playerData.musicMultiplier;
+    this.gameAudioFiles.music_level_5.volume = 0.03 * playerData.musicMultiplier;
     this.gameAudioFiles.music_menu.volume = 0.03 * playerData.musicMultiplier;
   },
   playSound: function (sound) {

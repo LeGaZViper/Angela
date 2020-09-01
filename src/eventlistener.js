@@ -13,7 +13,7 @@ async function userInput(event, eventValue) {
       leftMouseDown = true;
     } else if (event.which == 3) rightMouseDown = true;
     else if (event.which == 27 && !UI.inMenu) {
-      if (!gameAudio.player_LASER_loop.paused) {
+      if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
         gameAudio.player_LASER_loop.pause();
         player.LASER_firing = false;
       }
@@ -83,21 +83,13 @@ var keyboardControler = {
         eventProperty.active = true;
         this.movementVectorX += eventProperty.x;
         this.movementVectorY += eventProperty.y;
-        player.ratioByKeyboard(
-          this.movementVectorX,
-          this.movementVectorY,
-          true
-        );
+        player.ratioByKeyboard(this.movementVectorX, this.movementVectorY, true);
       } else if (type == "up" && eventProperty.active) {
         eventProperty.active = false;
         this.buttonsActive--;
         this.movementVectorX -= eventProperty.x;
         this.movementVectorY -= eventProperty.y;
-        player.ratioByKeyboard(
-          this.movementVectorX,
-          this.movementVectorY,
-          true
-        );
+        player.ratioByKeyboard(this.movementVectorX, this.movementVectorY, true);
       }
     } catch (err) {}
   },
