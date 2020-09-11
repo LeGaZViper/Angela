@@ -49,8 +49,7 @@ async function checkDeath(enemy, bulletType = "none") {
       enemy.source.spawns--;
     }
     if (enemy.randomDrop) {
-      if (playerData.level != 12)
-        var choice = Math.round(Math.random() * 8) + 1;
+      if (playerData.level != 12) var choice = Math.round(Math.random() * 8) + 1;
       else var choice = Math.round(Math.random() * 7) + 1;
       for (let index in WeaponData) {
         if (choice == WeaponData[index].index) {
@@ -84,12 +83,7 @@ async function checkDeath(enemy, bulletType = "none") {
 
 var enemyBulletList = [];
 function enemyBullet(B, target = "none", xman = 0, yman = 0) {
-  if (
-    B.x > -200 &&
-    B.x < canvas.width + 200 &&
-    B.y > -200 &&
-    B.y < canvas.height + 200
-  )
+  if (B.x > -200 && B.x < canvas.width + 200 && B.y > -200 && B.y < canvas.height + 200)
     gameAudio.playSound(B.sound);
   B.target = target;
   B.killed = false;
@@ -200,8 +194,7 @@ function enemyCharacter(E) {
   E.arrival = false;
   E.acceleration = 100;
   E.target = "none";
-  E.orbitAngle =
-    Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
+  E.orbitAngle = Math.atan2(player.earthX - E.y, player.earthY - E.x) + Math.PI / 2;
   E.angle = Math.atan2(player.earthY - E.y, player.earthX - E.x) + Math.PI / 2;
   if (E.turrets > 0) {
     E.turretAttackCD = [false, false, false, false];
@@ -224,16 +217,13 @@ function enemyCharacter(E) {
         E.randomDirCDCounter = 300;
         E.randomDirX = Math.cos(Math.random() * 2 * Math.PI);
         E.randomDirY = Math.sin(Math.random() * 2 * Math.PI);
-        let ratio =
-          E.speed /
-          (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+        let ratio = E.speed / (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
         E.xspeed = ratio * (player.earthX - E.x);
         E.yspeed = ratio * (player.earthY - E.y);
       } else {
         if (E.behaviour == "ignore") {
           let ratio =
-            E.speed /
-            (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+            E.speed / (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
           E.xspeed = ratio * (player.earthX - E.x);
           E.yspeed = ratio * (player.earthY - E.y);
         } else if (E.behaviour == "orbit") {
@@ -244,8 +234,7 @@ function enemyCharacter(E) {
             E.yspeed = E.speed * Math.sin(E.orbitAngle);
           } else {
             let ratio =
-              E.speed /
-              (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
+              E.speed / (Math.abs(player.earthX - E.x) + Math.abs(player.earthY - E.y));
             E.xspeed = ratio * (player.earthX - E.x);
             E.yspeed = ratio * (player.earthY - E.y);
           }
@@ -256,22 +245,17 @@ function enemyCharacter(E) {
         ) {
           E.randomDirCD();
           E.angle = Math.atan2(E.randomDirY, E.randomDirX) + Math.PI / 2;
-          let ratio =
-            E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
+          let ratio = E.speed / (Math.abs(E.randomDirX) + Math.abs(E.randomDirY));
           E.xspeed = ratio * E.randomDirX;
           E.yspeed = ratio * E.randomDirY;
         } else if (E.moveWithPlayer) {
           if (E.behaviour == "angela_phase3") {
             E.playerOrbitAngle -= E.speed;
             E.x =
-              E.distanceFromCenter *
-                Math.cos(E.playerOrbitAngle) *
-                screenratio +
+              E.distanceFromCenter * Math.cos(E.playerOrbitAngle) * screenratio +
               player.earthX;
             E.y =
-              E.distanceFromCenter *
-                Math.sin(E.playerOrbitAngle) *
-                screenratio +
+              E.distanceFromCenter * Math.sin(E.playerOrbitAngle) * screenratio +
               player.earthY;
             E.coordX = player.defaultSpaceSize / 2 + E.x - player.earthX;
             E.coordY = player.defaultSpaceSize / 2 + E.y - player.earthY;
@@ -279,21 +263,17 @@ function enemyCharacter(E) {
           } else {
             E.playerOrbitAngle -= E.speed;
             E.x =
-              (canvas.width / E.distanceFromPlayerX) *
-                Math.cos(E.playerOrbitAngle) +
-              canvas.width / 2;
+              (canvas.width / E.distanceFromPlayerX) * Math.cos(E.playerOrbitAngle) + player.x;
             E.y =
-              (canvas.height / E.distanceFromPlayerY) *
-                Math.sin(E.playerOrbitAngle) +
-              canvas.height / 2;
+              (canvas.height / E.distanceFromPlayerY) * Math.sin(E.playerOrbitAngle) +
+              player.y;
             E.coordX = player.defaultSpaceSize / 2 + E.x - player.earthX;
             E.coordY = player.defaultSpaceSize / 2 + E.y - player.earthY;
             if (E.playerOrbitAngle <= 0) E.playerOrbitAngle = 2 * Math.PI;
           }
         } else {
           E.randomDirCDcounter = 300;
-          let ratio =
-            E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
+          let ratio = E.speed / (Math.abs(E.target.x - E.x) + Math.abs(E.target.y - E.y));
           E.xspeed = (ratio * (E.target.x - E.x) * E.acceleration) / 100;
           E.yspeed = (ratio * (E.target.y - E.y) * E.acceleration) / 100;
         }
@@ -334,9 +314,7 @@ function enemyCharacter(E) {
     ctx.translate(E.x, E.y);
     if (!E.inOrbit && E.rotation) ctx.rotate(E.angle);
     else if (E.rotation)
-      ctx.rotate(
-        Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI
-      );
+      ctx.rotate(Math.atan2(player.earthY - E.y, player.earthX - E.x) - Math.PI);
     //normal enemy ship
     ctx.globalAlpha = E.appearOpacity;
     ctx.drawImage(
@@ -370,14 +348,8 @@ function enemyCharacter(E) {
       for (let i = 0; i < E.turrets; i++) {
         ctx.save();
         ctx.translate(
-          E.x +
-            E.turretDist[i] *
-              Math.cos(E.angle + (Math.PI / 2) * i) *
-              screenratio,
-          E.y +
-            E.turretDist[i] *
-              Math.sin(E.angle + (Math.PI / 2) * i) *
-              screenratio
+          E.x + E.turretDist[i] * Math.cos(E.angle + (Math.PI / 2) * i) * screenratio,
+          E.y + E.turretDist[i] * Math.sin(E.angle + (Math.PI / 2) * i) * screenratio
         );
         ctx.rotate(E.turretAngle[i]);
         ctx.globalAlpha = E.appearOpacity;
@@ -412,12 +384,7 @@ function enemyCharacter(E) {
     let colorHPbar = "white";
     ctx.globalAlpha = 0.8;
     ctx.fillStyle = "#606060";
-    ctx.fillRect(
-      E.x - 15,
-      E.y + E.height / 2,
-      E.height / 3 > 30 ? E.height / 3 : 30,
-      5
-    );
+    ctx.fillRect(E.x - 15, E.y + E.height / 2, E.height / 3 > 30 ? E.height / 3 : 30, 5);
     ctx.fillStyle = colorHPbar;
     ctx.fillRect(
       E.x - 15,
@@ -428,12 +395,7 @@ function enemyCharacter(E) {
     ctx.strokeStyle = "#000000";
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1;
-    ctx.strokeRect(
-      E.x - 15,
-      E.y + E.height / 2,
-      E.height / 3 > 30 ? E.height / 3 : 30,
-      5
-    );
+    ctx.strokeRect(E.x - 15, E.y + E.height / 2, E.height / 3 > 30 ? E.height / 3 : 30, 5);
   };
   E.deathAnimation_render = function () {
     E.x += -player.xspeed - camera.offSetX; //So that sprite won't move with the player
@@ -446,8 +408,7 @@ function enemyCharacter(E) {
       }
       ctx.save();
       ctx.translate(E.x, E.y);
-      if (E.type == "smallCube" || E.type == "largeCube")
-        ctx.rotate(E.deathAnimation_angle);
+      if (E.type == "smallCube" || E.type == "largeCube") ctx.rotate(E.deathAnimation_angle);
       else ctx.rotate(E.angle);
       ctx.drawImage(
         E.sprite,
@@ -472,14 +433,8 @@ function enemyCharacter(E) {
   E.piercingCD = false;
   E.opacity = 0;
   E.chaseBehaviour = async function () {
-    E.playerDistance = Math.sqrt(
-      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-    );
-    if (
-      E.playerDistance < 800 * screenratio &&
-      E.target == "none" &&
-      player.HP[1] > 0
-    ) {
+    E.playerDistance = Math.sqrt(Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2));
+    if (E.playerDistance < 800 * screenratio && E.target == "none" && player.HP[1] > 0) {
       E.target = player;
     }
     if (E.target != "none") {
@@ -498,19 +453,13 @@ function enemyCharacter(E) {
         if (!E.attackCD && E.bullets == undefined) {
           E.attackCDstart();
           enemyBulletList.push(
-            enemyBullet(
-              { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
-              player
-            )
+            enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] }, player)
           );
         } else if (!E.attackCD) {
           E.attackCDstart();
           for (let i = 0; i < E.bullets; i++) {
             enemyBulletList.push(
-              enemyBullet(
-                { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
-                player
-              )
+              enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] }, player)
             );
             await sleep(E.bulletDelay);
           }
@@ -535,31 +484,21 @@ function enemyCharacter(E) {
       E.attackCDstart();
     } else if (E.arrival && !E.attackCD) {
       E.attackCDstart();
-      enemyBulletList.push(
-        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
-      );
+      enemyBulletList.push(enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] }));
     }
     if (E.turrets > 0) {
       for (let i = E.turrets - 1; i >= 0; i--) {
-        let ex =
-          E.x +
-          E.turretDist[i] * Math.cos(E.angle + (Math.PI / 2) * i) * screenratio;
-        let ey =
-          E.y +
-          E.turretDist[i] * Math.sin(E.angle + (Math.PI / 2) * i) * screenratio;
+        let ex = E.x + E.turretDist[i] * Math.cos(E.angle + (Math.PI / 2) * i) * screenratio;
+        let ey = E.y + E.turretDist[i] * Math.sin(E.angle + (Math.PI / 2) * i) * screenratio;
         let turretDistance = Math.sqrt(
           Math.pow(player.x - ex, 2) + Math.pow(player.y - ey, 2)
         );
         if (turretDistance < 850 * screenratio) {
-          E.turretAngle[i] =
-            Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
+          E.turretAngle[i] = Math.atan2(player.y - E.y, player.x - E.x) + Math.PI / 2;
           if (!E.turretAttackCD[i]) {
             E.turretAttackCDstart(i);
             enemyBulletList.push(
-              enemyBullet(
-                { x: ex, y: ey, ...enemyWeaponData[E.turretBulletType] },
-                player
-              )
+              enemyBullet({ x: ex, y: ey, ...enemyWeaponData[E.turretBulletType] }, player)
             );
           }
         } else {
@@ -571,9 +510,7 @@ function enemyCharacter(E) {
   E.spawnBehaviour = function () {
     if (E.spawning) E.spawnSummonTick();
     if (E.type != "mail" && E.type != "betaMail")
-      E.spawnDistance = Math.sqrt(
-        Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-      );
+      E.spawnDistance = Math.sqrt(Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2));
     else E.spawnDistance = 0;
     if (
       E.spawnDistance < 450 * screenratio &&
@@ -663,9 +600,7 @@ function enemyCharacter(E) {
       E.attackCDstart();
     } else if (E.inOrbit && !E.attackCD) {
       E.attackCDstart();
-      enemyBulletList.push(
-        enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] })
-      );
+      enemyBulletList.push(enemyBullet({ x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] }));
     }
   };
   E.mineBehaviour = function () {
@@ -687,9 +622,7 @@ function enemyCharacter(E) {
   E.angelaBehaviour1 = function () {
     E.target = player;
     E.angle = Math.atan2(E.target.y - E.y, E.target.x - E.x) + Math.PI / 2;
-    E.playerDistance = Math.sqrt(
-      Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2)
-    );
+    E.playerDistance = Math.sqrt(Math.pow(player.x - E.x, 2) + Math.pow(player.y - E.y, 2));
     let rampUp = 1 - E.HP / E.maxHP;
     E.attackCDvalue = E.defaultAttackCDvalue - 1200 * rampUp;
     if (E.playerDistance < 650 * screenratio) {
@@ -730,10 +663,8 @@ function enemyCharacter(E) {
               enemyBullet(
                 { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
                 "custom",
-                E.x +
-                  Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
-                E.y +
-                  Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+                E.x + Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+                E.y + Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
               )
             );
             E.ammo -= 4 - Math.round(1 * rampUp);
@@ -793,10 +724,8 @@ function enemyCharacter(E) {
             enemyBullet(
               { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
               "custom",
-              E.x +
-                Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
-              E.y +
-                Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+              E.x + Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+              E.y + Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
             )
           );
           E.ammo -= 4;
@@ -855,12 +784,7 @@ function enemyCharacter(E) {
           ctx.globalAlpha = 0.3;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {
-            ctx.fillRect(
-              0,
-              E.chargeRectY - E.height / 2,
-              canvas.width,
-              E.height
-            );
+            ctx.fillRect(0, E.chargeRectY - E.height / 2, canvas.width, E.height);
             ctx.globalAlpha = 0.6;
             ctx.drawImage(
               sprite.projectile_enemyDANGER,
@@ -885,12 +809,7 @@ function enemyCharacter(E) {
               102 * screenratio
             );
           } else {
-            ctx.fillRect(
-              E.chargeRectX - E.width / 2,
-              0,
-              E.width,
-              canvas.height
-            );
+            ctx.fillRect(E.chargeRectX - E.width / 2, 0, E.width, canvas.height);
             ctx.globalAlpha = 0.6;
             ctx.drawImage(
               sprite.projectile_enemyDANGER,
@@ -988,10 +907,8 @@ function enemyCharacter(E) {
             enemyBullet(
               { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
               "custom",
-              E.x +
-                Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
-              E.y +
-                Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
+              E.x + Math.cos((Math.PI / 8) * i + (Math.PI / 16) * randomSelector),
+              E.y + Math.sin((Math.PI / 8) * i + (Math.PI / 16) * randomSelector)
             )
           );
           E.ammo -= 4 - Math.round(2 * rampUp);
@@ -1062,12 +979,7 @@ function enemyCharacter(E) {
           ctx.globalAlpha = 0.3;
           ctx.fillStyle = "red";
           if (E.chargeSet <= 1) {
-            ctx.fillRect(
-              0,
-              E.chargeRectY - E.height / 2,
-              canvas.width,
-              E.height
-            );
+            ctx.fillRect(0, E.chargeRectY - E.height / 2, canvas.width, E.height);
             ctx.globalAlpha = 0.6;
             ctx.drawImage(
               sprite.projectile_enemyDANGER,
@@ -1092,12 +1004,7 @@ function enemyCharacter(E) {
               102 * screenratio
             );
           } else {
-            ctx.fillRect(
-              E.chargeRectX - E.width / 2,
-              0,
-              E.width,
-              canvas.height
-            );
+            ctx.fillRect(E.chargeRectX - E.width / 2, 0, E.width, canvas.height);
             ctx.globalAlpha = 0.6;
             ctx.drawImage(
               sprite.projectile_enemyDANGER,
@@ -1280,10 +1187,8 @@ var damageNumberList = [];
 class DamageNumber {
   constructor(amount, x, y) {
     this.text = amount;
-    this.x =
-      x + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
-    this.y =
-      y + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
+    this.x = x + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
+    this.y = y + Math.floor(Math.random() * 20 * (Math.random() > 0.5 ? 1 : -1));
     this.ttl = 60;
   }
   update_render() {
