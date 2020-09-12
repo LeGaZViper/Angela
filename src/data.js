@@ -628,6 +628,8 @@ class DefaultSetup {
     this.keyboardControl = true;
     this.musicMultiplier = 5;
     this.soundMultiplier = 5;
+    this.revengeending = false;
+    this.justiceending = false;
   }
 }
 

@@ -68,10 +68,6 @@ function collides_UI(a, b) {
   );
 }
 
-function _305() {
-  console.log(`${window.location.href}sprites/enemy/angelaPhase2/chatlog_2.log`);
-}
-
 function inicializeGame() {
   if (playerData.level < 13)
     gameAudio.playMusic("music_level_" + Math.floor(playerData.level / 3));
@@ -175,7 +171,9 @@ function loadGameAssets(callback) {
             if (soundsLoaded == nOfSounds) {
               scale();
               playerData = JSON.parse(localStorage.playerData);
-              playerData.level = 13;
+              if (playerData.justiceending && playerData.revengeending)
+                console.log(`${window.location.href}sprites/enemy/angelaPhase3/chatlog_3.log`);
+              playerData.level = 12;
               keyboardControler.inicialize();
               player.inicialize(0, 50);
               background.inicialize();

@@ -109,6 +109,7 @@ body {
 }
 
 #warningButton:hover {
+  cursor: pointer;
   background-color: #5c7cff;
   border: solid #b2b5ff 3px;
   -webkit-text-fill-color: white;

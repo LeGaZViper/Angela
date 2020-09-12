@@ -81,8 +81,10 @@ function winTheLevel() {
     environment.inicialize();
     if (playerData.level == 12) {
       getMenu(6);
+      playerData.justiceending = true;
     } else if (playerData.level == 13) {
       getMenu(7);
+      playerData.revengeending = true;
       gameAudio.playSound("revengeending");
     }
     playerData.level = 11;

@@ -353,7 +353,6 @@ var UI = {
       animationX: 0,
       animationY: 0,
     };
-
     this.judgementEnding_b0 = {
       width: 320 * screenratio,
       height: 50 * screenratio,
@@ -365,8 +364,23 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
+    this.judgementEnding_b1 = {
+      width: 115 * screenratio,
+      height: 40 * screenratio,
+      x: canvas.width / 2 - 135 * screenratio,
+      y: canvas.height / 2 - 220 * screenratio,
+      text: "",
+      textSize: 30 * screenratio,
+      button: "SECRET_1",
+      opacity: 0.05,
+      color: ["grey", "black", "white"],
+    };
 
-    this.judgementEndingMenu = [this.judgementEnding_sprite0, this.judgementEnding_b0];
+    this.judgementEndingMenu = [
+      this.judgementEnding_sprite0,
+      this.judgementEnding_b0,
+      this.judgementEnding_b1,
+    ];
 
     this.revengeEnding_sprite0 = {
       width: 750 * screenratio,
@@ -381,7 +395,6 @@ var UI = {
       animationX: 0,
       animationY: 0,
     };
-
     this.revengeEnding_b0 = {
       width: 320 * screenratio,
       height: 50 * screenratio,
@@ -393,8 +406,22 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-
-    this.revengeEndingMenu = [this.revengeEnding_sprite0, this.revengeEnding_b0];
+    this.revengeEnding_b1 = {
+      width: 100 * screenratio,
+      height: 40 * screenratio,
+      x: canvas.width / 2 - 320 * screenratio,
+      y: canvas.height / 2 + 110 * screenratio,
+      text: "",
+      textSize: 30 * screenratio,
+      button: "SECRET_2",
+      opacity: 0.1,
+      color: ["grey", "black", "white"],
+    };
+    this.revengeEndingMenu = [
+      this.revengeEnding_sprite0,
+      this.revengeEnding_b0,
+      this.revengeEnding_b1,
+    ];
 
     this.tutorial_b0 = {
       width: 320 * screenratio,
@@ -571,9 +598,6 @@ var UI = {
               element.height
             );
           }
-        }
-        if (this.beforeTheBossMenuTimer == 9550) {
-          console.log(`${window.location.href}sprites/enemy/angelaPhase1/chatlog_1.log`);
         }
       }
     });
@@ -975,6 +999,8 @@ var UI = {
             if (index.button == "CREDITS") {
               showMenuLinks();
               this.getMenuEffect(3);
+            } else if (index.button == "SECRET_1") {
+              window.open(`${window.location.href}sprites/enemy/angelaPhase1/chatlog_1.log`);
             }
           }
         });
@@ -993,6 +1019,8 @@ var UI = {
             if (index.button == "CREDITS") {
               showMenuLinks();
               this.getMenuEffect(3);
+            } else if (index.button == "SECRET_2") {
+              window.open(`${window.location.href}sprites/enemy/angelaPhase2/chatlog_2.log`);
             }
           }
         });
@@ -1027,6 +1055,7 @@ var UI = {
     }
   },
   hover: function () {
+    let hovered = false;
     if (this.currentMenu == 0) {
       this.mainMenu.forEach((index) => {
         if (
@@ -1039,10 +1068,12 @@ var UI = {
           index.button != undefined
         ) {
           if (index.button == "CONTINUE" && playerData.level > 0) {
+            hovered = true;
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;
           } else if (index.button != "CONTINUE") {
+            hovered = true;
             index.color[0] = this.UIColors.hoverFill;
             index.color[1] = this.UIColors.hoverStroke;
             index.color[2] = this.UIColors.hoverFontFill;
@@ -1064,6 +1095,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1084,6 +1116,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1104,6 +1137,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1124,6 +1158,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1144,6 +1179,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1165,6 +1201,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1186,6 +1223,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1206,6 +1244,7 @@ var UI = {
           }) &&
           index.button != undefined
         ) {
+          hovered = true;
           index.color[0] = this.UIColors.hoverFill;
           index.color[1] = this.UIColors.hoverStroke;
           index.color[2] = this.UIColors.hoverFontFill;
@@ -1215,6 +1254,11 @@ var UI = {
           index.color[2] = this.UIColors.fontFill;
         }
       });
+    }
+    if (hovered) {
+      canvas.style.cursor = "pointer";
+    } else {
+      canvas.style.cursor = "default";
     }
   },
   cooldown: async function (object) {
