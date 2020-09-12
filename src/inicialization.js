@@ -139,8 +139,15 @@ function loadGameAssets(callback) {
   let loadingArray = [];
   let loadingText = document.querySelector(".loadingText");
   let loadingBar = document.querySelector(".loadingBar");
-  let nOfSprites = 75;
-  let nOfSounds = 37;
+  let nOfSprites = 0;
+  loadingText.innerHTML = "Inicializing...";
+  for (index in sprite) {
+    nOfSprites++;
+  }
+  let nOfSounds = 0;
+  for (index in gameAudio.gameAudioFiles) {
+    nOfSounds++;
+  }
   let nOfAssets = nOfSprites + nOfSounds;
   for (let index in sprite) {
     let precursor = index.split("_");
@@ -210,11 +217,30 @@ function setTimer(ms, reference, attributeName, inMenu = UI.inMenu) {
   timerList.push(new Timer(ticks, reference, attributeName, inMenu));
 }
 
+function setCallbackTimer(ms, callback, inMenu = UI.inMenu) {
+  let ticks = Math.round((ms * 60) / 1000);
+  timerList.push(new CallbackTimer(ticks, callback, inMenu));
+}
+
 class Timer {
   constructor(value, reference, attributeName, createdInMenu) {
     this.value = value;
     this.reference = reference;
     this.attributeName = attributeName;
     this.createdInMenu = createdInMenu;
+  }
+  timerEnd() {
+    this.reference[this.attributeName] = false;
+  }
+}
+
+class CallbackTimer {
+  constructor(value, callback, createdInMenu) {
+    this.value = value;
+    this.callback = callback;
+    this.createdInMenu = createdInMenu;
+  }
+  timerEnd() {
+    this.callback();
   }
 }

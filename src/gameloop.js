@@ -280,8 +280,8 @@ function gameLoop() {
       if (el.value > 0) {
         el.value--;
       } else {
+        timerList[index].timerEnd();
         timerList.splice(index, 1);
-        el.reference[el.attributeName] = false;
       }
     }
   });

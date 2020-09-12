@@ -17,21 +17,26 @@ async function spawn() {
     UI.levelDisplayCheck = false;
   }
   if (levels_handler.level.startTime == undefined)
-    await sleep(levels_handler.level["startTimeWave" + levels_handler.waveCounter]);
-  else await sleep(levels_handler.level.startTime);
-  for (let i = 0; i < enemySpawnList.length; i++) {
-    if (enemySpawnList.length == 0) break;
+    setCallbackTimer(
+      levels_handler.level["startTimeWave" + levels_handler.waveCounter],
+      spawner,
+      false
+    );
+  else setCallbackTimer(levels_handler.level.startTime, spawner, false);
+}
 
+function spawner() {
+  if (enemySpawnList.length > 0) {
     enemyList.push(
       enemyCharacter({
-        x: enemySpawnList[i].x * screenratio + player.earthX,
-        y: enemySpawnList[i].y * screenratio + player.earthY,
-        ...EnemyData[enemySpawnList[i].type],
+        x: enemySpawnList[0].x * screenratio + player.earthX,
+        y: enemySpawnList[0].y * screenratio + player.earthY,
+        ...EnemyData[enemySpawnList[0].type],
       })
     );
-    await sleep(enemySpawnList[i].spawnCD);
+    setCallbackTimer(enemySpawnList[0].spawnCD, spawner, false);
+    enemySpawnList.splice(0, 1);
   }
-  enemySpawnList = [];
 }
 
 let enemySpawnList = [];

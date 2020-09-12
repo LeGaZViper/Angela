@@ -73,6 +73,7 @@ const sprite = {
   UI_angelaJumpscare2: new Image(),
   UI_logo: new Image(),
   UI_judgementending: new Image(),
+  UI_revengeending: new Image(),
   UI_credits: new Image(),
   UI_tutorial: new Image(),
 };

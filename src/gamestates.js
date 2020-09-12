@@ -83,6 +83,7 @@ function winTheLevel() {
       getMenu(6);
     } else if (playerData.level == 13) {
       getMenu(7);
+      gameAudio.playSound("revengeending");
     }
     playerData.level = 11;
   }

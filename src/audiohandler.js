@@ -29,6 +29,7 @@ const gameAudio = {
     typing_angela_2: new Audio(),
     angelaJumpscare1: new Audio(),
     angelaJumpscare2: new Audio(),
+    revengeending: new Audio(),
     music_level_0: new Audio(),
     music_level_1: new Audio(),
     music_level_2: new Audio(),
@@ -71,6 +72,7 @@ const gameAudio = {
     this.gameAudioFiles.typing_angela_2.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.angelaJumpscare1.volume = 0.1 * playerData.soundMultiplier;
     this.gameAudioFiles.angelaJumpscare2.volume = 0.1 * playerData.soundMultiplier;
+    this.gameAudioFiles.revengeending.volume = 0.07 * playerData.soundMultiplier;
     this.gameAudioFiles.music_level_0.volume = 0.03 * playerData.musicMultiplier;
     this.gameAudioFiles.music_level_1.volume = 0.03 * playerData.musicMultiplier;
     this.gameAudioFiles.music_level_2.volume = 0.03 * playerData.musicMultiplier;

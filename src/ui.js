@@ -374,8 +374,8 @@ var UI = {
       widthOnPic: 750,
       heightOnPic: 955,
       x: canvas.width / 2 - 375 * screenratio,
-      y: canvas.height / 2 - 477 * screenratio,
-      sprite: sprite.UI_judgementending,
+      y: canvas.height / 2 - 500 * screenratio,
+      sprite: sprite.UI_revengeending,
       opacity: 1,
       color: ["grey", "black", "white"],
       animationX: 0,
@@ -688,22 +688,6 @@ var UI = {
     ctx.strokeStyle = "#5C7CFF";
     ctx.fillStyle = "white";
     ctx.fillText(player.playerLives + "x", canvas.width - 195 * screenratio, 67 * screenratio);
-    //cursor
-    this.cursorIndex +=
-      0.001 *
-        Math.sqrt(Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)) +
-      0.02;
-    ctx.globalAlpha = 1;
-    ctx.save();
-    ctx.translate(xMousePos, yMousePos);
-    ctx.rotate(this.cursorIndex);
-    if (leftMouseDown) ctx.drawImage(sprite.UI_cursorFire, -30, -30, 60, 60);
-    else ctx.drawImage(sprite.UI_cursorNoFire, -30, -30, 60, 60);
-    ctx.restore();
-    if (this.cursorIndex == 6) {
-      this.cursorIndex = 0;
-    }
-
     if (UI.levelDisplayCheck) {
       ctx.globalAlpha = UI.levelDisplay.opacity;
       ctx.textAlign = "center";
@@ -787,6 +771,21 @@ var UI = {
     } else {
       backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.03);
+    }
+    //cursor
+    this.cursorIndex +=
+      0.001 *
+        Math.sqrt(Math.pow(player.accelerationX, 2) + Math.pow(player.accelerationY, 2)) +
+      0.02;
+    ctx.globalAlpha = 1;
+    ctx.save();
+    ctx.translate(xMousePos, yMousePos);
+    ctx.rotate(this.cursorIndex);
+    if (leftMouseDown) ctx.drawImage(sprite.UI_cursorFire, -30, -30, 60, 60);
+    else ctx.drawImage(sprite.UI_cursorNoFire, -30, -30, 60, 60);
+    ctx.restore();
+    if (this.cursorIndex == 6) {
+      this.cursorIndex = 0;
     }
   },
   click: function () {
