@@ -22,6 +22,7 @@ const gameAudio = {
     enemy_CLOUD: new Audio(),
     enemy_COG: new Audio(),
     enemy_CORRUPTEDSHOT: new Audio(),
+    enemy_CHARGE: new Audio(),
     system_warning: new Audio(),
     typing_system: new Audio(),
     typing_infernus: new Audio(),
@@ -65,7 +66,7 @@ const gameAudio = {
     this.gameAudioFiles.enemy_CLOUD.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_COG.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.enemy_CORRUPTEDSHOT.volume = 0.01 * playerData.soundMultiplier;
-    this.gameAudioFiles.enemy_MINIBASIC.volume = 0.02 * playerData.soundMultiplier;
+    this.gameAudioFiles.enemy_CHARGE.volume = 0.03 * playerData.soundMultiplier;
     this.gameAudioFiles.typing_system.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.typing_infernus.volume = 0.03 * playerData.soundMultiplier;
     this.gameAudioFiles.typing_angela.volume = 0.01 * playerData.soundMultiplier;

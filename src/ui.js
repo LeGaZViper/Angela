@@ -5,8 +5,8 @@ var UI = {
     this.globalCustomAlpha = 0;
     this.globalCustomAlphaCheck = false;
     this.mainMenu_sprite0 = {
-      width: 353 * screenratio,
-      height: 184 * screenratio,
+      width: Math.round(353 * screenratio),
+      height: Math.round(184 * screenratio),
       widthOnPic: 353,
       heightOnPic: 184,
       x: Math.round(canvas.width / 2 - 176 * screenratio),
@@ -277,7 +277,34 @@ var UI = {
       opacity: 1,
       color: ["grey", "black", "white"],
     };
-    this.creditsMenu = [this.creditsMenu_sprite0, this.creditsMenu_b0];
+    this.creditsMenu_b1 = {
+      width: 250 * screenratio,
+      height: 22 * screenratio,
+      x: canvas.width / 2 - 240 * screenratio,
+      y: canvas.height / 2 - 10 * screenratio,
+      text: "",
+      textSize: 30 * screenratio,
+      button: "incompetech",
+      opacity: 0.1,
+      color: ["grey", "black", "white"],
+    };
+    this.creditsMenu_b2 = {
+      width: 410 * screenratio,
+      height: 22 * screenratio,
+      x: canvas.width / 2 - 240 * screenratio,
+      y: canvas.height / 2 + 37 * screenratio,
+      text: "",
+      textSize: 30 * screenratio,
+      button: "license",
+      opacity: 0.1,
+      color: ["grey", "black", "white"],
+    };
+    this.creditsMenu = [
+      this.creditsMenu_sprite0,
+      this.creditsMenu_b0,
+      this.creditsMenu_b1,
+      this.creditsMenu_b2,
+    ];
 
     this.pauseMenuWindow = {
       width: 550 * screenratio,
@@ -786,12 +813,14 @@ var UI = {
         backgroundParticles.angelaDialogueBubble.visible = true;
       else backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.01);
-      dialogueList.forEach((el, index) => {
+      let nextDialogue = true;
+      dialogueList.forEach((el) => {
         if (!Dialogue.stopDialogues) el.update_render();
-        if (el.ttl <= 0 || el.opacity <= 0) {
-          dialogueList.splice(index, 1);
+        if (el.ttl > 0) {
+          nextDialogue = false;
         }
       });
+      if (nextDialogue) dialogueList = [];
     } else {
       backgroundParticles.angelaDialogueBubble.visible = false;
       gameAudio.changeVolumeOfMusic(0.03);
@@ -932,6 +961,10 @@ var UI = {
             if (index.button == "BACKTOMENU") {
               gameAudio.playMusic("music_menu");
               this.getMenuEffect(0);
+            } else if (index.button == "incompetech") {
+              window.open(`https://incompetech.com/`);
+            } else if (index.button == "license") {
+              window.open(`http://creativecommons.org/licenses/by/3.0/`);
             }
           }
         });

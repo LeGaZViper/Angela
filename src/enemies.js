@@ -57,7 +57,7 @@ async function checkDeath(enemy, bulletType = "none") {
         }
       }
       if (!player.inWeaponActivation) {
-        weaponActivation.targets = 3 + Math.round(Math.random());
+        weaponActivation.targets = 2 + player.companions;
         gameAudio.playSound("player_getDrop");
         weaponActivation.timerIndex = weaponActivation.defaultTimerIndex;
         weaponActivation.weaponName = choice;
@@ -82,9 +82,9 @@ async function checkDeath(enemy, bulletType = "none") {
 }
 
 var enemyBulletList = [];
-function enemyBullet(B, target = "none", xman = 0, yman = 0) {
+function enemyBullet(B, target = "none", xman = 0, yman = 0, playSound = true) {
   if (B.x > -200 && B.x < canvas.width + 200 && B.y > -200 && B.y < canvas.height + 200)
-    gameAudio.playSound(B.sound);
+    if (playSound) gameAudio.playSound(B.sound);
   B.target = target;
   B.killed = false;
   B.opacity = 1;
@@ -650,10 +650,14 @@ function enemyCharacter(E) {
                 { x: E.x, y: E.y, ...enemyWeaponData[E.bulletType] },
                 "custom",
                 E.x + Math.cos(E.angle - Math.PI / 2 + 0.06 * i),
-                E.y + Math.sin(E.angle - Math.PI / 2 + 0.06 * i)
+                E.y + Math.sin(E.angle - Math.PI / 2 + 0.06 * i),
+                false
               )
             );
             E.ammo -= 4 - Math.round(1 * rampUp);
+            if (i % 2 == 0) {
+              gameAudio.playSound("enemy_BASIC");
+            }
           }
           setTimer(300 - 30 * rampUp, E, "weaponCD");
         } else if (E.bulletType == "CORRUPTEDSHOT" && !E.weaponCD) {
@@ -738,12 +742,17 @@ function enemyCharacter(E) {
           E.aggressiveAppear();
           E.chargeActive = true;
           E.manualUpdate = true;
+          E.chargeSound = true;
           E.chargeRectX = player.x;
           E.chargeRectY = player.y;
 
           setTimer(E.chargeWaitTime - 500 * rampUp, E, "weaponCD");
           setTimer(1000 + E.chargeWaitTime - 500 * rampUp, E, "chargeEnd");
         } else if (!E.weaponCD && E.chargeActive) {
+          if (E.chargeSound) {
+            gameAudio.playSound("enemy_CHARGE");
+            E.chargeSound = false;
+          }
           E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
           E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
           E.coordX += E.chargeXSpeed;
@@ -933,12 +942,17 @@ function enemyCharacter(E) {
           E.aggressiveAppear();
           E.chargeActive = true;
           E.manualUpdate = true;
+          E.chargeSound = true;
           E.chargeRectX = player.x;
           E.chargeRectY = player.y;
 
           setTimer(E.chargeWaitTime - 900 * rampUp, E, "weaponCD");
           setTimer(1000 + E.chargeWaitTime - 900 * rampUp, E, "chargeEnd");
         } else if (!E.weaponCD && E.chargeActive) {
+          if (E.chargeSound) {
+            gameAudio.playSound("enemy_CHARGE");
+            E.chargeSound = false;
+          }
           E.x += E.chargeXSpeed - player.xspeed - camera.offSetX;
           E.y += E.chargeYSpeed - player.yspeed - camera.offSetY;
           E.coordX += E.chargeXSpeed;
@@ -1093,7 +1107,7 @@ function enemyCharacter(E) {
     }
   };
   E.lootCubeTarget = function () {
-    if (weaponActivation.failTimeIndex > 0) {
+    if (weaponActivation.targets < 0) {
       E.HP = 0;
       checkDeath(E);
     }

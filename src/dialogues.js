@@ -16,28 +16,23 @@ class Dialogue {
   }
   update_render() {
     if (!this.leadingRow || this.text.length < this.stringIndex) this.ttl--;
-    if (this.ttl < 100 && this.ttl > 1 && this.opacity > 0)
+    if (this.ttl < 50 && this.ttl > 1 && this.opacity > 0) {
       this.opacity = Math.floor((this.opacity - 0.02) * 100) / 100;
+    }
     if (this.text[this.stringIndex] == "#" && this.leadingRow) {
       this.leadingRow = false;
       dialogueList.push(
-        new Dialogue(
-          this.text,
-          this.color,
-          this.ttl,
-          this.stringIndex + 1,
-          ++this.part
-        )
+        new Dialogue(this.text, this.color, this.ttl, this.stringIndex + 1, ++this.part)
       );
     } else if (this.leadingRow && this.text.length >= this.stringIndex) {
       this.typingSequence();
     }
     if (this.color == "#adadad") ctx.font = 30 * screenratio + "px Courier New";
-    else if (this.color == "cyan")
-      ctx.font = 30 * screenratio + "px Lucida Console";
+    else if (this.color == "cyan") ctx.font = 30 * screenratio + "px Lucida Console";
     else ctx.font = 20 * screenratio + "px FFFFORWA";
     ctx.textAlign = "center";
-    ctx.globalAlpha = this.opacity;
+    if (this.opacity < 0) ctx.globalAlpha = 0;
+    else ctx.globalAlpha = this.opacity;
     ctx.strokeStyle = "black";
     ctx.strokeText(this.displayText.join(""), canvas.width / 2, this.y);
     if (this.color == "#adadad" || this.color == "cyan")
@@ -86,20 +81,13 @@ function dialogueHandler() {
   for (let i = 0; i < dialogueLevel.triggerType.length; i++) {
     if (DialogueData.dialoguesUsed[i]) continue;
     else if (dialogueLevel.triggerType[i] == "timer") {
-      if (dialogueLevel.triggerIndex[i] == levelTimer && !UI.inMenu)
-        pushDialogue(i);
-      else if (dialogueLevel.triggerIndex[i] == UI.beforeTheBossMenuTimer)
-        pushDialogue(i);
+      if (dialogueLevel.triggerIndex[i] == levelTimer && !UI.inMenu) pushDialogue(i);
+      else if (dialogueLevel.triggerIndex[i] == UI.beforeTheBossMenuTimer) pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "enemyKilled") {
-      if (dialogueLevel.triggerIndex[i] == levels_handler.level.total)
-        pushDialogue(i);
+      if (dialogueLevel.triggerIndex[i] == levels_handler.level.total) pushDialogue(i);
     } else if (dialogueLevel.triggerType[i] == "wave") {
-      if (dialogueLevel.triggerIndex[i] == levels_handler.waveCounter)
-        pushDialogue(i);
-    } else if (
-      dialogueLevel.triggerType[i] == "after" &&
-      dialogueList.length == 0
-    ) {
+      if (dialogueLevel.triggerIndex[i] == levels_handler.waveCounter) pushDialogue(i);
+    } else if (dialogueLevel.triggerType[i] == "after" && dialogueList.length == 0) {
       if (dialogueLevel.triggerIndex[i] == textIndex) {
         pushDialogue(i);
       }

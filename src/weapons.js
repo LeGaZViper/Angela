@@ -48,9 +48,9 @@ var weaponActivation = {
         false
       );
 
-      let colorHPbar_1 = parseInt(
-        (this.timerIndex / this.defaultTimerIndex) * 255
-      ).toString(16);
+      let colorHPbar_1 = parseInt((this.timerIndex / this.defaultTimerIndex) * 255).toString(
+        16
+      );
       if (colorHPbar_1.length == 1) colorHPbar_1 = "0" + colorHPbar_1;
       ctx.strokeStyle = "#FF" + colorHPbar_1 + colorHPbar_1;
       ctx.lineWidth = 10;
@@ -70,6 +70,7 @@ var weaponActivation = {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
     } else if (this.failTimeIndex == 1) {
+      this.failTimeIndex = 0;
       player.inWeaponActivation = false;
       this.targets = 0;
     } else {
@@ -196,12 +197,8 @@ function bullet(B, numberOfBullets) {
       B.diry = Math.sin(player.angle - Math.PI / 2);
       break;
     case 7: //NEONTHROWER
-      B.dirx = Math.cos(
-        player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
-      );
-      B.diry = Math.sin(
-        player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6
-      );
+      B.dirx = Math.cos(player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6);
+      B.diry = Math.sin(player.angle - Math.PI / 2 + ((Math.random() - 0.5) * Math.PI) / 6);
       break;
     case 8: //WAVE
       B.dirx = Math.cos(player.angle - Math.PI / 2);

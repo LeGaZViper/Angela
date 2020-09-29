@@ -109,7 +109,7 @@ function gameLoop() {
             }
             gameAudio.playSound("player_hit");
             if (!eb.piercing) eb.killed = true;
-            else setTimer(eb.hitCD, player, "piercingCD"); //player.piercingHitCDstart(eb.hitCD);
+            else setTimer(eb.hitCD, player, "piercingCD");
             player.hitCD = true;
             player.hitCDstart(1, "bullet");
           }
@@ -162,7 +162,6 @@ function gameLoop() {
         }
         bulletList.push(bullet({ ...player.weapon }, player.weapon.bullets));
         setTimer(player.weapon.cooldown, player, "attackCD");
-        //player.attackCDstart();
         for (let i = 0; i < player.companions; i++) {
           bulletList.push(
             bullet(
@@ -195,9 +194,13 @@ function gameLoop() {
         ) {
           e.render();
           if (collides(e, player)) {
-            if (!player.collisionCD && !player.hitCD && player.HP[1] > 0) {
+            if (
+              (!player.collisionCD || e.behaviour == "collide") &&
+              !player.hitCD &&
+              player.HP[1] > 0
+            ) {
               //player collision
-              if (playerData.level < 12) {
+              if (playerData.level != 12) {
                 if (e.HP > 1) {
                   e.HP--;
                   e.hitCDstart();

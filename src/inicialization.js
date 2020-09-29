@@ -173,7 +173,6 @@ function loadGameAssets(callback) {
               playerData = JSON.parse(localStorage.playerData);
               if (playerData.justiceending && playerData.revengeending)
                 console.log(`${window.location.href}sprites/enemy/angelaPhase3/chatlog_3.log`);
-              playerData.level = 12;
               keyboardControler.inicialize();
               player.inicialize(0, 50);
               background.inicialize();

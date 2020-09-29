@@ -121,10 +121,19 @@ var player = {
       this.currentSpeed = 0;
       this.xspeed = 0;
       this.yspeed = 0;
-      loseTheGame();
+      if (playerData.level == 13 && levels_handler.waveCounter == 15) {
+        winTheLevel();
+      } else loseTheGame();
     } else if (this.HP[1] <= 0 && !this.killedCD) {
-      this.killedCD = true;
-      this.killedCDstart();
+      if (playerData.level == 13 && levels_handler.waveCounter == 15) {
+        this.currentSpeed = 0;
+        this.xspeed = 0;
+        this.yspeed = 0;
+        winTheLevel();
+      } else {
+        this.killedCD = true;
+        this.killedCDstart();
+      }
     } else if (!isNaN(this.ratio)) {
       //player positioner
       if (

@@ -100,21 +100,39 @@ function spawnAnEnemy(enemy, x = -1, y = -1, orbitAngle = 2 * Math.PI * Math.ran
   } else {
     pos = [x, y];
   }
-  enemyList.push(
-    enemyCharacter({
-      x: pos[0] * screenratio + player.earthX,
-      y: pos[1] * screenratio + player.earthY,
-      ...EnemyData[enemy],
-      playerOrbitAngle: orbitAngle,
-    })
-  );
+  if (enemy == "lootCubeTarget") {
+    let randomDistance = 3 * Math.random();
+    enemyList.push(
+      enemyCharacter({
+        x: pos[0] * screenratio + player.earthX,
+        y: pos[1] * screenratio + player.earthY,
+        ...EnemyData[enemy],
+        playerOrbitAngle: orbitAngle,
+        defaultSpeed: (0.005 * Math.random() + 0.005) * (Math.random() > 0.5 ? 1 : -1),
+        distanceFromPlayerX: randomDistance + 2.5,
+        distanceFromPlayerY: randomDistance + 2.5,
+      })
+    );
+  } else {
+    enemyList.push(
+      enemyCharacter({
+        x: pos[0] * screenratio + player.earthX,
+        y: pos[1] * screenratio + player.earthY,
+        ...EnemyData[enemy],
+        playerOrbitAngle: orbitAngle,
+      })
+    );
+  }
 }
 
 var levelLayout = {
   level_0: {
     // [type, number, spawnCD, wave]
     waves: 3,
-    startTime: 13000,
+    startTimeWave1: 30000,
+    startTimeWave2: 100,
+    startTimeWave3: 13000,
+
     miniArrow1: ["miniArrow", 5, 1000, 1],
 
     miniArrow2: ["miniArrow", 5, 1000, 2],
@@ -124,7 +142,10 @@ var levelLayout = {
   },
   level_1: {
     waves: 3,
-    startTime: 6000,
+    startTimeWave1: 6000,
+    startTimeWave2: 5000,
+    startTimeWave3: 4500,
+
     cube1: ["cube", 8, 1000, 1],
 
     mail1: ["mail", 2, 2500, 2],
@@ -135,18 +156,24 @@ var levelLayout = {
   },
   level_2: {
     waves: 3,
-    startTime: 3000,
+    startTimeWave1: 10000,
+    startTimeWave2: 2000,
+    startTimeWave3: 6000,
+
     cube1: ["cube", 5, 1000, 1],
     mail1: ["mail", 2, 2500, 1],
 
-    mail2: ["mail", 3, 2500, 1],
+    mail2: ["mail", 3, 2500, 2],
     icosphere1: ["icosphere", 5, 2000, 2],
 
     icosphere2: ["icosphere", 10, 2000, 3],
   },
   level_3: {
     waves: 3,
-    startTime: 3000,
+    startTimeWave1: 14000,
+    startTimeWave2: 20000,
+    startTimeWave3: 3000,
+
     cube1: ["cube", 5, 1000, 1],
     betaCube1: ["betaCube", 5, 2000, 1],
 
@@ -160,7 +187,10 @@ var levelLayout = {
   },
   level_4: {
     waves: 3,
-    startTime: 6000,
+    startTimeWave1: 10000,
+    startTimeWave2: 3000,
+    startTimeWave3: 7000,
+
     betaMiniArrow1: ["betaMiniArrow", 8, 1000, 1],
     betaCube1: ["betaCube", 5, 2000, 1],
     watcher1: ["watcher", 5, 3500, 1],
@@ -178,7 +208,10 @@ var levelLayout = {
   },
   level_5: {
     waves: 3,
-    startTime: 8000,
+    startTimeWave1: 20000,
+    startTimeWave2: 11000,
+    startTimeWave3: 12000,
+
     cube1: ["cube", 5, 500, 1],
     betaCube1: ["betaCube", 4, 2000, 1],
     watcher1: ["watcher", 3, 3000, 1],
@@ -192,7 +225,10 @@ var levelLayout = {
   },
   level_6: {
     waves: 3,
-    startTime: 8000,
+    startTimeWave1: 18000,
+    startTimeWave2: 100,
+    startTimeWave3: 9000,
+
     star1: ["star", 3, 3000, 1],
     betaCube1: ["betaCube", 8, 1500, 1],
     watcher1: ["watcher", 3, 1500, 1],
@@ -209,7 +245,10 @@ var levelLayout = {
   },
   level_7: {
     waves: 3,
-    startTime: 100,
+    startTimeWave1: 100,
+    startTimeWave2: 17500,
+    startTimeWave3: 10000,
+
     betaMail1: ["betaMail", 6, 1500, 1],
     watcher1: ["watcher", 2, 2000, 1],
 
@@ -223,7 +262,10 @@ var levelLayout = {
   },
   level_8: {
     waves: 3,
-    startTime: 3000,
+    startTimeWave1: 22000,
+    startTimeWave2: 33000,
+    startTimeWave3: 100,
+
     betaWatcher1: ["betaWatcher", 10, 4000, 1],
 
     betaIcosphere1: ["betaIcosphere", 7, 2000, 2],
@@ -236,24 +278,30 @@ var levelLayout = {
   },
   level_9: {
     waves: 3,
-    startTime: 3000,
+    startTimeWave1: 16000,
+    startTimeWave2: 18000,
+    startTimeWave3: 12500,
+
     betaWatcher1: ["betaWatcher", 5, 2500, 1],
-    betaCube1: ["betaCube", 15, 1000, 1],
+    betaCube1: ["betaCube", 10, 1000, 1],
     betaMail1: ["betaMail", 3, 1500, 1],
     betaIcosphere1: ["betaIcosphere", 6, 1000, 1],
 
-    carrier1: ["carrier", 5, 300, 2],
+    carrier1: ["carrier", 2, 300, 2],
     betaCube2: ["betaCube", 10, 1000, 2],
     betaIcosphere2: ["betaIcosphere", 10, 1000, 2],
 
-    carrier2: ["carrier", 6, 300, 3],
+    carrier2: ["carrier", 3, 300, 3],
     betaMail2: ["betaMail", 6, 1500, 3],
     betaCube3: ["betaCube", 10, 1000, 3],
     betaStar1: ["betaStar", 5, 1500, 3],
   },
   level_10: {
     waves: 3,
-    startTime: 3000,
+    startTimeWave1: 12000,
+    startTimeWave2: 11500,
+    startTimeWave3: 9000,
+
     carrier1: ["carrier", 5, 3000, 1],
     betaCube1: ["betaCube", 20, 1000, 1],
     betaIcosphere1: ["betaIcosphere", 5, 1000, 1],
@@ -274,16 +322,33 @@ var levelLayout = {
   level_12: {
     waves: 3,
     startTimeWave1: 12500,
-    startTimeWave2: 2000,
+    startTimeWave2: 3000,
+    startTimeWave3: 3000,
+
     angela1: ["angela_phase1", 1, 1, 1],
     angela2: ["angela_phase2", 1, 1, 2],
     angela3: ["angela_phase3", 1, 1, 3],
   },
   level_13: {
-    waves: 14,
-    startTime: 20000,
-    miniArrow1: ["miniArrow", 20, 500, 1],
-    betaMiniArrow1: ["betaMiniArrow", 20, 500, 2],
+    waves: 15,
+    startTimeWave1: 11500, //
+    startTimeWave2: 5000, //
+    startTimeWave3: 5000, //
+    startTimeWave4: 100,
+    startTimeWave5: 100,
+    startTimeWave6: 9000, //
+    startTimeWave7: 100,
+    startTimeWave8: 100,
+    startTimeWave9: 100,
+    startTimeWave10: 100,
+    startTimeWave11: 3000, //
+    startTimeWave12: 100,
+    startTimeWave13: 100,
+    startTimeWave14: 100,
+    startTimeWave15: 6000, //
+
+    miniArrow1: ["miniArrow", 5, 200, 1],
+    betaMiniArrow1: ["betaMiniArrow", 5, 200, 2],
     cube1: ["cube", 20, 500, 3],
     betaCube1: ["betaCube", 20, 500, 4],
     icosphere1: ["icosphere", 20, 500, 5],
@@ -294,9 +359,9 @@ var levelLayout = {
     betaWatcher1: ["betaWatcher", 10, 1000, 10],
     star1: ["star", 15, 3000, 11],
     betaStar1: ["betaStar", 15, 3000, 12],
-    carrier: ["carrier", 15, 5000, 13],
-    betaCarrier: ["betaCarrier", 15, 5000, 14],
-    corruptedCloud: ["corruptedCloud", 30, 5000, 15],
+    carrier1: ["carrier", 15, 5000, 13],
+    betaCarrier1: ["betaCarrier", 15, 5000, 14],
+    corruptedCloud1: ["corruptedCloud", 10, 1000, 15],
   },
 };
 
@@ -315,9 +380,10 @@ function levelEffectsHandler() {
       gameAudio.playSound("angelaJumpscare1");
     }
   } else if (playerData.level == 11) {
-    backgroundParticles.angelaCorrupted.visible = true;
-    backgroundParticles.angela.visible = false;
-    if (levelTimer == 2200) {
+    if (levelTimer == 1) {
+      backgroundParticles.angelaCorrupted.visible = true;
+      backgroundParticles.angela.visible = false;
+    } else if (levelTimer == 2200) {
       environment.angelaJumpscare2.activated = true;
       gameAudio.playSound("angelaJumpscare2");
     } else if (levelTimer == 2230) {
@@ -339,16 +405,23 @@ function levelEffectsHandler() {
       getMenu(5);
     }
   } else if (playerData.level == 12) {
-    backgroundParticles.hole.visible = true;
-    backgroundParticles.angela.visible = false;
-    if (levelTimer == 1000) {
+    if (levelTimer == 1) {
+      environment.light.opacity = 1;
+      backgroundParticles.hole.visible = true;
+      backgroundParticles.angela.visible = false;
+    } else if (levelTimer == 1000) {
       gameAudio.stopMusic();
       gameAudio.playMusic("music_level_4_2");
       gameAudio.currentMusic.currentTime = 3.1;
     }
   } else if (playerData.level == 13) {
-    if (levelTimer == 1200) {
+    if (levelTimer == 1) {
+      backgroundParticles.angelaCorrupted.visible = true;
+      backgroundParticles.angela.visible = false;
+    } else if (levels_handler.waveCounter == 3 && gameAudio.currentMusic.paused) {
       gameAudio.playMusic("music_level_5");
+    } else if (levels_handler.waveCounter == 15) {
+      gameAudio.stopMusic();
     }
   }
 }
