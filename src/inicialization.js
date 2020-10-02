@@ -145,6 +145,7 @@ function loadGameAssets(callback) {
     nOfSounds++;
   }
   let nOfAssets = nOfSprites + nOfSounds;
+  loadingText.innerHTML = "cube";
   for (let index in sprite) {
     let precursor = index.split("_");
     if (precursor[0] == "UI" || precursor[0] == "projectile")
@@ -160,10 +161,11 @@ function loadGameAssets(callback) {
       loadingBar.style.width = (14 / nOfAssets) * spritesLoaded + "vw";
       if (spritesLoaded == nOfSprites) {
         let soundsLoaded = 0;
+        loadingText.innerHTML = "click";
         for (let index in gameAudio.gameAudioFiles) {
           gameAudio.gameAudioFiles[index].src = "./audio/" + index + ".ogg";
           loadingArray.push(index);
-          gameAudio.gameAudioFiles[index].onloadeddata = function () {
+          gameAudio.gameAudioFiles[index].oncanplaythrough = function () {
             soundsLoaded++;
             loadingBar.style.width = (14 / nOfAssets) * (spritesLoaded + soundsLoaded) + "vw";
             loadingArray.splice(0, 1);
