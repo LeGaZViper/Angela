@@ -175,7 +175,7 @@ function bullet(B, numberOfBullets) {
         );
       }
       break;
-    case 3: //ROCKET
+    case 3: //MISSILE
       B.dirx = Math.cos(player.angle - Math.PI / 2);
       B.diry = Math.sin(player.angle - Math.PI / 2);
       B.explosion_radius = 150 * screenratio;
@@ -333,7 +333,7 @@ function bullet(B, numberOfBullets) {
       ) {
         e.HP -= B.damage;
         e.hitCDstart();
-        checkDeath(e, "ROCKET");
+        checkDeath(e, "MISSILE");
       }
     });
   };

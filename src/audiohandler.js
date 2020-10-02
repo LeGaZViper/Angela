@@ -7,7 +7,7 @@ const gameAudio = {
     player_CHAKRAM: new Audio(),
     player_NEONTHROWER: new Audio(),
     player_WAVE: new Audio(),
-    player_ROCKET: new Audio(),
+    player_MISSILE: new Audio(),
     player_LASER_start: new Audio(),
     player_LASER_loop: new Audio(),
     player_getDrop: new Audio(),
@@ -50,7 +50,7 @@ const gameAudio = {
     this.gameAudioFiles.player_CHAKRAM.volume = 0.06 * playerData.soundMultiplier;
     this.gameAudioFiles.player_NEONTHROWER.volume = 0.05 * playerData.soundMultiplier;
     this.gameAudioFiles.player_WAVE.volume = 0.05 * playerData.soundMultiplier;
-    this.gameAudioFiles.player_ROCKET.volume = 0.03 * playerData.soundMultiplier;
+    this.gameAudioFiles.player_MISSILE.volume = 0.03 * playerData.soundMultiplier;
     this.gameAudioFiles.player_LASER_start.volume = 0.03 * playerData.soundMultiplier;
     this.gameAudioFiles.player_LASER_loop.volume = 0.01 * playerData.soundMultiplier;
     this.gameAudioFiles.player_getDrop.volume = 0.05 * playerData.soundMultiplier;
