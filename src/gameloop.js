@@ -139,7 +139,7 @@ function gameLoop() {
       player.height = 75 * screenratio;
       chooseWeapon("BASIC");
       if (!gameAudio.gameAudioFiles.player_LASER_loop.paused) {
-        gameAudio.player_LASER_loop.pause();
+        gameAudio.gameAudioFiles.player_LASER_loop.pause();
         player.LASER_firing = false;
       }
       player.weaponDuration--;
