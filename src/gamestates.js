@@ -58,7 +58,8 @@ function winTheLevel() {
   player.HP = [player.maxHP[0], player.maxHP[1]];
   player.shield = [player.maxShield[0], player.maxShield[1]];
   player.playerLives = 3;
-  player.setCompanions(Math.floor(playerData.level / 3));
+  if (playerData.level < 9) player.setCompanions(Math.floor((playerData.level + 1) / 3));
+  else player.setCompanions(3);
   weaponActivation.inicialize();
   dialogueList = [];
   DialogueData.dialoguesUsed = [];
